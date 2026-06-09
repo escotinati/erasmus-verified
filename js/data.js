@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-//  DATA.JS — Fuente única de verdad del proyecto Erasmus Groups
+//  DATA.JS — Fuente única de verdad del proyecto Erasmus Parties
 //
 //  CÓMO AÑADIR UN PAÍS:
 //    1. Añade una entrada nueva al objeto COUNTRIES siguiendo

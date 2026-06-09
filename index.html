@@ -2,98 +2,265 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erasmus Groups — Encuentra tu ciudad</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Erasmus Parties | Experiencias Premium para Estudiantes de Intercambio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
 
-    <section class="hero">
-        <div class="hero-bg"></div>
-        <div class="topbar">
-            <a href="index.html" class="logo">✈ Erasmus<span class="logo-dot">Groups</span></a>
-            <nav class="topbar-nav">
-                <a href="#">Sobre nosotros</a>
-                <a href="#">Comunidad</a>
-                <a href="#">Contacto</a>
-            </nav>
-            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-        <div class="hero-content">
-            <div class="hero-label">🌍 Comunidad Erasmus Europa</div>
-            <h1>Encuentra tu grupo en <em>cualquier ciudad</em></h1>
-            <p class="hero-sub">Conecta con estudiantes Erasmus antes de llegar. Grupos de WhatsApp y Telegram por país y ciudad.</p>
-        </div>
-        <div class="hero-stats">
-            <div class="stat"><span class="stat-num" id="statPaises">—</span><span class="stat-label">Países</span></div>
-            <div class="stat"><span class="stat-num" id="statCiudades">—</span><span class="stat-label">Ciudades</span></div>
-            <div class="stat"><span class="stat-num">+5k</span><span class="stat-label">Estudiantes</span></div>
-        </div>
-    </section>
-
-    <nav class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Menú principal">
-        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <div class="mobile-nav-links">
-            <a href="#">Sobre nosotros</a>
-            <a href="#">Comunidad</a>
-            <a href="#">Contacto</a>
+    <!-- ── TOP NAV ─────────────────────────────────────────────── -->
+    <nav class="topnav" id="topNav">
+        <div class="topnav-inner">
+            <div class="topnav-left">
+                <a href="index.html" class="brand">Erasmus Parties</a>
+                <div class="topnav-links">
+                    <a href="#ciudades" class="nav-link">Ciudades</a>
+                    <a href="#noches" class="nav-link">Noches</a>
+                </div>
+            </div>
+            <div class="topnav-right">
+                <button class="icon-btn" aria-label="Buscar">
+                <span class="material-symbols-outlined">search</span>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <div class="section-header">
-        <h2 class="section-title">Selecciona tu destino</h2>
-        <span class="section-count" id="sectionCount"></span>
-    </div>
+    <main>
 
-    <div class="countries-grid" id="countriesGrid"></div>
+        <!-- ── HERO ─────────────────────────────────────────────── -->
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-inner">
+                <h1 class="hero-title">Vive Europa <br/><em>Sin Límites.</em></h1>
+                <p class="hero-sub">Conéctate con alojamiento premium para estudiantes, eventos nocturnos exclusivos y una comunidad vibrante en más de 50 centros universitarios europeos.</p>
 
-    <footer>
-        <span>Erasmus Groups · Comunidad Erasmus Europa</span>
-        <span>Hecho con ❤️ para estudiantes internacionales</span>
+                <!-- Search bar -->
+                <div class="search-bar">
+                    <div class="search-bar-input">
+                        <span class="material-symbols-outlined search-icon">location_on</span>
+                        <input type="text" placeholder="¿A dónde vas en tu próxima aventura?" id="citySearch" />
+                    </div>
+                    <button class="search-bar-btn">
+          Explorar
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+                </div>
+
+                <!-- Popular cities -->
+                <div class="hero-popular">
+                    <span class="popular-label">Popular:</span>
+                    <a href="ciudades.html?pais=España" class="popular-pill">Barcelona</a>
+                    <a href="ciudades.html?pais=Alemania" class="popular-pill">Berlín</a>
+                    <a href="ciudades.html?pais=Portugal" class="popular-pill">Lisboa</a>
+                    <a href="ciudades.html?pais=República%20Checa" class="popular-pill">Praga</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── TOP CITIES BENTO ──────────────────────────────────── -->
+        <section class="section cities-section" id="ciudades">
+            <div class="section-head">
+                <div>
+                    <span class="eyebrow eyebrow--secondary">DESTINOS</span>
+                    <h2 class="section-title">Mejores ciudades para tu intercambio</h2>
+                </div>
+                <a href="#" class="section-link">
+        Ver las más de 50 ciudades
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+            </div>
+
+            <div class="bento-grid" id="bentoGrid">
+                <!-- JS renderiza las 4 tarjetas desde COUNTRIES -->
+            </div>
+        </section>
+
+        <!-- ── TRENDING NIGHTS ───────────────────────────────────── -->
+        <section class="section nights-section" id="noches">
+            <div class="nights-header">
+                <span class="eyebrow eyebrow--secondary">VIDA NOCTURNA</span>
+                <h2 class="section-title">Noches en tendencia</h2>
+                <p class="section-sub">Desde techno underground en Berlín hasta veladas en azoteas de Madrid. Obtén acceso exclusivo a los mejores eventos en tu ciudad con Erasmus Parties.</p>
+            </div>
+
+            <div class="events-scroll">
+                <!-- Event 1 -->
+                <div class="event-card">
+                    <div class="event-img-wrap">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEDPIjl_T1Sy1lcrJgud-IuOIYiu74YqflvRnSqYo5o1ymUUT7uTDLqXjeesmPLndNeeveT796KfJc8EvRsxh3ZUOF_hY5wreDGSFtzG4srzl6D8LyFd3YPflE3bneDsRHrtCtzJza4tV7pDDkDg6-OZ36ciAakLOzxFNJwJBVVwEq_3KShES35SgpXp6cXwHjim-pnreohFGqXw-8Z9O4AXqCj4nYZccCWK0JOxbOudUJeiVFrYIyXe5GPCGb0uUPnloZC66uRZuK"
+                            alt="Eclipse Sessions" />
+                        <span class="event-badge event-badge--primary">Esta noche</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-row">
+                            <div>
+                                <h4 class="event-name">Eclipse Sessions</h4>
+                                <p class="event-venue"><span class="material-symbols-outlined">location_on</span> RAZZMATAZZ, Barcelona</p>
+                            </div>
+                            <span class="event-price">€25</span>
+                        </div>
+                        <div class="event-footer">
+                            <div class="avatar-stack">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGPc9Efvk3HUPm19OXMYkysQOhXH66Obvjl23bLUxzNILhxt-AythGaZspJQs59mabgeCywHQ8cRvwGafCBDdj-Qpw8nu6CGkD0p_dPQTVLh1E1e2cEpvA_8jbXqc4g3XtTci3fqo-e_zVn_jUZVChAlxcXybP370PP1mZ1meLR8zQl8h5f-gcbqIuUc-LjRHhnOPhOIjtKq0dAXCttT3rjEjIITS5YtYkZ7MhiV2kP4U6amePcDstpHcSLJlxu3fcJeLPVNhfziUH"
+                                    alt="Avatar" />
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuALIZ-T1P88z89Twr9wV6nvp-WXO40RrmN7hoAYK4J7Mt1NQEwDzU_dY1d9MmzHrqaxtY1K3c8WNeca_fE6e6zEs-zZnjQ0cgXnJP34Y85pkVcz2ALDIWPbIsqHyaHJ5SPdRJJVO9MX0T2N_ACi2ARuR9JSsDQeqY8rhedu3ztkKRW-ba6zgaRufjgAzvOBaONA6kJfPxseyiTZzVcgPCrYrqP7nqwbk_061uPdO56-jdRhNtXMczDo2b_C-R-yD5-fECoG5t_XJ5TD"
+                                    alt="Avatar" />
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2g8uCaDcCjPdF8N0VpWIxNdjubN909Qflxw0JogsId5w8Ahu89f6VWvYRR_sLalXw7TPFcXQX-caPLj7g02qXZBVcqM1MW5ljLh13CchyuQ9vqF0T5aUixDvG4c5WWeDUK6chRQV_xoKASq8OP0VT0Rbeaznja3cgn3NjuZJbrwD-fPQpk7CN7T9L4Mt68fCMpJEEkAP02YUEBcqPqNSmut_1gq5Vf4X9yeSVIjTBivh-vHSuH0as1Hve3IbLB5YKDbqWRcnT0HU3"
+                                    alt="Avatar" />
+                                <div class="avatar-more">+42</div>
+                            </div>
+                            <button class="link-btn">Comprar entradas</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Event 2 -->
+                <div class="event-card">
+                    <div class="event-img-wrap">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuWi1KldneYKC8uPYD4zGVWTCgNzOLElkjrC0AbVgkijRHtaTY7fVyaY0fpwI5vQLPkrYg1vWicm5FLKz-IdTGXqnEs7s92Ct3WbBYtLjya6Xc8rTJe70KmFlhx-ad4RJg6fDawEEGi6FHJaJwZRKkbMUFW4wTalECoaFkktfVK3awq_jF-3Hjst-ojj3GqR4F3INHGOgdfAMRyAr00nMC8TQVWs7_XjWw2ywLrlvkqxqtINyowirCEpQexMvVdXnVrCDlaxYXwa-K"
+                            alt="Skyline Terrace" />
+                        <span class="event-badge event-badge--muted">Sáb, 14 Oct</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-row">
+                            <div>
+                                <h4 class="event-name">Skyline Terrace</h4>
+                                <p class="event-venue"><span class="material-symbols-outlined">location_on</span> Monsanto Secret Garden, Lisboa</p>
+                            </div>
+                            <span class="event-price">€15</span>
+                        </div>
+                        <div class="event-footer">
+                            <div class="avatar-stack">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzekQpKSwpOZEipGJu_ZcXdZ6-3z1lsyvdeKuBF3ZAIS1_n4qTBxPeklu0RLaGfwBtbo4_Y5KOyVR4vjuHXNzYgP21NAejxZveLsBi5q9LzLQuKygfQ1oaI8VJ_Em1qa4a8iDi2BSK3gwbjN6MQfyUQ7-6kFyCdGFFIPBd9E8ntoAKYaxn3JXAffmreXQBFvJuDtkr8eAvg0YZ0dldsQnEdGXN1-rTAhuVTIQXxlAaY2T6yVx1Lgeg7hRSk-gOm-Hf6tWKMfHJqj6B"
+                                    alt="Avatar" />
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCy3Lso4vyuqhU1DNZ0d0Xl69cNCqBWZWj9C8NigCw9jelQa6GgQbOKubz6sKKw7-Cm8lCKtvSwIyo7Z6XOSu87nZb5x5uwhfQ_MpRroxhGY8cUkFO4jfDNLw2n1KP7Ka2MlKsmDkULFrUnXQS_d0n-Gt2jOt0uIrbTXAwxJxbSH6lF2uLd-vgFWV77PiF8o9s80N8Fszup6_JuSLET81GyQFayQTcTBf_91gquqkNlqIyjWUpKxtnEeQHUAcg9zhbTClGU6kVAA0AT"
+                                    alt="Avatar" />
+                                <div class="avatar-more">+156</div>
+                            </div>
+                            <button class="link-btn">Comprar entradas</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── ESSENTIAL SERVICES ───────────────────────────────── -->
+        <section class="section services-section" id="servicios">
+            <div class="text-center">
+                <span class="eyebrow eyebrow--primary">TRANSICIÓN SIN COMPLICACIONES</span>
+                <h2 class="section-title">Servicios esenciales</h2>
+                <p class="section-sub section-sub--centered">Nosotros nos encargamos de lo aburrido para que tú te centres en los recuerdos. Socios verificados para todo lo que necesites al llegar.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span class="material-symbols-outlined">home</span>
+                    </div>
+                    <h3 class="service-name">Alojamiento verificado</h3>
+                    <p class="service-desc">Evita las estafas. Ofrecemos una lista curada de apartamentos y casas compartidas con contratos digitales y verificación de identidad.</p>
+                    <a href="#" class="service-link">Explorar anuncios <span class="material-symbols-outlined">chevron_right</span></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span class="material-symbols-outlined">shield</span>
+                    </div>
+                    <h3 class="service-name">Seguro de intercambio</h3>
+                    <p class="service-desc">Seguro de salud y viaje integral diseñado para estudiantes internacionales. Totalmente compatible con los requisitos universitarios.</p>
+                    <a href="#" class="service-link">Solicitar presupuesto <span class="material-symbols-outlined">chevron_right</span></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <span class="material-symbols-outlined">language</span>
+                    </div>
+                    <h3 class="service-name">SIM local y banca</h3>
+                    <p class="service-desc">Consigue tu número europeo y cuenta bancaria antes de aterrizar. Sin papeleos, todo digital y sencillo.</p>
+                    <a href="#" class="service-link">Pedir ahora <span class="material-symbols-outlined">chevron_right</span></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── COMMUNITY CTA ─────────────────────────────────────── -->
+        <section class="section cta-section" id="comunidad">
+            <div class="cta-card">
+                <div class="cta-text">
+                    <h2 class="cta-title">Únete a Erasmus Parties.</h2>
+                    <p class="cta-sub">Conéctate con miles de estudiantes que emprenden el mismo viaje. Consejos compartidos, compañeros de piso y recuerdos inolvidables.</p>
+                    <div class="cta-actions">
+                        <button class="btn-primary-pill">Descargar la App</button>
+                        <button class="btn-ghost-pill">Unirse a la Comunidad</button>
+                    </div>
+                </div>
+                <div class="cta-avatars">
+                    <div class="cta-col cta-col--up">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuClqongpyvkFeOpKBPMKlUEZwj37iBaCpR1ZuwY2jettodYVWdYIqiUzbKLHazO4JYrdYGrKg4S5eK_Y7T3DwXbLJC4HzxSkxqPKvYYmImLuc7ZgUAFr1mDjD25tVixQvhNkDpsVbs6lMjDVnLkQ3qpdcK556hYJClbwVPsnTas5jNBeUaF8jxJLf5fuMtw89g3etYEeSbcMPUJxtmDfduMW5-pCS8o8sG58GdZ9PgUgwQjXFgMYowyXP2ggfTGZhJp1S2CCX9ip2MW"
+                            alt="Miembro" class="cta-avatar" />
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcqJmuaNku40syqWVmtz-JQez33nR1aWGV1zcHcTkXGbPULarhgm-ulrGKF7FSh2bVATDGp3biNfOsHJBsLZM29-MBMlWNEIDOGuxhyl8aBW8Kx2eFAW88USJvAmiY0EtAKHYfgk-O_IsBTWDAnQbuU603Ox_HpWQDmVPyvS_rGy4GOBb4m1ra7lJpdEE6fZN1Y9BxHTPJNZ4YyrDSRQW-eUcb137VttXhiL5Ug70y7XMfkJidG5UiF_t2lf7wpscLVQ8Zy0y4C-Oz"
+                            alt="Miembro" class="cta-avatar" />
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcv961lN3uW_umsAQlQiR8NTplO3eUPlCGWwoUHsJQEUdL9tbY68WiUFfyQPPUOmCiu1sl3pGoK79SaOyH_ILzeKz2WcIjKe-8vUY2anefabFHA_OTS7g2SQvUrFL5Ql5lJR-qbCJ_kCeAVVhGZCGvyKFOxsnGuHjBpLYSHsYQYjSUqG2o9VNuHPcgliguoMqiKXKy87F1tvTzKAjagGIIh4dAomd47Nc4BDNQ4mQNivUHS6_tGaohOco05vDcIt3iwlYzHylGBR3-"
+                            alt="Miembro" class="cta-avatar" />
+                    </div>
+                    <div class="cta-col cta-col--down">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ2XHyHa-t1CtViEW6ru0xnRv12SvPYxTUiC7M-EWsPF1Z75BjAB5cEyeGYyoKv6SXQ6WjwGEyR4nPzyVB054L-R7RUQNVi6ws2WoNL7PG7beq7dganceqCd1VXyiouDrbbc7AviubDr7FmPwMmzbIjNx1b7nKwdLp-UnJiI1fEkZyZ8aCQ5VmLQsRCnTCwmhD5pAl1BQKhP5jn6Rs4GhbUYiP_DCKYEnWkCUt_Zd65rnLpEUxigihoSPhnnJADYz401QsKYWHWDQh"
+                            alt="Miembro" class="cta-avatar" />
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAVNinKffZUHptEKsSn_s56Y59tEjyLq33pqdUIRgXbvCOL1gWj1Cu84n0krwFB67ez3TOGPn5UVCK3ybOqPhw5b8X93vDY27RIUnKHHtIYJu0fCBlrWfA87lyGtiRv2hoQA23SCgBM5cNh-xoNnXWJSRjUMImWulKHBkkFSK_3uMVArIigbydiVuTxKRjQ8K1OeLINf5RNzQRm8lT7gXe1YNFuJ83Zpod1J2nbL9VNCO3hhbi0RehR4B-4gAKKAKRIAsELonbjp-y"
+                            alt="Miembro" class="cta-avatar" />
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5rnR7zSgXUcEWpb3mEYQItCiW3hm62LELz-e93QukDf5kIxOybvqY4UMwP5Q7xiJJQ8BT64UPr0a-p_wl9hLnaGAYhFEx_FK7SfyWakyLDvM5umh4D5pSclmNVzJSUCBACUNBBPkoGS7RSET0y9iitfbpKKHAysXZK7LULuQG4LF_bhzPVtcvwxWNISMUil5b0kA1-GVsNesrP4ZyenaO8VrL0zFnMxm3ea6xfKDATSvRxrpjuHEnDe7Ihf7C-5UOHxmu8O9ko5o_"
+                            alt="Miembro" class="cta-avatar" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── FOOTER ─────────────────────────────────────────────── -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="footer-logo">Erasmus Parties</span>
+                <p class="footer-copy">© 2024 Erasmus Parties. Experiencias Premium para Estudiantes de Intercambio.</p>
+            </div>
+            <nav class="footer-links">
+                <a href="#">Sobre nosotros</a>
+                <a href="#">Socios locales</a>
+                <a href="#">Política de seguros</a>
+                <a href="#">Privacidad</a>
+                <a href="#">Términos</a>
+            </nav>
+            <div class="footer-social">
+                <a href="#" class="social-btn" aria-label="Web"><span class="material-symbols-outlined">public</span></a>
+                <a href="#" class="social-btn" aria-label="Chat"><span class="material-symbols-outlined">chat</span></a>
+            </div>
+        </div>
     </footer>
+
+    <!-- ── BOTTOM NAV (mobile) ───────────────────────────────── -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="index.html" class="bottom-nav-item bottom-nav-item--active" data-label="Explorar">
+            <span class="material-symbols-outlined">explore</span>
+            <span>Explorar</span>
+        </a>
+        <a href="#noches" class="bottom-nav-item" data-label="Eventos">
+            <span class="material-symbols-outlined">nightlife</span>
+            <span>Eventos</span>
+        </a>
+        <a href="#servicios" class="bottom-nav-item" data-label="Mercado">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            <span>Mercado</span>
+        </a>
+        <a href="#" class="bottom-nav-item" data-label="Perfil">
+            <span class="material-symbols-outlined">account_circle</span>
+            <span>Perfil</span>
+        </a>
+    </nav>
 
     <script src="js/data.js"></script>
     <script src="js/index.js"></script>
-    <script>
-    (function () {
-        var btn = document.getElementById('hamburgerBtn');
-        var nav = document.getElementById('mobileNav');
-        var closeBtn = document.getElementById('mobileNavClose');
-        if (!btn || !nav) return;
-
-        function openNav() {
-            nav.classList.add('is-open');
-            nav.setAttribute('aria-hidden', 'false');
-            btn.classList.add('is-open');
-            btn.setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeNav() {
-            nav.classList.remove('is-open');
-            nav.setAttribute('aria-hidden', 'true');
-            btn.classList.remove('is-open');
-            btn.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
-        }
-
-        btn.addEventListener('click', openNav);
-        closeBtn.addEventListener('click', closeNav);
-        nav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeNav); });
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
-    })();
-    </script>
-
 </body>
 
 </html>

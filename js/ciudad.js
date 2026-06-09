@@ -1,3 +1,7 @@
+// ─────────────────────────────────────────────────────────────
+//  CIUDAD.JS — Erasmus Parties
+// ─────────────────────────────────────────────────────────────
+
 const params  = new URLSearchParams(window.location.search);
 const pais    = params.get('pais')   || '';
 const ciudad  = params.get('ciudad') || '';
@@ -5,18 +9,18 @@ const country = COUNTRIES[pais];
 
 if (!pais || !ciudad || !country) {
   document.getElementById('cityPage').innerHTML = `
-    <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+    <div style="text-align:center;padding:60px 20px;color:var(--on-surface-variant);">
       <span style="font-size:2.5rem;display:block;margin-bottom:16px;">😵</span>
-      <h2 style="font-size:1.3rem;color:var(--text);margin-bottom:8px;">Ciudad no encontrada</h2>
+      <h2 style="font-size:1.2rem;font-family:'Syne',sans-serif;color:var(--on-surface);margin-bottom:8px;">Ciudad no encontrada</h2>
       <p>Vuelve al inicio y selecciona tu destino.</p>
-      <a href="index.html" style="display:inline-block;margin-top:20px;color:var(--accent);">← Inicio</a>
+      <a href="index.html" style="display:inline-block;margin-top:20px;color:var(--primary);">← Inicio</a>
     </div>`;
 } else {
   const cityLinks = LINKS[ciudad] || {};
   const hasWa = !!cityLinks.wa;
   const hasTg = !!cityLinks.tg;
 
-  document.title = `${ciudad}, ${pais} — Erasmus Groups`;
+  document.title = `${ciudad}, ${pais} — Erasmus Parties`;
 
   // Navegación
   document.getElementById('breadcrumbPais').textContent   = pais;
@@ -26,12 +30,12 @@ if (!pais || !ciudad || !country) {
   document.getElementById('backLinkText').textContent     = pais;
   document.getElementById('footerBack').href              = `ciudades.html?pais=${encodeURIComponent(pais)}`;
 
-  // Cabecera de ciudad
+  // Cabecera
   document.getElementById('cityFlag').textContent     = country.flag;
   document.getElementById('cityLocation').textContent = `${pais} · Erasmus`;
   document.getElementById('cityName').textContent     = ciudad;
 
-  // Botones de acción
+  // Botones
   let btns = '';
   if (hasWa) btns += buildBtn('wa', cityLinks.wa, ciudad);
   if (hasTg) btns += buildBtn('tg', cityLinks.tg, ciudad);
@@ -56,7 +60,7 @@ function buildBtn(type, url, city) {
       ${icon}
       <div class="btn-label">
         <strong>${label}</strong>
-        <span>${city} · Erasmus</span>
+        <span>${city} · Erasmus Parties</span>
       </div>
       <svg class="btn-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <polyline points="9 18 15 12 9 6"/>
