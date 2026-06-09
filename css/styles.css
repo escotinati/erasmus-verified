@@ -188,7 +188,7 @@ header .back-btn:hover { color: var(--text); border-color: #444; }
 .hero-content {
   position: relative;
   z-index: 2;
-  padding: 0 40px;
+  padding: 20rem 40px 0;
   width: 100%;
 }
 
@@ -230,7 +230,7 @@ header .back-btn:hover { color: var(--text); border-color: #444; }
 .hero-breadcrumb .sep { opacity: 0.4; }
 
 /* Emoji de bandera en h1 — ciudades.html */
-.hero-flag { font-size: clamp(2rem, 4vw, 3rem); }
+.hero-flag { font-size: clamp(2rem, 4vw, 3rem); display: inline-block; margin-right: 12px; vertical-align: middle; }
 
 .hero h1 {
   font-size: clamp(2.4rem, 6vw, 4.2rem);
@@ -239,9 +239,6 @@ header .back-btn:hover { color: var(--text); border-color: #444; }
   line-height: 1.0;
   color: #fff;
   margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
   text-shadow: 0 2px 24px rgba(0,0,0,0.4);
 }
 .hero h1 em {
