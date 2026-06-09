@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ciudades — Erasmus Groups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="topbar">
+    <a href="index.html" class="logo">✈ Erasmus<span class="logo-dot">Groups</span></a>
+    <a href="index.html" class="back-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Todos los países
+    </a>
+  </div>
+  <div class="hero-content">
+    <div class="hero-breadcrumb">
+      <a href="index.html">Inicio</a>
+      <span class="sep">/</span>
+      <span id="heroCityCount">Cargando…</span>
+    </div>
+    <h1>
+      <span class="hero-flag" id="heroFlag"></span>
+      <span id="heroTitle"></span>
+    </h1>
+    <p class="hero-sub">Elige tu ciudad y únete a la comunidad Erasmus local</p>
+  </div>
+</section>
+
+<div class="section-header">
+  <h2 class="section-title">Selecciona tu ciudad</h2>
+  <span class="section-count" id="sectionCount"></span>
+</div>
+
+<div class="cities-grid" id="citiesGrid"></div>
+
+<footer>
+  <a href="index.html">← Volver a países</a>
+  <span>Erasmus Groups · Comunidad Europa</span>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/ciudades.js"></script>
+
+</body>
+</html>

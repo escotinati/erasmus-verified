@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erasmus Groups — Encuentra tu ciudad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="topbar">
+            <a href="index.html" class="logo">✈ Erasmus<span class="logo-dot">Groups</span></a>
+            <nav class="topbar-nav">
+                <a href="#">Sobre nosotros</a>
+                <a href="#">Comunidad</a>
+                <a href="#">Contacto</a>
+            </nav>
+        </div>
+        <div class="hero-content">
+            <div class="hero-label">🌍 Comunidad Erasmus Europa</div>
+            <h1>Encuentra tu grupo en <em>cualquier ciudad</em></h1>
+            <p class="hero-sub">Conecta con estudiantes Erasmus antes de llegar. Grupos de WhatsApp y Telegram por país y ciudad.</p>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><span class="stat-num" id="statPaises">—</span><span class="stat-label">Países</span></div>
+            <div class="stat"><span class="stat-num" id="statCiudades">—</span><span class="stat-label">Ciudades</span></div>
+            <div class="stat"><span class="stat-num">+5k</span><span class="stat-label">Estudiantes</span></div>
+        </div>
+    </section>
+
+    <div class="section-header">
+        <h2 class="section-title">Selecciona tu destino</h2>
+        <span class="section-count" id="sectionCount"></span>
+    </div>
+
+    <div class="countries-grid" id="countriesGrid"></div>
+
+    <footer>
+        <span>Erasmus Groups · Comunidad Erasmus Europa</span>
+        <span>Hecho con ❤️ para estudiantes internacionales</span>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/index.js"></script>
+
+</body>
+
+</html>
