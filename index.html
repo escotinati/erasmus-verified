@@ -21,6 +21,11 @@
                 <a href="#">Comunidad</a>
                 <a href="#">Contacto</a>
             </nav>
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
         <div class="hero-content">
             <div class="hero-label">🌍 Comunidad Erasmus Europa</div>
@@ -33,6 +38,17 @@
             <div class="stat"><span class="stat-num">+5k</span><span class="stat-label">Estudiantes</span></div>
         </div>
     </section>
+
+    <nav class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Menú principal">
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="mobile-nav-links">
+            <a href="#">Sobre nosotros</a>
+            <a href="#">Comunidad</a>
+            <a href="#">Contacto</a>
+        </div>
+    </nav>
 
     <div class="section-header">
         <h2 class="section-title">Selecciona tu destino</h2>
@@ -48,6 +64,35 @@
 
     <script src="js/data.js"></script>
     <script src="js/index.js"></script>
+    <script>
+    (function () {
+        var btn = document.getElementById('hamburgerBtn');
+        var nav = document.getElementById('mobileNav');
+        var closeBtn = document.getElementById('mobileNavClose');
+        if (!btn || !nav) return;
+
+        function openNav() {
+            nav.classList.add('is-open');
+            nav.setAttribute('aria-hidden', 'false');
+            btn.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNav() {
+            nav.classList.remove('is-open');
+            nav.setAttribute('aria-hidden', 'true');
+            btn.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        btn.addEventListener('click', openNav);
+        closeBtn.addEventListener('click', closeNav);
+        nav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeNav); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
+    })();
+    </script>
 
 </body>
 

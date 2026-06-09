@@ -665,6 +665,90 @@ footer {
 footer a { color: var(--accent); text-decoration: none; }
 
 /* ═══════════════════════════════════════════════════════════
+   HAMBURGER & MOBILE NAV
+═══════════════════════════════════════════════════════════ */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  flex-shrink: 0;
+}
+.hamburger-btn span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 2px;
+  transition: transform .28s ease, opacity .2s ease;
+  transform-origin: center;
+}
+.hamburger-btn.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger-btn.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  background: rgba(8,8,8,0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.mobile-nav.is-open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+.mobile-nav-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255,255,255,0.65);
+  transition: background .15s, color .15s;
+}
+.mobile-nav-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.mobile-nav-links a {
+  font-size: clamp(2rem, 10vw, 2.8rem);
+  font-weight: 900;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  letter-spacing: -2px;
+  padding: 10px 28px;
+  line-height: 1.1;
+  transition: color .15s;
+}
+.mobile-nav-links a:hover,
+.mobile-nav-links a:focus { color: var(--accent); outline: none; }
+
+/* ═══════════════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
@@ -679,17 +763,38 @@ footer a { color: var(--accent); text-decoration: none; }
   footer { padding: 20px; }
 }
 
+@media (max-width: 768px) {
+  .topbar-nav { display: none; }
+  .hamburger-btn { display: flex; }
+  .hero { min-height: 100vh; min-height: 100svh; }
+  .hero-content { padding: 0 24px; }
+  .hero .topbar { padding: 20px 24px; }
+  .hero-stats { padding: 0 24px; gap: 24px; margin-top: 28px; }
+  .hero h1 { font-size: clamp(2rem, 7vw, 3.2rem); letter-spacing: -1.5px; }
+  .hero-sub { font-size: 0.98rem; max-width: 100%; }
+  footer { padding: 20px 24px; }
+  .section-header { padding: 32px 24px 20px; }
+  .countries-grid { padding: 0 24px 60px; }
+  .cities-grid { padding: 0 24px 60px; }
+}
+
 @media (max-width: 600px) {
-  .countries-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .countries-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 56px; }
   .cities-grid,
   .cities-grid.cols-3,
-  .cities-grid.cols-2 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .hero { min-height: 360px; padding-bottom: 40px; }
-  .hero h1 { font-size: 2rem; letter-spacing: -1px; }
-  .topbar-nav { display: none; }
-  .hero-stats { gap: 20px; flex-wrap: wrap; }
+  .cities-grid.cols-2 { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 16px 56px; }
+  .hero { padding-bottom: 44px; }
+  .hero-content { padding: 0 20px; }
+  .hero .topbar { padding: 18px 20px; }
+  .hero h1 { font-size: clamp(1.85rem, 9vw, 2.4rem); letter-spacing: -1.5px; gap: 8px; }
+  .hero-sub { font-size: 0.9rem; margin-top: 10px; }
+  .hero-label { font-size: 0.68rem; }
+  .hero-stats { padding: 0 20px; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .stat-num { font-size: 1.4rem; }
+  .stat-label { font-size: 0.68rem; }
   header.topbar { padding: 16px 20px; }
   .breadcrumb { display: none; }
   main { padding: 40px 16px 60px; }
   footer { padding: 16px 20px; flex-direction: column; gap: 6px; text-align: center; }
+  .section-header { padding: 28px 16px 16px; }
 }
