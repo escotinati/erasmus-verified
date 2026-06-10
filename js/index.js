@@ -137,32 +137,24 @@ function initAutocomplete() {
 
 // ── 2. BENTO GRID ROTATIVO ───────────────────────────────────
 
-// Pool de ciudades destacadas para el bento (las más conocidas con buenas fotos)
+// Pool de países destacados para el bento
 const BENTO_POOL = [
-    { country: 'España', city: 'Barcelona', desc: 'Vibras playeras y arquitectura gótica.', badge: '+120 ofertas activas', main: true },
-    { country: 'Alemania', city: 'Berlín', desc: 'Techno, cultura y vida nocturna sin igual.', badge: null },
-    { country: 'Portugal', city: 'Lisboa', desc: 'El punto de encuentro de los nómadas europeos.', badge: null, wide: true },
-    { country: 'Francia', city: 'París', desc: null, badge: null },
-    { country: 'Italia', city: 'Roma', desc: null, badge: null },
-    { country: 'Países Bajos', city: 'Ámsterdam', desc: null, badge: null },
-    { country: 'España', city: 'Madrid', desc: null, badge: null },
-    { country: 'República Checa', city: 'Praga', desc: 'Historia y fiesta en el corazón de Europa.', badge: null },
-    { country: 'Hungría', city: 'Budapest', desc: null, badge: null },
-    { country: 'Alemania', city: 'Múnich', desc: null, badge: null },
-    { country: 'Italia', city: 'Milán', desc: null, badge: null },
-    { country: 'Francia', city: 'Lyon', desc: null, badge: null },
-    { country: 'España', city: 'Sevilla', desc: null, badge: null },
-    { country: 'Turquía', city: 'Estambul', desc: 'Donde Europa se encuentra con Asia.', badge: null },
-    { country: 'Escocia', city: 'Edimburgo', desc: null, badge: null },
-    { country: 'Polonia', city: 'Cracovia', desc: null, badge: null },
-    { country: 'Grecia', city: 'Atenas', desc: null, badge: null },
-    { country: 'Austria', city: 'Viena', desc: null, badge: null },
-    { country: 'Portugal', city: 'Oporto', desc: null, badge: null },
-    { country: 'Italia', city: 'Florencia', desc: null, badge: null },
-    { country: 'Francia', city: 'Marsella', desc: null, badge: null },
-    { country: 'España', city: 'Valencia', desc: null, badge: null },
-    { country: 'Suecia', city: 'Estocolmo', desc: null, badge: null },
-    { country: 'Dinamarca', city: 'Copenhague', desc: null, badge: null },
+    { country: 'España',          desc: 'Sol, flamenco y arquitectura que te deja sin palabras.', badge: '+120 ofertas activas' },
+    { country: 'Alemania',        desc: 'Techno, cultura y vida nocturna sin igual.',              badge: null },
+    { country: 'Portugal',        desc: 'El punto de encuentro de los nómadas europeos.',          badge: null },
+    { country: 'Francia',         desc: 'Arte, gastronomía y vida estudiantil vibrante.',          badge: null },
+    { country: 'Italia',          desc: 'Historia, pasta y noches que no se olvidan.',             badge: null },
+    { country: 'Países Bajos',    desc: 'Canales, bicicletas y una escena cultural única.',        badge: null },
+    { country: 'República Checa', desc: 'Historia y fiesta en el corazón de Europa.',              badge: null },
+    { country: 'Hungría',         desc: 'Palacios, termas y una noche de Budapest inigualable.',   badge: null },
+    { country: 'Austria',         desc: 'Música clásica, montañas y cafés con historia.',          badge: null },
+    { country: 'Polonia',         desc: 'Ciudad medieval, buen ambiente y precios imbatibles.',    badge: null },
+    { country: 'Grecia',          desc: 'Mediterráneo, historia milenaria y fiestas bajo el sol.',  badge: null },
+    { country: 'Turquía',         desc: 'Donde Europa se encuentra con Asia.',                     badge: null },
+    { country: 'Suecia',          desc: 'Diseño nórdico, innovación y naturaleza salvaje.',        badge: null },
+    { country: 'Dinamarca',       desc: 'La ciudad más feliz de Europa te espera.',                badge: null },
+    { country: 'Bélgica',         desc: 'Cerveza, cómics y la capital de Europa.',                 badge: null },
+    { country: 'Irlanda',         desc: 'Pubs, acantilados y el inglés más auténtico.',            badge: null },
 ];
 
 // Plantillas de bento: cada una define qué posición es "main" y cuál "wide"
@@ -205,11 +197,9 @@ function pickBentoSet() {
     return layout(shuffled);
 }
 
-function getCityImg(countryName, cityName) {
+function getCountryImg(countryName) {
     const country = COUNTRIES[countryName];
-    if (!country) return '';
-    const city = country.cities.find(c => c.name === cityName);
-    return (city && city.img) || country.cardImg || '';
+    return (country && country.cardImg) || '';
 }
 
 function renderBento(grid, cards, animate = false) {
@@ -217,18 +207,20 @@ function renderBento(grid, cards, animate = false) {
 
     setTimeout(() => {
                 grid.innerHTML = cards.map(item => {
-                            const img = getCityImg(item.country, item.city);
+                            const img = getCountryImg(item.country);
+                            const countryData = COUNTRIES[item.country] || {};
+                            const flag = countryData.flag || '';
                             const mainCls = item.main ? 'bento-card--main' : '';
                             const wideCls = item.wide ? 'bento-card--wide' : '';
                             const href = `ciudades.html?pais=${encodeURIComponent(item.country)}`;
 
                             return `
         <a class="bento-card ${mainCls} ${wideCls}" href="${href}">
-          <img src="${img}" alt="${item.city}" loading="lazy"/>
+          <img src="${img}" alt="${item.country}" loading="lazy"/>
           <div class="bento-card-overlay"></div>
           ${item.badge ? `<span class="bento-badge">${item.badge}</span>` : ''}
           <div class="bento-card-body">
-            <h3>${item.city}</h3>
+            <h3>${flag} ${item.country}</h3>
             ${item.desc ? `<p>${item.desc}</p>` : ''}
           </div>
         </a>`;
