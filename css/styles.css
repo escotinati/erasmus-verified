@@ -2058,13 +2058,27 @@ footer.legacy-footer a {
         font-size: 16px;
     }
     .search-bar {
-        border-radius: 20px;
-        flex-wrap: wrap;
+        border-radius: var(--radius-full);
+        flex-wrap: nowrap;
+        padding: 6px;
+    }
+    .search-bar-input {
+        padding-left: 14px;
+    }
+    .search-bar-input input {
+        font-size: 15px;
     }
     .search-bar-btn {
-        width: 100%;
+        width: auto;
+        flex-shrink: 0;
+        padding: 13px;
+        gap: 0;
+        margin-top: 0;
         justify-content: center;
-        margin-top: 4px;
+        aspect-ratio: 1;
+    }
+    .search-bar-btn .btn-text {
+        display: none;
     }
     .section {
         padding: 64px var(--margin-mobile);

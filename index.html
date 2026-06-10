@@ -47,9 +47,9 @@
                         <input type="text" placeholder="¿A dónde vas en tu próxima aventura?" id="citySearch" />
                     </div>
                     <button class="search-bar-btn">
-          Explorar
-          <span class="material-symbols-outlined">arrow_forward</span>
-        </button>
+                        <span class="btn-text">Explorar</span>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
                 </div>
 
                 <!-- Popular cities -->
@@ -261,6 +261,19 @@
 
     <script src="js/data.js"></script>
     <script src="js/index.js"></script>
+    <script>
+    (function () {
+        var input = document.getElementById('citySearch');
+        if (!input) return;
+        var LONG  = '¿A dónde vas en tu próxima aventura?';
+        var SHORT = '¿A dónde vas?';
+        function update() {
+            input.placeholder = window.innerWidth <= 600 ? SHORT : LONG;
+        }
+        update();
+        window.addEventListener('resize', update);
+    })();
+    </script>
 </body>
 
 </html>
