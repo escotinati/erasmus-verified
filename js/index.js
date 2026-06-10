@@ -1,52 +1,271 @@
 // ─────────────────────────────────────────────────────────────
 //  INDEX.JS — Erasmus Parties · Home
+//  - Autocomplete en search bar (países + ciudades)
+//  - Bento grid con rotación aleatoria cada 30s
+//  - Link "Ver todas las ciudades" → ciudades-todas.html
 // ─────────────────────────────────────────────────────────────
 
-// ── Bento grid: 4 ciudades destacadas desde COUNTRIES ────────
-const BENTO_CITIES = [
-  { country: 'España',          city: 'Barcelona', desc: 'Vibras playeras y arquitectura gótica.',             badge: '+120 ofertas activas', main: true },
-  { country: 'Reino Unido',     city: 'Londres',   desc: null,                                                badge: null },
-  { country: 'Alemania',        city: 'Berlín',    desc: null,                                                badge: null },
-  { country: 'Portugal',        city: 'Lisboa',    desc: 'El punto de encuentro de los nómadas digitales europeos.', badge: null, wide: true },
+// ── 1. AUTOCOMPLETE ──────────────────────────────────────────
+
+function buildSearchIndex() {
+    const items = [];
+    for (const [paisName, country] of Object.entries(COUNTRIES)) {
+        // País
+        items.push({
+            type: 'country',
+            label: `${country.flag} ${paisName}`,
+            name: paisName,
+            sub: `${country.cities.length} ciudades`,
+            url: `ciudades.html?pais=${encodeURIComponent(paisName)}`,
+        });
+        // Ciudades
+        for (const city of country.cities) {
+            items.push({
+                type: 'city',
+                label: city.name,
+                name: city.name,
+                sub: paisName,
+                flag: country.flag,
+                url: `ciudad.html?pais=${encodeURIComponent(paisName)}&ciudad=${encodeURIComponent(city.name)}`,
+            });
+        }
+    }
+    return items;
+}
+
+function normalize(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function initAutocomplete() {
+    const input = document.getElementById('citySearch');
+    const searchBar = input && input.closest('.search-bar');
+    if (!input || !searchBar) return;
+
+    const index = buildSearchIndex();
+
+    // Crear dropdown
+    const dropdown = document.createElement('div');
+    dropdown.className = 'search-dropdown';
+    dropdown.setAttribute('role', 'listbox');
+    searchBar.style.position = 'relative';
+    searchBar.appendChild(dropdown);
+
+    let activeIdx = -1;
+
+    function renderDropdown(results) {
+        dropdown.innerHTML = '';
+        activeIdx = -1;
+        if (!results.length) { dropdown.classList.remove('is-open'); return; }
+
+        results.slice(0, 8).forEach((item, i) => {
+            const el = document.createElement('a');
+            el.className = 'search-dropdown-item';
+            el.href = item.url;
+            el.setAttribute('role', 'option');
+            el.innerHTML = `
+        <span class="sdi-icon">${item.type === 'country' ? item.label.split(' ')[0] : item.flag}</span>
+        <span class="sdi-text">
+          <span class="sdi-name">${item.type === 'country' ? item.name : item.name}</span>
+          <span class="sdi-sub">${item.sub}</span>
+        </span>
+        <span class="sdi-type">${item.type === 'country' ? 'País' : 'Ciudad'}</span>`;
+            dropdown.appendChild(el);
+        });
+        dropdown.classList.add('is-open');
+    }
+
+    function setActive(idx) {
+        const items = dropdown.querySelectorAll('.search-dropdown-item');
+        items.forEach(el => el.classList.remove('is-active'));
+        activeIdx = Math.max(-1, Math.min(idx, items.length - 1));
+        if (activeIdx >= 0) items[activeIdx].classList.add('is-active');
+    }
+
+    input.addEventListener('input', () => {
+        const q = input.value.trim();
+        if (q.length < 1) { dropdown.classList.remove('is-open'); return; }
+        const nq = normalize(q);
+        const results = index.filter(item => normalize(item.name).includes(nq));
+        // Prioriza: starts with > includes, países > ciudades
+        results.sort((a, b) => {
+            const an = normalize(a.name),
+                bn = normalize(b.name);
+            const aStarts = an.startsWith(nq),
+                bStarts = bn.startsWith(nq);
+            if (aStarts !== bStarts) return aStarts ? -1 : 1;
+            if (a.type !== b.type) return a.type === 'country' ? -1 : 1;
+            return an.localeCompare(bn);
+        });
+        renderDropdown(results);
+    });
+
+    input.addEventListener('keydown', e => {
+        const items = dropdown.querySelectorAll('.search-dropdown-item');
+        if (e.key === 'ArrowDown') { e.preventDefault();
+            setActive(activeIdx + 1); }
+        if (e.key === 'ArrowUp') { e.preventDefault();
+            setActive(activeIdx - 1); }
+        if (e.key === 'Enter') {
+            if (activeIdx >= 0 && items[activeIdx]) {
+                e.preventDefault();
+                window.location.href = items[activeIdx].href;
+            } else {
+                doSearch();
+            }
+        }
+        if (e.key === 'Escape') { dropdown.classList.remove('is-open'); }
+    });
+
+    document.addEventListener('click', e => {
+        if (!searchBar.contains(e.target)) dropdown.classList.remove('is-open');
+    });
+
+    // Botón explorar
+    const btn = document.querySelector('.search-bar-btn');
+    if (btn) btn.addEventListener('click', doSearch);
+
+    function doSearch() {
+        const q = input.value.trim();
+        if (!q) return;
+        const nq = normalize(q);
+        const match = index.find(item => normalize(item.name).startsWith(nq));
+        if (match) window.location.href = match.url;
+        else alert(`No encontramos "${q}". Prueba con otra ciudad o país.`);
+    }
+}
+
+// ── 2. BENTO GRID ROTATIVO ───────────────────────────────────
+
+// Pool de ciudades destacadas para el bento (las más conocidas con buenas fotos)
+const BENTO_POOL = [
+    { country: 'España', city: 'Barcelona', desc: 'Vibras playeras y arquitectura gótica.', badge: '+120 ofertas activas', main: true },
+    { country: 'Alemania', city: 'Berlín', desc: 'Techno, cultura y vida nocturna sin igual.', badge: null },
+    { country: 'Portugal', city: 'Lisboa', desc: 'El punto de encuentro de los nómadas europeos.', badge: null, wide: true },
+    { country: 'Francia', city: 'París', desc: null, badge: null },
+    { country: 'Italia', city: 'Roma', desc: null, badge: null },
+    { country: 'Países Bajos', city: 'Ámsterdam', desc: null, badge: null },
+    { country: 'España', city: 'Madrid', desc: null, badge: null },
+    { country: 'República Checa', city: 'Praga', desc: 'Historia y fiesta en el corazón de Europa.', badge: null },
+    { country: 'Hungría', city: 'Budapest', desc: null, badge: null },
+    { country: 'Alemania', city: 'Múnich', desc: null, badge: null },
+    { country: 'Italia', city: 'Milán', desc: null, badge: null },
+    { country: 'Francia', city: 'Lyon', desc: null, badge: null },
+    { country: 'España', city: 'Sevilla', desc: null, badge: null },
+    { country: 'Turquía', city: 'Estambul', desc: 'Donde Europa se encuentra con Asia.', badge: null },
+    { country: 'Escocia', city: 'Edimburgo', desc: null, badge: null },
+    { country: 'Polonia', city: 'Cracovia', desc: null, badge: null },
+    { country: 'Grecia', city: 'Atenas', desc: null, badge: null },
+    { country: 'Austria', city: 'Viena', desc: null, badge: null },
+    { country: 'Portugal', city: 'Oporto', desc: null, badge: null },
+    { country: 'Italia', city: 'Florencia', desc: null, badge: null },
+    { country: 'Francia', city: 'Marsella', desc: null, badge: null },
+    { country: 'España', city: 'Valencia', desc: null, badge: null },
+    { country: 'Suecia', city: 'Estocolmo', desc: null, badge: null },
+    { country: 'Dinamarca', city: 'Copenhague', desc: null, badge: null },
 ];
 
-// Imágenes curadas para el bento (Unsplash)
-const BENTO_IMGS = {
-  'Barcelona': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCKRfjvJ75YR-NbRrdC4Nf2PvS0qghPp9yM_IPw8Ka3ZjL7Na7hBMCQFWdIAHT49TI6nGkX8P7bAVz9ga-j8AHOZC2Vl1e94rY0yKmb3-4IBrfCASFHnY1sdvrwrKGsFwDAfpC467xRcp0MTO0BxSWttq3FhrRmmAauTPDf1_PEcHmbmObweisOWqIB2FnrxmsY6DJ4k521v0DAIsV6P9lP5iIdeCzwp8CMuvBh_b8136DIVFReEx18rBPXZRhFFHeUfhU1btt7BYnV',
-  'Londres':   'https://lh3.googleusercontent.com/aida-public/AB6AXuDk5817A6SLaCzzDCAIY7waiYaF2LRQjpVDr5sqPWHgkIc9BXnNAeVasqsJUVGBAY1HQIsKSCuWbL8f_PUe53Hl9RHB2lp_x1ml07R_74ZLRVO1gd5et9CgSYJypw_6r2Ljh4FEsZy7SB1LSALZUDNF3ScomdFzy6gZy48PdFhCOWs9Ta7e7JunxeJ_qtyEd_UmvvTEnlY_QhLTZDmeUD_Yveu0HaLfl6wnDy1lYWYcZwEcf8s7kJY6nxZlDB6sTOkfAvn8HS7SrYBy',
-  'Berlín':    'https://lh3.googleusercontent.com/aida-public/AB6AXuBPBkBAUloYW2skx5IrqV7YGTiQzlKdJUPnX3qlhbKVwXsKFTHqz3IH_iIMUKJA9YTHdLaUADqPr3FJIDQVeuoTa9rQ3Y2_KNp1Sv9CTQfsn5-9NHutK5R3K99gNNeExaZGb-LxDjau8aCBP0nRr_vsNHF1P152P-diEey-3bkQ4fWWBEoCn1GnoTzReuaaMSUrVt0NIkxyTzp8Qn6S7-u_1USWqgoBMcsQjVMBpD2kn4GtvpFVlcqB2XUXNl9wG7DLC2kXggwZtZRK',
-  'Lisboa':    'https://lh3.googleusercontent.com/aida-public/AB6AXuAOThmS9_ll_pfwPGEad0QyJOvLQp1HB8mAB0SWHwN3O6jUz5I74f7dnvaW-om0pAj1TGzn8oKp03eBehs0EPlZIiyPR-60rdlS55ewVtH5-z7mPmFBM9gTCD6_Szbcl-jzUdk-V4HW4_DVZqZEzZEZ6QRUOmhI5TPKSi26q4Iy3_YU_Sc7MBj2x4tGzBc4D7glewEQM3YeiGod-1lDAz_5PIT3tmFe1dcl1h9IVKe6PmDwn8aDKDXQHzIgEzSr9FY_MGoc0Lz5fOgO',
-};
+// Plantillas de bento: cada una define qué posición es "main" y cuál "wide"
+const BENTO_LAYOUTS = [
+    // Layout A: main=0, wide=3
+    (pool) => [
+        {...pool[0], main: true, wide: false },
+        {...pool[1], main: false, wide: false },
+        {...pool[2], main: false, wide: false },
+        {...pool[3], main: false, wide: true },
+    ],
+    // Layout B: main=0, wide=2
+    (pool) => [
+        {...pool[0], main: true, wide: false },
+        {...pool[1], main: false, wide: false },
+        {...pool[2], main: false, wide: true },
+        {...pool[3], main: false, wide: false },
+    ],
+    // Layout C: main=1, wide=0
+    (pool) => [
+        {...pool[0], main: false, wide: true },
+        {...pool[1], main: true, wide: false },
+        {...pool[2], main: false, wide: false },
+        {...pool[3], main: false, wide: false },
+    ],
+];
 
-function renderBento() {
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function pickBentoSet() {
+    const shuffled = shuffle(BENTO_POOL);
+    const layout = BENTO_LAYOUTS[Math.floor(Math.random() * BENTO_LAYOUTS.length)];
+    return layout(shuffled);
+}
+
+function getCityImg(countryName, cityName) {
+    const country = COUNTRIES[countryName];
+    if (!country) return '';
+    const city = country.cities.find(c => c.name === cityName);
+    return (city && city.img) || country.cardImg || '';
+}
+
+function renderBento(grid, cards, animate = false) {
+    if (animate) grid.classList.add('bento-exit');
+
+    setTimeout(() => {
+                grid.innerHTML = cards.map(item => {
+                            const img = getCityImg(item.country, item.city);
+                            const mainCls = item.main ? 'bento-card--main' : '';
+                            const wideCls = item.wide ? 'bento-card--wide' : '';
+                            const href = `ciudades.html?pais=${encodeURIComponent(item.country)}`;
+
+                            return `
+        <a class="bento-card ${mainCls} ${wideCls}" href="${href}">
+          <img src="${img}" alt="${item.city}" loading="lazy"/>
+          <div class="bento-card-overlay"></div>
+          ${item.badge ? `<span class="bento-badge">${item.badge}</span>` : ''}
+          <div class="bento-card-body">
+            <h3>${item.city}</h3>
+            ${item.desc ? `<p>${item.desc}</p>` : ''}
+          </div>
+        </a>`;
+    }).join('');
+
+    grid.classList.remove('bento-exit');
+    grid.classList.add('bento-enter');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => grid.classList.remove('bento-enter'));
+    });
+  }, animate ? 400 : 0);
+}
+
+function initBento() {
   const grid = document.getElementById('bentoGrid');
   if (!grid) return;
 
-  grid.innerHTML = BENTO_CITIES.map(item => {
-    const img      = BENTO_IMGS[item.city] || '';
-    const mainCls  = item.main ? 'bento-card--main' : '';
-    const wideCls  = item.wide ? 'bento-card--wide' : '';
-    const paisParam = encodeURIComponent(item.country);
+  // Render inicial
+  renderBento(grid, pickBentoSet(), false);
 
-    // Busca la ciudad en COUNTRIES para obtener la URL real
-    const countryData = COUNTRIES[item.country];
-    const cityData    = countryData?.cities.find(c => c.name === item.city);
-    const href        = `ciudades.html?pais=${paisParam}`;
-
-    return `
-      <a class="bento-card ${mainCls} ${wideCls}" href="${href}">
-        <img src="${cityData?.img || img}" alt="${item.city}" loading="lazy"/>
-        <div class="bento-card-overlay"></div>
-        ${item.badge ? `<span class="bento-badge">${item.badge}</span>` : ''}
-        <div class="bento-card-body">
-          <h3>${item.city}</h3>
-          ${item.desc ? `<p>${item.desc}</p>` : ''}
-        </div>
-      </a>`;
-  }).join('');
+  // Rotación cada 30 segundos
+  setInterval(() => {
+    renderBento(grid, pickBentoSet(), true);
+  }, 30000);
 }
 
-// ── Scroll nav shadow ─────────────────────────────────────────
+// ── 3. STATS ─────────────────────────────────────────────────
+function initStats() {
+  const entries     = Object.entries(COUNTRIES);
+  const totalCities = entries.reduce((sum, [, c]) => sum + c.cities.length, 0);
+  const elPaises    = document.getElementById('statPaises');
+  const elCiudades  = document.getElementById('statCiudades');
+  if (elPaises)   elPaises.textContent   = entries.length;
+  if (elCiudades) elCiudades.textContent = `+${totalCities}`;
+}
+
+// ── 4. NAV SCROLL SHADOW ─────────────────────────────────────
 function initNavScroll() {
   const nav = document.getElementById('topNav');
   if (!nav) return;
@@ -55,51 +274,21 @@ function initNavScroll() {
   }, { passive: true });
 }
 
-// ── Bottom nav active state ───────────────────────────────────
+// ── 5. BOTTOM NAV ────────────────────────────────────────────
 function initBottomNav() {
-  const items = document.querySelectorAll('.bottom-nav-item');
-  items.forEach(item => {
+  document.querySelectorAll('.bottom-nav-item').forEach(item => {
     item.addEventListener('click', () => {
-      items.forEach(i => i.classList.remove('bottom-nav-item--active'));
+      document.querySelectorAll('.bottom-nav-item').forEach(i => i.classList.remove('bottom-nav-item--active'));
       item.classList.add('bottom-nav-item--active');
     });
   });
 }
 
-// ── Search bar: filter to ciudades ───────────────────────────
-function initSearch() {
-  const input = document.getElementById('citySearch');
-  const btn   = document.querySelector('.search-bar-btn');
-  if (!input || !btn) return;
-
-  function doSearch() {
-    const q = input.value.trim().toLowerCase();
-    if (!q) return;
-    // Busca el país que contiene la ciudad
-    for (const [paisName, country] of Object.entries(COUNTRIES)) {
-      const found = country.cities.find(c => c.name.toLowerCase().includes(q));
-      if (found) {
-        window.location.href = `ciudad.html?pais=${encodeURIComponent(paisName)}&ciudad=${encodeURIComponent(found.name)}`;
-        return;
-      }
-      // También busca por país
-      if (paisName.toLowerCase().includes(q)) {
-        window.location.href = `ciudades.html?pais=${encodeURIComponent(paisName)}`;
-        return;
-      }
-    }
-    // Si no encuentra nada, va a ciudades
-    alert(`No encontramos "${input.value}". Prueba con otra ciudad.`);
-  }
-
-  btn.addEventListener('click', doSearch);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
-}
-
-// ── Init ──────────────────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  renderBento();
+  initStats();
+  initBento();
   initNavScroll();
   initBottomNav();
-  initSearch();
+  initAutocomplete();
 });

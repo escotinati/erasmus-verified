@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todas las ciudades — Erasmus Parties</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+        /* ── Estilos específicos de esta página ─────────────────── */
+        
+        .all-cities-hero {
+            background: var(--background);
+            padding: 120px var(--margin-desktop) 60px;
+            border-bottom: 1px solid var(--outline-variant);
+        }
+        
+        .all-cities-hero .eyebrow {
+            margin-bottom: 12px;
+        }
+        
+        .all-cities-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: var(--on-surface);
+            margin-bottom: 12px;
+        }
+        
+        .all-cities-hero p {
+            font-size: 16px;
+            color: var(--on-surface-variant);
+        }
+        
+        .all-cities-hero strong {
+            color: var(--primary);
+        }
+        /* Barra de búsqueda/filtro */
+        
+        .filter-bar {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 32px var(--margin-desktop) 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-input-wrap {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .filter-input-wrap .material-symbols-outlined {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--outline);
+            font-size: 20px;
+        }
+        
+        .filter-input {
+            width: 100%;
+            background: var(--surface-container-low);
+            border: 1.5px solid var(--outline-variant);
+            border-radius: var(--radius-full);
+            padding: 12px 16px 12px 44px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--on-surface);
+            outline: none;
+            transition: border-color .15s;
+        }
+        
+        .filter-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .filter-input::placeholder {
+            color: var(--outline);
+        }
+        
+        .filter-count {
+            font-size: 13px;
+            color: var(--on-surface-variant);
+            white-space: nowrap;
+        }
+        /* Sección por letra */
+        
+        .cities-section {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 48px var(--margin-desktop) 100px;
+        }
+        
+        .letter-group {
+            margin-bottom: 48px;
+        }
+        
+        .letter-group[hidden] {
+            display: none;
+        }
+        
+        .letter-heading {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--outline-variant);
+        }
+        
+        .city-items-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .city-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--surface-container-low);
+            border: 1px solid var(--outline-variant);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            color: var(--on-surface);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background .15s, border-color .15s, transform .15s;
+        }
+        
+        .city-item:hover {
+            background: var(--primary-fixed);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+            color: var(--primary);
+        }
+        
+        .city-item-flag {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .city-item-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .city-item-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .city-item-country {
+            font-size: 11px;
+            color: var(--on-surface-variant);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .city-item:hover .city-item-country {
+            color: var(--primary);
+            opacity: .7;
+        }
+        /* No results */
+        
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--on-surface-variant);
+            display: none;
+        }
+        
+        .no-results.is-visible {
+            display: block;
+        }
+        
+        .no-results-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 16px;
+        }
+        
+        .no-results h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+        }
+        /* Responsive */
+        
+        @media (max-width: 900px) {
+            .all-cities-hero {
+                padding: 100px var(--margin-mobile) 48px;
+            }
+            .filter-bar {
+                padding: 24px var(--margin-mobile) 0;
+            }
+            .cities-section {
+                padding: 40px var(--margin-mobile) 80px;
+            }
+            .city-items-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .city-items-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAV -->
+    <nav class="topnav" id="topNav">
+        <div class="topnav-inner">
+            <div class="topnav-left">
+                <a href="index.html" class="brand">Erasmus Parties</a>
+                <div class="topnav-links">
+                    <a href="index.html" class="nav-link">Ciudades</a>
+                    <a href="index.html#noches" class="nav-link">Noches</a>
+                    <a href="index.html#servicios" class="nav-link">Servicios</a>
+                    <a href="index.html#comunidad" class="nav-link">Comunidad</a>
+                </div>
+            </div>
+            <div class="topnav-right">
+                <a href="index.html" class="back-btn" style="border-color:var(--outline-variant);color:var(--on-surface-variant);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="all-cities-hero">
+        <div style="max-width:var(--container-max);margin:0 auto;">
+            <span class="eyebrow eyebrow--primary">DESTINOS ERASMUS+</span>
+            <h1>Todas las ciudades</h1>
+            <p>
+                <strong id="totalCount">—</strong> ciudades en
+                <strong id="totalCountries">—</strong> países europeos. Encuentra tu destino y únete a la comunidad antes de llegar.
+            </p>
+        </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+        <div class="filter-input-wrap">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" class="filter-input" id="filterInput" placeholder="Filtra por ciudad o país…" autocomplete="off" />
+        </div>
+        <span class="filter-count" id="filterCount"></span>
+    </div>
+
+    <!-- CITIES LIST -->
+    <div class="cities-section" id="citiesSection">
+        <div class="no-results" id="noResults">
+            <span class="no-results-icon">🔍</span>
+            <h3>Sin resultados</h3>
+            <p>Prueba con otro nombre de ciudad o país.</p>
+        </div>
+        <!-- JS rellena los grupos de letras aquí -->
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="footer-logo">Erasmus Parties</span>
+                <p class="footer-copy">© 2024 Erasmus Parties. Experiencias Premium para Estudiantes de Intercambio.</p>
+            </div>
+            <nav class="footer-links">
+                <a href="#">Sobre nosotros</a>
+                <a href="#">Privacidad</a>
+                <a href="#">Términos</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script>
+        (function() {
+                // ── Build flat city list sorted alphabetically ──────────────
+                const allCities = [];
+                for (const [paisName, country] of Object.entries(COUNTRIES)) {
+                    for (const city of country.cities) {
+                        allCities.push({
+                            name: city.name,
+                            country: paisName,
+                            flag: country.flag,
+                            url: `ciudad.html?pais=${encodeURIComponent(paisName)}&ciudad=${encodeURIComponent(city.name)}`,
+                        });
+                    }
+                }
+                allCities.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+
+                // Stats
+                const totalCountries = Object.keys(COUNTRIES).length;
+                document.getElementById('totalCount').textContent = allCities.length;
+                document.getElementById('totalCountries').textContent = totalCountries;
+                document.getElementById('filterCount').textContent = `${allCities.length} ciudades`;
+
+                // ── Group by first letter ───────────────────────────────────
+                function groupByLetter(cities) {
+                    const groups = {};
+                    for (const city of cities) {
+                        const letter = city.name[0].toUpperCase();
+                        if (!groups[letter]) groups[letter] = [];
+                        groups[letter].push(city);
+                    }
+                    return groups;
+                }
+
+                function renderGroups(cities) {
+                    const section = document.getElementById('citiesSection');
+                    const noResult = document.getElementById('noResults');
+                    // Eliminar grupos anteriores
+                    section.querySelectorAll('.letter-group').forEach(el => el.remove());
+
+                    if (!cities.length) {
+                        noResult.classList.add('is-visible');
+                        document.getElementById('filterCount').textContent = '0 ciudades';
+                        return;
+                    }
+                    noResult.classList.remove('is-visible');
+                    document.getElementById('filterCount').textContent = `${cities.length} ciudad${cities.length !== 1 ? 'es' : ''}`;
+
+                    const groups = groupByLetter(cities);
+                    for (const [letter, group] of Object.entries(groups).sort()) {
+                        const div = document.createElement('div');
+                        div.className = 'letter-group';
+                        div.innerHTML = `
+        <div class="letter-heading">${letter}</div>
+        <div class="city-items-grid">
+          ${group.map(city => `
+            <a class="city-item" href="${city.url}">
+              <span class="city-item-flag">${city.flag}</span>
+              <div class="city-item-info">
+                <div class="city-item-name">${city.name}</div>
+                <div class="city-item-country">${city.country}</div>
+              </div>
+            </a>`).join('')}
+        </div>`;
+      section.insertBefore(div, noResult);
+    }
+  }
+ 
+  // Render inicial
+  renderGroups(allCities);
+ 
+  // ── Filter ──────────────────────────────────────────────────
+  function normalize(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+ 
+  document.getElementById('filterInput').addEventListener('input', function () {
+    const q  = this.value.trim();
+    const nq = normalize(q);
+    if (!nq) { renderGroups(allCities); return; }
+    const filtered = allCities.filter(c =>
+      normalize(c.name).includes(nq) || normalize(c.country).includes(nq)
+    );
+    renderGroups(filtered);
+  });
+ 
+  // ── Nav scroll ──────────────────────────────────────────────
+  const nav = document.getElementById('topNav');
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+  }
+})();
+    </script>
+</body>
+
+</html>
