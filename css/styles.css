@@ -1689,6 +1689,30 @@ main.city-main {
     box-shadow: 0 8px 24px rgba(42, 171, 238, .2);
 }
 
+.btn-generic {
+    background: var(--surface-container-low);
+    border: 1.5px solid var(--outline-variant);
+    box-shadow: 0 4px 16px rgba(70, 72, 212, .10);
+}
+
+.btn-generic .btn-label strong {
+    color: var(--on-surface);
+}
+
+.btn-generic .btn-label span {
+    color: var(--on-surface-variant);
+}
+
+.btn-generic .btn-chevron {
+    color: var(--on-surface-variant);
+}
+
+.btn-generic .btn-icon {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 1.8px;
+}
+
 .btn-icon {
     width: 32px;
     height: 32px;
