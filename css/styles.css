@@ -2274,3 +2274,74 @@ header.topbar {
         height: calc(100dvh - 65px);
     }
 }
+
+
+/* ─────────────────────────────────────────────────────────────
+   CITY MAP — mapa embebido en ciudad.html (cityMap.js)
+   ───────────────────────────────────────────────────────────── */
+
+.city-map-embed {
+    height: 320px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--outline-variant);
+    margin-bottom: 16px;
+    position: relative;
+    /* necesario para el overlay .city-map-activate */
+}
+
+
+/* Estados de carga / error */
+
+.city-map-loading,
+.city-map-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--on-surface-variant);
+    padding: 20px;
+}
+
+.city-map-error__icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+
+/* Overlay "Toca para interactuar" — gesto-gate para móvil */
+
+.city-map-activate {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    /* por encima de los tiles de Leaflet */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.15);
+    color: #fff;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    backdrop-filter: blur(1px);
+}
+
+
+/* Enlace "Ver mapa a pantalla completa" bajo el mapa embebido */
+
+.city-map-fullscreen-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--primary);
+    text-decoration: none;
+}

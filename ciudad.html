@@ -1,57 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ciudad — Erasmus Parties</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/styles.css"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ciudad — Erasmus Parties</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- NUEVO -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- NUEVO -->
 </head>
+
 <body>
 
-<header class="topbar">
-  <a href="index.html" class="logo">Erasmus<span class="logo-dot">Parties</span></a>
-  <nav class="breadcrumb">
-    <a href="index.html">Inicio</a>
-    <span class="sep">/</span>
-    <a id="breadcrumbPaisLink" href="#"><span id="breadcrumbPais">País</span></a>
-    <span class="sep">/</span>
-    <span class="current" id="breadcrumbCiudad">Ciudad</span>
-  </nav>
-  <a href="index.html" class="back-btn" id="backLink">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-    <span id="backLinkText">Volver</span>
-  </a>
-</header>
+    <header class="topbar">
+        <a href="index.html" class="logo">Erasmus<span class="logo-dot">Parties</span></a>
+        <nav class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span class="sep">/</span>
+            <a id="breadcrumbPaisLink" href="#"><span id="breadcrumbPais">País</span></a>
+            <span class="sep">/</span>
+            <span class="current" id="breadcrumbCiudad">Ciudad</span>
+        </nav>
+        <a href="index.html" class="back-btn" id="backLink">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <span id="backLinkText">Volver</span>
+        </a>
+    </header>
 
-<main class="city-main">
-  <div class="city-page" id="cityPage">
-    <div class="city-header">
-      <span class="city-flag" id="cityFlag">🌍</span>
-      <div class="city-location" id="cityLocation"></div>
-      <h1 class="city-name" id="cityName"></h1>
-      <p class="city-desc">Elige tu plataforma y únete a la comunidad Erasmus antes de llegar.</p>
-    </div>
-    <div class="section-divider"><span>Unirse a los grupos</span></div>
-    <div class="actions" id="actionsWrap"></div>
-    <div class="info-box">
-      <span class="info-icon">📌</span>
-      <p class="info-text">
-        <strong>Consejo:</strong> Al unirte, preséntate indicando tu universidad y fechas de Erasmus.
-        La comunidad te recibirá con los brazos abiertos.
-      </p>
-    </div>
-  </div>
-</main>
+    <main class="city-main">
+        <div class="city-page" id="cityPage">
+            <div class="city-header">
+                <span class="city-flag" id="cityFlag">🌍</span>
+                <div class="city-location" id="cityLocation"></div>
+                <h1 class="city-name" id="cityName"></h1>
+                <p class="city-desc">Elige tu plataforma y únete a la comunidad Erasmus antes de llegar.</p>
+            </div>
+            <div class="section-divider"><span>Unirse a los grupos</span></div>
+            <div class="actions" id="actionsWrap"></div>
+            <div class="info-box">
+                <span class="info-icon">📌</span>
+                <p class="info-text">
+                    <strong>Consejo:</strong> Al unirte, preséntate indicando tu universidad y fechas de Erasmus. La comunidad te recibirá con los brazos abiertos.
+                </p>
+            </div>
+        </div>
+    </main>
 
-<footer class="legacy-footer">
-  <a id="footerBack" href="index.html">← Volver</a>
-  <span>Erasmus Parties · Comunidad Europa</span>
-</footer>
+    <footer class="legacy-footer">
+        <a id="footerBack" href="index.html">← Volver</a>
+        <span>Erasmus Parties · Comunidad Europa</span>
+    </footer>
 
-<script src="js/data.js"></script>
-<script src="js/ciudad.js"></script>
+    <!-- antes de js/ciudad.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- NUEVO -->
+    <script src="js/geocoder.js"></script>
+    <!-- NUEVO -->
+    <script src="js/map-helpers.js"></script>
+    <!-- NUEVO -->
+    <script src="js/cityMap.js"></script>
+    <!-- NUEVO -->
+    <script src="js/data.js"></script>
+    <script src="js/ciudad.js"></script>
 </body>
+
 </html>
