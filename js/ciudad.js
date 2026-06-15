@@ -39,6 +39,10 @@ if (!pais || !ciudad || !country) {
     // ── Bloque del mapa: SIEMPRE visible, va primero en .actions ──
     let btns = buildMapBlock(pais, ciudad);
 
+    // "Unirse a los grupos" ahora va DEBAJO del mapa, justo encima
+    // de los botones de grupos / .coming-soon.
+    btns += `<div class="section-divider"><span>Unirse a los grupos</span></div>`;
+
     // Botones de grupos (lógica original sin cambios)
     if (hasWa) btns += buildBtn('wa', cityLinks.wa, ciudad);
     if (hasTg) btns += buildBtn('tg', cityLinks.tg, ciudad);
@@ -98,10 +102,10 @@ function buildBtn(type, url, city) {
 function buildMapBlock(pais, ciudad) {
     const fullscreenUrl = `mapa.html?pais=${encodeURIComponent(pais)}&ciudad=${encodeURIComponent(ciudad)}`;
     return `
-    <div>
+    <div class="city-map-block">
       <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${ciudad}"></div>
       <a href="${fullscreenUrl}" class="city-map-fullscreen-link">
-        ${iconMap()} Ver mapa a pantalla completa
+       Ver mapa a pantalla completa
       </a>
     </div>`;
 }
