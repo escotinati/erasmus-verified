@@ -72,7 +72,11 @@ if (!pais || !ciudad || !country) {
 
     // El mapa se monta DESPUÉS de insertar el HTML, porque mountCityMap
     // necesita que #city-map-embed exista ya en el DOM.
-    mountCityMap('city-map-embed', { pais, ciudad, interactive: false });
+    mountCityMap('city-map-embed', { pais, ciudad, interactive: false }).then((mapInstance) => {
+        if (mapInstance) {
+            mountPartnersList('city-partners-list', mapInstance, ciudad);
+        }
+    });
 }
 
 function buildBtn(type, url, city) {
@@ -103,9 +107,12 @@ function buildMapBlock(pais, ciudad) {
     const fullscreenUrl = `mapa.html?pais=${encodeURIComponent(pais)}&ciudad=${encodeURIComponent(ciudad)}`;
     return `
     <div class="city-map-block">
-      <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${ciudad}"></div>
+      <div class="city-map-columns">
+        <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${ciudad}"></div>
+        <aside id="city-partners-list" class="partners-list"></aside>
+      </div>
       <a href="${fullscreenUrl}" class="city-map-fullscreen-link">
-       Ver mapa a pantalla completa
+        Ver mapa a pantalla completa
       </a>
     </div>`;
 }
