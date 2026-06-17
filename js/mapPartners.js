@@ -52,18 +52,30 @@ function mountPartnersList(listContainerId, map, ciudad) {
             of groups) {
             const meta = CATEGORY_META[category] || { label: category, color: '#64748b' };
             const isExpanded = state.expandedCategory === category;
+            const isEmpty = partners.length === 0;
 
             const categoryBtn = document.createElement('button');
             categoryBtn.type = 'button';
-            categoryBtn.className = 'category-toggle' + (isExpanded ? ' is-expanded' : '');
+            categoryBtn.className = 'category-toggle' +
+                (isExpanded ? ' is-expanded' : '') +
+                (isEmpty ? ' is-empty' : '');
             categoryBtn.innerHTML = `
-        <span class="category-toggle__dot" style="--pin-color:${meta.color}"></span>
-        <span class="category-toggle__label">${meta.label}</span>
-      `;
+      <span class="category-toggle__dot" style="--pin-color:${meta.color}"></span>
+      <span class="category-toggle__label">${meta.label}</span>
+    `;
             categoryBtn.addEventListener('click', () => toggleCategory(category));
             container.appendChild(categoryBtn);
 
             if (!isExpanded) continue;
+
+            if (isEmpty) {
+                // Coherente con el patrón .coming-soon que ya usas en ciudad.js
+                const comingSoon = document.createElement('p');
+                comingSoon.className = 'category-coming-soon';
+                comingSoon.textContent = `Todavía no tenemos partners de ${meta.label} en esta ciudad. Vuelve pronto.`;
+                container.appendChild(comingSoon);
+                continue;
+            }
 
             const partnerList = document.createElement('div');
             partnerList.className = 'partner-list';
@@ -89,14 +101,12 @@ function mountPartnersList(listContainerId, map, ciudad) {
     function toggleCategory(category) {
         const wasExpanded = state.expandedCategory === category;
         state.expandedCategory = wasExpanded ? null : category;
-        state.selectedPartnerId = null; // cambiar de categoría cierra cualquier selección
+        state.selectedPartnerId = null;
 
-        // Sincroniza pines: muestra los de la categoría recién expandida,
-        // oculta los de la que se contrajo.
         for (const { category: cat, partners }
             of groups) {
             const shouldShow = state.expandedCategory === cat;
-            for (const partner of partners) {
+            for (const partner of partners) { // si partners está vacío, este for no hace nada — ya es seguro
                 const marker = markersByPartnerId[partner.id];
                 if (shouldShow) {
                     marker.addTo(map);
@@ -107,11 +117,6 @@ function mountPartnersList(listContainerId, map, ciudad) {
         }
 
         renderList();
-
-        // El listado puede haber cambiado de altura (se desplegó/contrajo una
-        // categoría), lo que en escritorio estira/contrae el mapa por el
-        // align-items: stretch del CSS. Leaflet no detecta cambios de tamaño
-        // de su contenedor automáticamente, hay que pedírselo.
         requestAnimationFrame(() => map.invalidateSize());
     }
 
