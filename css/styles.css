@@ -12,7 +12,6 @@
     padding: 0;
 }
 
-
 /* ── Variables ─────────────────────────────────────────────── */
 
 :root {
@@ -62,10 +61,9 @@
     --surface-2: var(--surface-container);
     --border: var(--outline-variant);
     --radius: var(--radius-lg);
-    --wa: #1DAA61;
-    --tg: #2AABEE;
+    --wa: #1daa61;
+    --tg: #2aabee;
 }
-
 
 /* ── Base ───────────────────────────────────────────────────── */
 
@@ -84,7 +82,6 @@ body {
     flex-direction: column;
 }
 
-
 /* ── Utilities ──────────────────────────────────────────────── */
 
 .text-center {
@@ -92,12 +89,15 @@ body {
 }
 
 .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
     line-height: 1;
     vertical-align: middle;
     user-select: none;
 }
-
 
 /* ── Typography ─────────────────────────────────────────────── */
 
@@ -150,7 +150,9 @@ body {
     color: var(--primary);
     text-decoration: none;
     border-bottom: 2px solid transparent;
-    transition: border-color .2s, gap .2s;
+    transition:
+        border-color 0.2s,
+        gap 0.2s;
     white-space: nowrap;
 }
 
@@ -158,7 +160,6 @@ body {
     border-color: var(--primary);
     gap: 10px;
 }
-
 
 /* ── Buttons ────────────────────────────────────────────────── */
 
@@ -173,21 +174,23 @@ body {
     font-weight: 600;
     letter-spacing: 0.02em;
     cursor: pointer;
-    transition: opacity .15s, transform .15s;
+    transition:
+        opacity 0.15s,
+        transform 0.15s;
 }
 
 .btn-primary-pill:hover {
-    opacity: .9;
+    opacity: 0.9;
 }
 
 .btn-primary-pill:active {
-    transform: scale(.96);
+    transform: scale(0.96);
 }
 
 .btn-ghost-pill {
     background: transparent;
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, .3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 12px 24px;
     border-radius: var(--radius-full);
     font-family: var(--font-body);
@@ -195,11 +198,11 @@ body {
     font-weight: 600;
     letter-spacing: 0.02em;
     cursor: pointer;
-    transition: background .15s;
+    transition: background 0.15s;
 }
 
 .btn-ghost-pill:hover {
-    background: rgba(255, 255, 255, .1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .icon-btn {
@@ -212,7 +215,7 @@ body {
     justify-content: center;
     padding: 6px;
     border-radius: var(--radius-full);
-    transition: color .15s;
+    transition: color 0.15s;
 }
 
 .icon-btn:hover {
@@ -235,7 +238,6 @@ body {
     text-decoration: underline;
 }
 
-
 /* ── TOP NAV ────────────────────────────────────────────────── */
 
 .topnav {
@@ -249,7 +251,7 @@ body {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(199, 196, 215, 0.3);
-    transition: box-shadow .2s;
+    transition: box-shadow 0.2s;
 }
 
 .topnav.scrolled {
@@ -300,7 +302,9 @@ body {
     text-decoration: none;
     padding-bottom: 4px;
     border-bottom: 2px solid transparent;
-    transition: color .15s, border-color .15s;
+    transition:
+        color 0.15s,
+        border-color 0.15s;
 }
 
 .nav-link:hover {
@@ -312,7 +316,6 @@ body {
     border-color: var(--primary);
 }
 
-
 /* ── HERO ───────────────────────────────────────────────────── */
 
 .hero {
@@ -323,13 +326,15 @@ body {
     justify-content: center;
     overflow: hidden;
     padding: 100px var(--margin-mobile) 80px;
-    background: radial-gradient(circle at top right, rgba(70, 72, 212, 0.10), transparent 50%), radial-gradient(circle at bottom left, rgba(169, 51, 73, 0.05), transparent 50%), var(--background);
+    background:
+        radial-gradient(circle at top right, rgba(70, 72, 212, 0.1), transparent 50%),
+        radial-gradient(circle at bottom left, rgba(169, 51, 73, 0.05), transparent 50%),
+        var(--background);
 }
 
 .hero-bg {
     display: none;
 }
-
 
 /* reservado para futuro uso */
 
@@ -365,25 +370,26 @@ body {
     margin: 0 auto 48px;
 }
 
-
 /* Search bar */
 
 .search-bar {
     max-width: 760px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, .7);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, .4);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: var(--radius-full);
     padding: 8px;
     display: flex;
     align-items: center;
-    box-shadow: 0 4px 24px rgba(70, 72, 212, .08);
-    transition: box-shadow .2s;
+    box-shadow: 0 4px 24px rgba(70, 72, 212, 0.08);
+    transition: box-shadow 0.2s;
 }
 
 .search-bar:focus-within {
-    box-shadow: 0 0 0 2px rgba(70, 72, 212, .2), 0 4px 24px rgba(70, 72, 212, .1);
+    box-shadow:
+        0 0 0 2px rgba(70, 72, 212, 0.2),
+        0 4px 24px rgba(70, 72, 212, 0.1);
 }
 
 .search-bar-input {
@@ -426,14 +432,13 @@ body {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background .15s;
+    transition: background 0.15s;
     white-space: nowrap;
 }
 
 .search-bar-btn:hover {
     background: var(--primary-container);
 }
-
 
 /* Popular pills */
 
@@ -449,7 +454,7 @@ body {
 .popular-label {
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: .12em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--outline-variant);
 }
@@ -462,14 +467,15 @@ body {
     font-weight: 600;
     color: var(--on-surface);
     text-decoration: none;
-    transition: border-color .15s, color .15s;
+    transition:
+        border-color 0.15s,
+        color 0.15s;
 }
 
 .popular-pill:hover {
     border-color: var(--primary);
     color: var(--primary);
 }
-
 
 /* ── SECTIONS (shared wrapper) ──────────────────────────────── */
 
@@ -487,9 +493,7 @@ body {
     margin-bottom: 64px;
 }
 
-
 /* ── BENTO GRID ─────────────────────────────────────────────── */
-
 
 /*
   Grid 4 cols × 2 rows — 4 cards sin huecos:
@@ -504,7 +508,9 @@ body {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 320px);
     gap: 20px;
-    transition: opacity .35s ease, transform .35s ease;
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
 }
 
 .bento-grid.bento-exit {
@@ -522,7 +528,7 @@ body {
     border-radius: var(--radius-lg);
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     text-decoration: none;
     display: block;
 }
@@ -543,7 +549,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform .7s ease;
+    transition: transform 0.7s ease;
 }
 
 .bento-card:hover img {
@@ -553,7 +559,12 @@ body {
 .bento-card-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(19, 27, 46, .92) 0%, rgba(19, 27, 46, .25) 45%, transparent 100%);
+    background: linear-gradient(
+        to top,
+        rgba(19, 27, 46, 0.92) 0%,
+        rgba(19, 27, 46, 0.25) 45%,
+        transparent 100%
+    );
 }
 
 .bento-card-body {
@@ -568,7 +579,7 @@ body {
     font-size: 1.6rem;
     display: block;
     margin-bottom: 6px;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .4));
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
     line-height: 1;
 }
 
@@ -583,7 +594,7 @@ body {
     color: #fff;
     margin-bottom: 3px;
     letter-spacing: -0.3px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, .5);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .bento-card--main .bento-card-body h3 {
@@ -592,7 +603,7 @@ body {
 
 .bento-card-body p {
     font-size: 12px;
-    color: rgba(255, 255, 255, .65);
+    color: rgba(255, 255, 255, 0.65);
     font-weight: 500;
 }
 
@@ -600,16 +611,15 @@ body {
     position: absolute;
     top: 14px;
     right: 14px;
-    background: rgba(255, 255, 255, .18);
+    background: rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, .28);
+    border: 1px solid rgba(255, 255, 255, 0.28);
     color: #fff;
     font-size: 11px;
     font-weight: 600;
     padding: 4px 10px;
     border-radius: var(--radius-full);
 }
-
 
 /* Responsive bento */
 
@@ -648,7 +658,6 @@ body {
     }
 }
 
-
 /* ═══════════════════════════════════════════════════════════
    AUTOCOMPLETE DROPDOWN
    (añadir al final de styles.css si no está ya)
@@ -663,7 +672,9 @@ body {
     background: #fff;
     border: 1px solid var(--outline-variant);
     border-radius: var(--radius-lg);
-    box-shadow: 0 8px 32px rgba(70, 72, 212, .12), 0 2px 8px rgba(0, 0, 0, .06);
+    box-shadow:
+        0 8px 32px rgba(70, 72, 212, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06);
     z-index: 100;
     overflow: hidden;
     max-height: 360px;
@@ -681,7 +692,7 @@ body {
     padding: 12px 18px;
     text-decoration: none;
     color: var(--on-surface);
-    transition: background .12s;
+    transition: background 0.12s;
     border-bottom: 1px solid var(--outline-variant);
 }
 
@@ -725,7 +736,7 @@ body {
 .sdi-type {
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: .06em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--primary);
     background: var(--primary-fixed);
@@ -733,7 +744,6 @@ body {
     border-radius: var(--radius-full);
     flex-shrink: 0;
 }
-
 
 /* ── NIGHTS ─────────────────────────────────────────────────── */
 
@@ -772,7 +782,7 @@ body {
     background: var(--surface);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 @media (min-width: 768px) {
@@ -892,7 +902,6 @@ body {
     font-weight: 700;
 }
 
-
 /* ── SERVICES ───────────────────────────────────────────────── */
 
 .services-section {
@@ -911,12 +920,14 @@ body {
     padding: 32px;
     border-radius: var(--radius-lg);
     border: 1px solid var(--outline-variant);
-    transition: border-color .2s, box-shadow .2s;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 .service-card:hover {
     border-color: var(--primary);
-    box-shadow: 0 8px 32px rgba(70, 72, 212, .1);
+    box-shadow: 0 8px 32px rgba(70, 72, 212, 0.1);
 }
 
 .service-icon {
@@ -929,7 +940,9 @@ body {
     justify-content: center;
     color: var(--primary);
     margin-bottom: 32px;
-    transition: background .2s, color .2s;
+    transition:
+        background 0.2s,
+        color 0.2s;
 }
 
 .service-card:hover .service-icon {
@@ -964,13 +977,12 @@ body {
     font-weight: 600;
     color: var(--primary);
     text-decoration: none;
-    transition: gap .2s;
+    transition: gap 0.2s;
 }
 
 .service-card:hover .service-link {
     gap: 14px;
 }
-
 
 /* ── CTA ────────────────────────────────────────────────────── */
 
@@ -1045,17 +1057,16 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 16px;
-    border: 4px solid rgba(255, 255, 255, .1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     object-fit: cover;
 }
-
 
 /* ── FOOTER ─────────────────────────────────────────────────── */
 
 .site-footer {
     background: var(--surface-container-low);
-    border-top: 1px solid rgba(199, 196, 215, .5);
+    border-top: 1px solid rgba(199, 196, 215, 0.5);
 }
 
 .footer-inner {
@@ -1093,7 +1104,7 @@ body {
     font-size: 16px;
     color: var(--on-surface-variant);
     text-decoration: none;
-    transition: color .15s;
+    transition: color 0.15s;
 }
 
 .footer-links a:hover {
@@ -1115,14 +1126,15 @@ body {
     justify-content: center;
     color: var(--on-surface-variant);
     text-decoration: none;
-    transition: border-color .15s, color .15s;
+    transition:
+        border-color 0.15s,
+        color 0.15s;
 }
 
 .social-btn:hover {
     border-color: var(--primary);
     color: var(--primary);
 }
-
 
 /* ── BOTTOM NAV (mobile) ────────────────────────────────────── */
 
@@ -1136,9 +1148,9 @@ body {
     justify-content: space-around;
     align-items: center;
     padding: 8px 16px 12px;
-    background: rgba(250, 248, 255, .85);
+    background: rgba(250, 248, 255, 0.85);
     backdrop-filter: blur(16px);
-    box-shadow: 0 -4px 20px rgba(15, 23, 42, .06);
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 }
@@ -1156,11 +1168,14 @@ body {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.02em;
-    transition: background .15s, color .15s, transform .2s;
+    transition:
+        background 0.15s,
+        color 0.15s,
+        transform 0.2s;
 }
 
 .bottom-nav-item:active {
-    transform: scale(.9);
+    transform: scale(0.9);
 }
 
 .bottom-nav-item--active {
@@ -1171,7 +1186,6 @@ body {
 .bottom-nav-item .material-symbols-outlined {
     font-size: 24px;
 }
-
 
 /* ═══════════════════════════════════════════════════════════
    CIUDADES.HTML — heredado y actualizado
@@ -1200,7 +1214,13 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(250, 248, 255, .3) 0%, rgba(250, 248, 255, .1) 40%, rgba(19, 27, 46, .85) 75%, rgba(19, 27, 46, 1) 100%);
+    background: linear-gradient(
+        to bottom,
+        rgba(250, 248, 255, 0.3) 0%,
+        rgba(250, 248, 255, 0.1) 40%,
+        rgba(19, 27, 46, 0.85) 75%,
+        rgba(19, 27, 46, 1) 100%
+    );
 }
 
 .hero-content-legacy {
@@ -1212,7 +1232,7 @@ body {
 .hero-breadcrumb-legacy {
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: .12em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--secondary);
     margin-bottom: 10px;
@@ -1222,9 +1242,9 @@ body {
 }
 
 .hero-breadcrumb-legacy a {
-    color: rgba(255, 255, 255, .65);
+    color: rgba(255, 255, 255, 0.65);
     text-decoration: none;
-    transition: color .15s;
+    transition: color 0.15s;
 }
 
 .hero-breadcrumb-legacy a:hover {
@@ -1232,7 +1252,7 @@ body {
 }
 
 .hero-breadcrumb-legacy .sep {
-    opacity: .4;
+    opacity: 0.4;
 }
 
 .hero-h1-legacy {
@@ -1254,11 +1274,10 @@ body {
 
 .hero-sub-legacy {
     font-size: 16px;
-    color: rgba(255, 255, 255, .75);
+    color: rgba(255, 255, 255, 0.75);
     max-width: 440px;
     line-height: 1.6;
 }
-
 
 /* Topbar heredado para ciudades.html y ciudad.html */
 
@@ -1282,7 +1301,7 @@ header.topbar {
     border-bottom: 1px solid var(--outline-variant);
     position: sticky;
     top: 0;
-    background: rgba(250, 248, 255, .9);
+    background: rgba(250, 248, 255, 0.9);
     backdrop-filter: blur(16px);
 }
 
@@ -1310,7 +1329,7 @@ header.topbar {
     font-weight: 500;
     color: var(--on-surface-variant);
     text-decoration: none;
-    transition: color .15s;
+    transition: color 0.15s;
 }
 
 .topbar-nav a:hover {
@@ -1321,29 +1340,29 @@ header.topbar {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    background: rgba(70, 72, 212, .08);
-    border: 1px solid rgba(70, 72, 212, .18);
+    background: rgba(70, 72, 212, 0.08);
+    border: 1px solid rgba(70, 72, 212, 0.18);
     border-radius: var(--radius-full);
     padding: 8px 16px;
     color: var(--primary);
     text-decoration: none;
     font-size: 13px;
     font-weight: 600;
-    transition: background .15s;
+    transition: background 0.15s;
 }
 
 .hero-legacy .back-btn {
-    background: rgba(255, 255, 255, .12);
-    border-color: rgba(255, 255, 255, .2);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
     color: #fff;
 }
 
 .back-btn:hover {
-    background: rgba(70, 72, 212, .14);
+    background: rgba(70, 72, 212, 0.14);
 }
 
 .hero-legacy .back-btn:hover {
-    background: rgba(255, 255, 255, .2);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .breadcrumb {
@@ -1357,7 +1376,7 @@ header.topbar {
 .breadcrumb a {
     color: var(--on-surface-variant);
     text-decoration: none;
-    transition: color .15s;
+    transition: color 0.15s;
 }
 
 .breadcrumb a:hover {
@@ -1365,14 +1384,13 @@ header.topbar {
 }
 
 .breadcrumb .sep {
-    opacity: .4;
+    opacity: 0.4;
 }
 
 .breadcrumb .current {
     color: var(--on-surface);
     font-weight: 600;
 }
-
 
 /* Section header heredado */
 
@@ -1387,7 +1405,6 @@ header.topbar {
     font-size: 13px;
     color: var(--on-surface-variant);
 }
-
 
 /* Stats heredados */
 
@@ -1416,12 +1433,11 @@ header.topbar {
 
 .stat-label {
     font-size: 11px;
-    color: rgba(255, 255, 255, .65);
+    color: rgba(255, 255, 255, 0.65);
     text-transform: uppercase;
-    letter-spacing: .08em;
+    letter-spacing: 0.08em;
     font-weight: 600;
 }
-
 
 /* Grids heredados */
 
@@ -1458,13 +1474,16 @@ header.topbar {
     aspect-ratio: 3/4;
     background: var(--surface-container);
     border: 1px solid var(--outline-variant);
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s;
 }
 
 .country-card:hover,
 .city-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(70, 72, 212, .15);
+    box-shadow: 0 16px 40px rgba(70, 72, 212, 0.15);
     border-color: var(--primary);
 }
 
@@ -1474,20 +1493,20 @@ header.topbar {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform .5s ease;
-    filter: brightness(.75);
+    transition: transform 0.5s ease;
+    filter: brightness(0.75);
 }
 
 .country-card:hover .card-img,
 .city-card:hover .card-img {
     transform: scale(1.06);
-    filter: brightness(.6);
+    filter: brightness(0.6);
 }
 
 .card-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent 30%, rgba(19, 27, 46, .88) 100%);
+    background: linear-gradient(to bottom, transparent 30%, rgba(19, 27, 46, 0.88) 100%);
 }
 
 .card-body {
@@ -1506,15 +1525,17 @@ header.topbar {
     z-index: 2;
     width: 30px;
     height: 30px;
-    background: rgba(70, 72, 212, .18);
-    border: 1px solid rgba(70, 72, 212, .3);
+    background: rgba(70, 72, 212, 0.18);
+    border: 1px solid rgba(70, 72, 212, 0.3);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transform: scale(.8);
-    transition: opacity .2s, transform .2s;
+    transform: scale(0.8);
+    transition:
+        opacity 0.2s,
+        transform 0.2s;
 }
 
 .country-card:hover .card-arrow,
@@ -1528,7 +1549,7 @@ header.topbar {
     font-size: 17px;
     font-weight: 700;
     color: #fff;
-    letter-spacing: -.3px;
+    letter-spacing: -0.3px;
     line-height: 1.2;
     margin-bottom: 4px;
 }
@@ -1541,7 +1562,7 @@ header.topbar {
 
 .card-meta {
     font-size: 12px;
-    color: rgba(255, 255, 255, .55);
+    color: rgba(255, 255, 255, 0.55);
     font-weight: 500;
 }
 
@@ -1551,11 +1572,11 @@ header.topbar {
     gap: 5px;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: .06em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #00E5A0;
-    background: rgba(0, 229, 160, .12);
-    border: 1px solid rgba(0, 229, 160, .22);
+    color: #00e5a0;
+    background: rgba(0, 229, 160, 0.12);
+    border: 1px solid rgba(0, 229, 160, 0.22);
     padding: 3px 8px;
     border-radius: var(--radius-full);
 }
@@ -1568,7 +1589,6 @@ header.topbar {
     background: currentColor;
     flex-shrink: 0;
 }
-
 
 /* Ciudad detail */
 
@@ -1605,7 +1625,7 @@ main.city-main {
 .city-location {
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: .12em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--primary);
     margin-bottom: 10px;
@@ -1647,7 +1667,7 @@ main.city-main {
 .section-divider span {
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: .1em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--on-surface-variant);
 }
@@ -1670,35 +1690,37 @@ main.city-main {
     border: none;
     width: 100%;
     font-family: inherit;
-    transition: transform .18s, opacity .18s;
+    transition:
+        transform 0.18s,
+        opacity 0.18s;
     position: relative;
     overflow: hidden;
 }
 
 .action-btn:hover {
     transform: translateY(-2px);
-    opacity: .93;
+    opacity: 0.93;
 }
 
 .action-btn:active {
     transform: translateY(0);
-    opacity: .88;
+    opacity: 0.88;
 }
 
 .btn-wa {
     background: var(--wa);
-    box-shadow: 0 8px 24px rgba(29, 170, 97, .22);
+    box-shadow: 0 8px 24px rgba(29, 170, 97, 0.22);
 }
 
 .btn-tg {
     background: var(--tg);
-    box-shadow: 0 8px 24px rgba(42, 171, 238, .2);
+    box-shadow: 0 8px 24px rgba(42, 171, 238, 0.2);
 }
 
 .btn-generic {
     background: var(--surface-container-low);
     border: 1.5px solid var(--outline-variant);
-    box-shadow: 0 4px 16px rgba(70, 72, 212, .10);
+    box-shadow: 0 4px 16px rgba(70, 72, 212, 0.1);
 }
 
 .btn-generic .btn-label strong {
@@ -1741,14 +1763,14 @@ main.city-main {
 
 .btn-label span {
     font-size: 12px;
-    color: rgba(255, 255, 255, .65);
+    color: rgba(255, 255, 255, 0.65);
     font-weight: 500;
 }
 
 .btn-chevron {
-    color: rgba(255, 255, 255, .45);
+    color: rgba(255, 255, 255, 0.45);
     flex-shrink: 0;
-    transition: transform .15s;
+    transition: transform 0.15s;
 }
 
 .action-btn:hover .btn-chevron {
@@ -1783,8 +1805,8 @@ main.city-main {
 }
 
 .info-box {
-    background: rgba(70, 72, 212, .06);
-    border: 1px solid rgba(70, 72, 212, .15);
+    background: rgba(70, 72, 212, 0.06);
+    border: 1px solid rgba(70, 72, 212, 0.15);
     border-radius: 12px;
     padding: 16px 20px;
     display: flex;
@@ -1809,7 +1831,6 @@ main.city-main {
     font-weight: 600;
 }
 
-
 /* Footer heredado */
 
 footer.legacy-footer {
@@ -1827,7 +1848,6 @@ footer.legacy-footer a {
     color: var(--primary);
     text-decoration: none;
 }
-
 
 /* Hamburger heredado */
 
@@ -1848,7 +1868,9 @@ footer.legacy-footer a {
     height: 2px;
     background: var(--on-surface);
     border-radius: 2px;
-    transition: transform .28s, opacity .2s;
+    transition:
+        transform 0.28s,
+        opacity 0.2s;
     transform-origin: center;
 }
 
@@ -1868,7 +1890,7 @@ footer.legacy-footer a {
 .mobile-nav {
     position: fixed;
     inset: 0;
-    background: rgba(250, 248, 255, .97);
+    background: rgba(250, 248, 255, 0.97);
     backdrop-filter: blur(24px);
     z-index: 150;
     display: flex;
@@ -1878,7 +1900,9 @@ footer.legacy-footer a {
     opacity: 0;
     pointer-events: none;
     transform: translateY(-10px);
-    transition: opacity .3s, transform .3s;
+    transition:
+        opacity 0.3s,
+        transform 0.3s;
 }
 
 .mobile-nav.is-open {
@@ -1901,7 +1925,9 @@ footer.legacy-footer a {
     justify-content: center;
     cursor: pointer;
     color: var(--on-surface-variant);
-    transition: background .15s, color .15s;
+    transition:
+        background 0.15s,
+        color 0.15s;
 }
 
 .mobile-nav-close:hover {
@@ -1925,13 +1951,12 @@ footer.legacy-footer a {
     letter-spacing: -2px;
     padding: 10px 28px;
     line-height: 1.1;
-    transition: color .15s;
+    transition: color 0.15s;
 }
 
 .mobile-nav-links a:hover {
     color: var(--primary);
 }
-
 
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE
@@ -2126,9 +2151,7 @@ footer.legacy-footer a {
     }
 }
 
-
 /* Añado estilos adicionales de dropdown autocomplete y animaciones de fade del bento */
-
 
 /* ═══════════════════════════════════════════════════════════
    AUTOCOMPLETE DROPDOWN
@@ -2143,7 +2166,9 @@ footer.legacy-footer a {
     background: #fff;
     border: 1px solid var(--outline-variant);
     border-radius: var(--radius-lg);
-    box-shadow: 0 8px 32px rgba(70, 72, 212, .12), 0 2px 8px rgba(0, 0, 0, .06);
+    box-shadow:
+        0 8px 32px rgba(70, 72, 212, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06);
     z-index: 100;
     overflow: hidden;
     max-height: 360px;
@@ -2161,7 +2186,7 @@ footer.legacy-footer a {
     padding: 12px 18px;
     text-decoration: none;
     color: var(--on-surface);
-    transition: background .12s;
+    transition: background 0.12s;
     border-bottom: 1px solid var(--outline-variant);
 }
 
@@ -2205,7 +2230,7 @@ footer.legacy-footer a {
 .sdi-type {
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: .06em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--primary);
     background: var(--primary-fixed);
@@ -2214,13 +2239,14 @@ footer.legacy-footer a {
     flex-shrink: 0;
 }
 
-
 /* ═══════════════════════════════════════════════════════════
    BENTO GRID ANIMACIONES
 ═══════════════════════════════════════════════════════════ */
 
 .bento-grid {
-    transition: opacity .35s ease, transform .35s ease;
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
 }
 
 .bento-grid.bento-exit {
@@ -2232,7 +2258,6 @@ footer.legacy-footer a {
     opacity: 0;
     transform: translateY(-6px);
 }
-
 
 /* ═══════════════════════════════════════════════════════════
    MAPA.HTML — Fase B
@@ -2251,7 +2276,6 @@ footer.legacy-footer a {
     width: 100%;
 }
 
-
 /* Pin de Leaflet por divIcon — forma de gota con CSS puro,
    mismo patrón que .category-pin del manual original (doc 03) */
 
@@ -2263,9 +2287,8 @@ footer.legacy-footer a {
     border: 2px solid #fff;
     border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
-
 
 /* Leaflet inyecta sus propios z-index altos; el topbar sticky
    debe quedar por encima para que el breadcrumb/back-btn sigan
@@ -2281,7 +2304,6 @@ header.topbar {
     }
 }
 
-
 /* ─────────────────────────────────────────────────────────────
    CITY MAP — mapa embebido en ciudad.html (cityMap.js)
    ───────────────────────────────────────────────────────────── */
@@ -2295,7 +2317,6 @@ header.topbar {
     position: relative;
     margin-bottom: 16px;
 }
-
 
 /* Estados de carga / error */
 
@@ -2316,7 +2337,6 @@ header.topbar {
     margin-bottom: 8px;
 }
 
-
 /* Overlay "Toca para interactuar" — gesto-gate para móvil */
 
 .city-map-activate {
@@ -2339,7 +2359,6 @@ header.topbar {
     backdrop-filter: blur(1px);
 }
 
-
 /* Enlace "Ver mapa a pantalla completa" bajo el mapa embebido */
 
 .city-map-fullscreen-link {
@@ -2352,7 +2371,6 @@ header.topbar {
     text-decoration: none;
 }
 
-
 /* Mapa embebido en ciudad.html */
 
 .city-map-embed {
@@ -2362,7 +2380,6 @@ header.topbar {
     border: 1px solid var(--outline-variant);
     position: relative;
 }
-
 
 /* Estados de carga / error, comparten estilo con el resto del proyecto */
 
@@ -2383,7 +2400,6 @@ header.topbar {
     margin-bottom: 8px;
 }
 
-
 /* Overlay "Toca para interactuar" — gesto-gate para móvil */
 
 .city-map-activate {
@@ -2406,7 +2422,6 @@ header.topbar {
     backdrop-filter: blur(1px);
 }
 
-
 /* Botón "Pantalla completa" bajo el mapa embebido */
 
 .city-map-fullscreen-link {
@@ -2418,7 +2433,6 @@ header.topbar {
     color: var(--primary);
     text-decoration: none;
 }
-
 
 /* Layout: mapa + enlace "pantalla completa".
    Escritorio: mapa a la izquierda, enlace a la derecha centrado
@@ -2435,7 +2449,6 @@ header.topbar {
 .city-map-block .city-map-embed {
     width: 100%;
 }
-
 
 /* Layout de dos columnas: mapa + listado de partners */
 
@@ -2461,18 +2474,21 @@ header.topbar {
 @media (min-width: 900px) {
     .map-with-list {
         flex-direction: row;
+        height: calc(100dvh - 73px);
     }
     .map-with-list .map-canvas {
         flex: 1;
+        height: 100%;
     }
     .map-with-list .partners-list {
         width: 340px;
         flex-shrink: 0;
+        height: calc(100dvh - 73px);
+        overflow-y: scroll;
         border-top: none;
         border-left: 1px solid var(--outline-variant);
     }
 }
-
 
 /* Botón de categoría */
 
@@ -2504,7 +2520,6 @@ header.topbar {
     flex-shrink: 0;
 }
 
-
 /* Lista de partners dentro de una categoría expandida */
 
 .partner-list {
@@ -2533,7 +2548,6 @@ header.topbar {
     font-weight: 600;
 }
 
-
 /* Detalle de partner: descripción + enlaces */
 
 .partner-detail {
@@ -2559,7 +2573,6 @@ header.topbar {
     margin-bottom: 6px;
 }
 
-
 /* Pines de partner: punto simple, tamaño controlado por iconSize de Leaflet */
 
 .partner-pin__dot {
@@ -2569,11 +2582,12 @@ header.topbar {
     background: var(--pin-color);
     border: 2px solid #fff;
     border-radius: 50%;
-    box-shadow: 0 2px 6px rgb(0 0 0 / .35);
-    transition: width .2s, height .2s;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+    transition:
+        width 0.2s,
+        height 0.2s;
     /* suaviza el cambio de tamaño */
 }
-
 
 /* Bloque mapa+listado dentro de ciudad.html: ensancha SOLO este bloque,
    no toda la página (decisión tomada). */
@@ -2602,6 +2616,8 @@ header.topbar {
 
 .city-map-columns .partners-list {
     width: 100%;
+    max-height: 320px;
+    overflow-y: scroll;
 }
 
 .city-map-fullscreen-link {
@@ -2629,5 +2645,26 @@ header.topbar {
     .city-map-columns .partners-list {
         /* 25% del ancho disponible, descontando el gap de 12px entre columnas */
         width: calc(25% - 3px);
+        max-height: none;
+        overflow-y: scroll;
     }
+}
+
+/* Categoría sin partners: visualmente atenuada pero sigue siendo clicable */
+
+.category-toggle.is-empty {
+    opacity: 0.6;
+}
+
+.category-toggle.is-empty .category-toggle__dot {
+    filter: grayscale(60%);
+}
+
+.category-coming-soon {
+    margin: 0 0 16px 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--on-surface-variant);
+    background: var(--surface-container-low);
+    border-radius: var(--radius-md);
 }

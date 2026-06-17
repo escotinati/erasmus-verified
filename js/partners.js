@@ -17,7 +17,8 @@
 //                 (null/ausente hasta que ese desarrollo exista)
 // ─────────────────────────────────────────────────────────────
 
-const PARTNERS = [{
+const PARTNERS = [
+    {
         id: 'p-backstage',
         name: 'Backstage',
         category: 'nightlife',
@@ -41,9 +42,7 @@ const PARTNERS = [{
         lat: 43.26285383094336,
         lng: -2.923961564410484,
         description: 'Discoteca histórica de Bilbao, reabierta en el centro de la villa.',
-        links: [
-            { type: 'WEBSITE', label: 'Web oficial', url: 'https://elcrystalbilbao.com/' },
-        ],
+        links: [{ type: 'WEBSITE', label: 'Web oficial', url: 'https://elcrystalbilbao.com/' }],
     },
     {
         id: 'p-moma',
@@ -54,9 +53,40 @@ const PARTNERS = [{
         lat: 43.26413788816102,
         lng: -2.9437044426587358,
         description: 'Sala de moda en Bilbao, ambiente exclusivo y diseño vanguardista.',
-        links: [
-            { type: 'WEBSITE', label: 'Web oficial', url: 'https://salamoma.com/' },
-        ],
+        links: [{ type: 'WEBSITE', label: 'Web oficial', url: 'https://salamoma.com/' }],
+    },
+    {
+        id: 'p-poza-40',
+        name: 'Poza 40',
+        category: 'services',
+        pais: 'España',
+        ciudad: 'Bilbao',
+        lat: 43.26226608828083,
+        lng: -2.941281431836744,
+        description: 'Bar en el corazón del Casco Viejo de Bilbao.',
+        links: [],
+    },
+    {
+        id: 'p-molly-malone',
+        name: 'Molly Malone',
+        category: 'services',
+        pais: 'España',
+        ciudad: 'Bilbao',
+        lat: 43.2637959496962,
+        lng: -2.9406155605893156,
+        description: 'Irish pub clásico en Bilbao, ambiente animado toda la semana.',
+        links: [],
+    },
+    {
+        id: 'p-crazy-horse',
+        name: 'Crazy Horse',
+        category: 'services',
+        pais: 'España',
+        ciudad: 'Bilbao',
+        lat: 43.270424424134475,
+        lng: -2.932106477008702,
+        description: 'Bar de copas con ambiente internacional en Bilbao.',
+        links: [],
     },
 ];
 
@@ -70,15 +100,24 @@ function getPartnersByCity(ciudad) {
 }
 
 /**
- * Agrupa partners por categoría, devolviendo solo categorías con
- * al menos 1 partner (decisión tomada: no mostrar categorías vacías).
+ * Agrupa partners por categoría, devolviendo SIEMPRE las 5 categorías
+ * (decisión actualizada: mostrar todas, marcando como vacías las que
+ * no tengan partners todavía — antes solo se mostraban las que tenían
+ * partners reales).
  * Devuelve: [{ category: 'nightlife', partners: [...] }, ...]
+ * `partners` puede ser un array vacío.
  */
 function groupPartnersByCategory(partners) {
-    const groups = {};
+    const byCategory = {};
     for (const partner of partners) {
-        if (!groups[partner.category]) groups[partner.category] = [];
-        groups[partner.category].push(partner);
+        if (!byCategory[partner.category]) byCategory[partner.category] = [];
+        byCategory[partner.category].push(partner);
     }
-    return Object.entries(groups).map(([category, partners]) => ({ category, partners }));
+
+    // Recorremos las categorías DEFINIDAS (CATEGORY_META, en map-helpers.js),
+    // no solo las que aparecen en los datos — así las vacías también salen.
+    return Object.keys(CATEGORY_META).map((category) => ({
+        category,
+        partners: byCategory[category] || [],
+    }));
 }

@@ -53,11 +53,26 @@ function addMarker({ lat, lng }, { label, color = '#4648d4' } = {}) {
  * Las demás categorías quedan definidas para cuando tengan partners reales.
  */
 const CATEGORY_META = {
-    nightlife: { label: 'Nightlife', color: '#2563eb' }, // azul
+    nightlife: { label: 'Nightlife', color: '#2563eb' },
     housing: { label: 'Alojamiento', color: '#0e7490' },
-    services: { label: 'Servicios', color: '#ca8a04' },
+    services: { label: 'Bar', color: '#ca8a04' },
     community: { label: 'Comunidad', color: '#16a34a' },
     travel: { label: 'Viajes', color: '#7c3aed' },
+    restaurants: { label: 'Restaurantes', color: '#dc2626' },
+    sports: { label: 'Deporte', color: '#ea580c' },
+    culture: { label: 'Cultura', color: '#db2777' },
+    shopping: { label: 'Compras', color: '#9333ea' },
+    wellness: { label: 'Bienestar', color: '#059669' },
+    events: { label: 'Eventos', color: '#d97706' },
+    education: { label: 'Formación', color: '#0284c7' },
+    transport: { label: 'Transporte', color: '#64748b' },
+    food: { label: 'Comida rápida', color: '#f59e0b' },
+    coworking: { label: 'Coworking', color: '#0891b2' },
+    healthcare: { label: 'Salud', color: '#16a34a' },
+    language: { label: 'Idiomas', color: '#7c3aed' },
+    volunteering: { label: 'Voluntariado', color: '#be185d' },
+    music: { label: 'Música', color: '#1d4ed8' },
+    photography: { label: 'Fotografía', color: '#92400e' },
 };
 
 /**
