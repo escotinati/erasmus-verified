@@ -2271,6 +2271,7 @@ footer.legacy-footer a {
 }
 
 .map-canvas {
+    height: calc(100vh - 73px);
     height: calc(100dvh - 73px);
     /* 73px ≈ altura de header.topbar */
     width: 100%;
@@ -2478,7 +2479,8 @@ header.topbar {
     }
     .map-with-list .map-canvas {
         flex: 1;
-        height: 100%;
+        height: calc(100vh - 73px);
+        height: calc(100dvh - 73px);
     }
     .map-with-list .partners-list {
         width: 340px;

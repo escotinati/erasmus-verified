@@ -19,10 +19,13 @@ if (!pais || !ciudad || !country) {
 } else {
     document.title = `Mapa de ${ciudad}, ${pais} — Erasmus Parties`;
     document.getElementById('breadcrumbPais').textContent = pais;
-    document.getElementById('breadcrumbPaisLink').href = `ciudades.html?pais=${encodeURIComponent(pais)}`;
+    document.getElementById('breadcrumbPaisLink').href =
+        `ciudades.html?pais=${encodeURIComponent(pais)}`;
     document.getElementById('breadcrumbCiudad').textContent = ciudad;
-    document.getElementById('breadcrumbCiudadLink').href = `ciudad.html?pais=${encodeURIComponent(pais)}&ciudad=${encodeURIComponent(ciudad)}`;
-    document.getElementById('backLink').href = `ciudad.html?pais=${encodeURIComponent(pais)}&ciudad=${encodeURIComponent(ciudad)}`;
+    document.getElementById('breadcrumbCiudadLink').href =
+        `ciudad.html?pais=${encodeURIComponent(pais)}&ciudad=${encodeURIComponent(ciudad)}`;
+    document.getElementById('backLink').href =
+        `ciudad.html?pais=${encodeURIComponent(pais)}&ciudad=${encodeURIComponent(ciudad)}`;
     document.getElementById('backLinkText').textContent = ciudad;
 
     // Pantalla completa: interactive=true desde el primer momento,
@@ -30,8 +33,18 @@ if (!pais || !ciudad || !country) {
     // mountCityMap es async: esperamos a que el mapa esté listo antes de
     // montar el listado de partners, que necesita el `map` de Leaflet
     // para añadir/quitar sus pines.
+    const mapEl = document.getElementById('map');
+    const topbarHeight = document.querySelector('header.topbar').offsetHeight;
+    const syncMapHeight = () => {
+        mapEl.style.setProperty('height', window.innerHeight - topbarHeight + 'px', 'important');
+    };
+    syncMapHeight();
+    window.addEventListener('resize', syncMapHeight);
+
     mountCityMap('map', { pais, ciudad, interactive: true }).then((mapInstance) => {
         if (mapInstance) {
+            syncMapHeight();
+            mapInstance.invalidateSize();
             mountPartnersList('partners-list', mapInstance, ciudad);
         }
     });

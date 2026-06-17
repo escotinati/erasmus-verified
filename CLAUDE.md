@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Erasmus Parties — directorio de grupos de WhatsApp/Telegram para estudiantes Erasmus en 36+ países y 528+ ciudades europeas. También muestra un mapa interactivo con partners (locales nocturnos, alojamientos, etc.) por ciudad.
 
-**Stack**: HTML + CSS + JS vanilla. Sin build step, sin npm, sin dependencias de node. Abrir `index.html` directamente en el navegador o con cualquier servidor HTTP estático.
+**Stack**: HTML + CSS + JS vanilla. Sin build step. Abrir `index.html` directamente en el navegador o con cualquier servidor HTTP estático.
+
+**Herramientas de desarrollo**: Prettier instalado como devDependency (`npm install` para instalar). Configuración en `.prettierrc`: 4 espacios, comillas simples, semi. Un hook de Claude Code formatea automáticamente JS/CSS/HTML tras cada edición — no hace falta ejecutarlo manualmente.
 
 ## Arquitectura
 
@@ -46,7 +48,7 @@ Añadir un objeto al array `PARTNERS` en `js/partners.js`:
 {
   id: 'p-slug-unico',      // kebab-case, prefijo "p-"
   name: 'Nombre del Local',
-  category: 'nightlife',   // una de las 5: nightlife | housing | services | community | travel
+  category: 'nightlife',   // ver CATEGORY_META en js/map-helpers.js para la lista completa de categorías
   pais: 'España',
   ciudad: 'Nombre Ciudad', // debe coincidir exactamente con el campo `name` en data.js
   lat: 43.26434,
@@ -59,7 +61,7 @@ Añadir un objeto al array `PARTNERS` en `js/partners.js`:
 }
 ```
 
-Las 5 categorías y sus colores están definidas en `CATEGORY_META` dentro de `js/map-helpers.js`.
+Las categorías y sus colores están definidas en `CATEGORY_META` dentro de `js/map-helpers.js`. Todas las categorías definidas ahí aparecen siempre en el acordeón (vacías o no).
 
 ## Mapa interactivo
 
@@ -67,6 +69,8 @@ Las 5 categorías y sus colores están definidas en `CATEGORY_META` dentro de `j
 
 - `interactive: false` — modo embebido (ciudad.html): bloquea zoom/pan hasta que el usuario toca el overlay
 - `interactive: true` — pantalla completa (mapa.html): sin overlay
+
+En `ciudad.html`, tras montar el mapa, un `ResizeObserver` en `ciudad.js` sincroniza la altura del aside (`#city-partners-list`) con la altura real del mapa (`#city-map-embed`). No tocar esa lógica sin tener en cuenta que la altura del aside es dinámica.
 
 ### Geocodificación
 

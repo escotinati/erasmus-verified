@@ -19,7 +19,15 @@
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
             crossorigin=""
         />
-        <link rel="stylesheet" href="css/styles.css?v=3" />
+        <link rel="stylesheet" href="css/styles.css?v=5" />
+        <style>
+            /* Alta especificidad (#map > cualquier regla de clase) para garantizar
+               la altura correcta aunque styles.css esté cacheado en versión antigua */
+            #map.map-canvas {
+                height: calc(100vh - 73px);
+                height: calc(100dvh - 73px);
+            }
+        </style>
     </head>
 
     <body>
@@ -61,10 +69,10 @@
         ></script>
         <script src="js/data.js"></script>
         <script src="js/geocoder.js"></script>
-        <script src="js/map-helpers.js"></script>
-        <script src="js/partners.js"></script>
-        <script src="js/mapPartners.js"></script>
+        <script src="js/map-helpers.js?v=2"></script>
+        <script src="js/partners.js?v=2"></script>
+        <script src="js/mapPartners.js?v=2"></script>
         <script src="js/cityMap.js"></script>
-        <script src="js/mapa.js"></script>
+        <script src="js/mapa.js?v=2"></script>
     </body>
 </html>
