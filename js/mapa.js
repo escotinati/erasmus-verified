@@ -4,12 +4,10 @@
 //  Toda la lógica de mapa vive en cityMap.js, compartida con
 //  el mapa embebido de ciudad.html.
 // ─────────────────────────────────────────────────────────────
-
 const params = new URLSearchParams(window.location.search);
 const pais = params.get('pais') || '';
 const ciudad = params.get('ciudad') || '';
 const country = COUNTRIES[pais];
-
 if (!pais || !ciudad || !country) {
     document.querySelector('.map-page-main').innerHTML = `
     <div style="text-align:center;padding:60px 20px;color:var(--on-surface-variant);">
@@ -20,7 +18,6 @@ if (!pais || !ciudad || !country) {
     </div>`;
 } else {
     document.title = `Mapa de ${ciudad}, ${pais} — Erasmus Parties`;
-
     document.getElementById('breadcrumbPais').textContent = pais;
     document.getElementById('breadcrumbPaisLink').href = `ciudades.html?pais=${encodeURIComponent(pais)}`;
     document.getElementById('breadcrumbCiudad').textContent = ciudad;
@@ -30,5 +27,12 @@ if (!pais || !ciudad || !country) {
 
     // Pantalla completa: interactive=true desde el primer momento,
     // sin overlay "toca para interactuar" (aquí el usuario ya quiere el mapa).
-    mountCityMap('map', { pais, ciudad, interactive: true });
+    // mountCityMap es async: esperamos a que el mapa esté listo antes de
+    // montar el listado de partners, que necesita el `map` de Leaflet
+    // para añadir/quitar sus pines.
+    mountCityMap('map', { pais, ciudad, interactive: true }).then((mapInstance) => {
+        if (mapInstance) {
+            mountPartnersList('partners-list', mapInstance, ciudad);
+        }
+    });
 }

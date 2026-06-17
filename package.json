@@ -1,0 +1,23 @@
+{
+  "name": "erasmus",
+  "version": "1.0.0",
+  "description": "Directorio de grupos de WhatsApp y Telegram para estudiantes Erasmus.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/escotinati/erasmus-parties.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/escotinati/erasmus-parties/issues"
+  },
+  "homepage": "https://github.com/escotinati/erasmus-parties#readme",
+  "devDependencies": {
+    "prettier": "^3.8.4"
+  }
+}
