@@ -2650,9 +2650,13 @@ header.topbar {
         width: calc(75% - 9px);
         aspect-ratio: 16 / 9;
         height: auto;
-        /* Anula el sticky de móvil: en escritorio el layout es de dos
-           columnas (flex row) y el mapa no debe pegarse al scroll. */
-        position: static;
+        /* Anula el sticky de móvil: position:relative + top:0 restituye
+           el comportamiento original de escritorio (flujo flex normal,
+           sin desplazamiento). top:0 es necesario para cancelar el
+           top:var(--topbar-h) heredado de la regla móvil. */
+        position: relative;
+        top: 0;
+        z-index: auto;
         /* la altura sale del aspect-ratio, no del listado de partners */
     }
     .city-map-columns .partners-list {
