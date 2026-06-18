@@ -79,7 +79,11 @@ if (!pais || !ciudad || !country) {
             const mapEl = document.getElementById('city-map-embed');
             const asideEl = document.getElementById('city-partners-list');
             const syncHeight = () => {
-                asideEl.style.height = mapEl.offsetHeight + 'px';
+                if (window.innerWidth >= 900) {
+                    asideEl.style.height = mapEl.offsetHeight + 'px';
+                } else {
+                    asideEl.style.height = '';
+                }
             };
             syncHeight();
             new ResizeObserver(syncHeight).observe(mapEl);

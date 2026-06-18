@@ -100,12 +100,9 @@ function getPartnersByCity(ciudad) {
 }
 
 /**
- * Agrupa partners por categoría, devolviendo SIEMPRE las 5 categorías
- * (decisión actualizada: mostrar todas, marcando como vacías las que
- * no tengan partners todavía — antes solo se mostraban las que tenían
- * partners reales).
+ * Agrupa partners por categoría. Solo devuelve categorías con al menos
+ * un partner — las vacías se omiten.
  * Devuelve: [{ category: 'nightlife', partners: [...] }, ...]
- * `partners` puede ser un array vacío.
  */
 function groupPartnersByCategory(partners) {
     const byCategory = {};
@@ -114,10 +111,7 @@ function groupPartnersByCategory(partners) {
         byCategory[partner.category].push(partner);
     }
 
-    // Recorremos las categorías DEFINIDAS (CATEGORY_META, en map-helpers.js),
-    // no solo las que aparecen en los datos — así las vacías también salen.
-    return Object.keys(CATEGORY_META).map((category) => ({
-        category,
-        partners: byCategory[category] || [],
-    }));
+    return Object.keys(CATEGORY_META)
+        .map((category) => ({ category, partners: byCategory[category] || [] }))
+        .filter((group) => group.partners.length > 0);
 }

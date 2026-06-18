@@ -2619,7 +2619,7 @@ header.topbar {
 .city-map-columns .partners-list {
     width: 100%;
     max-height: 320px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .city-map-fullscreen-link {
