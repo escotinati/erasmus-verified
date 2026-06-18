@@ -71,9 +71,28 @@ if (!pais || !ciudad || !country) {
 
     document.getElementById('actionsWrap').innerHTML = btns;
 
+    // Publica la altura real del topbar como variable CSS para que el
+    // mapa sticky en móvil sepa exactamente dónde "anclarse" sin
+    // solaparse con el header.
+    const topbarEl = document.querySelector('header.topbar');
+    const setTopbarH = () => {
+        document.documentElement.style.setProperty(
+            '--topbar-h',
+            topbarEl.offsetHeight + 'px'
+        );
+    };
+    setTopbarH();
+    window.addEventListener('resize', setTopbarH);
+
     // El mapa se monta DESPUÉS de insertar el HTML, porque mountCityMap
     // necesita que #city-map-embed exista ya en el DOM.
-    mountCityMap('city-map-embed', { pais, ciudad, interactive: false }).then((mapInstance) => {
+    //
+    // interactive: true — en móvil el mapa es sticky (el scroll de la
+    // página pasa POR DEBAJO del mapa, no a través de él), así que no
+    // existe conflicto de gestos que justifique el overlay "toca para
+    // interactuar". En escritorio el layout de dos columnas tampoco lo
+    // necesita.
+    mountCityMap('city-map-embed', { pais, ciudad, interactive: true }).then((mapInstance) => {
         if (mapInstance) {
             mountPartnersList('city-partners-list', mapInstance, ciudad);
             const mapEl = document.getElementById('city-map-embed');
@@ -84,6 +103,10 @@ if (!pais || !ciudad || !country) {
                 } else {
                     asideEl.style.height = '';
                 }
+                // Leaflet no detecta cambios de tamaño del contenedor
+                // automáticamente; necesario al cambiar de breakpoint
+                // (ej. 220px sticky → aspect-ratio escritorio).
+                mapInstance.invalidateSize();
             };
             syncHeight();
             new ResizeObserver(syncHeight).observe(mapEl);

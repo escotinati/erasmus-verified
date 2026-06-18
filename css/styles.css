@@ -2613,13 +2613,21 @@ header.topbar {
 }
 
 .city-map-columns .city-map-embed {
+    /* Sticky en móvil: el mapa queda fijo en la parte superior mientras
+       el usuario hace scroll por la lista de partners que hay debajo.
+       top usa --topbar-h, que ciudad.js inyecta como variable CSS
+       leyendo el offsetHeight real del header.topbar. */
+    position: sticky;
+    top: var(--topbar-h, 65px);
+    z-index: 10;
     width: 100%;
+    height: 220px;
 }
 
 .city-map-columns .partners-list {
+    /* En móvil el scroll es de página (no del aside): el mapa sticky
+       solo tiene sentido si la lista crece libremente hacia abajo. */
     width: 100%;
-    max-height: 320px;
-    overflow-y: auto;
 }
 
 .city-map-fullscreen-link {
@@ -2642,6 +2650,9 @@ header.topbar {
         width: calc(75% - 9px);
         aspect-ratio: 16 / 9;
         height: auto;
+        /* Anula el sticky de móvil: en escritorio el layout es de dos
+           columnas (flex row) y el mapa no debe pegarse al scroll. */
+        position: static;
         /* la altura sale del aspect-ratio, no del listado de partners */
     }
     .city-map-columns .partners-list {
