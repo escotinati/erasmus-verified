@@ -16,7 +16,7 @@ if (!country) {
       <a href="index.html" style="color:var(--primary);">Volver al inicio</a>
     </div>`;
 } else {
-  document.title = `${paisName} — Erasmus Parties`;
+  document.title = `${paisName} — Erasmus Verified`;
 
   // Hero
   const heroBg = document.getElementById('heroBg');

@@ -17,7 +17,7 @@ if (!pais || !ciudad || !country) {
       <a href="index.html" style="display:inline-block;margin-top:20px;color:var(--primary);">← Inicio</a>
     </div>`;
 } else {
-    document.title = `Mapa de ${ciudad}, ${pais} — Erasmus Parties`;
+    document.title = `Mapa de ${ciudad}, ${pais} — Erasmus Verified`;
     document.getElementById('breadcrumbPais').textContent = pais;
     document.getElementById('breadcrumbPaisLink').href =
         `ciudades.html?pais=${encodeURIComponent(pais)}`;

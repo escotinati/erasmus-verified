@@ -21,7 +21,7 @@ if (!pais || !ciudad || !country) {
     const hasTg = !!cityLinks.tg;
     const hasGeneric = !!cityLinks.generic;
 
-    document.title = `${ciudad}, ${pais} — Erasmus Parties`;
+    document.title = `${ciudad}, ${pais} — Erasmus Verified`;
 
     // Navegación
     document.getElementById('breadcrumbPais').textContent = pais;
