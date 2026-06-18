@@ -2685,3 +2685,271 @@ header.topbar {
     background: var(--surface-container-low);
     border-radius: var(--radius-md);
 }
+
+
+/* ─────────────────────────────────────────────────────────────
+   GLOBAL NAV — menú de 5 ítems compartido en todas las páginas
+   ─────────────────────────────────────────────────────────────
+   Las reglas base de .topbar-nav, .hamburger-btn, .mobile-nav
+   y .mobile-nav-links ya están definidas antes en este archivo.
+   Aquí solo se añaden: ítem activo, ítem "Fiestas" y los
+   wrappers de layout para las páginas con header.topbar
+   (ciudad.html, mapa.html, servicios.html, viajes.html).
+   ───────────────────────────────────────────────────────────── */
+
+/* Ítem de la página actual */
+.topbar-nav a.is-active {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.mobile-nav-links a.is-active {
+    color: var(--primary);
+}
+
+/* Ítem "Fiestas" — acento cálido (#e1147b ya existe en el proyecto
+   como color nightlife) y flecha ↗ que indica enlace externo */
+.topbar-nav a.nav-parties,
+.topbar-nav a.nav-parties:visited {
+    color: #e1147b;
+    font-weight: 600;
+}
+
+.topbar-nav a.nav-parties:hover {
+    color: #c00d6a;
+}
+
+.mobile-nav-links a.nav-parties {
+    color: #e1147b;
+}
+
+/* Wrappers de layout para header.topbar:
+   agrupa [logo + nav] a la izquierda y [back-btn + hamburger]
+   a la derecha, manteniendo el justify-content:space-between
+   del .topbar sin tocar la regla existente. */
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ciudades.html — topbar sobre imagen hero-legacy
+   ─────────────────────────────────────────────────────────────
+   El .topbar aquí es position:absolute sin fondo propio, sobre
+   la foto de ciudad (brightness:0.5 + gradiente oscuro).
+   .logo y .topbar-nav a usan colores oscuros pensados para
+   fondos claros → se vuelven ilegibles. Se sobreescriben con
+   blanco, igual que ya hace .hero-legacy .back-btn { color:#fff }.
+   ───────────────────────────────────────────────────────────── */
+
+.hero-legacy .logo {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.hero-legacy .logo-dot {
+    color: #e1147b;  /* acento cálido, visible sobre imagen oscura */
+}
+
+.hero-legacy .topbar-nav a {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.hero-legacy .topbar-nav a:hover {
+    color: #fff;
+}
+
+.hero-legacy .topbar-nav a.is-active {
+    color: #fff;
+}
+
+.hero-legacy .topbar-nav a.nav-parties {
+    color: #e1147b;
+}
+
+.hero-legacy .topbar-nav a.nav-parties:hover {
+    color: #ff3d9a;
+}
+
+/* Líneas del hamburger → blancas sobre la imagen (móvil) */
+.hero-legacy .hamburger-btn span {
+    background: #fff;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOBILE NAV — dropdown compacto (<768px)
+   ─────────────────────────────────────────────────────────────
+   Solo afecta móvil. Convierte el overlay fullscreen en un panel
+   compacto pegado al header. Escritorio no se toca.
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+    /* Topnav (index, ciudades-todas) tiene z-index:50, por debajo del
+       panel (z-index:150). Lo subimos para que el header quede visible
+       por encima del dropdown. header.topbar ya tiene z-index:1001. */
+    .topnav {
+        z-index: 200;
+    }
+
+    /* Fullscreen → dropdown:
+       - bottom:auto cancela el bottom:0 de inset:0
+       - height:auto → el panel toma solo la altura de su contenido
+       - padding-top empuja los links por debajo del header;
+         usa --topbar-h si está definido (ciudad/mapa vía JS),
+         80px de fallback funciona para topnav (80px) y
+         deja un margen aceptable en header.topbar (~65px) */
+    .mobile-nav {
+        bottom: auto;
+        height: auto;
+        justify-content: flex-start;
+        padding: var(--topbar-h, 80px) 0 20px;
+        box-shadow: 0 8px 24px rgba(70, 72, 212, 0.10);
+        border-bottom: 1px solid var(--outline-variant);
+    }
+
+    /* El botón ✕ es innecesario en un dropdown;
+       el hamburger hace de toggle open/close */
+    .mobile-nav-close {
+        display: none;
+    }
+
+    /* Lista: ancho completo, sin centrado vertical */
+    .mobile-nav-links {
+        align-items: stretch;
+        width: 100%;
+        gap: 0;
+    }
+
+    /* Ítems compactos — tipografía body, NO display/Syne */
+    .mobile-nav-links a {
+        font-family: var(--font-body);
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: 0;
+        padding: 12px 28px;
+        line-height: 1.4;
+        color: var(--on-surface);
+        border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .mobile-nav-links a:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-nav-links a:hover {
+        color: var(--primary);
+        background: var(--surface-container-low);
+    }
+
+    .mobile-nav-links a.is-active {
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    /* "Fiestas" mantiene su acento magenta en móvil */
+    .mobile-nav-links a.nav-parties {
+        color: #e1147b;
+    }
+
+    .mobile-nav-links a.nav-parties:hover {
+        color: #c00d6a;
+        background: var(--surface-container-low);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   APP BOTTOM NAV — 4 ítems, visible solo en móvil (<768px)
+   ─────────────────────────────────────────────────────────────
+   Reemplaza hamburger + dropdown en móvil. Clases propias
+   (.app-bottom-nav) para no colisionar con el .bottom-nav
+   antiguo (que queda definitivamente oculto en el bloque @media
+   de abajo, junto con la migración del padding-bottom).
+   ───────────────────────────────────────────────────────────── */
+
+.app-bottom-nav {
+    display: none;               /* oculto en escritorio */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 500;                /* por encima de Leaflet tiles y del mobile-nav (150) */
+    background: var(--surface);
+    border-top: 1px solid var(--outline-variant);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+    justify-content: space-around;
+    align-items: stretch;
+}
+
+.app-bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 3px;
+    text-decoration: none;
+    color: var(--on-surface-variant);
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.2;
+    transition: color 0.15s;
+    padding: 6px 0 10px;
+    min-width: 0;
+}
+
+.app-bottom-nav-item .material-symbols-outlined {
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.app-bottom-nav-item:hover {
+    color: var(--primary);
+}
+
+.app-bottom-nav-item--active {
+    color: var(--primary);
+}
+
+/* Ítem Fiestas: magenta permanente, independiente del estado activo */
+.app-bottom-nav-item--parties,
+.app-bottom-nav-item--parties:hover,
+.app-bottom-nav-item--parties.app-bottom-nav-item--active {
+    color: #e1147b;
+}
+
+@media (max-width: 768px) {
+    /* Mostrar el nuevo bottom-nav */
+    .app-bottom-nav {
+        display: flex;
+    }
+
+    /* Ocultar hamburger — la navegación pasa al bottom-nav */
+    .hamburger-btn {
+        display: none;
+    }
+
+    /* Ocultar el dropdown — ya no tiene trigger visible en móvil */
+    .mobile-nav {
+        display: none !important;
+    }
+
+    /* Ocultar definitivamente el bottom-nav antiguo (Explorar/Eventos/…) */
+    .bottom-nav {
+        display: none !important;
+    }
+
+    /* Compensar la altura del bottom-nav en el padding inferior del body
+       (sobreescribe el padding-bottom:72px del bloque @media anterior) */
+    body {
+        padding-bottom: 68px;
+    }
+}

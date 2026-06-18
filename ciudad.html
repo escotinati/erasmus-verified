@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Ciudad — Erasmus Parties</title>
+        <title>Ciudad — Erasmus Verified</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
             href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
@@ -27,7 +27,16 @@
 
     <body>
         <header class="topbar">
-            <a href="index.html" class="logo">Erasmus<span class="logo-dot">Parties</span></a>
+            <div class="topbar-left">
+                <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
+                <nav class="topbar-nav" id="mainNav">
+                    <a href="index.html">Inicio</a>
+                    <a href="ciudades-todas.html">Ciudades</a>
+                    <a href="servicios.html">Servicios</a>
+                    <a href="viajes.html">Viajes</a>
+                    <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+                </nav>
+            </div>
             <nav class="breadcrumb">
                 <a href="index.html">Inicio</a>
                 <span class="sep">/</span>
@@ -35,19 +44,24 @@
                 <span class="sep">/</span>
                 <span class="current" id="breadcrumbCiudad">Ciudad</span>
             </nav>
-            <a href="index.html" class="back-btn" id="backLink">
-                <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                >
-                    <polyline points="15 18 9 12 15 6" />
-                </svg>
-                <span id="backLinkText">Volver</span>
-            </a>
+            <div class="topbar-right">
+                <a href="index.html" class="back-btn" id="backLink">
+                    <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                    >
+                        <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                    <span id="backLinkText">Volver</span>
+                </a>
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
         </header>
 
         <main class="city-main">
@@ -73,7 +87,7 @@
 
         <footer class="legacy-footer">
             <a id="footerBack" href="index.html">← Volver</a>
-            <span>Erasmus Parties · Comunidad Europa</span>
+            <span>Erasmus Verified · Comunidad Europa</span>
         </footer>
 
         <script
@@ -88,5 +102,63 @@
         <script src="js/mapPartners.js"></script>
         <script src="js/cityMap.js"></script>
         <script src="js/ciudad.js"></script>
+
+        <!-- ── MOBILE NAV OVERLAY ─────────────────────────────── -->
+        <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+            <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <nav class="mobile-nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="ciudades-todas.html">Ciudades</a>
+                <a href="servicios.html">Servicios</a>
+                <a href="viajes.html">Viajes</a>
+                <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+            </nav>
+        </div>
+
+        <!-- ── APP BOTTOM NAV (móvil) ────────────────────────── -->
+        <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
+            <a href="ciudades-todas.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">location_city</span>
+                <span>Ciudades</span>
+            </a>
+            <a href="servicios.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">storefront</span>
+                <span>Servicios</span>
+            </a>
+            <a href="viajes.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">flight</span>
+                <span>Viajes</span>
+            </a>
+            <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="app-bottom-nav-item app-bottom-nav-item--parties">
+                <span class="material-symbols-outlined">nightlife</span>
+                <span>Fiestas</span>
+            </a>
+        </nav>
+        <script>
+        /* ── Hamburger + ítem activo (nav global + bottom-nav) ── */
+        (function () {
+            var btn   = document.getElementById('hamburgerBtn');
+            var mnav  = document.getElementById('mobileNav');
+            var close = document.getElementById('mobileNavClose');
+            function openNav()  { btn.classList.add('is-open');    mnav.classList.add('is-open');    mnav.removeAttribute('aria-hidden'); }
+            function closeNav() { btn.classList.remove('is-open'); mnav.classList.remove('is-open'); mnav.setAttribute('aria-hidden', 'true'); }
+            if (btn && mnav) {
+                btn.addEventListener('click', function () { mnav.classList.contains('is-open') ? closeNav() : openNav(); });
+                if (close) close.addEventListener('click', closeNav);
+                mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) { a.addEventListener('click', closeNav); });
+            }
+            var page = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] || 'index.html';
+            document.querySelectorAll('.topbar-nav a, .mobile-nav-links a').forEach(function (a) {
+                var href = (a.getAttribute('href') || '').split('?')[0];
+                if (href && !href.startsWith('http') && href === page) a.classList.add('is-active');
+            });
+            document.querySelectorAll('.app-bottom-nav .app-bottom-nav-item').forEach(function (a) {
+                var href = (a.getAttribute('href') || '').split('?')[0];
+                if (href && !href.startsWith('http') && href === page) a.classList.add('app-bottom-nav-item--active');
+            });
+        })();
+        </script>
     </body>
 </html>

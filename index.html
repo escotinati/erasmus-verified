@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Erasmus Parties</title>
+    <title>Inicio — Erasmus Verified</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
@@ -17,11 +17,19 @@
     <nav class="topnav" id="topNav">
         <div class="topnav-inner">
             <div class="topnav-left">
-                <a href="index.html" class="brand">Erasmus Parties</a>
-                <div class="topnav-links">
-                    <a href="#ciudades" class="nav-link">Ciudades</a>
-                    <a href="#noches" class="nav-link">Noches</a>
-                </div>
+                <a href="index.html" class="brand">Erasmus Verified</a>
+                <nav class="topbar-nav" id="mainNav">
+                    <a href="index.html">Inicio</a>
+                    <a href="ciudades-todas.html">Ciudades</a>
+                    <a href="servicios.html">Servicios</a>
+                    <a href="viajes.html">Viajes</a>
+                    <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+                </nav>
+            </div>
+            <div class="topnav-right">
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
     </nav>
@@ -81,7 +89,7 @@
             <div class="nights-header">
                 <span class="eyebrow eyebrow--secondary">VIDA NOCTURNA</span>
                 <h2 class="section-title">Noches en tendencia</h2>
-                <p class="section-sub">Desde techno underground en Berlín hasta veladas en azoteas de Madrid. Obtén acceso exclusivo a los mejores eventos en tu ciudad con Erasmus Parties.</p>
+                <p class="section-sub">Desde techno underground en Berlín hasta veladas en azoteas de Madrid. Obtén acceso exclusivo a los mejores eventos en tu ciudad con Erasmus Verified.</p>
             </div>
 
             <div class="events-scroll">
@@ -183,7 +191,7 @@
         <section class="section cta-section" id="comunidad">
             <div class="cta-card">
                 <div class="cta-text">
-                    <h2 class="cta-title">Únete a Erasmus Parties.</h2>
+                    <h2 class="cta-title">Únete a Erasmus Verified.</h2>
                     <p class="cta-sub">Conéctate con miles de estudiantes que emprenden el mismo viaje. Consejos compartidos, compañeros de piso y recuerdos inolvidables.</p>
                     <div class="cta-actions">
                         <button class="btn-primary-pill">Descargar la App</button>
@@ -217,8 +225,8 @@
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-brand">
-                <span class="footer-logo">Erasmus Parties</span>
-                <p class="footer-copy">© 2024 Erasmus Parties. Experiencias Premium para Estudiantes de Intercambio.</p>
+                <span class="footer-logo">Erasmus Verified</span>
+                <p class="footer-copy">© 2024 Erasmus Verified. Experiencias Premium para Estudiantes de Intercambio.</p>
             </div>
             <nav class="footer-links">
                 <a href="#">Sobre nosotros</a>
@@ -234,28 +242,66 @@
         </div>
     </footer>
 
-    <!-- ── BOTTOM NAV (mobile) ───────────────────────────────── -->
-    <nav class="bottom-nav" id="bottomNav">
-        <a href="index.html" class="bottom-nav-item bottom-nav-item--active" data-label="Explorar">
-            <span class="material-symbols-outlined">explore</span>
-            <span>Explorar</span>
+    <!-- ── MOBILE NAV OVERLAY ───────────────────────────────── -->
+    <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <nav class="mobile-nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="ciudades-todas.html">Ciudades</a>
+            <a href="servicios.html">Servicios</a>
+            <a href="viajes.html">Viajes</a>
+            <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+        </nav>
+    </div>
+
+    <!-- ── APP BOTTOM NAV (móvil) ────────────────────────────── -->
+    <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
+        <a href="ciudades-todas.html" class="app-bottom-nav-item">
+            <span class="material-symbols-outlined">location_city</span>
+            <span>Ciudades</span>
         </a>
-        <a href="#noches" class="bottom-nav-item" data-label="Eventos">
+        <a href="servicios.html" class="app-bottom-nav-item">
+            <span class="material-symbols-outlined">storefront</span>
+            <span>Servicios</span>
+        </a>
+        <a href="viajes.html" class="app-bottom-nav-item">
+            <span class="material-symbols-outlined">flight</span>
+            <span>Viajes</span>
+        </a>
+        <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="app-bottom-nav-item app-bottom-nav-item--parties">
             <span class="material-symbols-outlined">nightlife</span>
-            <span>Eventos</span>
-        </a>
-        <a href="#servicios" class="bottom-nav-item" data-label="Mercado">
-            <span class="material-symbols-outlined">shopping_bag</span>
-            <span>Mercado</span>
-        </a>
-        <a href="#" class="bottom-nav-item" data-label="Perfil">
-            <span class="material-symbols-outlined">account_circle</span>
-            <span>Perfil</span>
+            <span>Fiestas</span>
         </a>
     </nav>
 
     <script src="js/data.js"></script>
     <script src="js/index.js"></script>
+    <script>
+    /* ── Hamburger + ítem activo (nav global + bottom-nav) ───── */
+    (function () {
+        var btn   = document.getElementById('hamburgerBtn');
+        var nav   = document.getElementById('mobileNav');
+        var close = document.getElementById('mobileNavClose');
+        function openNav()  { btn.classList.add('is-open');    nav.classList.add('is-open');    nav.removeAttribute('aria-hidden'); }
+        function closeNav() { btn.classList.remove('is-open'); nav.classList.remove('is-open'); nav.setAttribute('aria-hidden', 'true'); }
+        if (btn && nav) {
+            btn.addEventListener('click', function () { nav.classList.contains('is-open') ? closeNav() : openNav(); });
+            if (close) close.addEventListener('click', closeNav);
+            nav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) { a.addEventListener('click', closeNav); });
+        }
+        var page = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] || 'index.html';
+        document.querySelectorAll('.topbar-nav a, .mobile-nav-links a').forEach(function (a) {
+            var href = (a.getAttribute('href') || '').split('?')[0];
+            if (href && !href.startsWith('http') && href === page) a.classList.add('is-active');
+        });
+        document.querySelectorAll('.app-bottom-nav .app-bottom-nav-item').forEach(function (a) {
+            var href = (a.getAttribute('href') || '').split('?')[0];
+            if (href && !href.startsWith('http') && href === page) a.classList.add('app-bottom-nav-item--active');
+        });
+    })();
+    </script>
     <script>
     (function () {
         var input = document.getElementById('citySearch');
