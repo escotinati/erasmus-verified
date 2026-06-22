@@ -1,338 +1,383 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Todas las ciudades — Erasmus Verified</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="css/styles.css" />
+        <style>
+            /* ── Estilos específicos de esta página ─────────────────── */
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todas las ciudades — Erasmus Verified</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" />
-    <style>
-        /* ── Estilos específicos de esta página ─────────────────── */
-        
-        .all-cities-hero {
-            background: var(--background);
-            padding: 120px var(--margin-desktop) 60px;
-            border-bottom: 1px solid var(--outline-variant);
-        }
-        
-        .all-cities-hero .eyebrow {
-            margin-bottom: 12px;
-        }
-        
-        .all-cities-hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 4vw, 3.2rem);
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            color: var(--on-surface);
-            margin-bottom: 12px;
-        }
-        
-        .all-cities-hero p {
-            font-size: 16px;
-            color: var(--on-surface-variant);
-        }
-        
-        .all-cities-hero strong {
-            color: var(--primary);
-        }
-        /* Barra de búsqueda/filtro */
-        
-        .filter-bar {
-            max-width: var(--container-max);
-            margin: 0 auto;
-            padding: 32px var(--margin-desktop) 0;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-input-wrap {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
-        }
-        
-        .filter-input-wrap .material-symbols-outlined {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--outline);
-            font-size: 20px;
-        }
-        
-        .filter-input {
-            width: 100%;
-            background: var(--surface-container-low);
-            border: 1.5px solid var(--outline-variant);
-            border-radius: var(--radius-full);
-            padding: 12px 16px 12px 44px;
-            font-family: var(--font-body);
-            font-size: 15px;
-            color: var(--on-surface);
-            outline: none;
-            transition: border-color .15s;
-        }
-        
-        .filter-input:focus {
-            border-color: var(--primary);
-        }
-        
-        .filter-input::placeholder {
-            color: var(--outline);
-        }
-        
-        .filter-count {
-            font-size: 13px;
-            color: var(--on-surface-variant);
-            white-space: nowrap;
-        }
-        /* Sección por letra */
-        
-        .cities-section {
-            max-width: var(--container-max);
-            margin: 0 auto;
-            padding: 48px var(--margin-desktop) 100px;
-        }
-        
-        .letter-group {
-            margin-bottom: 48px;
-        }
-        
-        .letter-group[hidden] {
-            display: none;
-        }
-        
-        .letter-heading {
-            font-family: var(--font-display);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 16px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--outline-variant);
-        }
-        
-        .city-items-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-        
-        .city-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: var(--surface-container-low);
-            border: 1px solid var(--outline-variant);
-            border-radius: var(--radius-lg);
-            text-decoration: none;
-            color: var(--on-surface);
-            font-size: 14px;
-            font-weight: 500;
-            transition: background .15s, border-color .15s, transform .15s;
-        }
-        
-        .city-item:hover {
-            background: var(--primary-fixed);
-            border-color: var(--primary);
-            transform: translateY(-1px);
-            color: var(--primary);
-        }
-        
-        .city-item-flag {
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-        
-        .city-item-info {
-            flex: 1;
-            overflow: hidden;
-        }
-        
-        .city-item-name {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .city-item-country {
-            font-size: 11px;
-            color: var(--on-surface-variant);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .city-item:hover .city-item-country {
-            color: var(--primary);
-            opacity: .7;
-        }
-        /* No results */
-        
-        .no-results {
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--on-surface-variant);
-            display: none;
-        }
-        
-        .no-results.is-visible {
-            display: block;
-        }
-        
-        .no-results-icon {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 16px;
-        }
-        
-        .no-results h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--on-surface);
-            margin-bottom: 8px;
-        }
-        /* Responsive */
-        
-        @media (max-width: 900px) {
             .all-cities-hero {
-                padding: 100px var(--margin-mobile) 48px;
+                background:
+                    radial-gradient(circle at top right, rgba(70, 72, 212, 0.1), transparent 50%),
+                    radial-gradient(
+                        circle at bottom left,
+                        rgba(169, 51, 73, 0.05),
+                        transparent 50%
+                    ),
+                    var(--background);
+                padding: 120px var(--margin-desktop) 60px;
+                border-bottom: 1px solid var(--outline-variant);
+                text-align: center;
             }
+
+            .all-cities-hero .eyebrow {
+                margin-bottom: 12px;
+            }
+
+            .all-cities-hero h1 {
+                font-family: var(--font-display);
+                font-size: clamp(2rem, 4vw, 3.2rem);
+                font-weight: 800;
+                letter-spacing: -1.5px;
+                color: var(--on-surface);
+                margin-bottom: 16px;
+            }
+
+            .all-cities-hero p {
+                font-size: 18px;
+                color: var(--on-surface-variant);
+                max-width: 640px;
+                margin: 0 auto;
+                line-height: 1.6;
+            }
+
+            .all-cities-hero strong {
+                color: var(--primary);
+            }
+            /* Barra de búsqueda/filtro */
+
             .filter-bar {
-                padding: 24px var(--margin-mobile) 0;
+                max-width: var(--container-max);
+                margin: 0 auto;
+                padding: 32px var(--margin-desktop) 0;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
             }
+
+            .filter-input-wrap {
+                flex: 1;
+                min-width: 200px;
+                position: relative;
+            }
+
+            .filter-input-wrap .material-symbols-outlined {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--outline);
+                font-size: 20px;
+            }
+
+            .filter-input {
+                width: 100%;
+                background: var(--surface-container-low);
+                border: 1.5px solid var(--outline-variant);
+                border-radius: var(--radius-full);
+                padding: 12px 16px 12px 44px;
+                font-family: var(--font-body);
+                font-size: 15px;
+                color: var(--on-surface);
+                outline: none;
+                transition: border-color 0.15s;
+            }
+
+            .filter-input:focus {
+                border-color: var(--primary);
+            }
+
+            .filter-input::placeholder {
+                color: var(--outline);
+            }
+
+            .filter-count {
+                font-size: 13px;
+                color: var(--on-surface-variant);
+                white-space: nowrap;
+            }
+            /* Sección por letra */
+
             .cities-section {
-                padding: 40px var(--margin-mobile) 80px;
+                max-width: var(--container-max);
+                margin: 0 auto;
+                padding: 48px var(--margin-desktop) 100px;
             }
-            .city-items-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        
-        @media (max-width: 600px) {
-            .city-items-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
-</head>
 
-<body>
+            .letter-group {
+                margin-bottom: 48px;
+            }
 
-    <!-- TOP NAV -->
-    <nav class="topnav" id="topNav">
-        <div class="topnav-inner">
-            <div class="topnav-left">
-                <a href="index.html" class="brand">Erasmus Verified</a>
-                <nav class="topbar-nav" id="mainNav">
-                    <a href="index.html">Inicio</a>
-                    <a href="ciudades-todas.html">Ciudades</a>
-                    <a href="servicios.html">Servicios</a>
-                    <a href="viajes.html">Viajes</a>
-                    <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+            .letter-group[hidden] {
+                display: none;
+            }
+
+            .letter-heading {
+                font-family: var(--font-display);
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--primary);
+                margin-bottom: 16px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid var(--outline-variant);
+            }
+
+            .city-items-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .city-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 16px;
+                background: var(--surface-container-low);
+                border: 1px solid var(--outline-variant);
+                border-radius: var(--radius-lg);
+                text-decoration: none;
+                color: var(--on-surface);
+                font-size: 14px;
+                font-weight: 500;
+                transition:
+                    background 0.15s,
+                    border-color 0.15s,
+                    transform 0.15s;
+            }
+
+            .city-item:hover {
+                background: var(--primary-fixed);
+                border-color: var(--primary);
+                transform: translateY(-1px);
+                color: var(--primary);
+            }
+
+            .city-item-flag {
+                font-size: 1.1rem;
+                flex-shrink: 0;
+            }
+
+            .city-item-info {
+                flex: 1;
+                overflow: hidden;
+            }
+
+            .city-item-name {
+                font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .city-item-country {
+                font-size: 11px;
+                color: var(--on-surface-variant);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .city-item:hover .city-item-country {
+                color: var(--primary);
+                opacity: 0.7;
+            }
+            /* No results */
+
+            .no-results {
+                text-align: center;
+                padding: 80px 20px;
+                color: var(--on-surface-variant);
+                display: none;
+            }
+
+            .no-results.is-visible {
+                display: block;
+            }
+
+            .no-results-icon {
+                font-size: 3rem;
+                display: block;
+                margin-bottom: 16px;
+            }
+
+            .no-results h3 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--on-surface);
+                margin-bottom: 8px;
+            }
+            /* Responsive */
+
+            @media (max-width: 900px) {
+                .all-cities-hero {
+                    padding: 100px var(--margin-mobile) 48px;
+                }
+                .filter-bar {
+                    padding: 24px var(--margin-mobile) 0;
+                }
+                .cities-section {
+                    padding: 40px var(--margin-mobile) 80px;
+                }
+                .city-items-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+
+            @media (max-width: 600px) {
+                .city-items-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- TOP NAV -->
+        <nav class="topnav" id="topNav">
+            <div class="topnav-inner">
+                <div class="topnav-left">
+                    <a href="index.html" class="brand">Erasmus Verified</a>
+                    <nav class="topbar-nav" id="mainNav">
+                        <a href="index.html">Inicio</a>
+                        <a href="ciudades-todas.html">Ciudades</a>
+                        <a href="servicios.html">Servicios</a>
+                        <a href="viajes.html">Viajes</a>
+                        <a
+                            href="https://erasmusparties.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="nav-parties"
+                            >🎉 Fiestas ↗</a
+                        >
+                    </nav>
+                </div>
+                <div class="topnav-right">
+                    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- HERO -->
+        <div class="all-cities-hero">
+            <div style="max-width: var(--container-max); margin: 0 auto">
+                <span class="eyebrow eyebrow--primary">DESTINOS ERASMUS+</span>
+                <h1>Todas las ciudades</h1>
+                <p>
+                    <strong id="totalCount">—</strong> ciudades en
+                    <strong id="totalCountries">—</strong> países europeos. Encuentra tu destino y
+                    únete a la comunidad antes de llegar.
+                </p>
+            </div>
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="filter-bar">
+            <div class="filter-input-wrap">
+                <span class="material-symbols-outlined">search</span>
+                <input
+                    type="text"
+                    class="filter-input"
+                    id="filterInput"
+                    placeholder="Filtra por ciudad o país…"
+                    autocomplete="off"
+                />
+            </div>
+            <span class="filter-count" id="filterCount"></span>
+        </div>
+
+        <!-- CITIES LIST -->
+        <div class="cities-section" id="citiesSection">
+            <div class="no-results" id="noResults">
+                <span class="no-results-icon">🔍</span>
+                <h3>Sin resultados</h3>
+                <p>Prueba con otro nombre de ciudad o país.</p>
+            </div>
+            <!-- JS rellena los grupos de letras aquí -->
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-logo">Erasmus Verified</span>
+                    <p class="footer-copy">
+                        © 2024 Erasmus Verified. Experiencias Premium para Estudiantes de
+                        Intercambio.
+                    </p>
+                </div>
+                <nav class="footer-links">
+                    <a href="#">Sobre nosotros</a>
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos</a>
                 </nav>
             </div>
-            <div class="topnav-right">
-                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
-                    <span></span><span></span><span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
+        </footer>
 
-    <!-- HERO -->
-    <div class="all-cities-hero">
-        <div style="max-width:var(--container-max);margin:0 auto;">
-            <span class="eyebrow eyebrow--primary">DESTINOS ERASMUS+</span>
-            <h1>Todas las ciudades</h1>
-            <p>
-                <strong id="totalCount">—</strong> ciudades en
-                <strong id="totalCountries">—</strong> países europeos. Encuentra tu destino y únete a la comunidad antes de llegar.
-            </p>
-        </div>
-    </div>
-
-    <!-- FILTER BAR -->
-    <div class="filter-bar">
-        <div class="filter-input-wrap">
-            <span class="material-symbols-outlined">search</span>
-            <input type="text" class="filter-input" id="filterInput" placeholder="Filtra por ciudad o país…" autocomplete="off" />
-        </div>
-        <span class="filter-count" id="filterCount"></span>
-    </div>
-
-    <!-- CITIES LIST -->
-    <div class="cities-section" id="citiesSection">
-        <div class="no-results" id="noResults">
-            <span class="no-results-icon">🔍</span>
-            <h3>Sin resultados</h3>
-            <p>Prueba con otro nombre de ciudad o país.</p>
-        </div>
-        <!-- JS rellena los grupos de letras aquí -->
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <span class="footer-logo">Erasmus Verified</span>
-                <p class="footer-copy">© 2024 Erasmus Verified. Experiencias Premium para Estudiantes de Intercambio.</p>
-            </div>
-            <nav class="footer-links">
-                <a href="#">Sobre nosotros</a>
-                <a href="#">Privacidad</a>
-                <a href="#">Términos</a>
+        <!-- ── MOBILE NAV OVERLAY ───────────────────────────────── -->
+        <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+            <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <nav class="mobile-nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="ciudades-todas.html">Ciudades</a>
+                <a href="servicios.html">Servicios</a>
+                <a href="viajes.html">Viajes</a>
+                <a
+                    href="https://erasmusparties.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="nav-parties"
+                    >🎉 Fiestas ↗</a
+                >
             </nav>
         </div>
-    </footer>
 
-    <!-- ── MOBILE NAV OVERLAY ───────────────────────────────── -->
-    <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-        <nav class="mobile-nav-links">
-            <a href="index.html">Inicio</a>
-            <a href="ciudades-todas.html">Ciudades</a>
-            <a href="servicios.html">Servicios</a>
-            <a href="viajes.html">Viajes</a>
-            <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+        <!-- ── APP BOTTOM NAV (móvil) ────────────────────────────── -->
+        <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
+            <a href="ciudades-todas.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">location_city</span>
+                <span>Ciudades</span>
+            </a>
+            <a href="servicios.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">storefront</span>
+                <span>Servicios</span>
+            </a>
+            <a href="viajes.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">flight</span>
+                <span>Viajes</span>
+            </a>
+            <a
+                href="https://erasmusparties.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="app-bottom-nav-item app-bottom-nav-item--parties"
+            >
+                <span class="material-symbols-outlined">nightlife</span>
+                <span>Fiestas</span>
+            </a>
         </nav>
-    </div>
 
-    <!-- ── APP BOTTOM NAV (móvil) ────────────────────────────── -->
-    <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
-        <a href="ciudades-todas.html" class="app-bottom-nav-item">
-            <span class="material-symbols-outlined">location_city</span>
-            <span>Ciudades</span>
-        </a>
-        <a href="servicios.html" class="app-bottom-nav-item">
-            <span class="material-symbols-outlined">storefront</span>
-            <span>Servicios</span>
-        </a>
-        <a href="viajes.html" class="app-bottom-nav-item">
-            <span class="material-symbols-outlined">flight</span>
-            <span>Viajes</span>
-        </a>
-        <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="app-bottom-nav-item app-bottom-nav-item--parties">
-            <span class="material-symbols-outlined">nightlife</span>
-            <span>Fiestas</span>
-        </a>
-    </nav>
-
-    <script src="js/data.js"></script>
-    <script>
-        (function() {
+        <script src="js/data.js"></script>
+        <script>
+            (function () {
                 // ── Build flat city list sorted alphabetically ──────────────
                 const allCities = [];
                 for (const [paisName, country] of Object.entries(COUNTRIES)) {
@@ -368,7 +413,7 @@
                     const section = document.getElementById('citiesSection');
                     const noResult = document.getElementById('noResults');
                     // Eliminar grupos anteriores
-                    section.querySelectorAll('.letter-group').forEach(el => el.remove());
+                    section.querySelectorAll('.letter-group').forEach((el) => el.remove());
 
                     if (!cities.length) {
                         noResult.classList.add('is-visible');
@@ -376,7 +421,8 @@
                         return;
                     }
                     noResult.classList.remove('is-visible');
-                    document.getElementById('filterCount').textContent = `${cities.length} ciudad${cities.length !== 1 ? 'es' : ''}`;
+                    document.getElementById('filterCount').textContent =
+                        `${cities.length} ciudad${cities.length !== 1 ? 'es' : ''}`;
 
                     const groups = groupByLetter(cities);
                     for (const [letter, group] of Object.entries(groups).sort()) {
@@ -385,71 +431,104 @@
                         div.innerHTML = `
         <div class="letter-heading">${letter}</div>
         <div class="city-items-grid">
-          ${group.map(city => `
+          ${group
+              .map(
+                  (city) => `
             <a class="city-item" href="${city.url}">
               <span class="city-item-flag">${city.flag}</span>
               <div class="city-item-info">
                 <div class="city-item-name">${city.name}</div>
                 <div class="city-item-country">${city.country}</div>
               </div>
-            </a>`).join('')}
+            </a>`
+              )
+              .join('')}
         </div>`;
-      section.insertBefore(div, noResult);
-    }
-  }
- 
-  // Render inicial
-  renderGroups(allCities);
- 
-  // ── Filter ──────────────────────────────────────────────────
-  function normalize(str) {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  }
- 
-  document.getElementById('filterInput').addEventListener('input', function () {
-    const q  = this.value.trim();
-    const nq = normalize(q);
-    if (!nq) { renderGroups(allCities); return; }
-    const filtered = allCities.filter(c =>
-      normalize(c.name).includes(nq) || normalize(c.country).includes(nq)
-    );
-    renderGroups(filtered);
-  });
- 
-  // ── Nav scroll ──────────────────────────────────────────────
-  const nav = document.getElementById('topNav');
-  if (nav) {
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 20);
-    }, { passive: true });
-  }
-})();
-    </script>
+                        section.insertBefore(div, noResult);
+                    }
+                }
 
-    <script>
-    /* ── Hamburger + ítem activo (nav global) ──────────────── */
-    (function () {
-        var btn   = document.getElementById('hamburgerBtn');
-        var mnav  = document.getElementById('mobileNav');
-        var close = document.getElementById('mobileNavClose');
-        function openNav()  { btn.classList.add('is-open');    mnav.classList.add('is-open');    mnav.removeAttribute('aria-hidden'); }
-        function closeNav() { btn.classList.remove('is-open'); mnav.classList.remove('is-open'); mnav.setAttribute('aria-hidden', 'true'); }
-        if (btn && mnav) {
-            btn.addEventListener('click', function () { mnav.classList.contains('is-open') ? closeNav() : openNav(); });
-            if (close) close.addEventListener('click', closeNav);
-            mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) { a.addEventListener('click', closeNav); });
-        }
-        var page = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] || 'index.html';
-        document.querySelectorAll('.topbar-nav a, .mobile-nav-links a').forEach(function (a) {
-            var href = (a.getAttribute('href') || '').split('?')[0];
-            if (href && !href.startsWith('http') && href === page) a.classList.add('is-active');
-        });
-        document.querySelectorAll('.app-bottom-nav .app-bottom-nav-item').forEach(function (a) {
-            var href = (a.getAttribute('href') || '').split('?')[0];
-            if (href && !href.startsWith('http') && href === page) a.classList.add('app-bottom-nav-item--active');
-        });
-    })();
-    </script>
-</body>
+                // Render inicial
+                renderGroups(allCities);
 
+                // ── Filter ──────────────────────────────────────────────────
+                function normalize(str) {
+                    return str
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .toLowerCase();
+                }
+
+                document.getElementById('filterInput').addEventListener('input', function () {
+                    const q = this.value.trim();
+                    const nq = normalize(q);
+                    if (!nq) {
+                        renderGroups(allCities);
+                        return;
+                    }
+                    const filtered = allCities.filter(
+                        (c) => normalize(c.name).includes(nq) || normalize(c.country).includes(nq)
+                    );
+                    renderGroups(filtered);
+                });
+
+                // ── Nav scroll ──────────────────────────────────────────────
+                const nav = document.getElementById('topNav');
+                if (nav) {
+                    window.addEventListener(
+                        'scroll',
+                        () => {
+                            nav.classList.toggle('scrolled', window.scrollY > 20);
+                        },
+                        { passive: true }
+                    );
+                }
+            })();
+        </script>
+
+        <script>
+            /* ── Hamburger + ítem activo (nav global) ──────────────── */
+            (function () {
+                var btn = document.getElementById('hamburgerBtn');
+                var mnav = document.getElementById('mobileNav');
+                var close = document.getElementById('mobileNavClose');
+                function openNav() {
+                    btn.classList.add('is-open');
+                    mnav.classList.add('is-open');
+                    mnav.removeAttribute('aria-hidden');
+                }
+                function closeNav() {
+                    btn.classList.remove('is-open');
+                    mnav.classList.remove('is-open');
+                    mnav.setAttribute('aria-hidden', 'true');
+                }
+                if (btn && mnav) {
+                    btn.addEventListener('click', function () {
+                        mnav.classList.contains('is-open') ? closeNav() : openNav();
+                    });
+                    if (close) close.addEventListener('click', closeNav);
+                    mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) {
+                        a.addEventListener('click', closeNav);
+                    });
+                }
+                var page =
+                    (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] ||
+                    'index.html';
+                document
+                    .querySelectorAll('.topbar-nav a, .mobile-nav-links a')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('is-active');
+                    });
+                document
+                    .querySelectorAll('.app-bottom-nav .app-bottom-nav-item')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('app-bottom-nav-item--active');
+                    });
+            })();
+        </script>
+    </body>
 </html>

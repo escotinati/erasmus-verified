@@ -1,122 +1,299 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Servicios — Erasmus Verified</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="css/styles.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Servicios — Erasmus Verified</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" />
-</head>
+    <body class="servicios-page">
+        <header class="topbar">
+            <div class="topbar-left">
+                <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
+                <nav class="topbar-nav" id="mainNav">
+                    <a href="index.html">Inicio</a>
+                    <a href="ciudades-todas.html">Ciudades</a>
+                    <a href="servicios.html">Servicios</a>
+                    <a href="viajes.html">Viajes</a>
+                    <a
+                        href="https://erasmusparties.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="nav-parties"
+                        >🎉 Fiestas ↗</a
+                    >
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </header>
 
-<body>
+        <main style="flex: 1">
+            <div class="section">
+                <span class="eyebrow eyebrow--primary">SERVICIOS VERIFICADOS</span>
+                <h1 class="section-title">Todo lo que necesitas para tu Erasmus</h1>
+                <p class="section-sub">
+                    Una selección de SIM, cuentas bancarias y transporte probados por la comunidad
+                    para que tu llegada sea lo más sencilla posible.
+                </p>
 
-    <header class="topbar">
-        <div class="topbar-left">
-            <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
-            <nav class="topbar-nav" id="mainNav">
+                <!-- ── TARJETA SIM ──────────────────────────────────── -->
+                <div class="servicios-category">
+                    <span class="eyebrow eyebrow--primary">TARJETA SIM</span>
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <span class="material-symbols-outlined">sim_card</span>
+                            </div>
+                            <h3 class="service-name">Orange Holiday Europe</h3>
+                            <p class="service-desc">
+                                <strong>25€ / 30 días</strong> · 50 GB en roaming UE, llamadas
+                                ilimitadas dentro de la UE. Activación en tienda física.
+                            </p>
+                            <a
+                                href="https://orangeholiday.orange.es"
+                                class="btn-primary-pill"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Ver oferta
+                            </a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <span class="material-symbols-outlined">cell_tower</span>
+                            </div>
+                            <h3 class="service-name">Lebara Europe</h3>
+                            <p class="service-desc">
+                                <strong>18€ / 30 días</strong> · 20 GB en roaming UE, llamadas
+                                ilimitadas a España. Compra 100% online, sin desplazarte a ninguna
+                                tienda.
+                            </p>
+                            <a
+                                href="https://lebara.es"
+                                class="btn-primary-pill"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Ver oferta
+                            </a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <span class="material-symbols-outlined">phone_iphone</span>
+                            </div>
+                            <h3 class="service-name">eSIM Holafly</h3>
+                            <p class="service-desc">
+                                <strong>34€ / 30 días</strong> · Datos ilimitados en Europa sin SIM
+                                física. Activación instantánea desde tu teléfono, sin esperar ningún
+                                envío.
+                            </p>
+                            <a
+                                href="https://esim.holafly.com"
+                                class="btn-primary-pill"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Ver oferta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── CUENTA BANCARIA ──────────────────────────────── -->
+                <div class="servicios-category">
+                    <span class="eyebrow eyebrow--primary">CUENTA BANCARIA</span>
+                    <div class="services-grid services-grid--2col">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <span class="material-symbols-outlined">account_balance</span>
+                            </div>
+                            <h3 class="service-name">N26</h3>
+                            <p class="service-desc">
+                                <strong>Gratis</strong> · Apertura 100% online en 10 minutos, sin
+                                domicilio fijo. Tarjeta virtual disponible de inmediato para compras
+                                y suscripciones.
+                            </p>
+                            <a
+                                href="https://n26.com/es-es"
+                                class="btn-primary-pill"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Abrir cuenta
+                            </a>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <span class="material-symbols-outlined">currency_exchange</span>
+                            </div>
+                            <h3 class="service-name">Revolut</h3>
+                            <p class="service-desc">
+                                <strong>Gratis</strong> · Cambio de divisa sin comisión, apertura
+                                online inmediata. Ideal si viajas entre distintos países durante tu
+                                Erasmus.
+                            </p>
+                            <a
+                                href="https://revolut.com"
+                                class="btn-primary-pill"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Abrir cuenta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── TRANSPORTE ───────────────────────────────────── -->
+                <div class="servicios-category">
+                    <span class="eyebrow eyebrow--primary">TRANSPORTE</span>
+                    <div style="max-width: 420px">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <span class="material-symbols-outlined">directions_bus</span>
+                            </div>
+                            <h3 class="service-name">Barik · Bilbao</h3>
+                            <p class="service-desc">
+                                <strong>~20€/mes (tarifa joven)</strong> · Tarjeta recargable para
+                                bus, metro y tranvía en el Gran Bilbao. Descuento adicional con
+                                carnet de estudiante UE. Disponible en estaciones y puntos de venta
+                                oficiales.
+                            </p>
+                            <a
+                                href="https://barik.eus"
+                                class="btn-primary-pill"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Puntos de venta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Callout -->
+                <div class="info-box" style="margin-top: 64px">
+                    <span class="info-icon material-symbols-outlined">lightbulb</span>
+                    <p class="info-text">
+                        <strong>¿Echas en falta algún servicio?</strong> Si conoces una SIM, banco o
+                        tarjeta de transporte que debería estar aquí, escríbenos. Revisamos cada
+                        propuesta antes de incluirla.
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="legacy-footer">
+            <a href="index.html">← Volver al inicio</a>
+            <span>Erasmus Verified · Comunidad Europa</span>
+        </footer>
+
+        <!-- ── MOBILE NAV OVERLAY ─────────────────────────────────── -->
+        <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+            <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <nav class="mobile-nav-links">
                 <a href="index.html">Inicio</a>
                 <a href="ciudades-todas.html">Ciudades</a>
                 <a href="servicios.html">Servicios</a>
                 <a href="viajes.html">Viajes</a>
-                <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+                <a
+                    href="https://erasmusparties.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="nav-parties"
+                    >🎉 Fiestas ↗</a
+                >
             </nav>
         </div>
-        <div class="topbar-right">
-            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </header>
 
-    <main class="city-main">
-        <div class="city-page">
-            <div class="city-header">
-                <span class="city-flag">🛠️</span>
-                <div class="city-location">ERASMUS VERIFIED</div>
-                <h1 class="city-name">Servicios</h1>
-            </div>
-            <div class="coming-soon">
-                <span class="emoji">⏳</span>
-                <h3>Próximamente</h3>
-                <p>Estamos preparando una selección de servicios verificados para tu Erasmus: alojamiento, seguros, SIM y mucho más. Vuelve pronto.</p>
-            </div>
-            <div class="info-box">
-                <span class="info-icon">📌</span>
-                <p class="info-text">
-                    <strong>¿Tienes una sugerencia?</strong> Si conoces un servicio que debería estar aquí, escríbenos. Revisamos cada propuesta.
-                </p>
-            </div>
-        </div>
-    </main>
-
-    <footer class="legacy-footer">
-        <a href="index.html">← Volver al inicio</a>
-        <span>Erasmus Verified · Comunidad Europa</span>
-    </footer>
-
-    <!-- ── MOBILE NAV OVERLAY ─────────────────────────────────── -->
-    <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-        <nav class="mobile-nav-links">
-            <a href="index.html">Inicio</a>
-            <a href="ciudades-todas.html">Ciudades</a>
-            <a href="servicios.html">Servicios</a>
-            <a href="viajes.html">Viajes</a>
-            <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+        <!-- ── APP BOTTOM NAV (móvil) ────────────────────────────── -->
+        <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
+            <a href="ciudades-todas.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">location_city</span>
+                <span>Ciudades</span>
+            </a>
+            <a href="servicios.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">storefront</span>
+                <span>Servicios</span>
+            </a>
+            <a href="viajes.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">flight</span>
+                <span>Viajes</span>
+            </a>
+            <a
+                href="https://erasmusparties.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="app-bottom-nav-item app-bottom-nav-item--parties"
+            >
+                <span class="material-symbols-outlined">nightlife</span>
+                <span>Fiestas</span>
+            </a>
         </nav>
-    </div>
 
-    <!-- ── APP BOTTOM NAV (móvil) ────────────────────────────── -->
-    <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
-        <a href="ciudades-todas.html" class="app-bottom-nav-item">
-            <span class="material-symbols-outlined">location_city</span>
-            <span>Ciudades</span>
-        </a>
-        <a href="servicios.html" class="app-bottom-nav-item">
-            <span class="material-symbols-outlined">storefront</span>
-            <span>Servicios</span>
-        </a>
-        <a href="viajes.html" class="app-bottom-nav-item">
-            <span class="material-symbols-outlined">flight</span>
-            <span>Viajes</span>
-        </a>
-        <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="app-bottom-nav-item app-bottom-nav-item--parties">
-            <span class="material-symbols-outlined">nightlife</span>
-            <span>Fiestas</span>
-        </a>
-    </nav>
-
-    <script src="js/data.js"></script>
-    <script>
-    /* ── Hamburger + ítem activo (nav global + bottom-nav) ───── */
-    (function () {
-        var btn   = document.getElementById('hamburgerBtn');
-        var mnav  = document.getElementById('mobileNav');
-        var close = document.getElementById('mobileNavClose');
-        function openNav()  { btn.classList.add('is-open');    mnav.classList.add('is-open');    mnav.removeAttribute('aria-hidden'); }
-        function closeNav() { btn.classList.remove('is-open'); mnav.classList.remove('is-open'); mnav.setAttribute('aria-hidden', 'true'); }
-        if (btn && mnav) {
-            btn.addEventListener('click', function () { mnav.classList.contains('is-open') ? closeNav() : openNav(); });
-            if (close) close.addEventListener('click', closeNav);
-            mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) { a.addEventListener('click', closeNav); });
-        }
-        var page = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] || 'index.html';
-        document.querySelectorAll('.topbar-nav a, .mobile-nav-links a').forEach(function (a) {
-            var href = (a.getAttribute('href') || '').split('?')[0];
-            if (href && !href.startsWith('http') && href === page) a.classList.add('is-active');
-        });
-        document.querySelectorAll('.app-bottom-nav .app-bottom-nav-item').forEach(function (a) {
-            var href = (a.getAttribute('href') || '').split('?')[0];
-            if (href && !href.startsWith('http') && href === page) a.classList.add('app-bottom-nav-item--active');
-        });
-    })();
-    </script>
-
-</body>
-
+        <script src="js/data.js"></script>
+        <script>
+            /* ── Hamburger + ítem activo (nav global + bottom-nav) ───── */
+            (function () {
+                var btn = document.getElementById('hamburgerBtn');
+                var mnav = document.getElementById('mobileNav');
+                var close = document.getElementById('mobileNavClose');
+                function openNav() {
+                    btn.classList.add('is-open');
+                    mnav.classList.add('is-open');
+                    mnav.removeAttribute('aria-hidden');
+                }
+                function closeNav() {
+                    btn.classList.remove('is-open');
+                    mnav.classList.remove('is-open');
+                    mnav.setAttribute('aria-hidden', 'true');
+                }
+                if (btn && mnav) {
+                    btn.addEventListener('click', function () {
+                        mnav.classList.contains('is-open') ? closeNav() : openNav();
+                    });
+                    if (close) close.addEventListener('click', closeNav);
+                    mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) {
+                        a.addEventListener('click', closeNav);
+                    });
+                }
+                var page =
+                    (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] ||
+                    'index.html';
+                document
+                    .querySelectorAll('.topbar-nav a, .mobile-nav-links a')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('is-active');
+                    });
+                document
+                    .querySelectorAll('.app-bottom-nav .app-bottom-nav-item')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('app-bottom-nav-item--active');
+                    });
+            })();
+        </script>
+    </body>
 </html>
