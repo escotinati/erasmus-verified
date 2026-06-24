@@ -1305,14 +1305,6 @@ header.topbar {
         z-index: 200;
     }
 
-    /* Hamburger visible en móvil (sin bottom-nav).
-       §2.5, que viene después en el archivo, lo vuelve a ocultar con
-       display:none cuando el bottom-nav está activo — esa regla gana
-       por posición posterior en la cascada (misma especificidad). */
-    .hamburger-btn {
-        display: flex;
-    }
-
     /* Fullscreen → dropdown compacto pegado al header */
     .mobile-nav {
         bottom: auto;
