@@ -71,6 +71,9 @@ if (!pais || !ciudad || !country) {
 
     document.getElementById('actionsWrap').innerHTML = btns;
 
+    // Secciones contextuales (alojamiento + viajes si hay partners)
+    buildContextualSections(ciudad);
+
     // Publica la altura real del topbar como variable CSS para que el
     // mapa sticky en móvil sepa exactamente dónde "anclarse" sin
     // solaparse con el header.
@@ -114,6 +117,53 @@ if (!pais || !ciudad || !country) {
             new ResizeObserver(syncHeight).observe(mapEl);
         }
     });
+}
+
+function buildContextualSections(ciudad) {
+    const travelPartners = getPartnersByCity(ciudad).filter((p) => p.category === 'travel');
+    let html = '';
+
+    // Sección A — Alojamiento: siempre visible
+    html += `
+    <div class="info-box" style="margin-top:24px">
+      <span class="info-icon material-symbols-outlined">apartment</span>
+      <div>
+        <p class="info-text" style="margin-bottom:12px">
+          <strong>Encuentra piso en ${ciudad}</strong><br>
+          Accede a nuestros colaboradores verificados para encontrar tu alojamiento antes de llegar.
+        </p>
+        <a href="alojamiento.html" class="btn-primary-pill" style="display:inline-flex">Ver colaboradores →</a>
+      </div>
+    </div>`;
+
+    // Sección B — Viajes: solo si hay partners de travel en esta ciudad
+    if (travelPartners.length > 0) {
+        const cards = travelPartners
+            .map(
+                (p) => `
+        <div class="service-card">
+          <div class="service-icon"><span class="material-symbols-outlined">flight</span></div>
+          <h3 class="service-name">${p.name}</h3>
+          <p class="service-desc">${p.description}</p>
+          ${
+              p.links.length > 0
+                  ? `<a href="${p.links[0].url}" target="_blank" rel="noopener noreferrer" class="btn-primary-pill">Ver viaje</a>`
+                  : ''
+          }
+        </div>`
+            )
+            .join('');
+
+        html += `
+    <div style="margin-top:32px">
+      <span class="eyebrow eyebrow--primary">VIAJES</span>
+      <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px">Escapadas desde ${ciudad}</h2>
+      <div class="services-grid" style="margin-top:16px">${cards}</div>
+    </div>`;
+    }
+
+    const extra = document.getElementById('city-extra');
+    if (extra) extra.innerHTML = html;
 }
 
 function buildBtn(type, url, city) {

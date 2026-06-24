@@ -16,6 +16,7 @@ const EXPERIENCES = {
         theme: 'theme-verified',
         defaultCategory: null,
         showServices: true,
+        showAlojamiento: true,
         showViajes: true,
     },
     parties: {
@@ -23,6 +24,7 @@ const EXPERIENCES = {
         theme: 'theme-parties',
         defaultCategory: 'nightlife',
         showServices: false,
+        showAlojamiento: false,
         showViajes: false,
     },
 };
@@ -64,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
         el.textContent = 'Erasmus Parties';
     });
 
-    // 2. Ocultar Servicios y Viajes en todas las navs
-    ['servicios.html', 'viajes.html'].forEach(function (page) {
+    // 2. Ocultar Servicios, Alojamiento y Viajes en todas las navs
+    ['servicios.html', 'alojamiento.html', 'viajes.html'].forEach(function (page) {
         document.querySelectorAll('a[href="' + page + '"]').forEach(function (a) {
             a.style.display = 'none';
         });

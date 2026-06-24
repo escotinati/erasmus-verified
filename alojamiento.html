@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Viajes — Erasmus Verified</title>
+        <title>Alojamiento — Erasmus Verified</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
             href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
@@ -15,9 +15,14 @@
         />
         <link rel="stylesheet" href="css/styles.css" />
         <script src="js/experience.js"></script>
+        <script>
+            if (window.ERASMUS_EXPERIENCE.theme === 'theme-parties') {
+                window.location.replace('index.html');
+            }
+        </script>
     </head>
 
-    <body class="viajes-page">
+    <body class="alojamiento-page">
         <header class="topbar">
             <div class="topbar-left">
                 <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
@@ -44,60 +49,59 @@
         <main style="flex: 1">
             <section class="nights-section">
                 <div class="nights-header">
-                    <span class="eyebrow eyebrow--primary">VIAJES ERASMUS</span>
-                    <h1 class="section-title">Muévete por Europa</h1>
+                    <span class="eyebrow eyebrow--primary">ALOJAMIENTO VERIFICADO</span>
+                    <h1 class="section-title">Encuentra tu hogar Erasmus</h1>
                     <p class="section-sub">
-                        Colaboramos con las mejores plataformas de transporte para que te muevas por
-                        Europa sin complicaciones ni sorpresas.
+                        Colaboramos con las mejores plataformas de alojamiento para estudiantes en
+                        Europa. Reserva con confianza.
                     </p>
                 </div>
 
                 <div class="collab-grid">
                     <a
-                        href="https://www.flixbus.es"
+                        href="https://www.uniplaces.com"
                         target="_blank"
                         rel="noopener noreferrer sponsored"
                         class="collab-card"
                     >
-                        <span class="collab-name">FlixBus</span>
-                        <span class="collab-desc"
-                            >Autobuses interurbanos económicos por Europa</span
-                        >
+                        <span class="collab-name">Uniplaces</span>
+                        <span class="collab-desc">Pisos para estudiantes en toda Europa</span>
                     </a>
                     <a
-                        href="https://www.blablacar.es"
+                        href="https://www.spotahome.com"
                         target="_blank"
                         rel="noopener noreferrer sponsored"
                         class="collab-card"
                     >
-                        <span class="collab-name">BlaBlaCar</span>
-                        <span class="collab-desc">Compartir trayecto entre ciudades</span>
+                        <span class="collab-name">Spotahome</span>
+                        <span class="collab-desc">Alquiler sin visita presencial</span>
                     </a>
                     <a
-                        href="https://www.omio.es"
+                        href="https://housinganywhere.com"
                         target="_blank"
                         rel="noopener noreferrer sponsored"
                         class="collab-card"
                     >
-                        <span class="collab-name">Omio</span>
-                        <span class="collab-desc">Compara trenes, buses y vuelos</span>
+                        <span class="collab-name">HousingAnywhere</span>
+                        <span class="collab-desc">Alojamiento flexible para Erasmus</span>
                     </a>
                     <a
-                        href="https://www.rentalcars.com"
+                        href="https://badi.com"
                         target="_blank"
                         rel="noopener noreferrer sponsored"
                         class="collab-card"
                     >
-                        <span class="collab-name">Rentalcars</span>
-                        <span class="collab-desc">Alquiler de coches en toda Europa</span>
+                        <span class="collab-name">Badi</span>
+                        <span class="collab-desc">Comparte piso con estudiantes</span>
                     </a>
                 </div>
 
                 <div class="collab-contact">
-                    <span class="eyebrow eyebrow--primary">¿ERES UNA EMPRESA DE TRANSPORTE?</span>
+                    <span class="eyebrow eyebrow--primary">¿ERES UNA EMPRESA DE ALOJAMIENTO?</span>
                     <h3>Colabora con nosotros</h3>
                     <p>
-                        Si ofreces transporte o viajes para estudiantes Erasmus, queremos conocerte.
+                        Si tienes alojamiento verificado para estudiantes Erasmus, queremos
+                        conocerte.
                     </p>
                     <a href="mailto:hola@erasmusverified.com" class="btn-primary-pill">Contactar</a>
                 </div>
