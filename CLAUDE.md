@@ -25,8 +25,8 @@ No hay ES Modules. Todo el JS usa `<script>` clásicos con funciones y objetos g
 | `ciudades.html` | `js/ciudades.js` | Grid de ciudades de un país (hero con foto) |
 | `ciudad.html` | `js/ciudad.js` | Detalle de ciudad, botones WhatsApp/Telegram, mapa embebido |
 | `mapa.html` | `js/mapa.js` | Mapa a pantalla completa con lista de partners |
-| `servicios.html` | inline | Placeholder "Próximamente" — servicios verificados |
-| `viajes.html` | inline | Placeholder "Próximamente" — viajes en grupo |
+| `servicios.html` | inline | Servicios verificados: SIM, banca, transporte |
+| `viajes.html` | inline | Viajes en grupo para estudiantes Erasmus |
 
 ### Módulos compartidos (cargados donde se necesitan)
 
@@ -130,6 +130,38 @@ Sistema de diseño basado en Material Design 3 (tokens `--md-*`). Variables clav
 - Contenedor máximo: `1280px`, gutter `24px`
 
 Los alias legacy (`--bg`, `--text`, `--accent`) existen solo para las páginas más antiguas.
+
+### Estructura de `css/styles.css`
+
+El archivo está dividido en 10 secciones numeradas, preparado para separar en archivos independientes cuando se migre a Vite:
+
+| § | Nombre | Contenido |
+|---|--------|-----------|
+| 1 | Design System | `:root` tokens, reset, utilidades, tipografía |
+| 2 | Componentes globales | Buttons, badges, cards, forms/inputs, bottom-nav |
+| 3 | Layout global | Top nav/header, footer, hero, section wrappers |
+| 4 | Index.html | Bento grid, nights section, services section, CTA |
+| 5 | Ciudades-todas.html | *(vacío — estilos del hero en `<style>` inline de la página)* |
+| 6 | Ciudad.html | Layout de ciudad, mapa embebido, partners list |
+| 7 | Mapa.html | `.map-page-main`, `.map-canvas`, `.erasmus-pin__dot`, map-with-list |
+| 8 | Servicios.html | `body.servicios-page` (gradiente), `.servicios-category`, `.services-grid--2col` |
+| 9 | Viajes.html | `.event-badge--partner`, `body.viajes-page .event-price` |
+| 10 | Responsive | Media queries globales que afectan a múltiples secciones |
+
+**Cascada crítica del hamburger:** `@media (max-width: 768px) { .hamburger-btn { display: flex } }` está en §3.1 (antes de §2.5). §2.5 lo sobreescribe con `display: none` porque viene después en el archivo. No invertir este orden.
+
+### Estilos específicos de página
+
+Para añadir CSS exclusivo de una página sin contaminar el global, usar una clase en el `<body>`:
+
+- `servicios.html` → `<body class="servicios-page">` → reglas en §8
+- `viajes.html` → `<body class="viajes-page">` → reglas en §9
+- `ciudades-todas.html` → bloque `<style>` inline en el `<head>` (excepción deliberada: el hero gradient solo existe en esa página y no justifica clase de body)
+
+### Convenciones de componentes
+
+- **Eyebrows de categoría** (`.eyebrow`): usar siempre `eyebrow--primary` (azul `#4648d4`) para categorías de contenido. `eyebrow--secondary` (rojo `#a93349`) queda reservado para destacar la marca o alertas.
+- **CTAs de service-card**: usar `<a class="btn-primary-pill">` en lugar de `<a class="service-link">`. `.service-link` con flecha `arrow_forward` queda descartado.
 
 ### Zonas responsivas clave
 
