@@ -1,122 +1,174 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ciudades — Erasmus Verified</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/styles.css"/>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ciudades — Erasmus Verified</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="css/styles.css" />
+        <script src="js/experience.js"></script>
+    </head>
+    <body>
+        <section class="hero-legacy">
+            <div class="hero-bg-img" id="heroBg"></div>
+            <div class="topbar">
+                <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
+                <nav class="topbar-nav" id="mainNav">
+                    <a href="index.html">Inicio</a>
+                    <a href="ciudades-todas.html">Ciudades</a>
+                    <a href="servicios.html">Servicios</a>
+                    <a href="viajes.html">Viajes</a>
+                    <a
+                        href="https://erasmusparties.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="nav-parties"
+                        >🎉 Fiestas ↗</a
+                    >
+                </nav>
+                <div class="topbar-right">
+                    <a href="index.html" class="back-btn">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                        >
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                        Todos los países
+                    </a>
+                    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+            <div class="hero-content-legacy">
+                <div class="hero-breadcrumb-legacy">
+                    <a href="index.html">Inicio</a>
+                    <span class="sep">/</span>
+                    <span id="heroCityCount">Cargando…</span>
+                </div>
+                <h1 class="hero-h1-legacy">
+                    <span class="hero-flag-legacy" id="heroFlag"></span>
+                    <span id="heroTitle"></span>
+                </h1>
+                <p class="hero-sub-legacy">Elige tu ciudad y únete a la comunidad Erasmus local</p>
+            </div>
+        </section>
 
-<section class="hero-legacy">
-  <div class="hero-bg-img" id="heroBg"></div>
-  <div class="topbar">
-    <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
-    <nav class="topbar-nav" id="mainNav">
-        <a href="index.html">Inicio</a>
-        <a href="ciudades-todas.html">Ciudades</a>
-        <a href="servicios.html">Servicios</a>
-        <a href="viajes.html">Viajes</a>
-        <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
-    </nav>
-    <div class="topbar-right">
-        <a href="index.html" class="back-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-            Todos los países
-        </a>
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-  </div>
-  <div class="hero-content-legacy">
-    <div class="hero-breadcrumb-legacy">
-      <a href="index.html">Inicio</a>
-      <span class="sep">/</span>
-      <span id="heroCityCount">Cargando…</span>
-    </div>
-    <h1 class="hero-h1-legacy">
-      <span class="hero-flag-legacy" id="heroFlag"></span>
-      <span id="heroTitle"></span>
-    </h1>
-    <p class="hero-sub-legacy">Elige tu ciudad y únete a la comunidad Erasmus local</p>
-  </div>
-</section>
+        <div class="section-header">
+            <h2 class="section-title" style="font-size: 1rem">Selecciona tu ciudad</h2>
+            <span class="section-count" id="sectionCount"></span>
+        </div>
 
-<div class="section-header">
-  <h2 class="section-title" style="font-size:1rem;">Selecciona tu ciudad</h2>
-  <span class="section-count" id="sectionCount"></span>
-</div>
+        <div class="cities-grid" id="citiesGrid"></div>
 
-<div class="cities-grid" id="citiesGrid"></div>
+        <footer class="legacy-footer">
+            <a href="index.html">← Volver a países</a>
+            <span>Erasmus Verified · Comunidad Europa</span>
+        </footer>
 
-<footer class="legacy-footer">
-  <a href="index.html">← Volver a países</a>
-  <span>Erasmus Verified · Comunidad Europa</span>
-</footer>
+        <!-- ── MOBILE NAV OVERLAY ─────────────────────────────────── -->
+        <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+            <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <nav class="mobile-nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="ciudades-todas.html">Ciudades</a>
+                <a href="servicios.html">Servicios</a>
+                <a href="viajes.html">Viajes</a>
+                <a
+                    href="https://erasmusparties.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="nav-parties"
+                    >🎉 Fiestas ↗</a
+                >
+            </nav>
+        </div>
 
-<!-- ── MOBILE NAV OVERLAY ─────────────────────────────────── -->
-<div class="mobile-nav" id="mobileNav" aria-hidden="true">
-    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
-        <span class="material-symbols-outlined">close</span>
-    </button>
-    <nav class="mobile-nav-links">
-        <a href="index.html">Inicio</a>
-        <a href="ciudades-todas.html">Ciudades</a>
-        <a href="servicios.html">Servicios</a>
-        <a href="viajes.html">Viajes</a>
-        <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
-    </nav>
-</div>
+        <!-- ── APP BOTTOM NAV (móvil) ────────────────────────────────── -->
+        <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
+            <a href="ciudades-todas.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">location_city</span>
+                <span>Ciudades</span>
+            </a>
+            <a href="servicios.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">storefront</span>
+                <span>Servicios</span>
+            </a>
+            <a href="viajes.html" class="app-bottom-nav-item">
+                <span class="material-symbols-outlined">flight</span>
+                <span>Viajes</span>
+            </a>
+            <a
+                href="https://erasmusparties.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="app-bottom-nav-item app-bottom-nav-item--parties"
+            >
+                <span class="material-symbols-outlined">nightlife</span>
+                <span>Fiestas</span>
+            </a>
+        </nav>
 
-<!-- ── APP BOTTOM NAV (móvil) ────────────────────────────────── -->
-<nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
-    <a href="ciudades-todas.html" class="app-bottom-nav-item">
-        <span class="material-symbols-outlined">location_city</span>
-        <span>Ciudades</span>
-    </a>
-    <a href="servicios.html" class="app-bottom-nav-item">
-        <span class="material-symbols-outlined">storefront</span>
-        <span>Servicios</span>
-    </a>
-    <a href="viajes.html" class="app-bottom-nav-item">
-        <span class="material-symbols-outlined">flight</span>
-        <span>Viajes</span>
-    </a>
-    <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="app-bottom-nav-item app-bottom-nav-item--parties">
-        <span class="material-symbols-outlined">nightlife</span>
-        <span>Fiestas</span>
-    </a>
-</nav>
-
-<script src="js/data.js"></script>
-<script src="js/ciudades.js"></script>
-<script>
-/* ── Hamburger + ítem activo (nav global) ────────────────── */
-(function () {
-    var btn   = document.getElementById('hamburgerBtn');
-    var mnav  = document.getElementById('mobileNav');
-    var close = document.getElementById('mobileNavClose');
-    function openNav()  { btn.classList.add('is-open');    mnav.classList.add('is-open');    mnav.removeAttribute('aria-hidden'); }
-    function closeNav() { btn.classList.remove('is-open'); mnav.classList.remove('is-open'); mnav.setAttribute('aria-hidden', 'true'); }
-    if (btn && mnav) {
-        btn.addEventListener('click', function () { mnav.classList.contains('is-open') ? closeNav() : openNav(); });
-        if (close) close.addEventListener('click', closeNav);
-        mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) { a.addEventListener('click', closeNav); });
-    }
-    var page = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] || 'index.html';
-    document.querySelectorAll('.topbar-nav a, .mobile-nav-links a').forEach(function (a) {
-        var href = (a.getAttribute('href') || '').split('?')[0];
-        if (href && !href.startsWith('http') && href === page) a.classList.add('is-active');
-    });
-    document.querySelectorAll('.app-bottom-nav .app-bottom-nav-item').forEach(function (a) {
-        var href = (a.getAttribute('href') || '').split('?')[0];
-        if (href && !href.startsWith('http') && href === page) a.classList.add('app-bottom-nav-item--active');
-    });
-})();
-</script>
-</body>
+        <script src="js/data.js"></script>
+        <script src="js/ciudades.js"></script>
+        <script>
+            /* ── Hamburger + ítem activo (nav global) ────────────────── */
+            (function () {
+                var btn = document.getElementById('hamburgerBtn');
+                var mnav = document.getElementById('mobileNav');
+                var close = document.getElementById('mobileNavClose');
+                function openNav() {
+                    btn.classList.add('is-open');
+                    mnav.classList.add('is-open');
+                    mnav.removeAttribute('aria-hidden');
+                }
+                function closeNav() {
+                    btn.classList.remove('is-open');
+                    mnav.classList.remove('is-open');
+                    mnav.setAttribute('aria-hidden', 'true');
+                }
+                if (btn && mnav) {
+                    btn.addEventListener('click', function () {
+                        mnav.classList.contains('is-open') ? closeNav() : openNav();
+                    });
+                    if (close) close.addEventListener('click', closeNav);
+                    mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) {
+                        a.addEventListener('click', closeNav);
+                    });
+                }
+                var page =
+                    (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] ||
+                    'index.html';
+                document
+                    .querySelectorAll('.topbar-nav a, .mobile-nav-links a')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('is-active');
+                    });
+                document
+                    .querySelectorAll('.app-bottom-nav .app-bottom-nav-item')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('app-bottom-nav-item--active');
+                    });
+            })();
+        </script>
+    </body>
 </html>

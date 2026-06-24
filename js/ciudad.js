@@ -76,10 +76,7 @@ if (!pais || !ciudad || !country) {
     // solaparse con el header.
     const topbarEl = document.querySelector('header.topbar');
     const setTopbarH = () => {
-        document.documentElement.style.setProperty(
-            '--topbar-h',
-            topbarEl.offsetHeight + 'px'
-        );
+        document.documentElement.style.setProperty('--topbar-h', topbarEl.offsetHeight + 'px');
     };
     setTopbarH();
     window.addEventListener('resize', setTopbarH);
@@ -94,7 +91,12 @@ if (!pais || !ciudad || !country) {
     // necesita.
     mountCityMap('city-map-embed', { pais, ciudad, interactive: true }).then((mapInstance) => {
         if (mapInstance) {
-            mountPartnersList('city-partners-list', mapInstance, ciudad);
+            mountPartnersList(
+                'city-partners-list',
+                mapInstance,
+                ciudad,
+                window.ERASMUS_EXPERIENCE.defaultCategory
+            );
             const mapEl = document.getElementById('city-map-embed');
             const asideEl = document.getElementById('city-partners-list');
             const syncHeight = () => {

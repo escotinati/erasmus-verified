@@ -14,6 +14,7 @@
             rel="stylesheet"
         />
         <link rel="stylesheet" href="css/styles.css?v=3" />
+        <script src="js/experience.js"></script>
 
         <!-- NUEVO -->
         <link
@@ -34,7 +35,13 @@
                     <a href="ciudades-todas.html">Ciudades</a>
                     <a href="servicios.html">Servicios</a>
                     <a href="viajes.html">Viajes</a>
-                    <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+                    <a
+                        href="https://erasmusparties.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="nav-parties"
+                        >🎉 Fiestas ↗</a
+                    >
                 </nav>
             </div>
             <nav class="breadcrumb">
@@ -113,7 +120,13 @@
                 <a href="ciudades-todas.html">Ciudades</a>
                 <a href="servicios.html">Servicios</a>
                 <a href="viajes.html">Viajes</a>
-                <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="nav-parties">🎉 Fiestas ↗</a>
+                <a
+                    href="https://erasmusparties.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="nav-parties"
+                    >🎉 Fiestas ↗</a
+                >
             </nav>
         </div>
 
@@ -131,34 +144,59 @@
                 <span class="material-symbols-outlined">flight</span>
                 <span>Viajes</span>
             </a>
-            <a href="https://erasmusparties.org" target="_blank" rel="noopener noreferrer" class="app-bottom-nav-item app-bottom-nav-item--parties">
+            <a
+                href="https://erasmusparties.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="app-bottom-nav-item app-bottom-nav-item--parties"
+            >
                 <span class="material-symbols-outlined">nightlife</span>
                 <span>Fiestas</span>
             </a>
         </nav>
         <script>
-        /* ── Hamburger + ítem activo (nav global + bottom-nav) ── */
-        (function () {
-            var btn   = document.getElementById('hamburgerBtn');
-            var mnav  = document.getElementById('mobileNav');
-            var close = document.getElementById('mobileNavClose');
-            function openNav()  { btn.classList.add('is-open');    mnav.classList.add('is-open');    mnav.removeAttribute('aria-hidden'); }
-            function closeNav() { btn.classList.remove('is-open'); mnav.classList.remove('is-open'); mnav.setAttribute('aria-hidden', 'true'); }
-            if (btn && mnav) {
-                btn.addEventListener('click', function () { mnav.classList.contains('is-open') ? closeNav() : openNav(); });
-                if (close) close.addEventListener('click', closeNav);
-                mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) { a.addEventListener('click', closeNav); });
-            }
-            var page = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] || 'index.html';
-            document.querySelectorAll('.topbar-nav a, .mobile-nav-links a').forEach(function (a) {
-                var href = (a.getAttribute('href') || '').split('?')[0];
-                if (href && !href.startsWith('http') && href === page) a.classList.add('is-active');
-            });
-            document.querySelectorAll('.app-bottom-nav .app-bottom-nav-item').forEach(function (a) {
-                var href = (a.getAttribute('href') || '').split('?')[0];
-                if (href && !href.startsWith('http') && href === page) a.classList.add('app-bottom-nav-item--active');
-            });
-        })();
+            /* ── Hamburger + ítem activo (nav global + bottom-nav) ── */
+            (function () {
+                var btn = document.getElementById('hamburgerBtn');
+                var mnav = document.getElementById('mobileNav');
+                var close = document.getElementById('mobileNavClose');
+                function openNav() {
+                    btn.classList.add('is-open');
+                    mnav.classList.add('is-open');
+                    mnav.removeAttribute('aria-hidden');
+                }
+                function closeNav() {
+                    btn.classList.remove('is-open');
+                    mnav.classList.remove('is-open');
+                    mnav.setAttribute('aria-hidden', 'true');
+                }
+                if (btn && mnav) {
+                    btn.addEventListener('click', function () {
+                        mnav.classList.contains('is-open') ? closeNav() : openNav();
+                    });
+                    if (close) close.addEventListener('click', closeNav);
+                    mnav.querySelectorAll('a:not(.nav-parties)').forEach(function (a) {
+                        a.addEventListener('click', closeNav);
+                    });
+                }
+                var page =
+                    (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] ||
+                    'index.html';
+                document
+                    .querySelectorAll('.topbar-nav a, .mobile-nav-links a')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('is-active');
+                    });
+                document
+                    .querySelectorAll('.app-bottom-nav .app-bottom-nav-item')
+                    .forEach(function (a) {
+                        var href = (a.getAttribute('href') || '').split('?')[0];
+                        if (href && !href.startsWith('http') && href === page)
+                            a.classList.add('app-bottom-nav-item--active');
+                    });
+            })();
         </script>
     </body>
 </html>

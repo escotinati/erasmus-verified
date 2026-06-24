@@ -16,7 +16,7 @@
  * y gestiona sus pines sobre `map`. `ciudad` filtra qué partners
  * se muestran.
  */
-function mountPartnersList(listContainerId, map, ciudad) {
+function mountPartnersList(listContainerId, map, ciudad, defaultCategory = null) {
     const container = document.getElementById(listContainerId);
     const partners = getPartnersByCity(ciudad);
     const groups = groupPartnersByCategory(partners);
@@ -36,8 +36,7 @@ function mountPartnersList(listContainerId, map, ciudad) {
 
     // Crea TODOS los markers al cargar (pocos partners, sin coste real),
     // pero no los añade al mapa todavía — se añaden al expandir su categoría.
-    for (const { partners }
-        of groups) {
+    for (const { partners } of groups) {
         for (const partner of partners) {
             markersByPartnerId[partner.id] = createPartnerMarker(partner, { expanded: false });
             markersByPartnerId[partner.id].on('click', () => selectPartner(partner.id));
@@ -46,17 +45,24 @@ function mountPartnersList(listContainerId, map, ciudad) {
 
     renderList();
 
+    // Expande la categoría por defecto si la experiencia activa lo requiere
+    // (ej. theme-parties abre nightlife automáticamente).
+    // El setTimeout da tiempo a que el mapa esté listo para recibir markers.
+    if (defaultCategory) {
+        setTimeout(() => toggleCategory(defaultCategory), 100);
+    }
+
     function renderList() {
         container.innerHTML = '';
-        for (const { category, partners }
-            of groups) {
+        for (const { category, partners } of groups) {
             const meta = CATEGORY_META[category] || { label: category, color: '#64748b' };
             const isExpanded = state.expandedCategory === category;
             const isEmpty = partners.length === 0;
 
             const categoryBtn = document.createElement('button');
             categoryBtn.type = 'button';
-            categoryBtn.className = 'category-toggle' +
+            categoryBtn.className =
+                'category-toggle' +
                 (isExpanded ? ' is-expanded' : '') +
                 (isEmpty ? ' is-empty' : '');
             categoryBtn.innerHTML = `
@@ -103,10 +109,10 @@ function mountPartnersList(listContainerId, map, ciudad) {
         state.expandedCategory = wasExpanded ? null : category;
         state.selectedPartnerId = null;
 
-        for (const { category: cat, partners }
-            of groups) {
+        for (const { category: cat, partners } of groups) {
             const shouldShow = state.expandedCategory === cat;
-            for (const partner of partners) { // si partners está vacío, este for no hace nada — ya es seguro
+            for (const partner of partners) {
+                // si partners está vacío, este for no hace nada — ya es seguro
                 const marker = markersByPartnerId[partner.id];
                 if (shouldShow) {
                     marker.addTo(map);
@@ -141,8 +147,7 @@ function mountPartnersList(listContainerId, map, ciudad) {
     }
 
     function findPartnerById(id) {
-        for (const { partners }
-            of groups) {
+        for (const { partners } of groups) {
             const found = partners.find((p) => p.id === id);
             if (found) return found;
         }

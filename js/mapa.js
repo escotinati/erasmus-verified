@@ -45,7 +45,12 @@ if (!pais || !ciudad || !country) {
         if (mapInstance) {
             syncMapHeight();
             mapInstance.invalidateSize();
-            mountPartnersList('partners-list', mapInstance, ciudad);
+            mountPartnersList(
+                'partners-list',
+                mapInstance,
+                ciudad,
+                window.ERASMUS_EXPERIENCE.defaultCategory
+            );
         }
     });
 }
