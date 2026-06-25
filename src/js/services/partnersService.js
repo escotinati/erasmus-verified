@@ -50,3 +50,15 @@ async function fetchPartnersByCity(ciudad) {
         links: linksByPartnerId[p.id] || [],
     }));
 }
+
+function groupPartnersByCategory(partners) {
+    const byCategory = {};
+    for (const partner of partners) {
+        if (!byCategory[partner.category]) byCategory[partner.category] = [];
+        byCategory[partner.category].push(partner);
+    }
+
+    return Object.keys(CATEGORY_META)
+        .map((category) => ({ category, partners: byCategory[category] || [] }))
+        .filter((group) => group.partners.length > 0);
+}
