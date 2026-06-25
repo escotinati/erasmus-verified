@@ -1,0 +1,206 @@
+// ─────────────────────────────────────────────────────────────
+//  MAPPARTNERS.JS — Erasmus Parties
+//
+//  Listado de categorías/partners sincronizado con pines en el mapa.
+//  Estado local simple: qué categoría está desplegada y qué partner
+//  está expandido (acordeón: solo uno a la vez).
+//
+//  Depende de: PARTNERS/getPartnersByCity/groupPartnersByCategory
+//  (partners.js), createPartnerMarker/setMarkerExpanded/CATEGORY_META
+//  (map-helpers.js), y recibe el `map` de Leaflet ya inicializado
+//  (cityMap.js / mapa.js).
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Monta el listado de categorías/partners en `listContainerId`,
+ * y gestiona sus pines sobre `map`. `ciudad` filtra qué partners
+ * se muestran.
+ */
+function mountPartnersList(listContainerId, map, ciudad, defaultCategory = null) {
+    const container = document.getElementById(listContainerId);
+    const partners = getPartnersByCity(ciudad);
+    const groups = groupPartnersByCategory(partners);
+
+    if (groups.length === 0) {
+        container.innerHTML = `<p class="partners-list-empty">Todavía no tenemos partners en ${ciudad}.</p>`;
+        return;
+    }
+
+    // Estado local: qué categoría está desplegada, qué partner expandido,
+    // y un registro de los markers ya creados (para no recrearlos).
+    const state = {
+        expandedCategory: null,
+        selectedPartnerId: null,
+    };
+    const markersByPartnerId = {};
+
+    // Crea TODOS los markers al cargar (pocos partners, sin coste real),
+    // pero no los añade al mapa todavía — se añaden al expandir su categoría.
+    for (const { partners } of groups) {
+        for (const partner of partners) {
+            markersByPartnerId[partner.id] = createPartnerMarker(partner, { expanded: false });
+            markersByPartnerId[partner.id].on('click', () => selectPartner(partner.id));
+        }
+    }
+
+    renderList();
+
+    // Expande la categoría por defecto si la experiencia activa lo requiere
+    // (ej. theme-parties abre nightlife automáticamente).
+    // El setTimeout da tiempo a que el mapa esté listo para recibir markers.
+    if (defaultCategory) {
+        setTimeout(() => toggleCategory(defaultCategory), 100);
+    }
+
+    function renderList() {
+        container.innerHTML = '';
+        for (const { category, partners } of groups) {
+            const meta = CATEGORY_META[category] || { label: category, color: '#64748b' };
+            const isExpanded = state.expandedCategory === category;
+            const isEmpty = partners.length === 0;
+
+            const categoryBtn = document.createElement('button');
+            categoryBtn.type = 'button';
+            categoryBtn.className =
+                'category-toggle' +
+                (isExpanded ? ' is-expanded' : '') +
+                (isEmpty ? ' is-empty' : '');
+            categoryBtn.innerHTML = `
+      <span class="category-toggle__dot" style="--pin-color:${meta.color}"></span>
+      <span class="category-toggle__label">${meta.label}</span>
+    `;
+            categoryBtn.addEventListener('click', () => toggleCategory(category));
+            container.appendChild(categoryBtn);
+
+            if (!isExpanded) continue;
+
+            if (isEmpty) {
+                // Coherente con el patrón .coming-soon que ya usas en ciudad.js
+                const comingSoon = document.createElement('p');
+                comingSoon.className = 'category-coming-soon';
+                comingSoon.textContent = `Todavía no tenemos partners de ${meta.label} en esta ciudad. Vuelve pronto.`;
+                container.appendChild(comingSoon);
+                continue;
+            }
+
+            const partnerList = document.createElement('div');
+            partnerList.className = 'partner-list';
+
+            for (const partner of partners) {
+                const isSelected = state.selectedPartnerId === partner.id;
+
+                const partnerBtn = document.createElement('button');
+                partnerBtn.type = 'button';
+                partnerBtn.className = 'partner-toggle' + (isSelected ? ' is-selected' : '');
+                partnerBtn.textContent = partner.name;
+                partnerBtn.addEventListener('click', () => selectPartner(partner.id));
+                partnerList.appendChild(partnerBtn);
+
+                if (isSelected) {
+                    partnerList.appendChild(buildPartnerDetail(partner));
+                }
+            }
+            container.appendChild(partnerList);
+        }
+    }
+
+    function toggleCategory(category) {
+        const wasExpanded = state.expandedCategory === category;
+        state.expandedCategory = wasExpanded ? null : category;
+        state.selectedPartnerId = null;
+
+        for (const { category: cat, partners } of groups) {
+            const shouldShow = state.expandedCategory === cat;
+            for (const partner of partners) {
+                // si partners está vacío, este for no hace nada — ya es seguro
+                const marker = markersByPartnerId[partner.id];
+                if (shouldShow) {
+                    marker.addTo(map);
+                } else {
+                    map.removeLayer(marker);
+                }
+            }
+        }
+
+        renderList();
+        requestAnimationFrame(() => map.invalidateSize());
+    }
+
+    function selectPartner(partnerId) {
+        const wasSelected = state.selectedPartnerId === partnerId;
+        const previousId = state.selectedPartnerId;
+        state.selectedPartnerId = wasSelected ? null : partnerId;
+
+        // Desinfla el partner anterior, si había uno distinto
+        if (previousId && previousId !== partnerId) {
+            const prevPartner = findPartnerById(previousId);
+            setMarkerExpanded(markersByPartnerId[previousId], prevPartner, false);
+        }
+
+        // Infla/desinfla el partner actual según el nuevo estado
+        const partner = findPartnerById(partnerId);
+        setMarkerExpanded(markersByPartnerId[partnerId], partner, !wasSelected);
+
+        renderList();
+
+        requestAnimationFrame(() => map.invalidateSize());
+    }
+
+    function findPartnerById(id) {
+        for (const { partners } of groups) {
+            const found = partners.find((p) => p.id === id);
+            if (found) return found;
+        }
+        return null;
+    }
+}
+
+/**
+ * Construye el bloque de detalle de un partner: descripción + sus
+ * enlaces (web, entradas, fiesta propia si existe).
+ * Diseño visual pendiente de afinar más adelante (acordado).
+ */
+function buildPartnerDetail(partner) {
+    const detail = document.createElement('div');
+    detail.className = 'partner-detail';
+
+    const desc = document.createElement('p');
+    desc.className = 'partner-detail__description';
+    desc.textContent = partner.description;
+    detail.appendChild(desc);
+
+    for (const link of partner.links) {
+        const a = document.createElement('a');
+        a.href = link.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'partner-detail__link';
+        a.textContent = link.label;
+        a.addEventListener('click', () => {
+            trackEvent('partner_link_click', {
+                partnerId: partner.id,
+                partnerName: partner.name,
+                linkType: link.type,
+                linkUrl: link.url,
+            });
+        });
+        detail.appendChild(a);
+    }
+
+    // Botón "Cómo llegar" — Google Maps universal, según lo acordado.
+    const directions = document.createElement('a');
+    directions.href = `https://www.google.com/maps/dir/?api=1&destination=${partner.lat},${partner.lng}`;
+    directions.target = '_blank';
+    directions.rel = 'noopener noreferrer';
+    directions.className = 'partner-detail__directions';
+    directions.textContent = 'Cómo llegar';
+    directions.addEventListener('click', () => {
+        trackEvent('partner_directions_click', {
+            partnerId: partner.id,
+            partnerName: partner.name,
+        });
+    });
+    detail.appendChild(directions);
+
+    return detail;
+}
