@@ -1,11 +1,7 @@
 let editingPartnerId = null;
 
-document.addEventListener('DOMContentLoaded', async function () {
-    const {
-        data: { session },
-    } = await window.supabaseClient.auth.getSession();
-    session ? showPanel() : showLogin();
-
+document.addEventListener('DOMContentLoaded', function () {
+    // Listeners primero — no dependen de que getSession resuelva
     document.getElementById('login-btn').addEventListener('click', login);
     document.getElementById('logout-btn').addEventListener('click', logout);
     document.getElementById('new-partner-btn').addEventListener('click', () => openModal(null));
@@ -14,6 +10,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('modal-save').addEventListener('click', savePartner);
     document.getElementById('add-link-btn').addEventListener('click', () => addLinkRow());
     document.querySelector('.admin-modal__backdrop').addEventListener('click', closeModal);
+
+    // Verificar sesión existente después
+    window.supabaseClient.auth
+        .getSession()
+        .then(({ data: { session } }) => {
+            session ? showPanel() : showLogin();
+        })
+        .catch((err) => {
+            console.error('[admin] error comprobando sesión:', err);
+            showLogin();
+        });
 });
 
 async function login() {
@@ -22,9 +29,13 @@ async function login() {
     const errorEl = document.getElementById('login-error');
     errorEl.textContent = '';
 
-    const { error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
+    const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+        email,
+        password,
+    });
+
     if (error) {
-        errorEl.textContent = 'Credenciales incorrectas.';
+        errorEl.textContent = error.message || 'Credenciales incorrectas.';
         return;
     }
     showPanel();
