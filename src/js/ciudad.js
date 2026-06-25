@@ -92,31 +92,33 @@ if (!pais || !ciudad || !country) {
     // existe conflicto de gestos que justifique el overlay "toca para
     // interactuar". En escritorio el layout de dos columnas tampoco lo
     // necesita.
-    mountCityMap('city-map-embed', { pais, ciudad, interactive: true }).then((mapInstance) => {
-        if (mapInstance) {
-            mountPartnersList(
-                'city-partners-list',
-                mapInstance,
-                ciudad,
-                window.ERASMUS_EXPERIENCE.defaultCategory
-            );
-            const mapEl = document.getElementById('city-map-embed');
-            const asideEl = document.getElementById('city-partners-list');
-            const syncHeight = () => {
-                if (window.innerWidth >= 900) {
-                    asideEl.style.height = mapEl.offsetHeight + 'px';
-                } else {
-                    asideEl.style.height = '';
-                }
-                // Leaflet no detecta cambios de tamaño del contenedor
-                // automáticamente; necesario al cambiar de breakpoint
-                // (ej. 220px sticky → aspect-ratio escritorio).
-                mapInstance.invalidateSize();
-            };
-            syncHeight();
-            new ResizeObserver(syncHeight).observe(mapEl);
+    mountCityMap('city-map-embed', { pais, ciudad, interactive: true }).then(
+        async (mapInstance) => {
+            if (mapInstance) {
+                await mountPartnersList(
+                    'city-partners-list',
+                    mapInstance,
+                    ciudad,
+                    window.ERASMUS_EXPERIENCE.defaultCategory
+                );
+                const mapEl = document.getElementById('city-map-embed');
+                const asideEl = document.getElementById('city-partners-list');
+                const syncHeight = () => {
+                    if (window.innerWidth >= 900) {
+                        asideEl.style.height = mapEl.offsetHeight + 'px';
+                    } else {
+                        asideEl.style.height = '';
+                    }
+                    // Leaflet no detecta cambios de tamaño del contenedor
+                    // automáticamente; necesario al cambiar de breakpoint
+                    // (ej. 220px sticky → aspect-ratio escritorio).
+                    mapInstance.invalidateSize();
+                };
+                syncHeight();
+                new ResizeObserver(syncHeight).observe(mapEl);
+            }
         }
-    });
+    );
 }
 
 function buildContextualSections(ciudad) {
