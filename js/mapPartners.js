@@ -176,6 +176,14 @@ function buildPartnerDetail(partner) {
         a.rel = 'noopener noreferrer';
         a.className = 'partner-detail__link';
         a.textContent = link.label;
+        a.addEventListener('click', () => {
+            trackEvent('partner_link_click', {
+                partnerId: partner.id,
+                partnerName: partner.name,
+                linkType: link.type,
+                linkUrl: link.url,
+            });
+        });
         detail.appendChild(a);
     }
 
@@ -186,6 +194,12 @@ function buildPartnerDetail(partner) {
     directions.rel = 'noopener noreferrer';
     directions.className = 'partner-detail__directions';
     directions.textContent = 'Cómo llegar';
+    directions.addEventListener('click', () => {
+        trackEvent('partner_directions_click', {
+            partnerId: partner.id,
+            partnerName: partner.name,
+        });
+    });
     detail.appendChild(directions);
 
     return detail;
