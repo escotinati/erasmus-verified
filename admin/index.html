@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin — Erasmus Verified</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/src/css/admin.css" />
+    </head>
+    <body>
+        <!-- VISTA LOGIN -->
+        <div id="login-view" class="admin-login">
+            <div class="admin-login__box">
+                <h1 class="admin-login__title">Erasmus Verified<br /><span>Admin</span></h1>
+                <div class="admin-field">
+                    <label for="login-email">Email</label>
+                    <input
+                        id="login-email"
+                        type="email"
+                        autocomplete="username"
+                        placeholder="tu@email.com"
+                    />
+                </div>
+                <div class="admin-field">
+                    <label for="login-password">Contraseña</label>
+                    <input
+                        id="login-password"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="••••••••"
+                    />
+                </div>
+                <button id="login-btn" type="button" class="admin-btn admin-btn--primary">
+                    Entrar
+                </button>
+                <p id="login-error" class="admin-error" role="alert"></p>
+            </div>
+        </div>
+
+        <!-- VISTA PANEL -->
+        <div id="panel-view" class="admin-panel" hidden>
+            <header class="admin-header">
+                <h1>Erasmus Verified — Admin</h1>
+                <button id="logout-btn" type="button" class="admin-btn admin-btn--ghost">
+                    Cerrar sesión
+                </button>
+            </header>
+
+            <main class="admin-main">
+                <!-- SECCIÓN PARTNERS -->
+                <section class="admin-section">
+                    <div class="admin-section__header">
+                        <h2>Partners</h2>
+                        <button
+                            id="new-partner-btn"
+                            type="button"
+                            class="admin-btn admin-btn--primary"
+                        >
+                            + Nuevo partner
+                        </button>
+                    </div>
+                    <div id="partners-table" class="admin-table-wrap"></div>
+                </section>
+
+                <!-- SECCIÓN MÉTRICAS -->
+                <section class="admin-section">
+                    <h2>Clics por partner <span class="admin-badge">últimos 30 días</span></h2>
+                    <div id="clicks-report" class="admin-clicks"></div>
+                </section>
+            </main>
+        </div>
+
+        <!-- MODAL PARTNER -->
+        <div id="partner-modal" class="admin-modal" hidden>
+            <div class="admin-modal__backdrop"></div>
+            <div class="admin-modal__box">
+                <button type="button" class="admin-modal__close" id="modal-close">×</button>
+                <h2 id="modal-title">Nuevo partner</h2>
+
+                <div class="admin-field">
+                    <label>ID <span class="admin-hint">(sin espacios, ej: p-nombre)</span></label>
+                    <input id="f-id" type="text" placeholder="p-nombre-ciudad" />
+                </div>
+                <div class="admin-field">
+                    <label>Nombre</label>
+                    <input id="f-name" type="text" />
+                </div>
+                <div class="admin-field">
+                    <label>Categoría</label>
+                    <select id="f-category">
+                        <option value="nightlife">Nightlife</option>
+                        <option value="housing">Alojamiento</option>
+                        <option value="services">Servicios</option>
+                        <option value="community">Comunidad</option>
+                        <option value="travel">Viajes</option>
+                    </select>
+                </div>
+                <div class="admin-field">
+                    <label>País</label>
+                    <input id="f-pais" type="text" value="España" />
+                </div>
+                <div class="admin-field">
+                    <label>Ciudad</label>
+                    <input id="f-ciudad" type="text" value="Bilbao" />
+                </div>
+                <div class="admin-field">
+                    <label>Descripción</label>
+                    <textarea id="f-description" rows="3"></textarea>
+                </div>
+                <div class="admin-field admin-field--row">
+                    <div>
+                        <label>Latitud</label>
+                        <input id="f-lat" type="number" step="any" />
+                    </div>
+                    <div>
+                        <label>Longitud</label>
+                        <input id="f-lng" type="number" step="any" />
+                    </div>
+                </div>
+                <div class="admin-field">
+                    <label>Prioridad <span class="admin-hint">(mayor = aparece antes)</span></label>
+                    <input id="f-priority" type="number" value="0" />
+                </div>
+                <div class="admin-field admin-field--check">
+                    <input id="f-active" type="checkbox" checked />
+                    <label for="f-active">Activo</label>
+                </div>
+
+                <hr class="admin-divider" />
+                <h3>Links <span class="admin-hint">(0 o más)</span></h3>
+                <div id="links-container"></div>
+                <button type="button" id="add-link-btn" class="admin-btn admin-btn--ghost">
+                    + Añadir link
+                </button>
+
+                <div class="admin-modal__actions">
+                    <button type="button" id="modal-cancel" class="admin-btn admin-btn--ghost">
+                        Cancelar
+                    </button>
+                    <button type="button" id="modal-save" class="admin-btn admin-btn--primary">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+        <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/js/admin.js"></script>
+    </body>
+</html>

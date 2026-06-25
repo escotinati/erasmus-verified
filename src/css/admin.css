@@ -1,0 +1,320 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #0f172a;
+    color: #f1f5f9;
+    min-height: 100vh;
+}
+
+/* Login */
+.admin-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+.admin-login__box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+.admin-login__title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 32px;
+    line-height: 1.2;
+}
+.admin-login__title span {
+    color: #6366f1;
+}
+
+/* Panel */
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+.admin-header h1 {
+    font-size: 1rem;
+    font-weight: 700;
+}
+.admin-main {
+    padding: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.admin-section {
+    margin-bottom: 48px;
+}
+.admin-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.admin-section h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Fields */
+.admin-field {
+    margin-bottom: 16px;
+}
+.admin-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #f1f5f9;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+.admin-field--row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.admin-field--check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admin-field--check input {
+    width: auto;
+}
+.admin-field--check label {
+    margin-bottom: 0;
+    color: #f1f5f9;
+}
+.admin-hint {
+    color: #64748b;
+    font-weight: 400;
+}
+.admin-divider {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 20px 0;
+}
+
+/* Buttons */
+.admin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: opacity 0.15s;
+}
+.admin-btn:hover {
+    opacity: 0.85;
+}
+.admin-btn--primary {
+    background: #6366f1;
+    color: #fff;
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+}
+.admin-btn--ghost {
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid #334155;
+}
+.admin-btn--danger {
+    background: #dc2626;
+    color: #fff;
+}
+.admin-btn--sm {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+}
+
+/* Table */
+.admin-table-wrap {
+    overflow-x: auto;
+}
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.admin-table th {
+    text-align: left;
+    padding: 10px 12px;
+    color: #64748b;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #334155;
+}
+.admin-table td {
+    padding: 12px;
+    border-bottom: 1px solid #1e293b;
+    vertical-align: middle;
+}
+.admin-table tr:hover td {
+    background: #1e293b;
+}
+.admin-empty {
+    color: #64748b;
+    font-size: 0.85rem;
+    padding: 16px 0;
+}
+
+/* Badge */
+.admin-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: #1e293b;
+    color: #94a3b8;
+}
+.admin-badge--nightlife {
+    background: rgba(225, 20, 123, 0.15);
+    color: #e1147b;
+}
+.admin-badge--housing {
+    background: rgba(14, 116, 144, 0.15);
+    color: #0e7490;
+}
+.admin-badge--services {
+    background: rgba(202, 138, 4, 0.15);
+    color: #ca8a04;
+}
+.admin-badge--community {
+    background: rgba(22, 163, 74, 0.15);
+    color: #16a34a;
+}
+.admin-badge--travel {
+    background: rgba(124, 58, 237, 0.15);
+    color: #7c3aed;
+}
+
+/* Modal */
+.admin-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+.admin-modal[hidden] {
+    display: none;
+}
+.admin-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+.admin-modal__box {
+    position: relative;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.admin-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.admin-modal__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+.admin-modal__actions .admin-btn--primary {
+    width: auto;
+    margin-top: 0;
+}
+
+/* Links */
+.admin-link-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+.admin-link-row input,
+.admin-link-row select {
+    margin: 0;
+}
+
+/* Clicks report */
+.admin-clicks__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #1e293b;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+.admin-clicks__name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.admin-clicks__count {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #6366f1;
+}
+
+/* Admin error */
+.admin-error {
+    color: #f87171;
+    font-size: 0.82rem;
+    margin-top: 10px;
+    min-height: 20px;
+}
