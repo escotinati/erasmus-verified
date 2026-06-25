@@ -1,12 +1,9 @@
 (function () {
-    const url = import.meta.env.VITE_SUPABASE_URL;
-    const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    var url = window.__SUPABASE_URL__;
+    var key = window.__SUPABASE_KEY__;
 
-    if (!url || !key) {
-        console.error(
-            '[supabase] Faltan VITE_SUPABASE_URL o VITE_SUPABASE_ANON_KEY. ' +
-                '¿Creaste .env.local?'
-        );
+    if (!url) {
+        console.error('[supabase] VITE_SUPABASE_URL no está definida. ¿Creaste .env.local?');
         return;
     }
 
