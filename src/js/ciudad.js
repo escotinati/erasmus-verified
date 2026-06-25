@@ -122,7 +122,7 @@ if (!pais || !ciudad || !country) {
 }
 
 function buildContextualSections(ciudad) {
-    const travelPartners = getPartnersByCity(ciudad).filter((p) => p.category === 'travel');
+    const travelPartners = [];
     let html = '';
 
     // Sección A — Alojamiento: siempre visible
