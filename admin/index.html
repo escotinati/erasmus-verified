@@ -7,7 +7,7 @@
         <meta name="robots" content="noindex,nofollow" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet"
         />
         <link rel="stylesheet" href="/src/css/admin.css" />
@@ -16,7 +16,14 @@
         <!-- VISTA LOGIN -->
         <div id="login-view" class="admin-login">
             <div class="admin-login__box">
-                <h1 class="admin-login__title">Erasmus Verified<br /><span>Admin</span></h1>
+                <!-- A: Logo block -->
+                <div class="admin-login__logo">
+                    <div class="admin-login__logo-icon">✦</div>
+                    <div class="admin-login__logo-text">
+                        <div class="admin-login__logo-name">Erasmus Verified</div>
+                        <div class="admin-login__logo-sub">Panel de administración</div>
+                    </div>
+                </div>
                 <div class="admin-field">
                     <label for="login-email">Email</label>
                     <input
@@ -35,7 +42,12 @@
                         placeholder="••••••••"
                     />
                 </div>
-                <button id="login-btn" type="button" class="admin-btn admin-btn--primary">
+                <!-- B: Block button -->
+                <button
+                    id="login-btn"
+                    type="button"
+                    class="admin-btn admin-btn--primary admin-btn--block"
+                >
                     Entrar
                 </button>
                 <p id="login-error" class="admin-error" role="alert"></p>
@@ -44,8 +56,12 @@
 
         <!-- VISTA PANEL -->
         <div id="panel-view" class="admin-panel" hidden>
+            <!-- C: Branded header -->
             <header class="admin-header">
-                <h1>Erasmus Verified — Admin</h1>
+                <div class="admin-header__brand">
+                    <div class="admin-header__brand-dot">✦</div>
+                    <h1>Erasmus Verified</h1>
+                </div>
                 <button id="logout-btn" type="button" class="admin-btn admin-btn--ghost">
                     Cerrar sesión
                 </button>
@@ -55,7 +71,11 @@
                 <!-- SECCIÓN PARTNERS -->
                 <section class="admin-section">
                     <div class="admin-section__header">
-                        <h2>Partners</h2>
+                        <!-- D: Partner count -->
+                        <div class="admin-section__title-group">
+                            <h2>Partners</h2>
+                            <span id="partner-count" class="admin-count"></span>
+                        </div>
                         <button
                             id="new-partner-btn"
                             type="button"
@@ -69,8 +89,14 @@
 
                 <!-- SECCIÓN MÉTRICAS -->
                 <section class="admin-section">
-                    <h2>Clics por partner <span class="admin-badge">últimos 30 días</span></h2>
-                    <div id="clicks-report" class="admin-clicks"></div>
+                    <div class="admin-section__header">
+                        <div class="admin-section__title-group">
+                            <h2>Clics por partner</h2>
+                            <span class="admin-count">últimos 30 días</span>
+                        </div>
+                    </div>
+                    <!-- E: Metrics grid container -->
+                    <div id="clicks-report" class="admin-metrics-grid"></div>
                 </section>
             </main>
         </div>
@@ -80,63 +106,91 @@
             <div class="admin-modal__backdrop"></div>
             <div class="admin-modal__box">
                 <button type="button" class="admin-modal__close" id="modal-close">×</button>
-                <h2 id="modal-title">Nuevo partner</h2>
-
-                <div class="admin-field">
-                    <label>ID <span class="admin-hint">(sin espacios, ej: p-nombre)</span></label>
-                    <input id="f-id" type="text" placeholder="p-nombre-ciudad" />
-                </div>
-                <div class="admin-field">
-                    <label>Nombre</label>
-                    <input id="f-name" type="text" />
-                </div>
-                <div class="admin-field">
-                    <label>Categoría</label>
-                    <select id="f-category">
-                        <option value="nightlife">Nightlife</option>
-                        <option value="housing">Alojamiento</option>
-                        <option value="services">Servicios</option>
-                        <option value="community">Comunidad</option>
-                        <option value="travel">Viajes</option>
-                    </select>
-                </div>
-                <div class="admin-field">
-                    <label>País</label>
-                    <input id="f-pais" type="text" value="España" />
-                </div>
-                <div class="admin-field">
-                    <label>Ciudad</label>
-                    <input id="f-ciudad" type="text" value="Bilbao" />
-                </div>
-                <div class="admin-field">
-                    <label>Descripción</label>
-                    <textarea id="f-description" rows="3"></textarea>
-                </div>
-                <div class="admin-field admin-field--row">
-                    <div>
-                        <label>Latitud</label>
-                        <input id="f-lat" type="number" step="any" />
-                    </div>
-                    <div>
-                        <label>Longitud</label>
-                        <input id="f-lng" type="number" step="any" />
-                    </div>
-                </div>
-                <div class="admin-field">
-                    <label>Prioridad <span class="admin-hint">(mayor = aparece antes)</span></label>
-                    <input id="f-priority" type="number" value="0" />
-                </div>
-                <div class="admin-field admin-field--check">
-                    <input id="f-active" type="checkbox" checked />
-                    <label for="f-active">Activo</label>
+                <!-- F: Modal header with subtitle -->
+                <div class="admin-modal__header">
+                    <h2 class="admin-modal__title" id="modal-title">Nuevo partner</h2>
+                    <p class="admin-modal__subtitle" id="modal-subtitle"></p>
                 </div>
 
+                <!-- G: Field groups -->
+                <div class="admin-field-group">
+                    <div class="admin-field-group__title">Información básica</div>
+                    <div class="admin-field">
+                        <label
+                            >ID <span class="admin-hint">(sin espacios, ej: p-nombre)</span></label
+                        >
+                        <input id="f-id" type="text" placeholder="p-nombre-ciudad" />
+                    </div>
+                    <div class="admin-field">
+                        <label>Nombre</label>
+                        <input id="f-name" type="text" />
+                    </div>
+                    <div class="admin-field">
+                        <label>Categoría</label>
+                        <select id="f-category">
+                            <option value="nightlife">Nightlife</option>
+                            <option value="housing">Alojamiento</option>
+                            <option value="services">Servicios</option>
+                            <option value="community">Comunidad</option>
+                            <option value="travel">Viajes</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
+                        <label>Descripción</label>
+                        <textarea id="f-description" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="admin-field-group">
+                    <div class="admin-field-group__title">Ubicación</div>
+                    <div class="admin-field">
+                        <label>País</label>
+                        <input id="f-pais" type="text" value="España" />
+                    </div>
+                    <div class="admin-field">
+                        <label>Ciudad</label>
+                        <input id="f-ciudad" type="text" value="Bilbao" />
+                    </div>
+                </div>
+
+                <div class="admin-field-group">
+                    <div class="admin-field-group__title">Coordenadas y configuración</div>
+                    <div class="admin-field admin-field--row">
+                        <div class="admin-field">
+                            <label>Latitud</label>
+                            <input id="f-lat" type="number" step="any" />
+                        </div>
+                        <div class="admin-field">
+                            <label>Longitud</label>
+                            <input id="f-lng" type="number" step="any" />
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label
+                            >Prioridad
+                            <span class="admin-hint">(mayor = aparece antes)</span></label
+                        >
+                        <input id="f-priority" type="number" value="0" />
+                    </div>
+                    <div class="admin-field admin-field--check">
+                        <input id="f-active" type="checkbox" checked />
+                        <label for="f-active">Activo</label>
+                    </div>
+                </div>
+
+                <!-- H: Links section header -->
                 <hr class="admin-divider" />
-                <h3>Links <span class="admin-hint">(0 o más)</span></h3>
+                <div class="admin-links-header">
+                    <h3>Links</h3>
+                    <button
+                        type="button"
+                        id="add-link-btn"
+                        class="admin-btn admin-btn--sm admin-btn--ghost"
+                    >
+                        + Añadir link
+                    </button>
+                </div>
                 <div id="links-container"></div>
-                <button type="button" id="add-link-btn" class="admin-btn admin-btn--ghost">
-                    + Añadir link
-                </button>
 
                 <div class="admin-modal__actions">
                     <button type="button" id="modal-cancel" class="admin-btn admin-btn--ghost">
