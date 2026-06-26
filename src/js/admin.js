@@ -9,7 +9,18 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('modal-cancel').addEventListener('click', closeModal);
     document.getElementById('modal-save').addEventListener('click', savePartner);
     document.getElementById('add-link-btn').addEventListener('click', () => addLinkRow());
-    document.querySelector('.admin-modal__backdrop').addEventListener('click', closeModal);
+    document
+        .querySelector('#partner-modal .admin-modal__backdrop')
+        .addEventListener('click', closeModal);
+
+    document.getElementById('new-city-btn')?.addEventListener('click', () => openCityModal(null));
+    document.getElementById('city-modal-close')?.addEventListener('click', closeCityModal);
+    document.getElementById('city-modal-cancel')?.addEventListener('click', closeCityModal);
+    document.getElementById('city-modal-save')?.addEventListener('click', saveCity);
+    document.getElementById('add-group-btn')?.addEventListener('click', () => addGroupRow());
+    document
+        .querySelector('#city-modal .admin-modal__backdrop')
+        ?.addEventListener('click', closeCityModal);
 
     // Verificar sesión existente después
     window.supabaseClient.auth
@@ -57,7 +68,7 @@ function showLogin() {
 async function showPanel() {
     document.getElementById('login-view').hidden = true;
     document.getElementById('panel-view').hidden = false;
-    await Promise.all([loadPartners(), loadClicksReport()]);
+    await Promise.all([loadPartners(), loadCities(), loadClicksReport()]);
 }
 
 async function loadPartners() {
@@ -267,6 +278,232 @@ async function savePartner() {
 
     closeModal();
     await loadPartners();
+}
+
+// ── CIUDADES ──────────────────────────────────────────────────
+
+let editingCityId = null;
+
+async function loadCities() {
+    const { data, error } = await window.supabaseClient
+        .from('cities')
+        .select('*')
+        .order('priority', { ascending: false });
+
+    if (error) {
+        alert('Error cargando ciudades: ' + error.message);
+        return;
+    }
+    renderCitiesTable(data);
+}
+
+function renderCitiesTable(cities) {
+    const wrap = document.getElementById('cities-table');
+    if (!wrap) return;
+
+    const countEl = document.getElementById('cities-count');
+    if (countEl) countEl.textContent = `(${cities.length})`;
+
+    if (cities.length === 0) {
+        wrap.innerHTML = '<p class="admin-empty">No hay ciudades todavía.</p>';
+        return;
+    }
+
+    const rows = cities
+        .map(
+            (c) => `
+    <tr>
+      <td data-label="Ciudad">
+        <div class="partner-name">${c.flag} ${c.name}</div>
+        <div class="partner-desc">${c.country}</div>
+      </td>
+      <td data-label="Descripción">
+        <div class="partner-desc">${c.description || '—'}</div>
+      </td>
+      <td data-label="Prioridad" class="col-num">${c.priority}</td>
+      <td data-label="Estado" class="col-center">
+        <span class="admin-badge ${c.active ? 'admin-badge--active' : 'admin-badge--inactive'}">
+          ${c.active ? 'Activa' : 'Inactiva'}
+        </span>
+      </td>
+      <td class="col-actions" data-label="Acciones">
+        <div class="row-actions">
+          <button type="button"
+            class="admin-btn admin-btn--ghost admin-btn--sm"
+            onclick="openCityModal('${c.id}')">Editar</button>
+          <button type="button"
+            class="admin-btn admin-btn--danger admin-btn--sm"
+            onclick="toggleCityActive('${c.id}', ${c.active})">
+            ${c.active ? 'Desactivar' : 'Activar'}
+          </button>
+        </div>
+      </td>
+    </tr>`
+        )
+        .join('');
+
+    wrap.innerHTML = `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Ciudad</th>
+          <th>Descripción</th>
+          <th class="col-num">Prioridad</th>
+          <th class="col-center">Estado</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+async function toggleCityActive(id, current) {
+    const { error } = await window.supabaseClient
+        .from('cities')
+        .update({ active: !current })
+        .eq('id', id);
+    if (error) {
+        alert('Error: ' + error.message);
+        return;
+    }
+    await loadCities();
+}
+
+async function openCityModal(cityId) {
+    editingCityId = cityId || null;
+    document.getElementById('city-modal-title').textContent = cityId
+        ? 'Editar ciudad'
+        : 'Nueva ciudad';
+    document.getElementById('city-modal-subtitle').textContent = cityId
+        ? `Editando: ${cityId}`
+        : 'Rellena los datos de la nueva ciudad';
+    document.getElementById('cf-id').disabled = !!cityId;
+
+    clearCityForm();
+
+    if (cityId) {
+        const { data: city } = await window.supabaseClient
+            .from('cities')
+            .select('*')
+            .eq('id', cityId)
+            .single();
+        const { data: groups } = await window.supabaseClient
+            .from('city_groups')
+            .select('*')
+            .eq('city_id', cityId)
+            .order('sort_order');
+
+        document.getElementById('cf-id').value = city.id;
+        document.getElementById('cf-name').value = city.name;
+        document.getElementById('cf-country').value = city.country;
+        document.getElementById('cf-flag').value = city.flag;
+        document.getElementById('cf-description').value = city.description || '';
+        document.getElementById('cf-image').value = city.image_url || '';
+        document.getElementById('cf-priority').value = city.priority;
+        document.getElementById('cf-active').checked = city.active;
+
+        for (const group of groups || []) {
+            addGroupRow(group);
+        }
+    }
+
+    document.getElementById('city-modal').hidden = false;
+}
+
+function closeCityModal() {
+    document.getElementById('city-modal').hidden = true;
+    clearCityForm();
+}
+
+function clearCityForm() {
+    ['cf-id', 'cf-name', 'cf-country', 'cf-flag', 'cf-description', 'cf-image'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('cf-priority').value = '0';
+    document.getElementById('cf-active').checked = false;
+    document.getElementById('groups-container').innerHTML = '';
+}
+
+function addGroupRow(group = {}) {
+    const container = document.getElementById('groups-container');
+    const row = document.createElement('div');
+    row.className = 'admin-link-row';
+    row.innerHTML = `
+    <select class="group-platform">
+      <option value="whatsapp" ${group.platform === 'whatsapp' ? 'selected' : ''}>WhatsApp</option>
+      <option value="telegram" ${group.platform === 'telegram' ? 'selected' : ''}>Telegram</option>
+    </select>
+    <input class="group-label" type="text"
+      placeholder="Nombre del grupo"
+      value="${group.label || ''}" />
+    <input class="group-url" type="text"
+      placeholder="URL del grupo"
+      value="${group.url || ''}" />
+    <button type="button"
+      class="admin-btn admin-btn--sm admin-btn--danger"
+      onclick="this.parentElement.remove()">×</button>
+  `;
+    container.appendChild(row);
+}
+
+async function saveCity() {
+    const id = document.getElementById('cf-id').value.trim();
+    const name = document.getElementById('cf-name').value.trim();
+    const country = document.getElementById('cf-country').value.trim();
+
+    if (!id || !name || !country) {
+        alert('ID, nombre y país son obligatorios.');
+        return;
+    }
+
+    const cityData = {
+        id,
+        name,
+        country,
+        flag: document.getElementById('cf-flag').value.trim(),
+        description: document.getElementById('cf-description').value.trim(),
+        image_url: document.getElementById('cf-image').value.trim(),
+        priority: parseInt(document.getElementById('cf-priority').value) || 0,
+        active: document.getElementById('cf-active').checked,
+    };
+
+    const { error: cityError } = await window.supabaseClient.from('cities').upsert(cityData);
+
+    if (cityError) {
+        alert('Error guardando ciudad: ' + cityError.message);
+        return;
+    }
+
+    await window.supabaseClient.from('city_groups').delete().eq('city_id', id);
+
+    const groupRows = document.querySelectorAll('#groups-container .admin-link-row');
+
+    if (groupRows.length > 0) {
+        const groups = Array.from(groupRows)
+            .map((row, i) => ({
+                city_id: id,
+                platform: row.querySelector('.group-platform').value,
+                label: row.querySelector('.group-label').value.trim(),
+                url: row.querySelector('.group-url').value.trim(),
+                active: true,
+                sort_order: i,
+            }))
+            .filter((g) => g.label && g.url);
+
+        if (groups.length > 0) {
+            const { error: groupsError } = await window.supabaseClient
+                .from('city_groups')
+                .insert(groups);
+            if (groupsError) {
+                alert('Error guardando grupos: ' + groupsError.message);
+                return;
+            }
+        }
+    }
+
+    closeCityModal();
+    await loadCities();
 }
 
 async function loadClicksReport() {
