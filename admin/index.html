@@ -87,6 +87,24 @@
                     <div id="partners-table" class="admin-table-wrap"></div>
                 </section>
 
+                <!-- SECCIÓN CIUDADES -->
+                <section class="admin-section">
+                    <div class="admin-section__header">
+                        <div class="admin-section__title-group">
+                            <h2>Ciudades</h2>
+                            <span id="cities-count" class="admin-count"></span>
+                        </div>
+                        <button
+                            id="new-city-btn"
+                            type="button"
+                            class="admin-btn admin-btn--primary"
+                        >
+                            + Nueva ciudad
+                        </button>
+                    </div>
+                    <div id="cities-table" class="admin-table-wrap"></div>
+                </section>
+
                 <!-- SECCIÓN MÉTRICAS -->
                 <section class="admin-section">
                     <div class="admin-section__header">
@@ -197,6 +215,91 @@
                         Cancelar
                     </button>
                     <button type="button" id="modal-save" class="admin-btn admin-btn--primary">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CIUDAD -->
+        <div id="city-modal" class="admin-modal" hidden>
+            <div class="admin-modal__backdrop"></div>
+            <div class="admin-modal__box">
+                <div class="admin-modal__header">
+                    <div>
+                        <h2 class="admin-modal__title" id="city-modal-title">Nueva ciudad</h2>
+                        <p class="admin-modal__subtitle" id="city-modal-subtitle">
+                            Rellena los datos de la ciudad
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        class="admin-modal__close"
+                        id="city-modal-close"
+                        aria-label="Cerrar"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div class="admin-field-group">
+                    <div class="admin-field-group__title">Información básica</div>
+                    <div class="admin-field">
+                        <label>ID <span class="admin-hint">(sin espacios, ej: bilbao)</span></label>
+                        <input id="cf-id" type="text" placeholder="bilbao" />
+                    </div>
+                    <div class="admin-field">
+                        <label>Nombre</label>
+                        <input id="cf-name" type="text" placeholder="Bilbao" />
+                    </div>
+                    <div class="admin-field admin-field--row">
+                        <div>
+                            <label>País</label>
+                            <input id="cf-country" type="text" placeholder="España" />
+                        </div>
+                        <div>
+                            <label>Bandera <span class="admin-hint">(emoji)</span></label>
+                            <input id="cf-flag" type="text" placeholder="🇪🇸" />
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Descripción <span class="admin-hint">(texto del bento)</span></label>
+                        <textarea id="cf-description" rows="2"></textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>URL imagen</label>
+                        <input id="cf-image" type="text" placeholder="https://..." />
+                    </div>
+                    <div class="admin-field admin-field--row">
+                        <div>
+                            <label>Prioridad</label>
+                            <input id="cf-priority" type="number" value="0" />
+                        </div>
+                        <div class="admin-field--check" style="margin-top: 24px">
+                            <input id="cf-active" type="checkbox" />
+                            <label for="cf-active">Activa</label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="admin-divider" />
+                <div class="admin-links-header">
+                    <span class="admin-links-title">Grupos de la ciudad</span>
+                    <button
+                        type="button"
+                        id="add-group-btn"
+                        class="admin-btn admin-btn--ghost admin-btn--sm"
+                    >
+                        + Añadir grupo
+                    </button>
+                </div>
+                <div id="groups-container"></div>
+
+                <div class="admin-modal__actions">
+                    <button type="button" id="city-modal-cancel" class="admin-btn admin-btn--ghost">
+                        Cancelar
+                    </button>
+                    <button type="button" id="city-modal-save" class="admin-btn admin-btn--primary">
                         Guardar
                     </button>
                 </div>
