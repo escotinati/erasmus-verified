@@ -50,7 +50,7 @@
 
     document.getElementById('actionsWrap').innerHTML = btns;
 
-    buildContextualSections(city.name);
+    await buildContextualSections(city.name);
 
     const topbarEl = document.querySelector('header.topbar');
     if (topbarEl) {
@@ -134,8 +134,10 @@ function buildComingSoon(cityName) {
     </div>`;
 }
 
-function buildContextualSections(ciudad) {
-    const travelPartners = [];
+async function buildContextualSections(ciudad) {
+    const travelPartners = await fetchPartnersByCity(ciudad).then((partners) =>
+        partners.filter((p) => p.category === 'travel')
+    );
     let html = '';
 
     html += `
