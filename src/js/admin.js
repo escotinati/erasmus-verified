@@ -72,6 +72,10 @@ async function loadPartners() {
 
 function renderPartnersTable(partners) {
     const wrap = document.getElementById('partners-table');
+    const countEl = document.getElementById('partner-count');
+    if (countEl)
+        countEl.textContent = partners.length + (partners.length === 1 ? ' partner' : ' partners');
+
     if (partners.length === 0) {
         wrap.innerHTML = '<p class="admin-empty">No hay partners todavía.</p>';
         return;
@@ -81,13 +85,13 @@ function renderPartnersTable(partners) {
         .map(
             (p) => `
     <tr>
-      <td>${p.name}</td>
-      <td><span class="admin-badge admin-badge--${p.category}">${p.category}</span></td>
-      <td>${p.ciudad}</td>
-      <td>${p.priority}</td>
-      <td>${p.active ? '✓' : '—'}</td>
+      <td data-label="Nombre">${p.name}</td>
+      <td data-label="Categoría"><span class="admin-badge admin-badge--${p.category}">${p.category}</span></td>
+      <td data-label="Ciudad">${p.ciudad}</td>
+      <td data-label="Prioridad">${p.priority}</td>
+      <td data-label="Activo">${p.active ? '✓' : '—'}</td>
       <td>
-        <button type="button" class="admin-btn admin-btn--sm"
+        <button type="button" class="admin-btn admin-btn--sm admin-btn--ghost"
           onclick="openModal('${p.id}')">Editar</button>
         <button type="button" class="admin-btn admin-btn--sm admin-btn--danger"
           onclick="toggleActive('${p.id}', ${p.active})">
@@ -127,6 +131,9 @@ async function openModal(partnerId) {
     document.getElementById('modal-title').textContent = partnerId
         ? 'Editar partner'
         : 'Nuevo partner';
+    document.getElementById('modal-subtitle').textContent = partnerId
+        ? 'Editando los datos del partner'
+        : 'Rellena los campos para crear un nuevo partner';
     document.getElementById('f-id').disabled = !!partnerId;
 
     clearForm();
@@ -288,9 +295,10 @@ async function loadClicksReport() {
     const rows = sorted
         .map(
             ([name, count]) => `
-    <div class="admin-clicks__row">
-      <span class="admin-clicks__name">${name}</span>
-      <span class="admin-clicks__count">${count}</span>
+    <div class="admin-metric-card">
+      <div class="admin-metric-card__count">${count}</div>
+      <div class="admin-metric-card__name">${name}</div>
+      <div class="admin-metric-card__label">clics</div>
     </div>`
         )
         .join('');
