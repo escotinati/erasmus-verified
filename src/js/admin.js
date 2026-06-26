@@ -43,6 +43,9 @@ async function login() {
 
 async function logout() {
     await window.supabaseClient.auth.signOut();
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('login-error').textContent = '';
     showLogin();
 }
 
