@@ -4,7 +4,7 @@
 
 (async function () {
     const params = new URLSearchParams(window.location.search);
-    const cityId = params.get('ciudad') || '';
+    const cityId = parseInt(params.get('ciudad'), 10);
 
     if (!cityId) {
         showCityError();
@@ -14,7 +14,7 @@
     const { data: city, error } = await window.supabaseClient
         .from('cities')
         .select('*')
-        .eq('id', cityId.toLowerCase())
+        .eq('id', cityId)
         .single();
 
     if (error || !city) {
