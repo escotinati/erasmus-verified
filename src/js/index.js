@@ -207,14 +207,12 @@ function renderBento(grid, cards, animate = false) {
     );
 }
 
-async function initBento() {
+async function initBento(cities) {
     const grid = document.getElementById('bentoGrid');
     if (!grid) return;
 
     grid.innerHTML =
         '<p style="color:var(--text-muted);padding:40px;text-align:center">Cargando ciudades…</p>';
-
-    const cities = await fetchActiveCities();
 
     if (cities.length === 0) {
         grid.innerHTML =
@@ -238,8 +236,7 @@ async function initBento() {
 }
 
 // ── 3. STATS ─────────────────────────────────────────────────
-async function initStats() {
-    const cities = await fetchActiveCities();
+function initStats(cities) {
     const countries = [...new Set(cities.map((c) => c.country))];
 
     const elPaises = document.getElementById('statPaises');
@@ -275,7 +272,8 @@ function initBottomNav() {
 
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-    await Promise.all([initStats(), initBento()]);
+    const cities = await fetchActiveCities();
+    await Promise.all([initStats(cities), initBento(cities)]);
     initNavScroll();
     initBottomNav();
     await initAutocomplete();
