@@ -1,7 +1,6 @@
 let editingPartnerId = null;
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Listeners primero — no dependen de que getSession resuelva
     document.getElementById('login-btn').addEventListener('click', login);
     document.getElementById('logout-btn').addEventListener('click', logout);
     document.getElementById('new-partner-btn').addEventListener('click', () => openModal(null));
@@ -17,12 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('city-modal-close')?.addEventListener('click', closeCityModal);
     document.getElementById('city-modal-cancel')?.addEventListener('click', closeCityModal);
     document.getElementById('city-modal-save')?.addEventListener('click', saveCity);
-    document.getElementById('add-group-btn')?.addEventListener('click', () => addGroupRow());
     document
         .querySelector('#city-modal .admin-modal__backdrop')
         ?.addEventListener('click', closeCityModal);
 
-    // Verificar sesión existente después
     window.supabaseClient.auth
         .getSession()
         .then(({ data: { session } }) => {
@@ -71,10 +68,12 @@ async function showPanel() {
     await Promise.all([loadPartners(), loadCities(), loadClicksReport()]);
 }
 
+// ── PARTNERS ──────────────────────────────────────────────────
+
 async function loadPartners() {
     const { data, error } = await window.supabaseClient
         .from('partners')
-        .select('*')
+        .select('*, cities(name)')
         .order('priority', { ascending: false });
 
     if (error) {
@@ -101,14 +100,14 @@ function renderPartnersTable(partners) {
     <tr>
       <td data-label="Nombre">${p.name}</td>
       <td data-label="Categoría"><span class="admin-badge admin-badge--${p.category}">${p.category}</span></td>
-      <td data-label="Ciudad">${p.ciudad}</td>
+      <td data-label="Ciudad">${p.cities?.name || '—'}</td>
       <td data-label="Prioridad">${p.priority}</td>
       <td data-label="Activo">${p.active ? '✓' : '—'}</td>
       <td>
         <button type="button" class="admin-btn admin-btn--sm admin-btn--ghost"
-          onclick="openModal('${p.id}')">Editar</button>
+          onclick="openModal(${p.id})">Editar</button>
         <button type="button" class="admin-btn admin-btn--sm admin-btn--danger"
-          onclick="toggleActive('${p.id}', ${p.active})">
+          onclick="toggleActive(${p.id}, ${p.active})">
           ${p.active ? 'Desactivar' : 'Activar'}
         </button>
       </td>
@@ -140,17 +139,32 @@ async function toggleActive(id, currentActive) {
     await loadPartners();
 }
 
+async function populateCitySelect(selectId, selectedCityId = null) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const cities = await fetchAllCities();
+    select.innerHTML = '<option value="">— Selecciona ciudad —</option>';
+    for (const city of cities) {
+        const opt = document.createElement('option');
+        opt.value = city.id;
+        opt.textContent = `${city.flag} ${city.name} (${city.country})`;
+        if (selectedCityId !== null && city.id === selectedCityId) opt.selected = true;
+        select.appendChild(opt);
+    }
+}
+
 async function openModal(partnerId) {
-    editingPartnerId = partnerId;
+    editingPartnerId = partnerId || null;
     document.getElementById('modal-title').textContent = partnerId
         ? 'Editar partner'
         : 'Nuevo partner';
     document.getElementById('modal-subtitle').textContent = partnerId
         ? 'Editando los datos del partner'
         : 'Rellena los campos para crear un nuevo partner';
-    document.getElementById('f-id').disabled = !!partnerId;
 
     clearForm();
+    await populateCitySelect('f-city-id');
 
     if (partnerId) {
         const { data: partner } = await window.supabaseClient
@@ -164,16 +178,16 @@ async function openModal(partnerId) {
             .eq('partner_id', partnerId)
             .order('sort_order');
 
-        document.getElementById('f-id').value = partner.id;
         document.getElementById('f-name').value = partner.name;
         document.getElementById('f-category').value = partner.category;
-        document.getElementById('f-pais').value = partner.pais;
-        document.getElementById('f-ciudad').value = partner.ciudad;
         document.getElementById('f-description').value = partner.description;
         document.getElementById('f-lat').value = partner.lat || '';
         document.getElementById('f-lng').value = partner.lng || '';
         document.getElementById('f-priority').value = partner.priority;
         document.getElementById('f-active').checked = partner.active;
+
+        const citySelect = document.getElementById('f-city-id');
+        if (partner.city_id) citySelect.value = partner.city_id;
 
         for (const link of links || []) {
             addLinkRow(link);
@@ -189,10 +203,11 @@ function closeModal() {
 }
 
 function clearForm() {
-    ['f-id', 'f-name', 'f-pais', 'f-ciudad', 'f-description', 'f-lat', 'f-lng'].forEach((id) => {
+    ['f-name', 'f-description', 'f-lat', 'f-lng'].forEach((id) => {
         document.getElementById(id).value = '';
     });
     document.getElementById('f-category').value = 'nightlife';
+    document.getElementById('f-city-id').value = '';
     document.getElementById('f-priority').value = '0';
     document.getElementById('f-active').checked = true;
     document.getElementById('links-container').innerHTML = '';
@@ -218,23 +233,18 @@ function addLinkRow(link = {}) {
 }
 
 async function savePartner() {
-    const id = document.getElementById('f-id').value.trim();
     const name = document.getElementById('f-name').value.trim();
-    const category = document.getElementById('f-category').value;
-    const pais = document.getElementById('f-pais').value.trim();
-    const ciudad = document.getElementById('f-ciudad').value.trim();
+    const cityId = parseInt(document.getElementById('f-city-id').value, 10);
 
-    if (!id || !name || !pais || !ciudad) {
-        alert('ID, nombre, país y ciudad son obligatorios.');
+    if (!name || !cityId) {
+        alert('Nombre y ciudad son obligatorios.');
         return;
     }
 
     const partnerData = {
-        id,
         name,
-        category,
-        pais,
-        ciudad,
+        category: document.getElementById('f-category').value,
+        city_id: cityId,
         description: document.getElementById('f-description').value.trim(),
         lat: parseFloat(document.getElementById('f-lat').value) || null,
         lng: parseFloat(document.getElementById('f-lng').value) || null,
@@ -242,22 +252,36 @@ async function savePartner() {
         active: document.getElementById('f-active').checked,
     };
 
-    const { error: partnerError } = await window.supabaseClient
-        .from('partners')
-        .upsert(partnerData);
-
-    if (partnerError) {
-        alert('Error guardando partner: ' + partnerError.message);
-        return;
+    let savedId = editingPartnerId;
+    if (editingPartnerId) {
+        const { error } = await window.supabaseClient
+            .from('partners')
+            .update(partnerData)
+            .eq('id', editingPartnerId);
+        if (error) {
+            alert('Error guardando partner: ' + error.message);
+            return;
+        }
+    } else {
+        const { data, error } = await window.supabaseClient
+            .from('partners')
+            .insert(partnerData)
+            .select('id')
+            .single();
+        if (error) {
+            alert('Error guardando partner: ' + error.message);
+            return;
+        }
+        savedId = data.id;
     }
 
-    await window.supabaseClient.from('partner_links').delete().eq('partner_id', id);
+    await window.supabaseClient.from('partner_links').delete().eq('partner_id', savedId);
 
     const linkRows = document.querySelectorAll('.admin-link-row');
     if (linkRows.length > 0) {
         const links = Array.from(linkRows)
             .map((row, i) => ({
-                partner_id: id,
+                partner_id: savedId,
                 type: row.querySelector('.link-type').value,
                 label: row.querySelector('.link-label').value.trim(),
                 url: row.querySelector('.link-url').value.trim(),
@@ -317,8 +341,8 @@ function renderCitiesTable(cities) {
         <div class="partner-name">${c.flag} ${c.name}</div>
         <div class="partner-desc">${c.country}</div>
       </td>
-      <td data-label="Descripción">
-        <div class="partner-desc">${c.description || '—'}</div>
+      <td data-label="WhatsApp" class="col-center">
+        ${c.whatsapp_url ? '<span class="admin-badge admin-badge--active">✓ Configurado</span>' : '<span class="admin-badge admin-badge--inactive">Sin URL</span>'}
       </td>
       <td data-label="Prioridad" class="col-num">${c.priority}</td>
       <td data-label="Estado" class="col-center">
@@ -330,10 +354,10 @@ function renderCitiesTable(cities) {
         <div class="row-actions">
           <button type="button"
             class="admin-btn admin-btn--ghost admin-btn--sm"
-            onclick="openCityModal('${c.id}')">Editar</button>
+            onclick="openCityModal(${c.id})">Editar</button>
           <button type="button"
             class="admin-btn admin-btn--danger admin-btn--sm"
-            onclick="toggleCityActive('${c.id}', ${c.active})">
+            onclick="toggleCityActive(${c.id}, ${c.active})">
             ${c.active ? 'Desactivar' : 'Activar'}
           </button>
         </div>
@@ -347,7 +371,7 @@ function renderCitiesTable(cities) {
       <thead>
         <tr>
           <th>Ciudad</th>
-          <th>Descripción</th>
+          <th class="col-center">WhatsApp</th>
           <th class="col-num">Prioridad</th>
           <th class="col-center">Estado</th>
           <th class="col-actions"></th>
@@ -375,9 +399,8 @@ async function openCityModal(cityId) {
         ? 'Editar ciudad'
         : 'Nueva ciudad';
     document.getElementById('city-modal-subtitle').textContent = cityId
-        ? `Editando: ${cityId}`
+        ? 'Editando ciudad #' + cityId
         : 'Rellena los datos de la nueva ciudad';
-    document.getElementById('cf-id').disabled = !!cityId;
 
     clearCityForm();
 
@@ -387,24 +410,15 @@ async function openCityModal(cityId) {
             .select('*')
             .eq('id', cityId)
             .single();
-        const { data: groups } = await window.supabaseClient
-            .from('city_groups')
-            .select('*')
-            .eq('city_id', cityId)
-            .order('sort_order');
 
-        document.getElementById('cf-id').value = city.id;
         document.getElementById('cf-name').value = city.name;
         document.getElementById('cf-country').value = city.country;
         document.getElementById('cf-flag').value = city.flag;
         document.getElementById('cf-description').value = city.description || '';
         document.getElementById('cf-image').value = city.image_url || '';
+        document.getElementById('cf-whatsapp-url').value = city.whatsapp_url || '';
         document.getElementById('cf-priority').value = city.priority;
         document.getElementById('cf-active').checked = city.active;
-
-        for (const group of groups || []) {
-            addGroupRow(group);
-        }
     }
 
     document.getElementById('city-modal').hidden = false;
@@ -416,95 +430,63 @@ function closeCityModal() {
 }
 
 function clearCityForm() {
-    ['cf-id', 'cf-name', 'cf-country', 'cf-flag', 'cf-description', 'cf-image'].forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-    });
+    ['cf-name', 'cf-country', 'cf-flag', 'cf-description', 'cf-image', 'cf-whatsapp-url'].forEach(
+        (id) => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        }
+    );
     document.getElementById('cf-priority').value = '0';
     document.getElementById('cf-active').checked = false;
-    document.getElementById('groups-container').innerHTML = '';
-}
-
-function addGroupRow(group = {}) {
-    const container = document.getElementById('groups-container');
-    const row = document.createElement('div');
-    row.className = 'admin-link-row';
-    row.innerHTML = `
-    <select class="group-platform">
-      <option value="whatsapp" ${group.platform === 'whatsapp' ? 'selected' : ''}>WhatsApp</option>
-      <option value="telegram" ${group.platform === 'telegram' ? 'selected' : ''}>Telegram</option>
-    </select>
-    <input class="group-label" type="text"
-      placeholder="Nombre del grupo"
-      value="${group.label || ''}" />
-    <input class="group-url" type="text"
-      placeholder="URL del grupo"
-      value="${group.url || ''}" />
-    <button type="button"
-      class="admin-btn admin-btn--sm admin-btn--danger"
-      onclick="this.parentElement.remove()">×</button>
-  `;
-    container.appendChild(row);
 }
 
 async function saveCity() {
-    const id = document.getElementById('cf-id').value.trim();
     const name = document.getElementById('cf-name').value.trim();
     const country = document.getElementById('cf-country').value.trim();
+    const whatsappUrl = document.getElementById('cf-whatsapp-url').value.trim();
 
-    if (!id || !name || !country) {
-        alert('ID, nombre y país son obligatorios.');
+    if (!name || !country) {
+        alert('Nombre y país son obligatorios.');
+        return;
+    }
+    if (!whatsappUrl) {
+        alert('El grupo de WhatsApp es obligatorio.');
         return;
     }
 
     const cityData = {
-        id,
         name,
         country,
         flag: document.getElementById('cf-flag').value.trim(),
         description: document.getElementById('cf-description').value.trim(),
         image_url: document.getElementById('cf-image').value.trim(),
+        whatsapp_url: whatsappUrl,
         priority: parseInt(document.getElementById('cf-priority').value) || 0,
         active: document.getElementById('cf-active').checked,
     };
 
-    const { error: cityError } = await window.supabaseClient.from('cities').upsert(cityData);
-
-    if (cityError) {
-        alert('Error guardando ciudad: ' + cityError.message);
-        return;
-    }
-
-    await window.supabaseClient.from('city_groups').delete().eq('city_id', id);
-
-    const groupRows = document.querySelectorAll('#groups-container .admin-link-row');
-
-    if (groupRows.length > 0) {
-        const groups = Array.from(groupRows)
-            .map((row, i) => ({
-                city_id: id,
-                platform: row.querySelector('.group-platform').value,
-                label: row.querySelector('.group-label').value.trim(),
-                url: row.querySelector('.group-url').value.trim(),
-                active: true,
-                sort_order: i,
-            }))
-            .filter((g) => g.label && g.url);
-
-        if (groups.length > 0) {
-            const { error: groupsError } = await window.supabaseClient
-                .from('city_groups')
-                .insert(groups);
-            if (groupsError) {
-                alert('Error guardando grupos: ' + groupsError.message);
-                return;
-            }
+    if (editingCityId) {
+        const { error } = await window.supabaseClient
+            .from('cities')
+            .update(cityData)
+            .eq('id', editingCityId);
+        if (error) {
+            alert('Error guardando ciudad: ' + error.message);
+            return;
+        }
+    } else {
+        const { error } = await window.supabaseClient.from('cities').insert(cityData);
+        if (error) {
+            alert('Error guardando ciudad: ' + error.message);
+            return;
         }
     }
 
     closeCityModal();
     await loadCities();
 }
+
+// ── CLICKS REPORT ─────────────────────────────────────────────
 
 async function loadClicksReport() {
     const since = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
@@ -527,7 +509,7 @@ async function loadClicksReport() {
 
     const counts = {};
     for (const row of data) {
-        const name = row.partners?.name || row.partner_id;
+        const name = row.partners?.name || String(row.partner_id);
         counts[name] = (counts[name] || 0) + 1;
     }
 
