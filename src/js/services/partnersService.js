@@ -12,6 +12,11 @@ async function fetchPartnersByCity(cityId) {
     }
 
     const partnerIds = partners.map((p) => p.id);
+
+    if (partnerIds.length === 0) {
+        return [];
+    }
+
     const { data: links, error: linksError } = await window.supabaseClient
         .from('partner_links')
         .select('*')
