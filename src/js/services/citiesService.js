@@ -38,43 +38,12 @@ async function fetchCityById(cityId) {
     return data;
 }
 
-// Devuelve los grupos activos de una ciudad
-async function fetchCityGroups(cityId) {
-    const { data, error } = await window.supabaseClient
-        .from('city_groups')
-        .select('*')
-        .eq('city_id', cityId)
-        .eq('active', true)
-        .order('sort_order', { ascending: true });
-
-    if (error) {
-        console.error('[citiesService] error cargando grupos:', error);
-        return [];
-    }
-    return data;
-}
-
 // Devuelve TODAS las ciudades (para admin, incluye inactivas)
 async function fetchAllCities() {
     const { data, error } = await window.supabaseClient
         .from('cities')
         .select('*')
         .order('priority', { ascending: false });
-
-    if (error) {
-        console.error('[citiesService]', error);
-        return [];
-    }
-    return data;
-}
-
-// Devuelve TODOS los grupos de una ciudad (para admin)
-async function fetchAllCityGroups(cityId) {
-    const { data, error } = await window.supabaseClient
-        .from('city_groups')
-        .select('*')
-        .eq('city_id', cityId)
-        .order('sort_order', { ascending: true });
 
     if (error) {
         console.error('[citiesService]', error);
