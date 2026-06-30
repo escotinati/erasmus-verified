@@ -775,40 +775,6 @@ a.btn-primary-pill {
 
 /* Popular pills — hero de index.html */
 
-.hero-popular {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-top: 28px;
-}
-
-.popular-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--outline-variant);
-}
-
-.popular-pill {
-    padding: 6px 16px;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--outline-variant);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--on-surface);
-    text-decoration: none;
-    transition:
-        border-color 0.15s,
-        color 0.15s;
-}
-
-.popular-pill:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-}
 
 /* ── 2.5 Bottom nav (mobile) ────────────────────────────────── */
 
