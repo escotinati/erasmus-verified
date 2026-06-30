@@ -36,7 +36,8 @@
 
     document.title = `Mapa de ${city.name}, ${city.country} — Erasmus Verified`;
     document.getElementById('breadcrumbPais').textContent = city.country;
-    document.getElementById('breadcrumbPaisLink').href = `ciudades.html?pais=${encodeURIComponent(city.country)}`;
+    // ciudades.html no migrado a Supabase — inactivo para la demo
+    document.getElementById('breadcrumbPaisLink').removeAttribute('href');
     document.getElementById('breadcrumbCiudad').textContent = city.name;
     document.getElementById('breadcrumbCiudadLink').href = `ciudad.html?ciudad=${city.id}`;
     document.getElementById('backLink').href = `ciudad.html?ciudad=${city.id}`;
