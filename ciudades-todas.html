@@ -278,7 +278,7 @@
                 <div class="footer-brand">
                     <span class="footer-logo">Erasmus Verified</span>
                     <p class="footer-copy">
-                        © 2024 Erasmus Verified. Experiencias Premium para Estudiantes de
+                        © <span id="copyright-year"></span> Erasmus Verified. Experiencias Premium para Estudiantes de
                         Intercambio.
                     </p>
                 </div>
@@ -483,6 +483,7 @@
                         if (href && !href.startsWith('http') && href === page)
                             a.classList.add('app-bottom-nav-item--active');
                     });
+                document.getElementById('copyright-year').textContent = new Date().getFullYear();
             })();
         </script>
     </body>
