@@ -416,6 +416,8 @@ async function openCityModal(cityId) {
         document.getElementById('cf-flag').value = city.flag;
         document.getElementById('cf-description').value = city.description || '';
         document.getElementById('cf-image').value = city.image_url || '';
+        document.getElementById('cf-lat').value = city.lat || '';
+        document.getElementById('cf-lng').value = city.lng || '';
         document.getElementById('cf-whatsapp-url').value = city.whatsapp_url || '';
         document.getElementById('cf-priority').value = city.priority;
         document.getElementById('cf-active').checked = city.active;
@@ -430,7 +432,7 @@ function closeCityModal() {
 }
 
 function clearCityForm() {
-    ['cf-name', 'cf-country', 'cf-flag', 'cf-description', 'cf-image', 'cf-whatsapp-url'].forEach(
+    ['cf-name', 'cf-country', 'cf-flag', 'cf-description', 'cf-image', 'cf-lat', 'cf-lng', 'cf-whatsapp-url'].forEach(
         (id) => {
             const el = document.getElementById(id);
             if (el) el.value = '';
@@ -468,6 +470,8 @@ async function saveCity() {
         flag: document.getElementById('cf-flag').value.trim(),
         description: document.getElementById('cf-description').value.trim(),
         image_url: document.getElementById('cf-image').value.trim(),
+        lat: parseFloat(document.getElementById('cf-lat').value) || null,
+        lng: parseFloat(document.getElementById('cf-lng').value) || null,
         whatsapp_url: whatsappUrl,
         priority: parseInt(document.getElementById('cf-priority').value) || 0,
         active: document.getElementById('cf-active').checked,
