@@ -121,7 +121,7 @@ function renderPartnersTable(partners) {
       <td>
         <button type="button" class="admin-btn admin-btn--sm admin-btn--ghost"
           onclick="openModal(${p.id})">Editar</button>
-        <button type="button" class="admin-btn admin-btn--sm admin-btn--danger"
+        <button type="button" class="admin-btn admin-btn--sm ${p.active ? 'admin-btn--danger' : 'admin-btn--success'}"
           onclick="toggleActive(${p.id}, ${p.active})">
           ${p.active ? 'Desactivar' : 'Activar'}
         </button>
@@ -374,7 +374,7 @@ function renderCitiesTable(cities) {
             class="admin-btn admin-btn--ghost admin-btn--sm"
             onclick="openCityModal(${c.id})">Editar</button>
           <button type="button"
-            class="admin-btn admin-btn--danger admin-btn--sm"
+            class="admin-btn admin-btn--sm ${c.active ? 'admin-btn--danger' : 'admin-btn--success'}"
             onclick="toggleCityActive(${c.id}, ${c.active})">
             ${c.active ? 'Desactivar' : 'Activar'}
           </button>

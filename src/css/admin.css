@@ -219,6 +219,16 @@ body {
     background: var(--c-danger-hover);
 }
 
+.admin-btn--success {
+    background: #16a34a;
+    color: #fff;
+    border: none;
+}
+
+.admin-btn--success:hover {
+    background: #15803d;
+}
+
 .admin-btn--sm {
     padding: 5px 10px;
     font-size: 0.75rem;
