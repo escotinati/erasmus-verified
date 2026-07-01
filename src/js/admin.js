@@ -1,5 +1,13 @@
 let editingPartnerId = null;
 
+function extractCoordsFromGoogleMapsUrl(url) {
+    let match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+    match = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+    return null;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('login-btn').addEventListener('click', login);
     document.getElementById('logout-btn').addEventListener('click', logout);
@@ -26,6 +34,40 @@ document.addEventListener('DOMContentLoaded', function () {
     document
         .querySelector('#partner-modal .admin-modal__backdrop')
         .addEventListener('click', closeModal);
+
+    document.getElementById('f-maps-extract').addEventListener('click', () => {
+        const url = document.getElementById('f-maps-url').value.trim();
+        const fb = document.getElementById('f-maps-feedback');
+        const coords = extractCoordsFromGoogleMapsUrl(url);
+        if (coords) {
+            document.getElementById('f-lat').value = coords.lat;
+            document.getElementById('f-lng').value = coords.lng;
+            fb.textContent = `✓ Coordenadas extraídas: ${coords.lat}, ${coords.lng}`;
+            fb.style.color = '#16a34a';
+        } else {
+            fb.textContent =
+                'No se pudieron extraer las coordenadas. ' +
+                'Usa la URL completa de la barra del navegador (no enlaces acortados goo.gl).';
+            fb.style.color = '#dc2626';
+        }
+    });
+
+    document.getElementById('cf-maps-extract').addEventListener('click', () => {
+        const url = document.getElementById('cf-maps-url').value.trim();
+        const fb = document.getElementById('cf-maps-feedback');
+        const coords = extractCoordsFromGoogleMapsUrl(url);
+        if (coords) {
+            document.getElementById('cf-lat').value = coords.lat;
+            document.getElementById('cf-lng').value = coords.lng;
+            fb.textContent = `✓ Coordenadas extraídas: ${coords.lat}, ${coords.lng}`;
+            fb.style.color = '#16a34a';
+        } else {
+            fb.textContent =
+                'No se pudieron extraer las coordenadas. ' +
+                'Usa la URL completa de la barra del navegador (no enlaces acortados goo.gl).';
+            fb.style.color = '#dc2626';
+        }
+    });
 
     document.getElementById('new-city-btn')?.addEventListener('click', () => openCityModal(null));
     document.getElementById('city-modal-close')?.addEventListener('click', closeCityModal);
@@ -220,9 +262,10 @@ function closeModal() {
 }
 
 function clearForm() {
-    ['f-name', 'f-description', 'f-image', 'f-lat', 'f-lng'].forEach((id) => {
+    ['f-name', 'f-description', 'f-image', 'f-lat', 'f-lng', 'f-maps-url'].forEach((id) => {
         document.getElementById(id).value = '';
     });
+    document.getElementById('f-maps-feedback').textContent = '';
     document.getElementById('f-category').value = 'nightlife';
     document.getElementById('f-city-id').value = '';
     document.getElementById('f-priority').value = '0';
@@ -450,12 +493,21 @@ function closeCityModal() {
 }
 
 function clearCityForm() {
-    ['cf-name', 'cf-country', 'cf-flag', 'cf-description', 'cf-image', 'cf-lat', 'cf-lng', 'cf-whatsapp-url'].forEach(
-        (id) => {
-            const el = document.getElementById(id);
-            if (el) el.value = '';
-        }
-    );
+    [
+        'cf-name',
+        'cf-country',
+        'cf-flag',
+        'cf-description',
+        'cf-image',
+        'cf-lat',
+        'cf-lng',
+        'cf-whatsapp-url',
+        'cf-maps-url',
+    ].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('cf-maps-feedback').textContent = '';
     document.getElementById('cf-priority').value = '0';
     document.getElementById('cf-active').checked = false;
 }

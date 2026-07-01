@@ -212,6 +212,31 @@
 
                 <div class="admin-field-group">
                     <div class="admin-field-group__title">Coordenadas y configuración</div>
+                    <div class="admin-field">
+                        <label
+                            >URL de Google Maps
+                            <span class="admin-hint"
+                                >(pega la URL completa de la barra del navegador)</span
+                            ></label
+                        >
+                        <div style="display: flex; gap: 8px; align-items: flex-start">
+                            <input
+                                id="f-maps-url"
+                                type="url"
+                                placeholder="https://www.google.com/maps/@43.263,-2.935,15z"
+                                style="flex: 1"
+                            />
+                            <button
+                                type="button"
+                                id="f-maps-extract"
+                                class="admin-btn admin-btn--ghost admin-btn--sm"
+                                style="white-space: nowrap"
+                            >
+                                Extraer coords
+                            </button>
+                        </div>
+                        <p id="f-maps-feedback" class="admin-hint" style="margin-top: 4px"></p>
+                    </div>
                     <div class="admin-field admin-field--row">
                         <div class="admin-field">
                             <label>Latitud</label>
@@ -311,6 +336,31 @@
                     <div class="admin-field">
                         <label>URL imagen</label>
                         <input id="cf-image" type="text" placeholder="https://..." />
+                    </div>
+                    <div class="admin-field">
+                        <label
+                            >URL de Google Maps
+                            <span class="admin-hint"
+                                >(pega la URL completa de la barra del navegador)</span
+                            ></label
+                        >
+                        <div style="display: flex; gap: 8px; align-items: flex-start">
+                            <input
+                                id="cf-maps-url"
+                                type="url"
+                                placeholder="https://www.google.com/maps/@43.263,-2.935,15z"
+                                style="flex: 1"
+                            />
+                            <button
+                                type="button"
+                                id="cf-maps-extract"
+                                class="admin-btn admin-btn--ghost admin-btn--sm"
+                                style="white-space: nowrap"
+                            >
+                                Extraer coords
+                            </button>
+                        </div>
+                        <p id="cf-maps-feedback" class="admin-hint" style="margin-top: 4px"></p>
                     </div>
                     <div class="admin-field admin-field--row">
                         <div class="admin-field">
