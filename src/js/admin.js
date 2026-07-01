@@ -13,6 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .getElementById('toggle-password')
             .setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
     });
+    ['login-email', 'login-password'].forEach((id) => {
+        document.getElementById(id).addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
+        });
+    });
     document.getElementById('new-partner-btn').addEventListener('click', () => openModal(null));
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-cancel').addEventListener('click', closeModal);
