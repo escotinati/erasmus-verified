@@ -167,33 +167,34 @@ async function openModal(partnerId) {
     await populateCitySelect('f-city-id');
 
     if (partnerId) {
-        const { data: partner } = await window.supabaseClient
-            .from('partners')
-            .select('*')
-            .eq('id', partnerId)
-            .single();
-        const { data: links } = await window.supabaseClient
-            .from('partner_links')
-            .select('*')
-            .eq('partner_id', partnerId)
-            .order('sort_order');
+    const { data: partner } = await window.supabaseClient
+        .from('partners')
+        .select('*')
+        .eq('id', partnerId)
+        .single();
 
-        document.getElementById('f-name').value = partner.name;
-        document.getElementById('f-category').value = partner.category;
-        document.getElementById('f-description').value = partner.description;
-        document.getElementById('f-image').value = partner.image_url || '';
-        document.getElementById('f-lat').value = partner.lat || '';
-        document.getElementById('f-lng').value = partner.lng || '';
-        document.getElementById('f-priority').value = partner.priority;
-        document.getElementById('f-active').checked = partner.active;
+    const { data: links } = await window.supabaseClient
+        .from('partner_links')
+        .select('*')
+        .eq('partner_id', partnerId)
+        .order('sort_order');
 
-        const citySelect = document.getElementById('f-city-id');
-        if (partner.city_id) citySelect.value = partner.city_id;
+    document.getElementById('f-name').value = partner.name;
+    document.getElementById('f-category').value = partner.category;
+    document.getElementById('f-description').value = partner.description;
+    document.getElementById('f-image').value = partner.image_url || '';
+    document.getElementById('f-lat').value = partner.lat || '';
+    document.getElementById('f-lng').value = partner.lng || '';
+    document.getElementById('f-priority').value = partner.priority;
+    document.getElementById('f-active').checked = partner.active;
 
-        for (const link of links || []) {
-            addLinkRow(link);
-        }
+    const citySelect = document.getElementById('f-city-id');
+    if (partner.city_id) citySelect.value = partner.city_id;
+
+    for (const link of links || []) {
+        addLinkRow(link);
     }
+}
 
     document.getElementById('partner-modal').hidden = false;
 }
@@ -247,7 +248,7 @@ async function savePartner() {
         category: document.getElementById('f-category').value,
         city_id: cityId,
         description: document.getElementById('f-description').value.trim(),
-        image_url: document.getElementById('f-image').value.trim() || null,
+        image_url: document.getElementById('f-image').value.trim() || '',
         lat: parseFloat(document.getElementById('f-lat').value) || null,
         lng: parseFloat(document.getElementById('f-lng').value) || null,
         priority: parseInt(document.getElementById('f-priority').value) || 0,
