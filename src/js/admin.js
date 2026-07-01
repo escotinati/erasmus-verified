@@ -181,6 +181,7 @@ async function openModal(partnerId) {
         document.getElementById('f-name').value = partner.name;
         document.getElementById('f-category').value = partner.category;
         document.getElementById('f-description').value = partner.description;
+        document.getElementById('f-image').value = partner.image_url || '';
         document.getElementById('f-lat').value = partner.lat || '';
         document.getElementById('f-lng').value = partner.lng || '';
         document.getElementById('f-priority').value = partner.priority;
@@ -203,7 +204,7 @@ function closeModal() {
 }
 
 function clearForm() {
-    ['f-name', 'f-description', 'f-lat', 'f-lng'].forEach((id) => {
+    ['f-name', 'f-description', 'f-image', 'f-lat', 'f-lng'].forEach((id) => {
         document.getElementById(id).value = '';
     });
     document.getElementById('f-category').value = 'nightlife';
@@ -246,6 +247,7 @@ async function savePartner() {
         category: document.getElementById('f-category').value,
         city_id: cityId,
         description: document.getElementById('f-description').value.trim(),
+        image_url: document.getElementById('f-image').value.trim() || null,
         lat: parseFloat(document.getElementById('f-lat').value) || null,
         lng: parseFloat(document.getElementById('f-lng').value) || null,
         priority: parseInt(document.getElementById('f-priority').value) || 0,
