@@ -4,7 +4,7 @@
 
 (async function () {
     const params = new URLSearchParams(window.location.search);
-    const cityId = params.get('ciudad') || '';
+    const cityId = parseInt(params.get('ciudad'), 10);
 
     if (!cityId) {
         showCityError();
@@ -14,7 +14,7 @@
     const { data: city, error } = await window.supabaseClient
         .from('cities')
         .select('*')
-        .eq('id', cityId.toLowerCase())
+        .eq('id', cityId)
         .single();
 
     if (error || !city) {
@@ -22,13 +22,8 @@
         return;
     }
 
-    const groups = await fetchCityGroups(city.id);
-
     document.title = `${city.name}, ${city.country} — Erasmus Verified`;
 
-    document.getElementById('breadcrumbPais').textContent = city.country;
-    document.getElementById('breadcrumbPaisLink').href = 'index.html';
-    document.getElementById('breadcrumbCiudad').textContent = city.name;
     document.getElementById('backLink').href = 'index.html';
     document.getElementById('backLinkText').textContent = 'Inicio';
     document.getElementById('footerBack').href = 'index.html';
@@ -37,13 +32,11 @@
     document.getElementById('cityLocation').textContent = `${city.country} · Erasmus`;
     document.getElementById('cityName').textContent = city.name;
 
-    let btns = buildMapBlock(city.country, city.name);
+    let btns = buildMapBlock(city);
     btns += `<div class="section-divider"><span>Unirse a los grupos</span></div>`;
 
-    if (groups.length > 0) {
-        for (const group of groups) {
-            btns += buildGroupBtn(group);
-        }
+    if (city.whatsapp_url) {
+        btns += buildGroupBtn({ platform: 'whatsapp', url: city.whatsapp_url, label: 'Grupo de WhatsApp' });
     } else {
         btns += buildComingSoon(city.name);
     }
@@ -64,13 +57,15 @@
     mountCityMap('city-map-embed', {
         pais: city.country,
         ciudad: city.name,
+        lat: city.lat,
+        lng: city.lng,
         interactive: true,
     }).then(async (mapInstance) => {
         if (mapInstance) {
             await mountPartnersList(
                 'city-partners-list',
                 mapInstance,
-                city.name,
+                city.id,
                 window.ERASMUS_EXPERIENCE.defaultCategory
             );
             const mapEl = document.getElementById('city-map-embed');
@@ -181,12 +176,12 @@ async function buildContextualSections(ciudad) {
     if (extra) extra.innerHTML = html;
 }
 
-function buildMapBlock(pais, ciudad) {
-    const fullscreenUrl = `mapa.html?pais=${encodeURIComponent(pais)}&ciudad=${encodeURIComponent(ciudad)}`;
+function buildMapBlock(city) {
+    const fullscreenUrl = `mapa.html?city=${city.id}`;
     return `
     <div class="city-map-block">
       <div class="city-map-columns">
-        <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${ciudad}"></div>
+        <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${city.name}"></div>
         <aside id="city-partners-list" class="partners-list"></aside>
       </div>
       <a href="${fullscreenUrl}" class="city-map-fullscreen-link">

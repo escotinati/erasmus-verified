@@ -134,12 +134,6 @@
                 <div class="admin-field-group">
                     <div class="admin-field-group__title">Información básica</div>
                     <div class="admin-field">
-                        <label
-                            >ID <span class="admin-hint">(sin espacios, ej: p-nombre)</span></label
-                        >
-                        <input id="f-id" type="text" placeholder="p-nombre-ciudad" />
-                    </div>
-                    <div class="admin-field">
                         <label>Nombre</label>
                         <input id="f-name" type="text" />
                     </div>
@@ -154,20 +148,18 @@
                         </select>
                     </div>
                     <div class="admin-field">
+                        <label>Ciudad</label>
+                        <select id="f-city-id">
+                            <option value="">— Selecciona ciudad —</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
                         <label>Descripción</label>
                         <textarea id="f-description" rows="3"></textarea>
                     </div>
-                </div>
-
-                <div class="admin-field-group">
-                    <div class="admin-field-group__title">Ubicación</div>
                     <div class="admin-field">
-                        <label>País</label>
-                        <input id="f-pais" type="text" value="España" />
-                    </div>
-                    <div class="admin-field">
-                        <label>Ciudad</label>
-                        <input id="f-ciudad" type="text" value="Bilbao" />
+                        <label>URL de imagen <span class="admin-hint">(opcional)</span></label>
+                        <input id="f-image" type="url" placeholder="https://..." />
                     </div>
                 </div>
 
@@ -183,6 +175,13 @@
                             <input id="f-lng" type="number" step="any" />
                         </div>
                     </div>
+                    <p class="admin-hint" style="margin-top:4px">
+                        💡 Clic derecho en
+                        <a href="https://maps.google.com" target="_blank" rel="noopener">
+                            Google Maps
+                        </a>
+                        → "¿Qué hay aquí?" → copia las coordenadas.
+                    </p>
                     <div class="admin-field">
                         <label
                             >Prioridad
@@ -245,10 +244,6 @@
                 <div class="admin-field-group">
                     <div class="admin-field-group__title">Información básica</div>
                     <div class="admin-field">
-                        <label>ID <span class="admin-hint">(sin espacios, ej: bilbao)</span></label>
-                        <input id="cf-id" type="text" placeholder="bilbao" />
-                    </div>
-                    <div class="admin-field">
                         <label>Nombre</label>
                         <input id="cf-name" type="text" placeholder="Bilbao" />
                     </div>
@@ -271,6 +266,20 @@
                         <input id="cf-image" type="text" placeholder="https://..." />
                     </div>
                     <div class="admin-field admin-field--row">
+                        <div class="admin-field">
+                            <label>Latitud <span class="admin-hint">(ej. 43.2630)</span></label>
+                            <input id="cf-lat" type="number" step="any" placeholder="43.2630" />
+                        </div>
+                        <div class="admin-field">
+                            <label>Longitud <span class="admin-hint">(ej. -2.9350)</span></label>
+                            <input id="cf-lng" type="number" step="any" placeholder="-2.9350" />
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Grupo de WhatsApp <span class="admin-hint">(URL obligatoria)</span></label>
+                        <input id="cf-whatsapp-url" type="url" placeholder="https://chat.whatsapp.com/..." required />
+                    </div>
+                    <div class="admin-field admin-field--row">
                         <div>
                             <label>Prioridad</label>
                             <input id="cf-priority" type="number" value="0" />
@@ -281,19 +290,6 @@
                         </div>
                     </div>
                 </div>
-
-                <hr class="admin-divider" />
-                <div class="admin-links-header">
-                    <span class="admin-links-title">Grupos de la ciudad</span>
-                    <button
-                        type="button"
-                        id="add-group-btn"
-                        class="admin-btn admin-btn--ghost admin-btn--sm"
-                    >
-                        + Añadir grupo
-                    </button>
-                </div>
-                <div id="groups-container"></div>
 
                 <div class="admin-modal__actions">
                     <button type="button" id="city-modal-cancel" class="admin-btn admin-btn--ghost">
@@ -308,6 +304,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
         <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/js/services/citiesService.js"></script>
         <script src="/src/js/admin.js"></script>
     </body>
 </html>

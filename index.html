@@ -72,16 +72,6 @@
                         </button>
                     </div>
 
-                    <!-- Popular countries -->
-                    <div class="hero-popular">
-                        <span class="popular-label">Popular:</span>
-                        <a href="ciudades.html?pais=España" class="popular-pill">🇪🇸 España</a>
-                        <a href="ciudades.html?pais=Alemania" class="popular-pill">🇩🇪 Alemania</a>
-                        <a href="ciudades.html?pais=Portugal" class="popular-pill">🇵🇹 Portugal</a>
-                        <a href="ciudades.html?pais=República%20Checa" class="popular-pill"
-                            >🇨🇿 Rep. Checa</a
-                        >
-                    </div>
                 </div>
             </section>
 
@@ -92,10 +82,14 @@
                         <span class="eyebrow eyebrow--secondary">DESTINOS</span>
                         <h2 class="section-title">Mejores ciudades para tu intercambio</h2>
                     </div>
+                    <!-- Oculto para la demo (ciudades-todas.html aún no migrado a Supabase).
+                         Reactivar cuando esa página lea de la tabla cities. -->
+                    <!--
                     <a href="ciudades-todas.html" class="section-link">
                         Ver las más de 50 ciudades
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
+                    -->
                 </div>
 
                 <div class="bento-grid" id="bentoGrid">
@@ -369,7 +363,7 @@
                 <div class="footer-brand">
                     <span class="footer-logo">Erasmus Verified</span>
                     <p class="footer-copy">
-                        © 2024 Erasmus Verified. Experiencias Premium para Estudiantes de
+                        © <span id="copyright-year"></span> Erasmus Verified. Experiencias Premium para Estudiantes de
                         Intercambio.
                     </p>
                 </div>
@@ -492,6 +486,7 @@
                 update();
                 window.addEventListener('resize', update);
             })();
+            document.getElementById('copyright-year').textContent = new Date().getFullYear();
         </script>
     </body>
 </html>

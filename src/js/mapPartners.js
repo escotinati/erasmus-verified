@@ -16,15 +16,15 @@
  * y gestiona sus pines sobre `map`. `ciudad` filtra qué partners
  * se muestran.
  */
-async function mountPartnersList(listContainerId, map, ciudad, defaultCategory = null) {
+async function mountPartnersList(listContainerId, map, cityId, defaultCategory = null) {
     const container = document.getElementById(listContainerId);
     container.innerHTML = '<p class="partners-list-loading">Cargando partners…</p>';
 
-    const partners = await fetchPartnersByCity(ciudad);
+    const partners = await fetchPartnersByCity(cityId);
     const groups = groupPartnersByCategory(partners);
 
     if (groups.length === 0) {
-        container.innerHTML = `<p class="partners-list-empty">Todavía no tenemos partners en ${ciudad}.</p>`;
+        container.innerHTML = `<p class="partners-list-empty">Todavía no tenemos partners en esta ciudad.</p>`;
         return;
     }
 

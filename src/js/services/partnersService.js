@@ -1,8 +1,8 @@
-async function fetchPartnersByCity(ciudad) {
+async function fetchPartnersByCity(cityId) {
     const { data: partners, error: partnersError } = await window.supabaseClient
         .from('partners')
         .select('*')
-        .eq('ciudad', ciudad)
+        .eq('city_id', cityId)
         .eq('active', true)
         .order('priority', { ascending: false });
 
@@ -12,6 +12,11 @@ async function fetchPartnersByCity(ciudad) {
     }
 
     const partnerIds = partners.map((p) => p.id);
+
+    if (partnerIds.length === 0) {
+        return [];
+    }
+
     const { data: links, error: linksError } = await window.supabaseClient
         .from('partner_links')
         .select('*')
@@ -39,8 +44,7 @@ async function fetchPartnersByCity(ciudad) {
         id: p.id,
         name: p.name,
         category: p.category,
-        pais: p.pais,
-        ciudad: p.ciudad,
+        city_id: p.city_id,
         lat: p.lat,
         lng: p.lng,
         description: p.description,
