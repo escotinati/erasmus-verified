@@ -35,8 +35,6 @@
     }
 
     document.title = `Mapa de ${city.name}, ${city.country} — Erasmus Verified`;
-    document.getElementById('breadcrumbCiudad').textContent = city.name;
-    document.getElementById('breadcrumbCiudadLink').href = `ciudad.html?ciudad=${city.id}`;
     document.getElementById('backLink').href = `ciudad.html?ciudad=${city.id}`;
     document.getElementById('backLinkText').textContent = city.name;
 

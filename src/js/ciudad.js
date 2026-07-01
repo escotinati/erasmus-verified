@@ -24,9 +24,6 @@
 
     document.title = `${city.name}, ${city.country} — Erasmus Verified`;
 
-    document.getElementById('breadcrumbPais').textContent = city.country;
-    document.getElementById('breadcrumbPaisLink').href = 'index.html';
-    document.getElementById('breadcrumbCiudad').textContent = city.name;
     document.getElementById('backLink').href = 'index.html';
     document.getElementById('backLinkText').textContent = 'Inicio';
     document.getElementById('footerBack').href = 'index.html';
