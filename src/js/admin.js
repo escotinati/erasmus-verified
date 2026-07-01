@@ -1,8 +1,31 @@
 let editingPartnerId = null;
 
+function extractCoordsFromGoogleMapsUrl(url) {
+    let match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+    match = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+    return null;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('login-btn').addEventListener('click', login);
     document.getElementById('logout-btn').addEventListener('click', logout);
+    document.getElementById('toggle-password').addEventListener('click', () => {
+        const input = document.getElementById('login-password');
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        document.getElementById('icon-eye').style.display = isPassword ? 'block' : 'none';
+        document.getElementById('icon-eye-off').style.display = isPassword ? 'none' : 'block';
+        document
+            .getElementById('toggle-password')
+            .setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+    ['login-email', 'login-password'].forEach((id) => {
+        document.getElementById(id).addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
+        });
+    });
     document.getElementById('new-partner-btn').addEventListener('click', () => openModal(null));
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-cancel').addEventListener('click', closeModal);
@@ -11,6 +34,40 @@ document.addEventListener('DOMContentLoaded', function () {
     document
         .querySelector('#partner-modal .admin-modal__backdrop')
         .addEventListener('click', closeModal);
+
+    document.getElementById('f-maps-extract').addEventListener('click', () => {
+        const url = document.getElementById('f-maps-url').value.trim();
+        const fb = document.getElementById('f-maps-feedback');
+        const coords = extractCoordsFromGoogleMapsUrl(url);
+        if (coords) {
+            document.getElementById('f-lat').value = coords.lat;
+            document.getElementById('f-lng').value = coords.lng;
+            fb.textContent = `✓ Coordenadas extraídas: ${coords.lat}, ${coords.lng}`;
+            fb.style.color = '#16a34a';
+        } else {
+            fb.textContent =
+                'No se pudieron extraer las coordenadas. ' +
+                'Usa la URL completa de la barra del navegador (no enlaces acortados goo.gl).';
+            fb.style.color = '#dc2626';
+        }
+    });
+
+    document.getElementById('cf-maps-extract').addEventListener('click', () => {
+        const url = document.getElementById('cf-maps-url').value.trim();
+        const fb = document.getElementById('cf-maps-feedback');
+        const coords = extractCoordsFromGoogleMapsUrl(url);
+        if (coords) {
+            document.getElementById('cf-lat').value = coords.lat;
+            document.getElementById('cf-lng').value = coords.lng;
+            fb.textContent = `✓ Coordenadas extraídas: ${coords.lat}, ${coords.lng}`;
+            fb.style.color = '#16a34a';
+        } else {
+            fb.textContent =
+                'No se pudieron extraer las coordenadas. ' +
+                'Usa la URL completa de la barra del navegador (no enlaces acortados goo.gl).';
+            fb.style.color = '#dc2626';
+        }
+    });
 
     document.getElementById('new-city-btn')?.addEventListener('click', () => openCityModal(null));
     document.getElementById('city-modal-close')?.addEventListener('click', closeCityModal);
@@ -106,7 +163,7 @@ function renderPartnersTable(partners) {
       <td>
         <button type="button" class="admin-btn admin-btn--sm admin-btn--ghost"
           onclick="openModal(${p.id})">Editar</button>
-        <button type="button" class="admin-btn admin-btn--sm admin-btn--danger"
+        <button type="button" class="admin-btn admin-btn--sm ${p.active ? 'admin-btn--danger' : 'admin-btn--success'}"
           onclick="toggleActive(${p.id}, ${p.active})">
           ${p.active ? 'Desactivar' : 'Activar'}
         </button>
@@ -205,9 +262,10 @@ function closeModal() {
 }
 
 function clearForm() {
-    ['f-name', 'f-description', 'f-image', 'f-lat', 'f-lng'].forEach((id) => {
+    ['f-name', 'f-description', 'f-image', 'f-lat', 'f-lng', 'f-maps-url'].forEach((id) => {
         document.getElementById(id).value = '';
     });
+    document.getElementById('f-maps-feedback').textContent = '';
     document.getElementById('f-category').value = 'nightlife';
     document.getElementById('f-city-id').value = '';
     document.getElementById('f-priority').value = '0';
@@ -359,7 +417,7 @@ function renderCitiesTable(cities) {
             class="admin-btn admin-btn--ghost admin-btn--sm"
             onclick="openCityModal(${c.id})">Editar</button>
           <button type="button"
-            class="admin-btn admin-btn--danger admin-btn--sm"
+            class="admin-btn admin-btn--sm ${c.active ? 'admin-btn--danger' : 'admin-btn--success'}"
             onclick="toggleCityActive(${c.id}, ${c.active})">
             ${c.active ? 'Desactivar' : 'Activar'}
           </button>
@@ -435,12 +493,21 @@ function closeCityModal() {
 }
 
 function clearCityForm() {
-    ['cf-name', 'cf-country', 'cf-flag', 'cf-description', 'cf-image', 'cf-lat', 'cf-lng', 'cf-whatsapp-url'].forEach(
-        (id) => {
-            const el = document.getElementById(id);
-            if (el) el.value = '';
-        }
-    );
+    [
+        'cf-name',
+        'cf-country',
+        'cf-flag',
+        'cf-description',
+        'cf-image',
+        'cf-lat',
+        'cf-lng',
+        'cf-whatsapp-url',
+        'cf-maps-url',
+    ].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('cf-maps-feedback').textContent = '';
     document.getElementById('cf-priority').value = '0';
     document.getElementById('cf-active').checked = false;
 }
