@@ -57,6 +57,8 @@
     mountCityMap('city-map-embed', {
         pais: city.country,
         ciudad: city.name,
+        lat: city.lat,
+        lng: city.lng,
         interactive: true,
     }).then(async (mapInstance) => {
         if (mapInstance) {
