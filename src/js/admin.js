@@ -454,9 +454,17 @@ async function saveCity() {
         return;
     }
 
+    const slug = name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+
     const cityData = {
         name,
         country,
+        slug,
         flag: document.getElementById('cf-flag').value.trim(),
         description: document.getElementById('cf-description').value.trim(),
         image_url: document.getElementById('cf-image').value.trim(),
