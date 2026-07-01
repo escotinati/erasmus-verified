@@ -17,16 +17,21 @@
 //  si no se pudo geocodificar la ciudad).
 // ─────────────────────────────────────────────────────────────
 
-async function mountCityMap(containerId, { pais, ciudad, interactive = true }) {
+async function mountCityMap(containerId, { pais, ciudad, lat, lng, interactive = true }) {
     const container = document.getElementById(containerId);
 
-    // Estado de carga (igual que en mapa.js)
     container.innerHTML = `
     <div class="city-map-loading">
       <p>Cargando mapa de ${ciudad}…</p>
     </div>`;
 
-    const coords = await getCityCoords(ciudad, pais);
+    let coords = null;
+
+    if (lat && lng) {
+        coords = { lat, lng };
+    } else {
+        coords = await getCityCoords(ciudad, pais);
+    }
 
     if (!coords) {
         container.innerHTML = `
