@@ -3,6 +3,16 @@ let editingPartnerId = null;
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('login-btn').addEventListener('click', login);
     document.getElementById('logout-btn').addEventListener('click', logout);
+    document.getElementById('toggle-password').addEventListener('click', () => {
+        const input = document.getElementById('login-password');
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        document.getElementById('icon-eye').style.display = isPassword ? 'block' : 'none';
+        document.getElementById('icon-eye-off').style.display = isPassword ? 'none' : 'block';
+        document
+            .getElementById('toggle-password')
+            .setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
     document.getElementById('new-partner-btn').addEventListener('click', () => openModal(null));
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-cancel').addEventListener('click', closeModal);

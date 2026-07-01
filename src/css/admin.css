@@ -309,6 +309,33 @@ body {
     font-weight: 400;
 }
 
+.admin-input-password-wrap {
+    position: relative;
+}
+
+.admin-input-password-wrap input {
+    padding-right: 40px;
+    width: 100%;
+}
+
+.admin-input-password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--c-text-muted);
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.admin-input-password-toggle:hover {
+    color: var(--c-text);
+}
+
 .admin-divider {
     border: none;
     border-top: 1px solid var(--c-border);
