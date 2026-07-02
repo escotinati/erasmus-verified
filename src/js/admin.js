@@ -1,5 +1,12 @@
 let editingPartnerId = null;
 
+function escapeHtml(str) {
+    return String(str ?? '').replace(
+        /[&<>"']/g,
+        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
+    );
+}
+
 function extractCoordsFromGoogleMapsUrl(url) {
     let match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
     if (match) return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
@@ -155,9 +162,9 @@ function renderPartnersTable(partners) {
         .map(
             (p) => `
     <tr>
-      <td data-label="Nombre">${p.name}</td>
-      <td data-label="Categoría"><span class="admin-badge admin-badge--${p.category}">${p.category}</span></td>
-      <td data-label="Ciudad">${p.cities?.name || '—'}</td>
+      <td data-label="Nombre">${escapeHtml(p.name)}</td>
+      <td data-label="Categoría"><span class="admin-badge admin-badge--${escapeHtml(p.category)}">${escapeHtml(p.category)}</span></td>
+      <td data-label="Ciudad">${escapeHtml(p.cities?.name) || '—'}</td>
       <td data-label="Prioridad">${p.priority}</td>
       <td data-label="Activo">${p.active ? '✓' : '—'}</td>
       <td>
@@ -284,8 +291,8 @@ function addLinkRow(link = {}) {
       <option value="OWN_EVENT"     ${link.type === 'OWN_EVENT' ? 'selected' : ''}>OWN_EVENT</option>
       <option value="WHATSAPP_CHAT" ${link.type === 'WHATSAPP_CHAT' ? 'selected' : ''}>WHATSAPP_CHAT</option>
     </select>
-    <input class="link-label" type="text" placeholder="Etiqueta" value="${link.label || ''}" />
-    <input class="link-url"   type="text" placeholder="URL"      value="${link.url || ''}" />
+    <input class="link-label" type="text" placeholder="Etiqueta" value="${escapeHtml(link.label || '')}" />
+    <input class="link-url"   type="text" placeholder="URL"      value="${escapeHtml(link.url || '')}" />
     <button type="button" class="admin-btn admin-btn--sm admin-btn--danger"
       onclick="this.parentElement.remove()">×</button>
   `;
@@ -399,8 +406,8 @@ function renderCitiesTable(cities) {
             (c) => `
     <tr>
       <td data-label="Ciudad">
-        <div class="partner-name">${c.flag} ${c.name}</div>
-        <div class="partner-desc">${c.country}</div>
+        <div class="partner-name">${escapeHtml(c.flag)} ${escapeHtml(c.name)}</div>
+        <div class="partner-desc">${escapeHtml(c.country)}</div>
       </td>
       <td data-label="WhatsApp" class="col-center">
         ${c.whatsapp_url ? '<span class="admin-badge admin-badge--active">✓ Configurado</span>' : '<span class="admin-badge admin-badge--inactive">Sin URL</span>'}
@@ -601,7 +608,7 @@ async function loadClicksReport() {
             ([name, count]) => `
     <div class="admin-metric-card">
       <div class="admin-metric-card__count">${count}</div>
-      <div class="admin-metric-card__name">${name}</div>
+      <div class="admin-metric-card__name">${escapeHtml(name)}</div>
       <div class="admin-metric-card__label">clics</div>
     </div>`
         )
