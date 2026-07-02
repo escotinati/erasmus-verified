@@ -1,10 +1,10 @@
 let editingPartnerId = null;
 
 function escapeHtml(str) {
-    return String(str ?? '').replace(
-        /[&<>"']/g,
-        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
-    );
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[ch]));
 }
 
 function extractCoordsFromGoogleMapsUrl(url) {
@@ -164,7 +164,7 @@ function renderPartnersTable(partners) {
     <tr>
       <td data-label="Nombre">${escapeHtml(p.name)}</td>
       <td data-label="Categoría"><span class="admin-badge admin-badge--${escapeHtml(p.category)}">${escapeHtml(p.category)}</span></td>
-      <td data-label="Ciudad">${escapeHtml(p.cities?.name) || '—'}</td>
+      <td data-label="Ciudad">${escapeHtml(p.cities?.name || '—')}</td>
       <td data-label="Prioridad">${p.priority}</td>
       <td data-label="Activo">${p.active ? '✓' : '—'}</td>
       <td>
