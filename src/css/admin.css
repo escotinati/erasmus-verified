@@ -289,6 +289,11 @@ body {
     border-color: var(--c-accent);
 }
 
+.admin-field input.admin-input--invalid,
+.admin-field select.admin-input--invalid {
+    border-color: var(--c-danger);
+}
+
 .admin-field--row {
     display: grid;
     grid-template-columns: 1fr 1fr;

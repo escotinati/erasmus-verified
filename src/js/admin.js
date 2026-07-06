@@ -84,6 +84,14 @@ document.addEventListener('DOMContentLoaded', function () {
         .querySelector('#city-modal .admin-modal__backdrop')
         ?.addEventListener('click', closeCityModal);
 
+    document.getElementById('new-event-btn')?.addEventListener('click', () => openEventModal(null));
+    document.getElementById('event-modal-close')?.addEventListener('click', closeEventModal);
+    document.getElementById('event-modal-cancel')?.addEventListener('click', closeEventModal);
+    document.getElementById('event-modal-save')?.addEventListener('click', saveEvent);
+    document
+        .querySelector('#event-modal .admin-modal__backdrop')
+        ?.addEventListener('click', closeEventModal);
+
     window.supabaseClient.auth
         .getSession()
         .then(({ data: { session } }) => {
@@ -129,7 +137,7 @@ function showLogin() {
 async function showPanel() {
     document.getElementById('login-view').hidden = true;
     document.getElementById('panel-view').hidden = false;
-    await Promise.all([loadPartners(), loadCities(), loadClicksReport()]);
+    await Promise.all([loadPartners(), loadEvents(), loadCities(), loadClicksReport()]);
 }
 
 // ── PARTNERS ──────────────────────────────────────────────────
@@ -370,6 +378,266 @@ async function savePartner() {
 
     closeModal();
     await loadPartners();
+}
+
+// ── EVENTOS ───────────────────────────────────────────────────
+
+let editingEventId = null;
+
+// El admin ve TODOS los eventos (activos e inactivos, pasados y
+// futuros) — a diferencia de la vista pública, que RLS limita a
+// activos y no vencidos.
+async function loadEvents() {
+    const { data, error } = await window.supabaseClient
+        .from('partner_events')
+        .select('*, partners(name)')
+        .order('starts_at', { ascending: false });
+
+    if (error) {
+        alert('Error cargando eventos: ' + error.message);
+        return;
+    }
+    renderEventsTable(data);
+}
+
+function formatAdminDateTime(isoString) {
+    if (!isoString) return '—';
+    return new Intl.DateTimeFormat('es-ES', { dateStyle: 'short', timeStyle: 'short' }).format(
+        new Date(isoString)
+    );
+}
+
+function renderEventsTable(events) {
+    const wrap = document.getElementById('events-table');
+    if (!wrap) return;
+
+    const countEl = document.getElementById('events-count');
+    if (countEl) countEl.textContent = `(${events.length})`;
+
+    if (events.length === 0) {
+        wrap.innerHTML = '<p class="admin-empty">No hay eventos todavía.</p>';
+        return;
+    }
+
+    const rows = events
+        .map(
+            (e) => `
+    <tr>
+      <td data-label="Título">
+        <div class="partner-name">${escapeHtml(e.title)}</div>
+        <div class="partner-desc">${escapeHtml(e.theme || '—')}</div>
+      </td>
+      <td data-label="Partner">${escapeHtml(e.partners?.name || '—')}</td>
+      <td data-label="Fecha">${formatAdminDateTime(e.starts_at)}</td>
+      <td data-label="Precio">${escapeHtml(e.price_label || '—')}</td>
+      <td data-label="Prioridad" class="col-num">${e.priority}</td>
+      <td data-label="Estado" class="col-center">
+        <span class="admin-badge ${e.active ? 'admin-badge--active' : 'admin-badge--inactive'}">
+          ${e.active ? 'Activo' : 'Inactivo'}
+        </span>
+      </td>
+      <td class="col-actions" data-label="Acciones">
+        <div class="row-actions">
+          <button type="button"
+            class="admin-btn admin-btn--ghost admin-btn--sm"
+            onclick="openEventModal(${e.id})">Editar</button>
+          <button type="button"
+            class="admin-btn admin-btn--sm ${e.active ? 'admin-btn--danger' : 'admin-btn--success'}"
+            onclick="toggleEventActive(${e.id}, ${e.active})">
+            ${e.active ? 'Desactivar' : 'Activar'}
+          </button>
+        </div>
+      </td>
+    </tr>`
+        )
+        .join('');
+
+    wrap.innerHTML = `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Título</th><th>Partner</th><th>Fecha</th><th>Precio</th>
+          <th class="col-num">Prioridad</th><th class="col-center">Estado</th><th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+async function toggleEventActive(id, current) {
+    const { error } = await window.supabaseClient
+        .from('partner_events')
+        .update({ active: !current })
+        .eq('id', id);
+    if (error) {
+        alert('Error: ' + error.message);
+        return;
+    }
+    await loadEvents();
+}
+
+// Solo partners de category='nightlife' — un evento sin un local de
+// fiesta detrás no tiene sentido en este modelo de datos.
+async function populateEventPartnerSelect(selectedPartnerId = null) {
+    const select = document.getElementById('ef-partner-id');
+    if (!select) return;
+
+    const { data: partners, error } = await window.supabaseClient
+        .from('partners')
+        .select('id, name, cities(name)')
+        .eq('category', 'nightlife')
+        .order('name', { ascending: true });
+
+    if (error) {
+        console.error('[admin] error cargando partners nightlife:', error);
+        return;
+    }
+
+    select.innerHTML = '<option value="">— Selecciona partner —</option>';
+    for (const partner of partners || []) {
+        const opt = document.createElement('option');
+        opt.value = partner.id;
+        opt.textContent = partner.cities?.name ? `${partner.name} — ${partner.cities.name}` : partner.name;
+        if (selectedPartnerId !== null && partner.id === selectedPartnerId) opt.selected = true;
+        select.appendChild(opt);
+    }
+}
+
+// <input type="datetime-local"> trabaja en hora LOCAL del navegador,
+// sin zona horaria — Supabase guarda starts_at como timestamptz (UTC).
+// new Date(value) interpreta el string "YYYY-MM-DDTHH:mm" como hora
+// local, así que toISOString() ya hace la conversión a UTC correcta.
+function localDateTimeToISO(value) {
+    if (!value) return null;
+    return new Date(value).toISOString();
+}
+
+// Camino inverso: de un timestamptz UTC al formato que espera el
+// input, ya en hora local (por eso se usa getHours/getMonth, no los
+// UTC*, que devolverían la hora tal cual está guardada en UTC).
+function isoToLocalDateTimeInput(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+async function openEventModal(eventId) {
+    editingEventId = eventId || null;
+    document.getElementById('event-modal-title').textContent = eventId
+        ? 'Editar evento'
+        : 'Nuevo evento';
+    document.getElementById('event-modal-subtitle').textContent = eventId
+        ? 'Editando el evento #' + eventId
+        : 'Rellena los datos del nuevo evento';
+
+    clearEventForm();
+
+    if (eventId) {
+        const { data: event } = await window.supabaseClient
+            .from('partner_events')
+            .select('*')
+            .eq('id', eventId)
+            .single();
+
+        await populateEventPartnerSelect(event.partner_id);
+
+        document.getElementById('ef-title').value = event.title;
+        document.getElementById('ef-theme').value = event.theme || '';
+        document.getElementById('ef-description').value = event.description || '';
+        document.getElementById('ef-image').value = event.image_url || '';
+        document.getElementById('ef-starts-at').value = isoToLocalDateTimeInput(event.starts_at);
+        document.getElementById('ef-price-label').value = event.price_label || '';
+        document.getElementById('ef-ticket-url').value = event.ticket_url || '';
+        document.getElementById('ef-priority').value = event.priority;
+        document.getElementById('ef-active').checked = event.active;
+    } else {
+        await populateEventPartnerSelect();
+    }
+
+    document.getElementById('event-modal').hidden = false;
+}
+
+function closeEventModal() {
+    document.getElementById('event-modal').hidden = true;
+    clearEventForm();
+}
+
+function clearEventForm() {
+    [
+        'ef-title',
+        'ef-theme',
+        'ef-description',
+        'ef-image',
+        'ef-starts-at',
+        'ef-price-label',
+        'ef-ticket-url',
+    ].forEach((id) => {
+        document.getElementById(id).value = '';
+    });
+    document.getElementById('ef-partner-id').value = '';
+    document.getElementById('ef-priority').value = '0';
+    document.getElementById('ef-active').checked = true;
+    ['ef-title', 'ef-partner-id', 'ef-starts-at'].forEach((id) => setFieldError(id, ''));
+}
+
+// Muestra (o limpia, si message es '') un error específico bajo el
+// campo indicado — en vez del alert() genérico que había antes.
+function setFieldError(fieldId, message) {
+    const errorEl = document.getElementById(`${fieldId}-error`);
+    const inputEl = document.getElementById(fieldId);
+    if (errorEl) errorEl.textContent = message || '';
+    if (inputEl) inputEl.classList.toggle('admin-input--invalid', Boolean(message));
+}
+
+async function saveEvent() {
+    const title = document.getElementById('ef-title').value.trim();
+    const partnerId = parseInt(document.getElementById('ef-partner-id').value, 10);
+    const startsAtLocal = document.getElementById('ef-starts-at').value;
+
+    // Se recalcula en cada intento: si el usuario corrige un campo y
+    // vuelve a guardar, el mensaje de ESE campo desaparece aunque los
+    // otros dos sigan sin rellenar.
+    setFieldError('ef-title', title ? '' : 'El título es obligatorio.');
+    setFieldError('ef-partner-id', partnerId ? '' : 'Selecciona un partner.');
+    setFieldError('ef-starts-at', startsAtLocal ? '' : 'La fecha y hora son obligatorias.');
+
+    if (!title || !partnerId || !startsAtLocal) {
+        return;
+    }
+
+    const eventData = {
+        partner_id: partnerId,
+        title,
+        description: document.getElementById('ef-description').value.trim(),
+        theme: document.getElementById('ef-theme').value.trim(),
+        image_url: document.getElementById('ef-image').value.trim() || '',
+        starts_at: localDateTimeToISO(startsAtLocal),
+        price_label: document.getElementById('ef-price-label').value.trim(),
+        ticket_url: document.getElementById('ef-ticket-url').value.trim(),
+        priority: parseInt(document.getElementById('ef-priority').value) || 0,
+        active: document.getElementById('ef-active').checked,
+    };
+
+    if (editingEventId) {
+        const { error } = await window.supabaseClient
+            .from('partner_events')
+            .update(eventData)
+            .eq('id', editingEventId);
+        if (error) {
+            alert('Error guardando evento: ' + error.message);
+            return;
+        }
+    } else {
+        const { error } = await window.supabaseClient.from('partner_events').insert(eventData);
+        if (error) {
+            alert('Error guardando evento: ' + error.message);
+            return;
+        }
+    }
+
+    closeEventModal();
+    await loadEvents();
 }
 
 // ── CIUDADES ──────────────────────────────────────────────────
