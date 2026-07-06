@@ -134,6 +134,24 @@
                     <div id="partners-table" class="admin-table-wrap"></div>
                 </section>
 
+                <!-- SECCIÓN EVENTOS -->
+                <section class="admin-section">
+                    <div class="admin-section__header">
+                        <div class="admin-section__title-group">
+                            <h2>Eventos</h2>
+                            <span id="events-count" class="admin-count"></span>
+                        </div>
+                        <button
+                            id="new-event-btn"
+                            type="button"
+                            class="admin-btn admin-btn--primary"
+                        >
+                            + Nuevo evento
+                        </button>
+                    </div>
+                    <div id="events-table" class="admin-table-wrap"></div>
+                </section>
+
                 <!-- SECCIÓN CIUDADES -->
                 <section class="admin-section">
                     <div class="admin-section__header">
@@ -393,6 +411,101 @@
                         Cancelar
                     </button>
                     <button type="button" id="city-modal-save" class="admin-btn admin-btn--primary">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL EVENTO -->
+        <div id="event-modal" class="admin-modal" hidden>
+            <div class="admin-modal__backdrop"></div>
+            <div class="admin-modal__box">
+                <div class="admin-modal__header">
+                    <div>
+                        <h2 class="admin-modal__title" id="event-modal-title">Nuevo evento</h2>
+                        <p class="admin-modal__subtitle" id="event-modal-subtitle">
+                            Rellena los datos del evento
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        class="admin-modal__close"
+                        id="event-modal-close"
+                        aria-label="Cerrar"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div class="admin-field-group">
+                    <div class="admin-field-group__title">Información básica</div>
+                    <div class="admin-field">
+                        <label>Partner <span class="admin-hint">(solo locales de nightlife)</span></label>
+                        <select id="ef-partner-id">
+                            <option value="">— Selecciona partner —</option>
+                        </select>
+                        <p class="admin-error" id="ef-partner-id-error"></p>
+                    </div>
+                    <div class="admin-field">
+                        <label>Título</label>
+                        <input id="ef-title" type="text" placeholder="Erasmus Welcome Party" />
+                        <p class="admin-error" id="ef-title-error"></p>
+                    </div>
+                    <div class="admin-field admin-field--row">
+                        <div>
+                            <label>Tema <span class="admin-hint">(ej. Techno, House)</span></label>
+                            <input id="ef-theme" type="text" />
+                        </div>
+                        <div>
+                            <label>Fecha y hora</label>
+                            <input id="ef-starts-at" type="datetime-local" />
+                            <p class="admin-error" id="ef-starts-at-error"></p>
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Descripción</label>
+                        <textarea id="ef-description" rows="3"></textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>URL de imagen <span class="admin-hint">(opcional)</span></label>
+                        <input id="ef-image" type="url" placeholder="https://..." />
+                    </div>
+                </div>
+
+                <div class="admin-field-group">
+                    <div class="admin-field-group__title">Entradas y configuración</div>
+                    <div class="admin-field admin-field--row">
+                        <div>
+                            <label>Precio <span class="admin-hint">(texto libre)</span></label>
+                            <input
+                                id="ef-price-label"
+                                type="text"
+                                placeholder="10€ anticipada, 15€ en puerta"
+                            />
+                        </div>
+                        <div>
+                            <label>URL de entradas <span class="admin-hint">(opcional)</span></label>
+                            <input id="ef-ticket-url" type="url" placeholder="https://..." />
+                        </div>
+                    </div>
+                    <div class="admin-field admin-field--row">
+                        <div>
+                            <label>Prioridad <span class="admin-hint">(mayor = destacado)</span></label>
+                            <input id="ef-priority" type="number" value="0" />
+                        </div>
+                        <div class="admin-field--check" style="margin-top: 24px">
+                            <input id="ef-active" type="checkbox" checked />
+                            <label for="ef-active">Activo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-modal__actions">
+                    <button type="button" id="event-modal-cancel" class="admin-btn admin-btn--ghost">
+                        Cancelar
+                    </button>
+                    <button type="button" id="event-modal-save" class="admin-btn admin-btn--primary">
                         Guardar
                     </button>
                 </div>
