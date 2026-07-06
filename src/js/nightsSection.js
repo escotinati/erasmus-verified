@@ -85,18 +85,94 @@ function buildNightCard(event) {
     return card;
 }
 
-async function initNightsSection() {
+// Filtros activos de la barra — se combinan entre sí, cada cambio
+// dispara una nueva consulta a Supabase (sin cacheo en cliente).
+const currentFilters = { cityId: null, theme: null, dateRange: null };
+
+function hasActiveFilters() {
+    return Boolean(currentFilters.cityId || currentFilters.theme || currentFilters.dateRange);
+}
+
+// Extrae ciudades y temas ÚNICOS de los eventos ya cargados (fetch
+// inicial sin filtrar) para poblar los <select> — no hace falta una
+// query aparte solo para listar opciones.
+function extractFilterOptions(events) {
+    const cities = new Map();
+    const themes = new Set();
+    events.forEach((event) => {
+        if (event.city) cities.set(event.city.id, `${event.city.flag || ''} ${event.city.name}`.trim());
+        if (event.theme) themes.add(event.theme);
+    });
+    return { cities, themes };
+}
+
+function buildFilterBar(cities, themes) {
+    const bar = document.createElement('div');
+    bar.className = 'nights-filters';
+
+    const citySelect = document.createElement('select');
+    citySelect.className = 'nights-filter-select';
+    citySelect.setAttribute('aria-label', 'Filtrar por ciudad');
+    citySelect.innerHTML = '<option value="">Todas las ciudades</option>';
+    for (const [id, label] of cities) {
+        const opt = document.createElement('option');
+        opt.value = String(id);
+        opt.textContent = label;
+        citySelect.appendChild(opt);
+    }
+    citySelect.addEventListener('change', () => {
+        currentFilters.cityId = citySelect.value ? Number(citySelect.value) : null;
+        applyFilters();
+    });
+
+    const themeSelect = document.createElement('select');
+    themeSelect.className = 'nights-filter-select';
+    themeSelect.setAttribute('aria-label', 'Filtrar por tema');
+    themeSelect.innerHTML = '<option value="">Todos los temas</option>';
+    for (const theme of themes) {
+        const opt = document.createElement('option');
+        opt.value = theme;
+        opt.textContent = theme;
+        themeSelect.appendChild(opt);
+    }
+    themeSelect.addEventListener('change', () => {
+        currentFilters.theme = themeSelect.value || null;
+        applyFilters();
+    });
+
+    const dateSelect = document.createElement('select');
+    dateSelect.className = 'nights-filter-select';
+    dateSelect.setAttribute('aria-label', 'Filtrar por fecha');
+    dateSelect.innerHTML = `
+        <option value="">Cualquier fecha</option>
+        <option value="today">Hoy</option>
+        <option value="week">Esta semana</option>
+        <option value="month">Este mes</option>
+    `;
+    dateSelect.addEventListener('change', () => {
+        currentFilters.dateRange = dateSelect.value || null;
+        applyFilters();
+    });
+
+    bar.append(citySelect, themeSelect, dateSelect);
+    return bar;
+}
+
+// Pinta las tarjetas (o el estado vacío) a partir de una lista de
+// eventos ya obtenida — no hace fetch, solo renderiza. Compartida
+// entre la carga inicial y cada cambio de filtro.
+function renderEventCards(events) {
     const scroll = document.querySelector('.nights-section .events-scroll');
     if (!scroll) return;
-
-    const events = await fetchUpcomingEvents();
 
     scroll.innerHTML = '';
 
     if (events.length === 0) {
         const empty = document.createElement('p');
         empty.className = 'events-loading';
-        empty.textContent = 'Todavía no tenemos fiestas publicadas. Vuelve pronto.';
+        empty.textContent = hasActiveFilters()
+            ? 'No hay fiestas con ese filtro. Prueba otra combinación.'
+            : 'Todavía no tenemos fiestas publicadas. Vuelve pronto.';
         scroll.appendChild(empty);
         return;
     }
@@ -104,7 +180,8 @@ async function initNightsSection() {
     // Solo destaca si hay una prioridad editorial real (> 0); en empate
     // a máximo, gana el primero del array (ya viene ordenado por
     // starts_at ascendente desde fetchUpcomingEvents, no es un desempate
-    // arbitrario).
+    // arbitrario). Se recalcula sobre cada resultado filtrado, no solo
+    // sobre la carga inicial.
     const maxPriority = Math.max(...events.map((event) => event.priority || 0));
     const featuredEvent = maxPriority > 0 ? events.find((event) => event.priority === maxPriority) : null;
 
@@ -113,6 +190,28 @@ async function initNightsSection() {
         if (event === featuredEvent) card.classList.add('event-card--featured');
         scroll.appendChild(card);
     });
+}
+
+// Vuelve a consultar Supabase con los filtros activos actuales y
+// re-renderiza — se llama en cada cambio de cualquier <select>.
+async function applyFilters() {
+    const events = await fetchUpcomingEvents(currentFilters);
+    renderEventCards(events);
+}
+
+async function initNightsSection() {
+    const scroll = document.querySelector('.nights-section .events-scroll');
+    const header = document.querySelector('.nights-section .nights-header');
+    if (!scroll || !header) return;
+
+    // Única query inicial, sin filtros: sirve tanto para poblar las
+    // opciones de los selects como para el primer render.
+    const events = await fetchUpcomingEvents();
+
+    const { cities, themes } = extractFilterOptions(events);
+    header.appendChild(buildFilterBar(cities, themes));
+
+    renderEventCards(events);
 }
 
 document.addEventListener('DOMContentLoaded', initNightsSection);

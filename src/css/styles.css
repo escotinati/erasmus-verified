@@ -1884,19 +1884,54 @@ footer.legacy-footer a {
     margin-bottom: 64px;
 }
 
+/* Barra de filtros (ciudad / tema / fecha) — compartida por Verified
+   y Parties, misma nights-section. */
+.nights-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.nights-filter-select {
+    background: var(--surface);
+    color: var(--on-surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-full);
+    padding: 10px 16px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.nights-filter-select:hover {
+    border-color: var(--primary);
+}
+
+.nights-filter-select:focus-visible {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-fixed);
+}
+
+/* Layout de eventos — columna apilada en móvil, grid de 2 columnas
+   desde tablet. Único para Verified y Parties (se abandonó el scroll
+   horizontal con snap que tenía Verified: decisión de negocio, ambas
+   experiencias se comportan igual a partir de ahora). */
 .events-scroll {
     max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 var(--margin-desktop) 48px;
     display: flex;
+    flex-direction: column;
     gap: 16px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
 }
 
 @media (min-width: 768px) {
     .events-scroll {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
 }
@@ -1916,31 +1951,15 @@ footer.legacy-footer a {
     display: none;
 }
 
-.events-scroll::-webkit-scrollbar {
-    display: none;
-}
-
 /* Tarjetas compactas — solo dentro del scroll de la home. La regla base
    .event-card (§2.3) está reservada para reactivarse en viajes.html, así
    que este rediseño se aísla con el selector descendiente .events-scroll
    en vez de tocarla, para no heredar el tamaño reducido si eso ocurre. */
 .events-scroll .event-card {
-    min-width: 240px;
+    width: 100%;
+    min-width: 100%;
 }
 
-/* Móvil: ancho relativo al viewport, no un px fijo. Con un valor fijo
-   (240px) el "asomo" de la siguiente tarjeta variaba muchísimo entre
-   un iPhone SE (320px, ~24px de asomo) y un iPhone Pro Max (428px,
-   ~132px de asomo) — se veía desproporcionado según el móvil. Esta
-   fórmula deja siempre ~40px de asomo constante, sea cual sea el
-   ancho real del dispositivo.
-*/
-@media (max-width: 767px) {
-    .events-scroll .event-card {
-        width: calc(100vw - (var(--margin-mobile) * 2) - 40px);
-        min-width: calc(100vw - (var(--margin-mobile) * 2) - 40px);
-    }
-}
 .events-scroll .event-img-wrap {
     height: auto;
     aspect-ratio: 3 / 2;
@@ -1992,44 +2011,14 @@ footer.legacy-footer a {
     font-size: 13px;
 }
 
-/* ── Experiencia Parties: layout de eventos ────────────────────
-   Erasmus Parties no usa el scroll horizontal con "asomo" de
-   Verified — los eventos son el contenido central de esa
-   experiencia, así que se apilan en columna en móvil y pasan a una
-   grid de 2 columnas desde tablet. Todo scopado bajo .theme-parties
-   (mayor especificidad que las reglas de arriba) para no tocar ni
-   una línea del comportamiento de Verified. */
-@media (max-width: 767px) {
-    .theme-parties .events-scroll {
-        display: flex;
-        flex-direction: column;
-        overflow-x: visible;
-        scroll-snap-type: none;
-        gap: 16px;
-    }
-
-    .theme-parties .events-scroll .event-card {
-        width: 100%;
-        min-width: 100%;
-    }
-}
-
 @media (min-width: 768px) {
-    .theme-parties .events-scroll {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        overflow-x: visible;
-        scroll-snap-type: none;
-    }
-
-    .theme-parties .events-scroll .event-card {
+    .events-scroll .event-card {
         min-width: 0;
     }
 
     /* Evento con mayor priority (> 0): ocupa las 2 columnas y se
        coloca primero visualmente, aunque no sea el primero por fecha. */
-    .theme-parties .events-scroll .event-card--featured {
+    .events-scroll .event-card--featured {
         grid-column: span 2;
         order: -1;
     }
