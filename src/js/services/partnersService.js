@@ -1,13 +1,51 @@
+// Convierte un rango relativo ('today' | 'week' | 'month') en límites
+// ISO [desde, hasta) a partir de la medianoche local de hoy. No hay
+// caso por defecto: dateRange nulo/desconocido no aplica límite, RLS
+// ya garantiza que nunca llega nada vencido.
+function dateRangeToISO(dateRange) {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const daysByRange = { today: 1, week: 7, month: 30 };
+    const days = daysByRange[dateRange];
+    if (!days) return null;
+
+    const until = new Date(startOfToday);
+    until.setDate(until.getDate() + days);
+
+    return { from: startOfToday.toISOString(), to: until.toISOString() };
+}
+
 // Próximos eventos reales (partner_events), con su partner y ciudad.
 // RLS ya filtra en el servidor: solo activos y no vencidos (>1 día de
 // margen) llegan aquí para usuarios anónimos — no hace falta filtrar
-// otra vez en el cliente.
-async function fetchUpcomingEvents(limit = 12) {
-    const { data, error } = await window.supabaseClient
+// otra vez en el cliente. Los filtros de este objeto son adicionales,
+// encima de lo que RLS ya deja ver, y son todos opcionales/combinables.
+//
+// cityId filtra por partners.city_id. Con Supabase/PostgREST, filtrar
+// por una columna de una tabla anidada exige el modificador !inner en
+// el select() del recurso anidado — sin él, el .eq('partners.city_id', …)
+// no descarta ninguna fila, solo condiciona qué contenido anidado se
+// devuelve, y se cuelan eventos de otras ciudades.
+async function fetchUpcomingEvents({ limit = 12, cityId = null, theme = null, dateRange = null } = {}) {
+    let query = window.supabaseClient
         .from('partner_events')
-        .select('*, partners(id, name, image_url, cities(id, name, flag))')
+        .select('*, partners!inner(id, name, image_url, city_id, cities!inner(id, name, flag))')
         .order('starts_at', { ascending: true })
         .limit(limit);
+
+    if (cityId) {
+        query = query.eq('partners.city_id', cityId);
+    }
+    if (theme) {
+        query = query.eq('theme', theme);
+    }
+    const range = dateRangeToISO(dateRange);
+    if (range) {
+        query = query.gte('starts_at', range.from).lt('starts_at', range.to);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
         console.error('[partnersService] error cargando eventos:', error);
