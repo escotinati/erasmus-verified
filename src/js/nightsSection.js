@@ -113,13 +113,32 @@ function extractFilterOptions(events) {
     return { cities, themes, partners };
 }
 
+// Envuelve un <select> de filtro con su icono (Material Symbols, misma
+// fuente que ya usa .event-venue) en un wrapper .nights-filter — el
+// icono es puramente decorativo (aria-hidden), el aria-label sigue en
+// el propio <select> porque es la única etiqueta accesible que tiene.
+function buildFilterSelect(iconName, ariaLabel) {
+    const wrap = document.createElement('div');
+    wrap.className = 'nights-filter';
+
+    const icon = document.createElement('span');
+    icon.className = 'material-symbols-outlined nights-filter__icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = iconName;
+
+    const select = document.createElement('select');
+    select.className = 'nights-filter-select';
+    select.setAttribute('aria-label', ariaLabel);
+
+    wrap.append(icon, select);
+    return { wrap, select };
+}
+
 function buildFilterBar(cities, themes, partners) {
     const bar = document.createElement('div');
     bar.className = 'nights-filters';
 
-    const citySelect = document.createElement('select');
-    citySelect.className = 'nights-filter-select';
-    citySelect.setAttribute('aria-label', 'Filtrar por ciudad');
+    const { wrap: cityWrap, select: citySelect } = buildFilterSelect('location_on', 'Filtrar por ciudad');
     citySelect.innerHTML = '<option value="">Todas las ciudades</option>';
     for (const [id, label] of cities) {
         const opt = document.createElement('option');
@@ -127,14 +146,8 @@ function buildFilterBar(cities, themes, partners) {
         opt.textContent = label;
         citySelect.appendChild(opt);
     }
-    citySelect.addEventListener('change', () => {
-        currentFilters.cityId = citySelect.value ? Number(citySelect.value) : null;
-        applyFilters();
-    });
 
-    const themeSelect = document.createElement('select');
-    themeSelect.className = 'nights-filter-select';
-    themeSelect.setAttribute('aria-label', 'Filtrar por tema');
+    const { wrap: themeWrap, select: themeSelect } = buildFilterSelect('local_activity', 'Filtrar por tema');
     themeSelect.innerHTML = '<option value="">Todos los temas</option>';
     for (const theme of themes) {
         const opt = document.createElement('option');
@@ -142,28 +155,16 @@ function buildFilterBar(cities, themes, partners) {
         opt.textContent = theme;
         themeSelect.appendChild(opt);
     }
-    themeSelect.addEventListener('change', () => {
-        currentFilters.theme = themeSelect.value || null;
-        applyFilters();
-    });
 
-    const dateSelect = document.createElement('select');
-    dateSelect.className = 'nights-filter-select';
-    dateSelect.setAttribute('aria-label', 'Filtrar por fecha');
+    const { wrap: dateWrap, select: dateSelect } = buildFilterSelect('calendar_today', 'Filtrar por fecha');
     dateSelect.innerHTML = `
         <option value="">Cualquier fecha</option>
         <option value="today">Hoy</option>
         <option value="week">Esta semana</option>
         <option value="month">Este mes</option>
     `;
-    dateSelect.addEventListener('change', () => {
-        currentFilters.dateRange = dateSelect.value || null;
-        applyFilters();
-    });
 
-    const partnerSelect = document.createElement('select');
-    partnerSelect.className = 'nights-filter-select';
-    partnerSelect.setAttribute('aria-label', 'Filtrar por partner');
+    const { wrap: partnerWrap, select: partnerSelect } = buildFilterSelect('storefront', 'Filtrar por partner');
     partnerSelect.innerHTML = '<option value="">Todos los partners</option>';
     for (const [id, name] of partners) {
         const opt = document.createElement('option');
@@ -171,12 +172,55 @@ function buildFilterBar(cities, themes, partners) {
         opt.textContent = name;
         partnerSelect.appendChild(opt);
     }
+
+    const clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.className = 'nights-filter-clear';
+    clearBtn.textContent = 'Limpiar filtros';
+    clearBtn.hidden = !hasActiveFilters();
+
+    // hasActiveFilters() y applyFilters() ya existen — no se toca su
+    // lógica, solo se llaman aquí tras cada cambio para reflejar el
+    // botón y disparar la nueva consulta, respectivamente.
+    function refreshClearButton() {
+        clearBtn.hidden = !hasActiveFilters();
+    }
+
+    citySelect.addEventListener('change', () => {
+        currentFilters.cityId = citySelect.value ? Number(citySelect.value) : null;
+        refreshClearButton();
+        applyFilters();
+    });
+    themeSelect.addEventListener('change', () => {
+        currentFilters.theme = themeSelect.value || null;
+        refreshClearButton();
+        applyFilters();
+    });
+    dateSelect.addEventListener('change', () => {
+        currentFilters.dateRange = dateSelect.value || null;
+        refreshClearButton();
+        applyFilters();
+    });
     partnerSelect.addEventListener('change', () => {
         currentFilters.partnerId = partnerSelect.value ? Number(partnerSelect.value) : null;
+        refreshClearButton();
         applyFilters();
     });
 
-    bar.append(citySelect, themeSelect, dateSelect, partnerSelect);
+    clearBtn.addEventListener('click', () => {
+        citySelect.value = '';
+        themeSelect.value = '';
+        dateSelect.value = '';
+        partnerSelect.value = '';
+        currentFilters.cityId = null;
+        currentFilters.theme = null;
+        currentFilters.dateRange = null;
+        currentFilters.partnerId = null;
+        refreshClearButton();
+        applyFilters();
+    });
+
+    bar.append(cityWrap, themeWrap, dateWrap, partnerWrap, clearBtn);
     return bar;
 }
 
