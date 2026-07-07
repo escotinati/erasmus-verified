@@ -1884,25 +1884,69 @@ footer.legacy-footer a {
     margin-bottom: 64px;
 }
 
-/* Barra de filtros (ciudad / tema / fecha) — compartida por Verified
-   y Parties, misma nights-section. */
+/* Barra de filtros (ciudad / tema / fecha / partner) — compartida por
+   Verified y Parties, misma nights-section. Una columna en móvil (un
+   select por fila, área de toque a ancho completo); fila con
+   flex-wrap desde tablet, sin cambios respecto a como ya estaba. */
 .nights-filters {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 12px;
     margin-top: 24px;
 }
 
+@media (max-width: 767px) {
+    .nights-filters {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+}
+
+.nights-filter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.nights-filter__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--on-surface-variant);
+    pointer-events: none;
+}
+
 .nights-filter-select {
+    width: 100%;
+    min-height: 44px;
     background: var(--surface);
     color: var(--on-surface);
     border: 1px solid var(--outline-variant);
     border-radius: var(--radius-full);
-    padding: 10px 16px;
+    padding: 10px 36px 10px 40px;
     font-family: var(--font-body);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    /* Flecha nativa reemplazada por un chevron propio (mismo trazo que
+       el resto del set de iconos), para poder darle el color correcto
+       en cada tema — background-image no hereda currentColor. */
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23464554' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.theme-parties .nights-filter-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a09cc0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
 .nights-filter-select:hover {
@@ -1913,6 +1957,24 @@ footer.legacy-footer a {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-fixed);
+}
+
+.nights-filter-clear {
+    min-height: 44px;
+    background: none;
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-full);
+    padding: 10px 16px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.nights-filter-clear:hover {
+    border-color: var(--primary);
+    background: var(--primary-fixed);
 }
 
 /* Layout de eventos — columna apilada en móvil, grid de 2 columnas
