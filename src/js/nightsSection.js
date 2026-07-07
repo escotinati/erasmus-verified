@@ -87,26 +87,33 @@ function buildNightCard(event) {
 
 // Filtros activos de la barra — se combinan entre sí, cada cambio
 // dispara una nueva consulta a Supabase (sin cacheo en cliente).
-const currentFilters = { cityId: null, theme: null, dateRange: null };
+const currentFilters = { cityId: null, theme: null, dateRange: null, partnerId: null };
 
 function hasActiveFilters() {
-    return Boolean(currentFilters.cityId || currentFilters.theme || currentFilters.dateRange);
+    return Boolean(
+        currentFilters.cityId || currentFilters.theme || currentFilters.dateRange || currentFilters.partnerId
+    );
 }
 
-// Extrae ciudades y temas ÚNICOS de los eventos ya cargados (fetch
-// inicial sin filtrar) para poblar los <select> — no hace falta una
-// query aparte solo para listar opciones.
+// Extrae ciudades, temas y partners ÚNICOS de los eventos ya cargados
+// (fetch inicial sin filtrar) para poblar los <select> — no hace falta
+// una query aparte solo para listar opciones. Como este fetch ya pasa
+// por RLS (solo eventos activos y no vencidos, de partners activos vía
+// el !inner), un partner desactivado o borrado deja de tener eventos
+// aquí y por tanto desaparece solo de las opciones del filtro.
 function extractFilterOptions(events) {
     const cities = new Map();
     const themes = new Set();
+    const partners = new Map();
     events.forEach((event) => {
         if (event.city) cities.set(event.city.id, `${event.city.flag || ''} ${event.city.name}`.trim());
         if (event.theme) themes.add(event.theme);
+        if (event.partner) partners.set(event.partner.id, event.partner.name);
     });
-    return { cities, themes };
+    return { cities, themes, partners };
 }
 
-function buildFilterBar(cities, themes) {
+function buildFilterBar(cities, themes, partners) {
     const bar = document.createElement('div');
     bar.className = 'nights-filters';
 
@@ -154,7 +161,22 @@ function buildFilterBar(cities, themes) {
         applyFilters();
     });
 
-    bar.append(citySelect, themeSelect, dateSelect);
+    const partnerSelect = document.createElement('select');
+    partnerSelect.className = 'nights-filter-select';
+    partnerSelect.setAttribute('aria-label', 'Filtrar por partner');
+    partnerSelect.innerHTML = '<option value="">Todos los partners</option>';
+    for (const [id, name] of partners) {
+        const opt = document.createElement('option');
+        opt.value = String(id);
+        opt.textContent = name;
+        partnerSelect.appendChild(opt);
+    }
+    partnerSelect.addEventListener('change', () => {
+        currentFilters.partnerId = partnerSelect.value ? Number(partnerSelect.value) : null;
+        applyFilters();
+    });
+
+    bar.append(citySelect, themeSelect, dateSelect, partnerSelect);
     return bar;
 }
 
@@ -208,8 +230,8 @@ async function initNightsSection() {
     // opciones de los selects como para el primer render.
     const events = await fetchUpcomingEvents();
 
-    const { cities, themes } = extractFilterOptions(events);
-    header.appendChild(buildFilterBar(cities, themes));
+    const { cities, themes, partners } = extractFilterOptions(events);
+    header.appendChild(buildFilterBar(cities, themes, partners));
 
     renderEventCards(events);
 }

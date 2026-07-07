@@ -27,7 +27,17 @@ function dateRangeToISO(dateRange) {
 // el select() del recurso anidado — sin él, el .eq('partners.city_id', …)
 // no descarta ninguna fila, solo condiciona qué contenido anidado se
 // devuelve, y se cuelan eventos de otras ciudades.
-async function fetchUpcomingEvents({ limit = 12, cityId = null, theme = null, dateRange = null } = {}) {
+//
+// partnerId, en cambio, es una columna directa de partner_events (no
+// anidada), así que un .eq('partner_id', partnerId) normal ya filtra
+// correctamente sin necesitar !inner.
+async function fetchUpcomingEvents({
+    limit = 12,
+    cityId = null,
+    theme = null,
+    dateRange = null,
+    partnerId = null,
+} = {}) {
     let query = window.supabaseClient
         .from('partner_events')
         .select('*, partners!inner(id, name, image_url, city_id, cities!inner(id, name, flag))')
@@ -39,6 +49,9 @@ async function fetchUpcomingEvents({ limit = 12, cityId = null, theme = null, da
     }
     if (theme) {
         query = query.eq('theme', theme);
+    }
+    if (partnerId) {
+        query = query.eq('partner_id', partnerId);
     }
     const range = dateRangeToISO(dateRange);
     if (range) {
