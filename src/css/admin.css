@@ -343,6 +343,19 @@ body {
     box-shadow: var(--shadow-sm);
 }
 
+/* Eliminar vs Desactivar: ambos son --danger (mismo rojo, misma
+   forma), pero "Eliminar" es irreversible y "Desactivar" no — el
+   icono de papelera y el borde/peso reforzados marcan la diferencia
+   sin depender solo del texto del botón. */
+.admin-btn--delete {
+    font-weight: 700;
+    border-width: 2px;
+}
+
+.admin-btn--delete .material-symbols-outlined {
+    font-size: 1rem;
+}
+
 /* ─── Field groups ───────────────────────────────────────── */
 .admin-field-group {
     border: 1px solid var(--c-border);

@@ -127,6 +127,19 @@ document.addEventListener('DOMContentLoaded', function () {
         .querySelector('#event-modal .admin-modal__backdrop')
         ?.addEventListener('click', closeEventModal);
 
+    document
+        .getElementById('delete-event-modal-close')
+        ?.addEventListener('click', closeDeleteEventModal);
+    document
+        .getElementById('delete-event-modal-cancel')
+        ?.addEventListener('click', closeDeleteEventModal);
+    document
+        .getElementById('delete-event-modal-confirm')
+        ?.addEventListener('click', () => deleteEvent(deletingEventId));
+    document
+        .querySelector('#delete-event-modal .admin-modal__backdrop')
+        ?.addEventListener('click', closeDeleteEventModal);
+
     // Dashboard: cards → sección; botón "Volver" → dashboard de nuevo.
     document.querySelectorAll('.admin-dashboard-card').forEach((card) => {
         card.addEventListener('click', () => showView(card.dataset.goto));
@@ -535,6 +548,12 @@ function renderEventsTable(events) {
             onclick="toggleEventActive(${e.id}, ${e.active})">
             ${e.active ? 'Desactivar' : 'Activar'}
           </button>
+          <button type="button"
+            class="admin-btn admin-btn--sm admin-btn--danger admin-btn--delete"
+            onclick="openDeleteEventModal(${e.id})">
+            <span class="material-symbols-outlined">delete</span>
+            Eliminar
+          </button>
         </div>
       </td>
     </tr>`
@@ -562,6 +581,37 @@ async function toggleEventActive(id, current) {
         alert('Error: ' + error.message);
         return;
     }
+    await loadEvents();
+}
+
+// ── ELIMINAR EVENTO (borrado físico) ─────────────────────────
+// Alcance deliberadamente limitado a eventos: borrar un partner
+// implicaría cascada sobre partner_events, cta_clicks y partner_links,
+// y esa acción no está expuesta en el admin por ahora.
+
+let deletingEventId = null;
+
+function openDeleteEventModal(eventId) {
+    deletingEventId = eventId;
+    const event = allEvents.find((ev) => ev.id === eventId);
+    document.getElementById('delete-event-modal-subtitle').innerHTML = event
+        ? `¿Seguro que quieres eliminar <strong>"${escapeHtml(event.title)}"</strong>? Esta acción no se puede deshacer.`
+        : 'Esta acción no se puede deshacer.';
+    document.getElementById('delete-event-modal').hidden = false;
+}
+
+function closeDeleteEventModal() {
+    document.getElementById('delete-event-modal').hidden = true;
+    deletingEventId = null;
+}
+
+async function deleteEvent(id) {
+    const { error } = await window.supabaseClient.from('partner_events').delete().eq('id', id);
+    if (error) {
+        alert('Error eliminando evento: ' + error.message);
+        return;
+    }
+    closeDeleteEventModal();
     await loadEvents();
 }
 
