@@ -10,6 +10,10 @@
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet"
         />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
         <link rel="stylesheet" href="/src/css/admin.css" />
     </head>
     <body>
@@ -115,8 +119,60 @@
             </header>
 
             <main class="admin-main">
+                <!-- DASHBOARD (vista de entrada tras login) -->
+                <div id="dashboard-view">
+                    <div class="admin-dashboard-cards">
+                        <button
+                            type="button"
+                            class="admin-dashboard-card"
+                            data-goto="partners"
+                        >
+                            <span class="material-symbols-outlined admin-dashboard-card__icon"
+                                >storefront</span
+                            >
+                            <div class="admin-dashboard-card__title">Partners</div>
+                            <div class="admin-dashboard-card__count" id="dashboard-partners-count">
+                                —
+                            </div>
+                        </button>
+                        <button type="button" class="admin-dashboard-card" data-goto="events">
+                            <span class="material-symbols-outlined admin-dashboard-card__icon"
+                                >calendar_today</span
+                            >
+                            <div class="admin-dashboard-card__title">Eventos</div>
+                            <div class="admin-dashboard-card__count" id="dashboard-events-count">
+                                —
+                            </div>
+                        </button>
+                        <button type="button" class="admin-dashboard-card" data-goto="cities">
+                            <span class="material-symbols-outlined admin-dashboard-card__icon"
+                                >public</span
+                            >
+                            <div class="admin-dashboard-card__title">Ciudades</div>
+                            <div class="admin-dashboard-card__count" id="dashboard-cities-count">
+                                —
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- SECCIÓN MÉTRICAS — permanece en el dashboard, no navega -->
+                    <section class="admin-section">
+                        <div class="admin-section__header">
+                            <div class="admin-section__title-group">
+                                <h2>Clics por partner</h2>
+                                <span class="admin-count">últimos 30 días</span>
+                            </div>
+                        </div>
+                        <div id="clicks-report" class="admin-metrics-grid"></div>
+                    </section>
+                </div>
+
                 <!-- SECCIÓN PARTNERS -->
-                <section class="admin-section">
+                <section class="admin-section" data-section="partners" hidden>
+                    <button type="button" class="admin-back-btn" data-back>
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Volver
+                    </button>
                     <div class="admin-section__header">
                         <!-- D: Partner count -->
                         <div class="admin-section__title-group">
@@ -131,11 +187,21 @@
                             + Nuevo partner
                         </button>
                     </div>
+                    <input
+                        type="search"
+                        id="partners-search"
+                        class="admin-search"
+                        placeholder="Buscar por nombre, categoría o ciudad…"
+                    />
                     <div id="partners-table" class="admin-table-wrap"></div>
                 </section>
 
                 <!-- SECCIÓN EVENTOS -->
-                <section class="admin-section">
+                <section class="admin-section" data-section="events" hidden>
+                    <button type="button" class="admin-back-btn" data-back>
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Volver
+                    </button>
                     <div class="admin-section__header">
                         <div class="admin-section__title-group">
                             <h2>Eventos</h2>
@@ -149,11 +215,21 @@
                             + Nuevo evento
                         </button>
                     </div>
+                    <input
+                        type="search"
+                        id="events-search"
+                        class="admin-search"
+                        placeholder="Buscar por título, tema o ciudad…"
+                    />
                     <div id="events-table" class="admin-table-wrap"></div>
                 </section>
 
                 <!-- SECCIÓN CIUDADES -->
-                <section class="admin-section">
+                <section class="admin-section" data-section="cities" hidden>
+                    <button type="button" class="admin-back-btn" data-back>
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Volver
+                    </button>
                     <div class="admin-section__header">
                         <div class="admin-section__title-group">
                             <h2>Ciudades</h2>
@@ -167,19 +243,13 @@
                             + Nueva ciudad
                         </button>
                     </div>
+                    <input
+                        type="search"
+                        id="cities-search"
+                        class="admin-search"
+                        placeholder="Buscar por nombre o país…"
+                    />
                     <div id="cities-table" class="admin-table-wrap"></div>
-                </section>
-
-                <!-- SECCIÓN MÉTRICAS -->
-                <section class="admin-section">
-                    <div class="admin-section__header">
-                        <div class="admin-section__title-group">
-                            <h2>Clics por partner</h2>
-                            <span class="admin-count">últimos 30 días</span>
-                        </div>
-                    </div>
-                    <!-- E: Metrics grid container -->
-                    <div id="clicks-report" class="admin-metrics-grid"></div>
                 </section>
             </main>
         </div>

@@ -19,6 +19,7 @@
     --r-md: 10px;
     --r-lg: 16px;
     --shadow-modal: 0 25px 60px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 *,
@@ -34,6 +35,17 @@ body {
     background: var(--c-bg);
     color: var(--c-text);
     min-height: 100vh;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+    line-height: 1;
+    vertical-align: middle;
+    user-select: none;
 }
 
 /* ─── Login ──────────────────────────────────────────────── */
@@ -167,6 +179,95 @@ body {
     border-radius: 100px;
 }
 
+/* ─── Dashboard (vista de entrada) ──────────────────────────── */
+.admin-dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.admin-dashboard-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition:
+        border-color 0.15s,
+        transform 0.15s;
+}
+
+.admin-dashboard-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-2px);
+}
+
+.admin-dashboard-card__icon {
+    font-size: 1.75rem;
+    color: var(--c-accent);
+}
+
+.admin-dashboard-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--c-text);
+}
+
+.admin-dashboard-card__count {
+    font-size: 0.8rem;
+    color: var(--c-text-subtle);
+}
+
+/* ─── Volver / Buscador ──────────────────────────────────────── */
+.admin-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: var(--c-text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.admin-back-btn:hover {
+    color: var(--c-text);
+}
+
+.admin-back-btn .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+
+.admin-search {
+    display: block;
+    width: 100%;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    padding: 9px 12px;
+    color: var(--c-text);
+    font-family: inherit;
+    font-size: 0.88rem;
+    margin-bottom: 14px;
+    transition: border-color 0.15s;
+}
+
+.admin-search:focus {
+    outline: none;
+    border-color: var(--c-accent);
+}
+
 /* ─── Buttons ────────────────────────────────────────────── */
 .admin-btn {
     display: inline-flex;
@@ -213,6 +314,7 @@ body {
 .admin-btn--danger {
     background: var(--c-danger);
     color: #fff;
+    border: 1px solid var(--c-danger-hover);
 }
 
 .admin-btn--danger:hover {
@@ -222,16 +324,23 @@ body {
 .admin-btn--success {
     background: #16a34a;
     color: #fff;
-    border: none;
+    border: 1px solid #15803d;
 }
 
 .admin-btn--success:hover {
     background: #15803d;
 }
 
+/* Los botones pequeños son los de acción dentro de una fila de tabla,
+   justo al lado de un .admin-badge de estado — mismo tamaño y paleta
+   aproximados, así que necesitan una silueta claramente distinta (más
+   cuadrada que el pill del badge) y una sombra sutil en reposo para
+   leerse como pulsables sin depender solo del :hover. */
 .admin-btn--sm {
     padding: 5px 10px;
     font-size: 0.75rem;
+    border-radius: var(--r-sm);
+    box-shadow: var(--shadow-sm);
 }
 
 /* ─── Field groups ───────────────────────────────────────── */
@@ -392,8 +501,36 @@ body {
     border-bottom: none;
 }
 
+/* Striped: variación sutil del mismo --c-surface que ya usa la
+   cabecera, no un color nuevo — la mitad de opacidad que el :hover
+   para que se note la diferencia entre "fila par" y "fila con el
+   ratón encima". :not(:hover) evita que compita en especificidad con
+   el hover y el rayado se vea a través al pasar el ratón. */
+.admin-table tbody tr:nth-child(even):not(:hover) td {
+    background: rgba(30, 41, 59, 0.3);
+}
+
 .admin-table tr:hover td {
     background: rgba(30, 41, 59, 0.6);
+}
+
+/* Alineación de columnas: texto siempre a la izquierda (por defecto);
+   numéricas, fecha y acciones a la derecha; estado/badges centradas. */
+.admin-table th.col-num,
+.admin-table th.col-actions,
+.admin-table td.col-num,
+.admin-table td.col-actions {
+    text-align: right;
+}
+
+.admin-table th.col-center,
+.admin-table td.col-center {
+    text-align: center;
+}
+
+.row-actions {
+    display: inline-flex;
+    gap: 8px;
 }
 
 /* Mobile card view */
@@ -464,6 +601,11 @@ body {
 }
 
 /* ─── Badges ─────────────────────────────────────────────── */
+/* Puramente informativos, no interactivos — por eso sin sombra ni
+   borde, con el fondo suave de siempre y el punto de color como único
+   acento. Un .admin-btn--sm de la misma fila lleva borde + sombra
+   (ver arriba) precisamente para que a simple vista no se confundan
+   pese a compartir paleta y tamaño similares. */
 .admin-badge {
     display: inline-flex;
     align-items: center;
@@ -474,6 +616,7 @@ body {
     font-weight: 700;
     background: rgba(51, 65, 85, 0.5);
     color: var(--c-text-muted);
+    box-shadow: none;
 }
 
 .admin-badge::before {
@@ -508,6 +651,21 @@ body {
 .admin-badge--travel {
     background: rgba(124, 58, 237, 0.12);
     color: #a78bfa;
+}
+
+/* Estado activo/inactivo — no existían variantes de color para esto
+   antes de este cambio (activo e inactivo se veían igual de grises).
+   Reutiliza los mismos verdes/grises ya usados como acento en otros
+   badges/botones (--admin-btn--success, --admin-badge--community),
+   no introduce ningún color nuevo. */
+.admin-badge--active {
+    background: rgba(22, 163, 74, 0.12);
+    color: #4ade80;
+}
+
+.admin-badge--inactive {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--c-text-subtle);
 }
 
 /* ─── Modal ──────────────────────────────────────────────── */

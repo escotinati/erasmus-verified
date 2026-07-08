@@ -1,5 +1,40 @@
 let editingPartnerId = null;
 
+// Copia en memoria del último array cargado por cada loadX() — sirve
+// de base para el buscador (filtrado en cliente, sin query nueva) y
+// para los contadores del dashboard. No sustituye a loadX(): se rellena
+// justo después de la consulta que loadX() ya hacía.
+let allPartners = [];
+let allEvents = [];
+let allCities = [];
+
+// Vistas: 'dashboard' (las 3 cards) o el nombre de una sección
+// (partners/events/cities). Oculta todo lo demás usando [hidden], el
+// mismo patrón que ya usan login-view/panel-view.
+function showView(name) {
+    document.getElementById('dashboard-view').hidden = name !== 'dashboard';
+    document.querySelectorAll('.admin-section[data-section]').forEach((section) => {
+        section.hidden = section.dataset.section !== name;
+    });
+    if (name === 'dashboard') renderDashboardCounts();
+}
+
+function renderDashboardCounts() {
+    const setCount = (id, list, singular, plural) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const activeCount = list.filter((x) => x.active).length;
+        const inactiveCount = list.length - activeCount;
+        const noun = list.length === 1 ? singular : plural;
+        const activeLabel = activeCount === 1 ? 'activo' : 'activos';
+        const inactiveLabel = inactiveCount === 1 ? 'inactivo' : 'inactivos';
+        el.textContent = `${list.length} ${noun} · ${activeCount} ${activeLabel}, ${inactiveCount} ${inactiveLabel}`;
+    };
+    setCount('dashboard-partners-count', allPartners, 'partner', 'partners');
+    setCount('dashboard-events-count', allEvents, 'evento', 'eventos');
+    setCount('dashboard-cities-count', allCities, 'ciudad', 'ciudades');
+}
+
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str).replace(/[&<>"']/g, (ch) => ({
@@ -92,6 +127,51 @@ document.addEventListener('DOMContentLoaded', function () {
         .querySelector('#event-modal .admin-modal__backdrop')
         ?.addEventListener('click', closeEventModal);
 
+    // Dashboard: cards → sección; botón "Volver" → dashboard de nuevo.
+    document.querySelectorAll('.admin-dashboard-card').forEach((card) => {
+        card.addEventListener('click', () => showView(card.dataset.goto));
+    });
+    document.querySelectorAll('[data-back]').forEach((btn) => {
+        btn.addEventListener('click', () => showView('dashboard'));
+    });
+
+    // Buscadores por sección: filtran en cliente sobre los arrays ya
+    // cargados (allPartners/allEvents/allCities), sin query nueva a
+    // Supabase, y reutilizan las funciones de pintado ya existentes.
+    document.getElementById('partners-search')?.addEventListener('input', (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        const filtered = !term
+            ? allPartners
+            : allPartners.filter((p) =>
+                  [p.name, p.category, p.cities?.name].some((field) =>
+                      (field || '').toLowerCase().includes(term)
+                  )
+              );
+        renderPartnersTable(filtered);
+    });
+
+    document.getElementById('events-search')?.addEventListener('input', (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        const filtered = !term
+            ? allEvents
+            : allEvents.filter((ev) =>
+                  [ev.title, ev.theme, ev.partners?.cities?.name].some((field) =>
+                      (field || '').toLowerCase().includes(term)
+                  )
+              );
+        renderEventsTable(filtered);
+    });
+
+    document.getElementById('cities-search')?.addEventListener('input', (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        const filtered = !term
+            ? allCities
+            : allCities.filter((c) =>
+                  [c.name, c.country].some((field) => (field || '').toLowerCase().includes(term))
+              );
+        renderCitiesTable(filtered);
+    });
+
     window.supabaseClient.auth
         .getSession()
         .then(({ data: { session } }) => {
@@ -138,6 +218,7 @@ async function showPanel() {
     document.getElementById('login-view').hidden = true;
     document.getElementById('panel-view').hidden = false;
     await Promise.all([loadPartners(), loadEvents(), loadCities(), loadClicksReport()]);
+    showView('dashboard');
 }
 
 // ── PARTNERS ──────────────────────────────────────────────────
@@ -152,6 +233,7 @@ async function loadPartners() {
         alert('Error cargando partners: ' + error.message);
         return;
     }
+    allPartners = data;
     renderPartnersTable(data);
 }
 
@@ -173,15 +255,17 @@ function renderPartnersTable(partners) {
       <td data-label="Nombre">${escapeHtml(p.name)}</td>
       <td data-label="Categoría"><span class="admin-badge admin-badge--${escapeHtml(p.category)}">${escapeHtml(p.category)}</span></td>
       <td data-label="Ciudad">${escapeHtml(p.cities?.name || '—')}</td>
-      <td data-label="Prioridad">${p.priority}</td>
-      <td data-label="Activo">${p.active ? '✓' : '—'}</td>
-      <td>
-        <button type="button" class="admin-btn admin-btn--sm admin-btn--ghost"
-          onclick="openModal(${p.id})">Editar</button>
-        <button type="button" class="admin-btn admin-btn--sm ${p.active ? 'admin-btn--danger' : 'admin-btn--success'}"
-          onclick="toggleActive(${p.id}, ${p.active})">
-          ${p.active ? 'Desactivar' : 'Activar'}
-        </button>
+      <td data-label="Prioridad" class="col-num">${p.priority}</td>
+      <td data-label="Activo" class="col-center">${p.active ? '✓' : '—'}</td>
+      <td class="col-actions">
+        <div class="row-actions">
+          <button type="button" class="admin-btn admin-btn--sm admin-btn--ghost"
+            onclick="openModal(${p.id})">Editar</button>
+          <button type="button" class="admin-btn admin-btn--sm ${p.active ? 'admin-btn--danger' : 'admin-btn--success'}"
+            onclick="toggleActive(${p.id}, ${p.active})">
+            ${p.active ? 'Desactivar' : 'Activar'}
+          </button>
+        </div>
       </td>
     </tr>`
         )
@@ -192,7 +276,7 @@ function renderPartnersTable(partners) {
       <thead>
         <tr>
           <th>Nombre</th><th>Categoría</th><th>Ciudad</th>
-          <th>Prioridad</th><th>Activo</th><th>Acciones</th>
+          <th class="col-num">Prioridad</th><th class="col-center">Activo</th><th class="col-actions">Acciones</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
@@ -388,15 +472,20 @@ let editingEventId = null;
 // futuros) — a diferencia de la vista pública, que RLS limita a
 // activos y no vencidos.
 async function loadEvents() {
+    // partners(name, cities(name)): se añadió cities(name) al join que
+    // ya existía — antes solo traía el nombre del partner, y el
+    // buscador por ciudad (más abajo) necesita la ciudad del partner
+    // asociado, que no llegaba con el select original.
     const { data, error } = await window.supabaseClient
         .from('partner_events')
-        .select('*, partners(name)')
+        .select('*, partners(name, cities(name))')
         .order('starts_at', { ascending: false });
 
     if (error) {
         alert('Error cargando eventos: ' + error.message);
         return;
     }
+    allEvents = data;
     renderEventsTable(data);
 }
 
@@ -428,7 +517,7 @@ function renderEventsTable(events) {
         <div class="partner-desc">${escapeHtml(e.theme || '—')}</div>
       </td>
       <td data-label="Partner">${escapeHtml(e.partners?.name || '—')}</td>
-      <td data-label="Fecha">${formatAdminDateTime(e.starts_at)}</td>
+      <td data-label="Fecha" class="col-num">${formatAdminDateTime(e.starts_at)}</td>
       <td data-label="Precio">${escapeHtml(e.price_label || '—')}</td>
       <td data-label="Prioridad" class="col-num">${e.priority}</td>
       <td data-label="Estado" class="col-center">
@@ -456,7 +545,7 @@ function renderEventsTable(events) {
     <table class="admin-table">
       <thead>
         <tr>
-          <th>Título</th><th>Partner</th><th>Fecha</th><th>Precio</th>
+          <th>Título</th><th>Partner</th><th class="col-num">Fecha</th><th>Precio</th>
           <th class="col-num">Prioridad</th><th class="col-center">Estado</th><th class="col-actions"></th>
         </tr>
       </thead>
@@ -654,6 +743,7 @@ async function loadCities() {
         alert('Error cargando ciudades: ' + error.message);
         return;
     }
+    allCities = data;
     renderCitiesTable(data);
 }
 
