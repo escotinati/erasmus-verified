@@ -582,6 +582,44 @@
             </div>
         </div>
 
+        <!-- MODAL CONFIRMAR ELIMINAR EVENTO -->
+        <div id="delete-event-modal" class="admin-modal" hidden>
+            <div class="admin-modal__backdrop"></div>
+            <div class="admin-modal__box">
+                <div class="admin-modal__header">
+                    <div>
+                        <h2 class="admin-modal__title">Eliminar evento</h2>
+                        <p class="admin-modal__subtitle" id="delete-event-modal-subtitle"></p>
+                    </div>
+                    <button
+                        type="button"
+                        class="admin-modal__close"
+                        id="delete-event-modal-close"
+                        aria-label="Cerrar"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div class="admin-modal__actions">
+                    <button
+                        type="button"
+                        id="delete-event-modal-cancel"
+                        class="admin-btn admin-btn--ghost"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="button"
+                        id="delete-event-modal-confirm"
+                        class="admin-btn admin-btn--danger"
+                    >
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
         <script src="/src/js/lib/supabaseClient.js"></script>
         <script src="/src/js/services/citiesService.js"></script>
