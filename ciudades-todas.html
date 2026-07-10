@@ -330,25 +330,35 @@
             </a>
         </nav>
 
-        <script src="/src/js/data.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+        <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/js/services/citiesService.js"></script>
         <script>
-            (function () {
-                // ── Build flat city list sorted alphabetically ──────────────
-                const allCities = [];
-                for (const [paisName, country] of Object.entries(COUNTRIES)) {
-                    for (const city of country.cities) {
-                        allCities.push({
-                            name: city.name,
-                            country: paisName,
-                            flag: country.flag,
-                            url: `ciudad.html?pais=${encodeURIComponent(paisName)}&ciudad=${encodeURIComponent(city.name)}`,
-                        });
-                    }
+            (async function () {
+                // Mismo criterio anti-XSS que el resto del proyecto (admin.js):
+                // name/country/flag ya son editables desde el admin.
+                function escapeHtml(str) {
+                    if (str === null || str === undefined) return '';
+                    return String(str).replace(/[&<>"']/g, (ch) => ({
+                        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+                    }[ch]));
                 }
-                allCities.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+
+                // ── Build flat city list sorted alphabetically ──────────────
+                // Directorio completo (fetchAllCities, sin filtro active=true):
+                // se listan todas las ciudades, tengan o no grupo activo.
+                const citiesData = await fetchAllCities();
+                const allCities = citiesData
+                    .map((city) => ({
+                        name: city.name,
+                        country: city.country,
+                        flag: city.flag,
+                        url: `ciudad.html?ciudad=${city.id}`,
+                    }))
+                    .sort((a, b) => a.name.localeCompare(b.name, 'es'));
 
                 // Stats
-                const totalCountries = Object.keys(COUNTRIES).length;
+                const totalCountries = new Set(allCities.map((c) => c.country)).size;
                 document.getElementById('totalCount').textContent = allCities.length;
                 document.getElementById('totalCountries').textContent = totalCountries;
                 document.getElementById('filterCount').textContent = `${allCities.length} ciudades`;
@@ -384,16 +394,16 @@
                         const div = document.createElement('div');
                         div.className = 'letter-group';
                         div.innerHTML = `
-        <div class="letter-heading">${letter}</div>
+        <div class="letter-heading">${escapeHtml(letter)}</div>
         <div class="city-items-grid">
           ${group
               .map(
                   (city) => `
             <a class="city-item" href="${city.url}">
-              <span class="city-item-flag">${city.flag}</span>
+              <span class="city-item-flag">${escapeHtml(city.flag)}</span>
               <div class="city-item-info">
-                <div class="city-item-name">${city.name}</div>
-                <div class="city-item-country">${city.country}</div>
+                <div class="city-item-name">${escapeHtml(city.name)}</div>
+                <div class="city-item-country">${escapeHtml(city.country)}</div>
               </div>
             </a>`
               )
