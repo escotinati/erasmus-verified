@@ -38,7 +38,12 @@ async function fetchCityById(cityId) {
     return data;
 }
 
-// Devuelve TODAS las ciudades (para admin, incluye inactivas)
+// Devuelve TODAS las ciudades, activas e inactivas — sin filtro de
+// active. La usa tanto el admin (populateCitySelect) como el
+// directorio completo de ciudades.js/ciudades-todas.html, que
+// necesitan ver también las ciudades sin grupo activo todavía.
+// Cada consumidor reordena/agrupa en cliente según lo que necesite
+// (por país, alfabético...), así que el ORDER BY de aquí no se toca.
 async function fetchAllCities() {
     const { data, error } = await window.supabaseClient
         .from('cities')
