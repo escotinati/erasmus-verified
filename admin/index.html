@@ -187,6 +187,16 @@
                             + Nuevo partner
                         </button>
                     </div>
+                    <div class="admin-tabs" data-tabs="partners">
+                        <button type="button" class="admin-tab is-active" data-tab="active">
+                            Activos
+                            <span class="admin-tab__count" id="partners-tab-active-count">0</span>
+                        </button>
+                        <button type="button" class="admin-tab" data-tab="inactive">
+                            Inactivos
+                            <span class="admin-tab__count" id="partners-tab-inactive-count">0</span>
+                        </button>
+                    </div>
                     <input
                         type="search"
                         id="partners-search"
@@ -619,6 +629,40 @@
                 </div>
             </div>
         </div>
+
+        <!-- MODAL CONFIRMACIÓN GENÉRICA (reutilizable, ej. desactivar
+             partner con evento futuro activo) -->
+        <div id="confirm-modal" class="admin-modal" hidden>
+            <div class="admin-modal__backdrop"></div>
+            <div class="admin-modal__box">
+                <div class="admin-modal__header">
+                    <div>
+                        <h2 class="admin-modal__title" id="confirm-modal-title"></h2>
+                        <p class="admin-modal__subtitle" id="confirm-modal-subtitle"></p>
+                    </div>
+                    <button
+                        type="button"
+                        class="admin-modal__close"
+                        id="confirm-modal-close"
+                        aria-label="Cerrar"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div class="admin-modal__actions">
+                    <button type="button" id="confirm-modal-cancel" class="admin-btn admin-btn--ghost">
+                        Cancelar
+                    </button>
+                    <button type="button" id="confirm-modal-confirm" class="admin-btn admin-btn--primary">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOASTS — feedback no bloqueante, sustituye a los alert() -->
+        <div id="toast-container" class="admin-toast-container" aria-live="polite"></div>
 
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
         <script src="/src/js/lib/supabaseClient.js"></script>

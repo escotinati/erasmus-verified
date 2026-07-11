@@ -8,6 +8,13 @@ let allPartners = [];
 let allEvents = [];
 let allCities = [];
 
+// Pestaña activa de la sección partners ('active' | 'inactive') y
+// último array pasado a renderPartnersTable (ya filtrado por el
+// buscador) — se reutiliza al cambiar de pestaña o tras un toggle
+// optimista, para no tener que volver a filtrar desde allPartners.
+let partnersTab = 'active';
+let currentPartnersList = [];
+
 // Vistas: 'dashboard' (las 3 cards) o el nombre de una sección
 // (partners/events/cities). Oculta todo lo demás usando [hidden], el
 // mismo patrón que ya usan login-view/panel-view.
@@ -33,6 +40,60 @@ function renderDashboardCounts() {
     setCount('dashboard-partners-count', allPartners, 'partner', 'partners');
     setCount('dashboard-events-count', allEvents, 'evento', 'eventos');
     setCount('dashboard-cities-count', allCities, 'ciudad', 'ciudades');
+}
+
+// ── TOASTS ────────────────────────────────────────────────────
+// Sustituye a los alert() de antes: no bloquea la interacción con el
+// resto del panel y desaparece sola a los pocos segundos.
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `admin-toast admin-toast--${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    // rAF para que el navegador pinte el estado inicial (opacity:0)
+    // antes de añadir la clase que anima la entrada.
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    setTimeout(() => {
+        toast.classList.remove('is-visible');
+        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+        // por si prefers-reduced-motion desactiva la transición y
+        // transitionend no llega a disparar nunca
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// ── MODAL DE CONFIRMACIÓN GENÉRICA ───────────────────────────
+// Reutilizable para cualquier "¿seguro?" que no sea un alert() ni el
+// modal de eliminar evento (que ya tiene su propio flujo). Se resuelve
+// con true/false según el botón que pulse el usuario.
+let confirmModalResolve = null;
+
+function openConfirmModal({ title, message, confirmLabel = 'Confirmar', danger = false }) {
+    document.getElementById('confirm-modal-title').textContent = title;
+    document.getElementById('confirm-modal-subtitle').textContent = message;
+
+    const confirmBtn = document.getElementById('confirm-modal-confirm');
+    confirmBtn.textContent = confirmLabel;
+    confirmBtn.className = `admin-btn ${danger ? 'admin-btn--danger' : 'admin-btn--primary'}`;
+
+    document.getElementById('confirm-modal').hidden = false;
+
+    return new Promise((resolve) => {
+        confirmModalResolve = resolve;
+    });
+}
+
+function closeConfirmModal(result) {
+    document.getElementById('confirm-modal').hidden = true;
+    if (confirmModalResolve) {
+        confirmModalResolve(result);
+        confirmModalResolve = null;
+    }
 }
 
 function escapeHtml(str) {
@@ -68,6 +129,26 @@ document.addEventListener('DOMContentLoaded', function () {
             if (e.key === 'Enter') login();
         });
     });
+    document.getElementById('confirm-modal-close').addEventListener('click', () => closeConfirmModal(false));
+    document.getElementById('confirm-modal-cancel').addEventListener('click', () => closeConfirmModal(false));
+    document.getElementById('confirm-modal-confirm').addEventListener('click', () => closeConfirmModal(true));
+    document
+        .querySelector('#confirm-modal .admin-modal__backdrop')
+        .addEventListener('click', () => closeConfirmModal(false));
+
+    // Pestañas Activos/Inactivos: filtran en cliente sobre el mismo
+    // array que ya tiene renderPartnersTable, sin volver a consultar
+    // Supabase.
+    document.querySelectorAll('.admin-tabs[data-tabs="partners"] .admin-tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+            partnersTab = tab.dataset.tab;
+            document
+                .querySelectorAll('.admin-tabs[data-tabs="partners"] .admin-tab')
+                .forEach((t) => t.classList.toggle('is-active', t === tab));
+            renderPartnersTable(currentPartnersList);
+        });
+    });
+
     document.getElementById('new-partner-btn').addEventListener('click', () => openModal(null));
     document.getElementById('modal-close').addEventListener('click', closeModal);
     document.getElementById('modal-cancel').addEventListener('click', closeModal);
@@ -243,7 +324,7 @@ async function loadPartners() {
         .order('priority', { ascending: false });
 
     if (error) {
-        alert('Error cargando partners: ' + error.message);
+        showToast('Error cargando partners: ' + error.message, 'error');
         return;
     }
     allPartners = data;
@@ -251,33 +332,59 @@ async function loadPartners() {
 }
 
 function renderPartnersTable(partners) {
+    // Se guarda tal cual llega (ya filtrado por el buscador, si hay
+    // término) para poder volver a pintar sin refiltrar al cambiar de
+    // pestaña o tras un toggle optimista.
+    currentPartnersList = partners;
+
+    const activePartners = partners.filter((p) => p.active);
+    // Los desactivados más recientemente, primero — para no perderlos
+    // de vista entre el volumen de partners/ciudades. El trigger
+    // touch_updated_at() de Postgres actualiza updated_at en cada
+    // UPDATE, así que esto también ordena por "última edición" en
+    // general, no solo por desactivación, pero es lo más cercano a
+    // "recién desactivado" que hay sin una columna dedicada.
+    const inactivePartners = partners
+        .filter((p) => !p.active)
+        .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+    const activeCountEl = document.getElementById('partners-tab-active-count');
+    const inactiveCountEl = document.getElementById('partners-tab-inactive-count');
+    if (activeCountEl) activeCountEl.textContent = activePartners.length;
+    if (inactiveCountEl) inactiveCountEl.textContent = inactivePartners.length;
+
+    const list = partnersTab === 'inactive' ? inactivePartners : activePartners;
+
     const wrap = document.getElementById('partners-table');
     const countEl = document.getElementById('partner-count');
-    if (countEl)
-        countEl.textContent = partners.length + (partners.length === 1 ? ' partner' : ' partners');
+    if (countEl) countEl.textContent = list.length + (list.length === 1 ? ' partner' : ' partners');
 
-    if (partners.length === 0) {
-        wrap.innerHTML = '<p class="admin-empty">No hay partners todavía.</p>';
+    if (list.length === 0) {
+        wrap.innerHTML = `<p class="admin-empty">${
+            partnersTab === 'inactive' ? 'No hay partners inactivos.' : 'No hay partners activos todavía.'
+        }</p>`;
         return;
     }
 
-    const rows = partners
+    const rows = list
         .map(
             (p) => `
     <tr>
       <td data-label="Nombre">${escapeHtml(p.name)}</td>
       <td data-label="Categoría"><span class="admin-badge admin-badge--${escapeHtml(p.category)}">${escapeHtml(p.category)}</span></td>
       <td data-label="Ciudad">${escapeHtml(p.cities?.name || '—')}</td>
-      <td data-label="Prioridad" class="col-num">${p.priority}</td>
-      <td data-label="Activo" class="col-center">${p.active ? '✓' : '—'}</td>
+      <td data-label="Prioridad" class="col-center"><span class="admin-priority-badge">${p.priority}</span></td>
+      <td data-label="Activo" class="col-center">
+        <label class="admin-switch" title="${p.active ? 'Desactivar' : 'Activar'} ${escapeHtml(p.name)}">
+          <input type="checkbox" ${p.active ? 'checked' : ''}
+            onchange="onTogglePartnerActive(${p.id}, ${p.active}, this)" />
+          <span class="admin-switch__slider"></span>
+        </label>
+      </td>
       <td class="col-actions">
         <div class="row-actions">
           <button type="button" class="admin-btn admin-btn--sm admin-btn--ghost"
             onclick="openModal(${p.id})">Editar</button>
-          <button type="button" class="admin-btn admin-btn--sm ${p.active ? 'admin-btn--danger' : 'admin-btn--success'}"
-            onclick="toggleActive(${p.id}, ${p.active})">
-            ${p.active ? 'Desactivar' : 'Activar'}
-          </button>
         </div>
       </td>
     </tr>`
@@ -289,23 +396,95 @@ function renderPartnersTable(partners) {
       <thead>
         <tr>
           <th>Nombre</th><th>Categoría</th><th>Ciudad</th>
-          <th class="col-num">Prioridad</th><th class="col-center">Activo</th><th class="col-actions">Acciones</th>
+          <th class="col-center">Prioridad</th><th class="col-center">Activo</th><th class="col-actions">Acciones</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
 
-async function toggleActive(id, currentActive) {
-    const { error } = await window.supabaseClient
-        .from('partners')
-        .update({ active: !currentActive })
-        .eq('id', id);
+// Comprueba si un partner tiene algún evento futuro (starts_at >= hoy)
+// todavía activo — se usa para pedir confirmación extra antes de
+// desactivarlo. Fallo de red al comprobar: no bloquea la desactivación
+// (se trata como "no tiene eventos futuros"), ya que es una fricción
+// de UX adicional, no una barrera de seguridad.
+async function partnerHasFutureActiveEvent(partnerId) {
+    const { data, error } = await window.supabaseClient
+        .from('partner_events')
+        .select('id')
+        .eq('partner_id', partnerId)
+        .eq('active', true)
+        .gte('starts_at', new Date().toISOString())
+        .limit(1);
+
     if (error) {
-        alert('Error: ' + error.message);
+        console.error('[admin] error comprobando eventos futuros del partner:', error);
+        return false;
+    }
+    return (data || []).length > 0;
+}
+
+// Punto de entrada del switch de la fila: decide si hace falta
+// confirmación (evento futuro activo) antes de llamar a
+// togglePartnerActive. checkboxEl solo se usa para revertir el
+// checkbox al cancelar, sin re-pintar toda la tabla.
+async function onTogglePartnerActive(id, currentActive, checkboxEl) {
+    if (currentActive) {
+        const hasFutureEvent = await partnerHasFutureActiveEvent(id);
+        if (hasFutureEvent) {
+            const confirmed = await openConfirmModal({
+                title: 'Desactivar partner',
+                message: 'Este partner tiene un evento próximo activo. ¿Desactivar igualmente?',
+                confirmLabel: 'Desactivar igualmente',
+                danger: true,
+            });
+            if (!confirmed) {
+                if (checkboxEl) checkboxEl.checked = currentActive;
+                return;
+            }
+        }
+    }
+    await togglePartnerActive(id, currentActive);
+}
+
+async function togglePartnerActive(id, currentActive) {
+    const partner = allPartners.find((p) => p.id === id);
+    if (!partner) return;
+
+    const newActive = !currentActive;
+    const previousActive = partner.active;
+    const previousUpdatedAt = partner.updated_at;
+
+    // Optimista: la fila cambia de pestaña antes de esperar respuesta
+    // del servidor. Se revierte más abajo si Supabase devuelve error o
+    // no llega a tocar ninguna fila (bloqueo silencioso de RLS: el
+    // update no da error, solo no afecta filas).
+    partner.active = newActive;
+    partner.updated_at = new Date().toISOString();
+    renderPartnersTable(currentPartnersList);
+
+    const { data, error } = await window.supabaseClient
+        .from('partners')
+        .update({ active: newActive })
+        .eq('id', id)
+        .select('updated_at')
+        .single();
+
+    if (error || !data) {
+        partner.active = previousActive;
+        partner.updated_at = previousUpdatedAt;
+        renderPartnersTable(currentPartnersList);
+        showToast(
+            `No se pudo ${newActive ? 'activar' : 'desactivar'} "${partner.name}": ${
+                error?.message || 'sin permisos o partner no encontrado'
+            }`,
+            'error'
+        );
         return;
     }
-    await loadPartners();
+
+    partner.updated_at = data.updated_at;
+    showToast(`"${partner.name}" ${newActive ? 'activado' : 'desactivado'} correctamente.`, 'success');
 }
 
 async function populateCitySelect(selectId, selectedCityId = null) {
@@ -409,7 +588,7 @@ async function savePartner() {
     const cityId = parseInt(document.getElementById('f-city-id').value, 10);
 
     if (!name || !cityId) {
-        alert('Nombre y ciudad son obligatorios.');
+        showToast('Nombre y ciudad son obligatorios.', 'error');
         return;
     }
 
@@ -432,7 +611,7 @@ async function savePartner() {
             .update(partnerData)
             .eq('id', editingPartnerId);
         if (error) {
-            alert('Error guardando partner: ' + error.message);
+            showToast('Error guardando partner: ' + error.message, 'error');
             return;
         }
     } else {
@@ -442,7 +621,7 @@ async function savePartner() {
             .select('id')
             .single();
         if (error) {
-            alert('Error guardando partner: ' + error.message);
+            showToast('Error guardando partner: ' + error.message, 'error');
             return;
         }
         savedId = data.id;
@@ -467,7 +646,7 @@ async function savePartner() {
                 .from('partner_links')
                 .insert(links);
             if (linksError) {
-                alert('Error guardando links: ' + linksError.message);
+                showToast('Error guardando links: ' + linksError.message, 'error');
                 return;
             }
         }
@@ -475,6 +654,7 @@ async function savePartner() {
 
     closeModal();
     await loadPartners();
+    showToast(`Partner "${name}" guardado correctamente.`, 'success');
 }
 
 // ── EVENTOS ───────────────────────────────────────────────────
@@ -495,7 +675,7 @@ async function loadEvents() {
         .order('starts_at', { ascending: false });
 
     if (error) {
-        alert('Error cargando eventos: ' + error.message);
+        showToast('Error cargando eventos: ' + error.message, 'error');
         return;
     }
     allEvents = data;
@@ -578,10 +758,11 @@ async function toggleEventActive(id, current) {
         .update({ active: !current })
         .eq('id', id);
     if (error) {
-        alert('Error: ' + error.message);
+        showToast('Error: ' + error.message, 'error');
         return;
     }
     await loadEvents();
+    showToast(`Evento ${!current ? 'activado' : 'desactivado'} correctamente.`, 'success');
 }
 
 // ── ELIMINAR EVENTO (borrado físico) ─────────────────────────
@@ -608,11 +789,12 @@ function closeDeleteEventModal() {
 async function deleteEvent(id) {
     const { error } = await window.supabaseClient.from('partner_events').delete().eq('id', id);
     if (error) {
-        alert('Error eliminando evento: ' + error.message);
+        showToast('Error eliminando evento: ' + error.message, 'error');
         return;
     }
     closeDeleteEventModal();
     await loadEvents();
+    showToast('Evento eliminado correctamente.', 'success');
 }
 
 // Solo partners de category='nightlife' — un evento sin un local de
@@ -764,19 +946,20 @@ async function saveEvent() {
             .update(eventData)
             .eq('id', editingEventId);
         if (error) {
-            alert('Error guardando evento: ' + error.message);
+            showToast('Error guardando evento: ' + error.message, 'error');
             return;
         }
     } else {
         const { error } = await window.supabaseClient.from('partner_events').insert(eventData);
         if (error) {
-            alert('Error guardando evento: ' + error.message);
+            showToast('Error guardando evento: ' + error.message, 'error');
             return;
         }
     }
 
     closeEventModal();
     await loadEvents();
+    showToast(`Evento "${title}" guardado correctamente.`, 'success');
 }
 
 // ── CIUDADES ──────────────────────────────────────────────────
@@ -790,7 +973,7 @@ async function loadCities() {
         .order('priority', { ascending: false });
 
     if (error) {
-        alert('Error cargando ciudades: ' + error.message);
+        showToast('Error cargando ciudades: ' + error.message, 'error');
         return;
     }
     allCities = data;
@@ -863,10 +1046,11 @@ async function toggleCityActive(id, current) {
         .update({ active: !current })
         .eq('id', id);
     if (error) {
-        alert('Error: ' + error.message);
+        showToast('Error: ' + error.message, 'error');
         return;
     }
     await loadCities();
+    showToast(`Ciudad ${!current ? 'activada' : 'desactivada'} correctamente.`, 'success');
 }
 
 async function openCityModal(cityId) {
@@ -933,11 +1117,11 @@ async function saveCity() {
     const whatsappUrl = document.getElementById('cf-whatsapp-url').value.trim();
 
     if (!name || !country) {
-        alert('Nombre y país son obligatorios.');
+        showToast('Nombre y país son obligatorios.', 'error');
         return;
     }
     if (!whatsappUrl) {
-        alert('El grupo de WhatsApp es obligatorio.');
+        showToast('El grupo de WhatsApp es obligatorio.', 'error');
         return;
     }
 
@@ -968,19 +1152,20 @@ async function saveCity() {
             .update(cityData)
             .eq('id', editingCityId);
         if (error) {
-            alert('Error guardando ciudad: ' + error.message);
+            showToast('Error guardando ciudad: ' + error.message, 'error');
             return;
         }
     } else {
         const { error } = await window.supabaseClient.from('cities').insert(cityData);
         if (error) {
-            alert('Error guardando ciudad: ' + error.message);
+            showToast('Error guardando ciudad: ' + error.message, 'error');
             return;
         }
     }
 
     closeCityModal();
     await loadCities();
+    showToast(`Ciudad "${name}" guardada correctamente.`, 'success');
 }
 
 // ── CLICKS REPORT ─────────────────────────────────────────────
