@@ -32,11 +32,11 @@ function buildNightCard(event) {
     <div class="event-img-wrap">
       ${
           event.image_url
-              ? `<img src="${event.image_url}" alt="${event.title}" loading="lazy" />`
+              ? `<img src="${event.image_url}" alt="${I18n.tField(event.title)}" loading="lazy" />`
               : `<div class="bento-card-placeholder"></div>`
       }
       <span class="event-badge event-badge--primary"></span>
-      ${event.price_label ? '<span class="event-price"></span>' : ''}
+      ${I18n.tField(event.price_label) ? '<span class="event-price"></span>' : ''}
     </div>
     <div class="event-body">
       <div class="event-row">
@@ -56,13 +56,13 @@ function buildNightCard(event) {
 
     // textContent para todo dato de BD: mismo criterio anti-XSS que en admin.js
     card.querySelector('.event-badge--primary').textContent = event.theme || 'Fiesta';
-    card.querySelector('.event-name').textContent = event.title;
+    card.querySelector('.event-name').textContent = I18n.tField(event.title);
     card.querySelector('.event-venue-text').textContent = locationLabel;
     card.querySelector('.event-date').textContent = formatEventDate(event.starts_at);
-    card.querySelector('.event-desc').textContent = event.description || '';
+    card.querySelector('.event-desc').textContent = I18n.tField(event.description) || '';
 
     const priceEl = card.querySelector('.event-price');
-    if (priceEl) priceEl.textContent = event.price_label;
+    if (priceEl) priceEl.textContent = I18n.tField(event.price_label);
 
     if (event.ticket_url) {
         const btn = document.createElement('a');
@@ -74,7 +74,7 @@ function buildNightCard(event) {
         btn.addEventListener('click', () => {
             trackEvent('event_ticket_click', {
                 eventId: event.id,
-                eventTitle: event.title,
+                eventTitle: I18n.tField(event.title),
                 partnerId: event.partner?.id,
                 ticketUrl: event.ticket_url,
             });

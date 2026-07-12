@@ -191,7 +191,7 @@ function renderBento(grid, cards, animate = false) {
           <div class="bento-card-overlay"></div>
           <div class="bento-card-body">
             <h3>${item.flag} ${item.name}</h3>
-            ${item.description ? `<p>${item.description}</p>` : ''}
+            ${I18n.tField(item.description) ? `<p>${I18n.tField(item.description)}</p>` : ''}
           </div>
         </a>`;
                 })
