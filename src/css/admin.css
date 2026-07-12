@@ -921,16 +921,34 @@ body {
     letter-spacing: 0.06em;
 }
 
+/* Cada fila ahora tiene dos bloques apilados: los datos "simples"
+   (tipo, URL, borrar) y el campo i18n de la etiqueta (ES/EN + traducir)
+   — no caben en una sola fila de grid sin apretar demasiado el campo
+   de idioma, que ya de por sí es una fila compuesta de 3 partes. */
 .admin-link-row {
-    display: grid;
-    grid-template-columns: 140px 1fr 1fr auto;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--c-border);
+}
+
+.admin-link-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.admin-link-row__main {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 8px;
     align-items: center;
 }
 
-.admin-link-row input,
-.admin-link-row select {
+.admin-link-row__main input,
+.admin-link-row__main select {
     width: 100%;
     background: var(--c-surface-alt);
     border: 1px solid var(--c-border);
@@ -939,6 +957,77 @@ body {
     color: var(--c-text);
     font-family: inherit;
     font-size: 0.82rem;
+}
+
+/* ─── Campos i18n (ES/EN + traducir) ─────────────────────────
+   Mismo patrón para descripción/título/precio/etiqueta en los 3
+   modales (partner, evento, ciudad) y en cada fila de link: bloque ES,
+   botón de traducir, bloque EN. El fondo del EN es un tinte sutil del
+   accent, no el #f8f8ff de un tema claro — este admin es oscuro, así
+   que ese tono literal rompería el contraste; el objetivo real es solo
+   "distinguirlo visualmente", adaptado a la paleta existente. */
+.i18n-field {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.i18n-field__lang {
+    flex: 1;
+    min-width: 0;
+}
+
+.i18n-field__lang label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--c-text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+}
+
+.i18n-input {
+    width: 100%;
+}
+
+.i18n-field__lang:last-child .i18n-input {
+    background: rgba(99, 102, 241, 0.06);
+}
+
+.i18n-field__actions {
+    flex-shrink: 0;
+    padding-bottom: 1px;
+}
+
+.btn-translate {
+    background: transparent;
+    border: 1px solid var(--c-border);
+    color: var(--c-text-muted);
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 8px 10px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        border-color 0.15s,
+        color 0.15s;
+}
+
+.btn-translate:hover:not(:disabled) {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+}
+
+.btn-translate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.i18n-field--compact .i18n-field__lang label {
+    font-size: 0.66rem;
 }
 
 /* ─── Metric cards ───────────────────────────────────────── */
@@ -1060,17 +1149,22 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .admin-link-row {
+    .admin-link-row__main {
         grid-template-columns: 1fr auto;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto;
     }
 
-    .admin-link-row .link-type {
-        grid-column: 1;
+    .admin-link-row__main .link-type {
+        grid-column: 1 / -1;
     }
 
-    .admin-link-row .link-label,
-    .admin-link-row .link-url {
-        grid-column: 1;
+    .i18n-field {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .i18n-field__actions {
+        display: flex;
+        justify-content: flex-start;
     }
 }
