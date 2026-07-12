@@ -1,0 +1,102 @@
+/* ==========================================================================
+   ERASMUS VERIFIED — Tipografía global
+   FIX CRÍTICO: Inter en body, Syne solo en headings
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+/* Headings: Syne */
+h1, h2, h3,
+.heading-display,
+.hero-title,
+.section-title {
+  font-family: var(--font-display);
+  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+  color: var(--color-dark);
+}
+
+h1 { font-size: var(--text-h1); }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); }
+
+.heading-display {
+  font-size: var(--text-display);
+  font-weight: var(--weight-extrabold);
+}
+
+/* Body text: Inter */
+p, li, span, label, input, textarea, select, button {
+  font-family: var(--font-body);
+}
+
+/* Labels pequeños */
+.text-small, .caption, .label-text {
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+/* Overline labels — FIX: eliminar burgundy hardcoded */
+.overline,
+.section-label,
+.label-overline,
+[class*="overline"],
+[class*="section-tag"],
+[class*="category-tag"] {
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--duration-base) var(--ease-out);
+}
+
+a:hover { color: var(--color-primary-hover); }
+
+/* Focus visible */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}
+
+/* Parties: headings en texto claro */
+[data-brand="parties"] h1,
+[data-brand="parties"] h2,
+[data-brand="parties"] h3,
+[data-brand="parties"] .heading-display {
+  color: var(--color-text);
+}
+
+/* Respetar preferencias de animación */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
