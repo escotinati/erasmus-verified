@@ -33,8 +33,8 @@ async function initCiudadesPage() {
         document.body.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:center;height:100vh;
                 color:var(--on-surface-variant);font-family:'Inter',sans-serif;font-size:15px;">
-      País no encontrado.&nbsp;
-      <a href="index.html" style="color:var(--primary);">Volver al inicio</a>
+      ${I18n.t('errors.country_not_found')}&nbsp;
+      <a href="index.html" style="color:var(--primary);">${I18n.t('nav.back_to_home')}</a>
     </div>`;
         return;
     }
@@ -55,8 +55,8 @@ async function initCiudadesPage() {
 
     if (heroFlag) heroFlag.textContent = cities[0].flag || '';
     if (heroTitle) heroTitle.textContent = paisName;
-    if (heroCityCount) heroCityCount.textContent = `${cities.length} ciudades disponibles`;
-    if (sectionCount) sectionCount.textContent = `${cities.length} ciudades`;
+    if (heroCityCount) heroCityCount.textContent = `${cities.length} ${I18n.t('cities.count_available_suffix')}`;
+    if (sectionCount) sectionCount.textContent = `${cities.length} ${I18n.t('cities.count_suffix_plural')}`;
 
     const grid = document.getElementById('citiesGrid');
     const count = cities.length;
@@ -72,7 +72,7 @@ async function initCiudadesPage() {
       <div class="card-arrow">${ARROW_SVG}</div>
       <div class="card-body">
         <div class="card-name">${escapeHtml(city.name)}</div>
-        <span class="card-tag">Grupos activos</span>
+        <span class="card-tag">${I18n.t('cities.active_groups_tag')}</span>
       </div>
     </a>
   `

@@ -22,7 +22,7 @@ async function mountCityMap(containerId, { pais, ciudad, lat, lng, interactive =
 
     container.innerHTML = `
     <div class="city-map-loading">
-      <p>Cargando mapa de ${ciudad}…</p>
+      <p>${I18n.t('map.loading_map_prefix')} ${ciudad}…</p>
     </div>`;
 
     let coords = null;
@@ -37,7 +37,7 @@ async function mountCityMap(containerId, { pais, ciudad, lat, lng, interactive =
         container.innerHTML = `
       <div class="city-map-error">
         <span class="city-map-error__icon">🗺️</span>
-        <p>No hemos podido localizar ${ciudad} en este momento.</p>
+        <p>${I18n.t('map.city_not_located_prefix')} ${ciudad} ${I18n.t('map.city_not_located_suffix')}</p>
       </div>`;
         return null;
     }
@@ -59,7 +59,7 @@ async function mountCityMap(containerId, { pais, ciudad, lat, lng, interactive =
         const overlay = document.createElement('button');
         overlay.type = 'button';
         overlay.className = 'city-map-activate';
-        overlay.textContent = 'Toca para interactuar con el mapa';
+        overlay.textContent = I18n.t('map.tap_to_interact');
         overlay.addEventListener('click', () => {
             map.dragging.enable();
             map.scrollWheelZoom.enable();

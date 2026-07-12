@@ -12,9 +12,9 @@
         document.querySelector('.map-page-main').innerHTML = `
     <div style="text-align:center;padding:60px 20px;color:var(--on-surface-variant);">
       <span style="font-size:2.5rem;display:block;margin-bottom:16px;">😵</span>
-      <h2 style="font-size:1.2rem;font-family:'Syne',sans-serif;color:var(--on-surface);margin-bottom:8px;">Ciudad no encontrada</h2>
-      <p>Vuelve al inicio y selecciona tu destino.</p>
-      <a href="index.html" style="display:inline-block;margin-top:20px;color:var(--primary);">← Inicio</a>
+      <h2 style="font-size:1.2rem;font-family:'Syne',sans-serif;color:var(--on-surface);margin-bottom:8px;">${I18n.t('errors.city_not_found_title')}</h2>
+      <p>${I18n.t('errors.city_not_found_body')}</p>
+      <a href="index.html" style="display:inline-block;margin-top:20px;color:var(--primary);">${I18n.t('nav.back_home_arrow')}</a>
     </div>`;
     }
 

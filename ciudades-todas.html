@@ -214,19 +214,21 @@
                 <div class="topnav-left">
                     <a href="index.html" class="brand">Erasmus Verified</a>
                     <nav class="topbar-nav" id="mainNav">
-                        <a href="servicios.html">Servicios</a>
-                        <a href="alojamiento.html">Alojamiento</a>
-                        <a href="viajes.html">Viajes</a>
+                        <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                        <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                        <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                         <a
                             href="https://erasmusparties.org"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="nav-parties"
+                            data-i18n="nav.parties"
                             >🎉 Fiestas ↗</a
                         >
                     </nav>
                 </div>
                 <div class="topnav-right">
+                    <button id="lang-switcher" class="lang-switcher" aria-label="Cambiar idioma">EN</button>
                     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                         <span></span><span></span><span></span>
                     </button>
@@ -237,12 +239,18 @@
         <!-- HERO -->
         <div class="all-cities-hero">
             <div style="max-width: var(--container-max); margin: 0 auto">
-                <span class="eyebrow eyebrow--primary">DESTINOS ERASMUS+</span>
-                <h1>Todas las ciudades</h1>
+                <span class="eyebrow eyebrow--primary" data-i18n="cities.all_eyebrow"
+                    >DESTINOS ERASMUS+</span
+                >
+                <h1 data-i18n="cities.all_title">Todas las ciudades</h1>
                 <p>
-                    <strong id="totalCount">—</strong> ciudades en
-                    <strong id="totalCountries">—</strong> países europeos. Encuentra tu destino y
-                    únete a la comunidad antes de llegar.
+                    <strong id="totalCount">—</strong>
+                    <span data-i18n="cities.stats_middle">ciudades en</span>
+                    <strong id="totalCountries">—</strong>
+                    <span data-i18n="cities.stats_suffix"
+                        >países europeos. Encuentra tu destino y únete a la comunidad antes de
+                        llegar.</span
+                    >
                 </p>
             </div>
         </div>
@@ -256,6 +264,7 @@
                     class="filter-input"
                     id="filterInput"
                     placeholder="Filtra por ciudad o país…"
+                    data-i18n="cities.filter_placeholder"
                     autocomplete="off"
                 />
             </div>
@@ -266,8 +275,8 @@
         <div class="cities-section" id="citiesSection">
             <div class="no-results" id="noResults">
                 <span class="no-results-icon">🔍</span>
-                <h3>Sin resultados</h3>
-                <p>Prueba con otro nombre de ciudad o país.</p>
+                <h3 data-i18n="cities.no_results_title">Sin resultados</h3>
+                <p data-i18n="cities.no_results_body">Prueba con otro nombre de ciudad o país.</p>
             </div>
             <!-- JS rellena los grupos de letras aquí -->
         </div>
@@ -278,14 +287,16 @@
                 <div class="footer-brand">
                     <span class="footer-logo">Erasmus Verified</span>
                     <p class="footer-copy">
-                        © <span id="copyright-year"></span> Erasmus Verified. Experiencias Premium para Estudiantes de
-                        Intercambio.
+                        © <span id="copyright-year"></span>
+                        <span data-i18n="footer.copyright"
+                            >Erasmus Verified. Experiencias Premium para Estudiantes de Intercambio.</span
+                        >
                     </p>
                 </div>
                 <nav class="footer-links">
-                    <a href="#">Sobre nosotros</a>
-                    <a href="#">Privacidad</a>
-                    <a href="#">Términos</a>
+                    <a href="#" data-i18n="footer.about">Sobre nosotros</a>
+                    <a href="#" data-i18n="footer.privacy">Privacidad</a>
+                    <a href="#" data-i18n="footer.terms">Términos</a>
                 </nav>
             </div>
         </footer>
@@ -296,14 +307,15 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
             <nav class="mobile-nav-links">
-                <a href="servicios.html">Servicios</a>
-                <a href="alojamiento.html">Alojamiento</a>
-                <a href="viajes.html">Viajes</a>
+                <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                 <a
                     href="https://erasmusparties.org"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="nav-parties"
+                    data-i18n="nav.parties"
                     >🎉 Fiestas ↗</a
                 >
             </nav>
@@ -313,11 +325,11 @@
         <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
             <a href="servicios.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">storefront</span>
-                <span>Servicios</span>
+                <span data-i18n="nav.services">Servicios</span>
             </a>
             <a href="viajes.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">flight</span>
-                <span>Viajes</span>
+                <span data-i18n="nav.trips">Viajes</span>
             </a>
             <a
                 href="https://erasmusparties.org"
@@ -326,12 +338,15 @@
                 class="app-bottom-nav-item app-bottom-nav-item--parties"
             >
                 <span class="material-symbols-outlined">nightlife</span>
-                <span>Fiestas</span>
+                <span data-i18n="nav.parties_bottom">Fiestas</span>
             </a>
         </nav>
 
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
         <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
         <script src="/src/js/services/citiesService.js"></script>
         <script>
             (async function () {
@@ -361,7 +376,8 @@
                 const totalCountries = new Set(allCities.map((c) => c.country)).size;
                 document.getElementById('totalCount').textContent = allCities.length;
                 document.getElementById('totalCountries').textContent = totalCountries;
-                document.getElementById('filterCount').textContent = `${allCities.length} ciudades`;
+                document.getElementById('filterCount').textContent =
+                    `${allCities.length} ${I18n.t('cities.count_suffix_plural')}`;
 
                 // ── Group by first letter ───────────────────────────────────
                 function groupByLetter(cities) {
@@ -382,12 +398,17 @@
 
                     if (!cities.length) {
                         noResult.classList.add('is-visible');
-                        document.getElementById('filterCount').textContent = '0 ciudades';
+                        document.getElementById('filterCount').textContent =
+                            `0 ${I18n.t('cities.count_suffix_plural')}`;
                         return;
                     }
                     noResult.classList.remove('is-visible');
                     document.getElementById('filterCount').textContent =
-                        `${cities.length} ciudad${cities.length !== 1 ? 'es' : ''}`;
+                        `${cities.length} ${
+                            cities.length !== 1
+                                ? I18n.t('cities.count_suffix_plural')
+                                : I18n.t('cities.count_suffix_singular')
+                        }`;
 
                     const groups = groupByLetter(cities);
                     for (const [letter, group] of Object.entries(groups).sort()) {
@@ -495,6 +516,11 @@
                     });
                 document.getElementById('copyright-year').textContent = new Date().getFullYear();
             })();
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+            });
         </script>
     </body>
 </html>

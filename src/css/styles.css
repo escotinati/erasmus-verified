@@ -1109,6 +1109,27 @@ header.topbar {
     color: #4648d4;
 }
 
+/* Selector de idioma — discreto a propósito, mismo tamaño que un link
+   del nav pero sin fondo/borde por defecto, para no competir con
+   "Fiestas ↗"/"Verified ↗" que sí llevan acento de color. */
+.lang-switcher {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--on-surface-variant);
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.lang-switcher:hover {
+    color: var(--primary);
+}
+
 /* Back button y breadcrumb */
 
 .back-btn {

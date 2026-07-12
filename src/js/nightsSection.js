@@ -70,7 +70,7 @@ function buildNightCard(event) {
         btn.href = event.ticket_url;
         btn.target = '_blank';
         btn.rel = 'noopener noreferrer';
-        btn.textContent = 'Ver evento';
+        btn.textContent = I18n.t('nights.view_event_cta');
         btn.addEventListener('click', () => {
             trackEvent('event_ticket_click', {
                 eventId: event.id,
@@ -138,8 +138,11 @@ function buildFilterBar(cities, themes, partners) {
     const bar = document.createElement('div');
     bar.className = 'nights-filters';
 
-    const { wrap: cityWrap, select: citySelect } = buildFilterSelect('location_on', 'Filtrar por ciudad');
-    citySelect.innerHTML = '<option value="">Todas las ciudades</option>';
+    const { wrap: cityWrap, select: citySelect } = buildFilterSelect(
+        'location_on',
+        I18n.t('nights.filter_by_city_aria')
+    );
+    citySelect.innerHTML = `<option value="">${I18n.t('nights.filter_all_cities')}</option>`;
     for (const [id, label] of cities) {
         const opt = document.createElement('option');
         opt.value = String(id);
@@ -147,8 +150,11 @@ function buildFilterBar(cities, themes, partners) {
         citySelect.appendChild(opt);
     }
 
-    const { wrap: themeWrap, select: themeSelect } = buildFilterSelect('local_activity', 'Filtrar por tema');
-    themeSelect.innerHTML = '<option value="">Todos los temas</option>';
+    const { wrap: themeWrap, select: themeSelect } = buildFilterSelect(
+        'local_activity',
+        I18n.t('nights.filter_by_theme_aria')
+    );
+    themeSelect.innerHTML = `<option value="">${I18n.t('nights.filter_all_themes')}</option>`;
     for (const theme of themes) {
         const opt = document.createElement('option');
         opt.value = theme;
@@ -156,16 +162,22 @@ function buildFilterBar(cities, themes, partners) {
         themeSelect.appendChild(opt);
     }
 
-    const { wrap: dateWrap, select: dateSelect } = buildFilterSelect('calendar_today', 'Filtrar por fecha');
+    const { wrap: dateWrap, select: dateSelect } = buildFilterSelect(
+        'calendar_today',
+        I18n.t('nights.filter_by_date_aria')
+    );
     dateSelect.innerHTML = `
-        <option value="">Cualquier fecha</option>
-        <option value="today">Hoy</option>
-        <option value="week">Esta semana</option>
-        <option value="month">Este mes</option>
+        <option value="">${I18n.t('nights.filter_any_date')}</option>
+        <option value="today">${I18n.t('nights.filter_today')}</option>
+        <option value="week">${I18n.t('nights.filter_this_week')}</option>
+        <option value="month">${I18n.t('nights.filter_this_month')}</option>
     `;
 
-    const { wrap: partnerWrap, select: partnerSelect } = buildFilterSelect('storefront', 'Filtrar por partner');
-    partnerSelect.innerHTML = '<option value="">Todos los partners</option>';
+    const { wrap: partnerWrap, select: partnerSelect } = buildFilterSelect(
+        'storefront',
+        I18n.t('nights.filter_by_partner_aria')
+    );
+    partnerSelect.innerHTML = `<option value="">${I18n.t('nights.filter_all_partners')}</option>`;
     for (const [id, name] of partners) {
         const opt = document.createElement('option');
         opt.value = String(id);
@@ -176,7 +188,7 @@ function buildFilterBar(cities, themes, partners) {
     const clearBtn = document.createElement('button');
     clearBtn.type = 'button';
     clearBtn.className = 'nights-filter-clear';
-    clearBtn.textContent = 'Limpiar filtros';
+    clearBtn.textContent = I18n.t('nights.clear_filters');
     clearBtn.hidden = !hasActiveFilters();
 
     // hasActiveFilters() y applyFilters() ya existen — no se toca su
@@ -237,8 +249,8 @@ function renderEventCards(events) {
         const empty = document.createElement('p');
         empty.className = 'events-loading';
         empty.textContent = hasActiveFilters()
-            ? 'No hay fiestas con ese filtro. Prueba otra combinación.'
-            : 'Todavía no tenemos fiestas publicadas. Vuelve pronto.';
+            ? I18n.t('nights.no_results_filtered')
+            : I18n.t('nights.no_results_empty');
         scroll.appendChild(empty);
         return;
     }

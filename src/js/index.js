@@ -56,7 +56,7 @@ async function initAutocomplete() {
           <span class="sdi-name">${item.name}</span>
           <span class="sdi-sub">${item.sub}</span>
         </span>
-        <span class="sdi-type">Ciudad</span>`;
+        <span class="sdi-type">${I18n.t('home.search_result_type_city')}</span>`;
             dropdown.appendChild(el);
         });
         dropdown.classList.add('is-open');
@@ -124,7 +124,10 @@ async function initAutocomplete() {
         const nq = normalize(q);
         const match = index.find((item) => normalize(item.name).startsWith(nq));
         if (match) window.location.href = match.url;
-        else alert(`No encontramos "${q}". Prueba con otra ciudad.`);
+        else
+            alert(
+                `${I18n.t('home.search_not_found_prefix')} "${q}". ${I18n.t('home.search_not_found_suffix')}`
+            );
     }
 }
 
@@ -211,12 +214,10 @@ async function initBento(cities) {
     const grid = document.getElementById('bentoGrid');
     if (!grid) return;
 
-    grid.innerHTML =
-        '<p style="color:var(--text-muted);padding:40px;text-align:center">Cargando ciudades…</p>';
+    grid.innerHTML = `<p style="color:var(--text-muted);padding:40px;text-align:center">${I18n.t('home.loading_cities')}</p>`;
 
     if (cities.length === 0) {
-        grid.innerHTML =
-            '<p style="color:var(--text-muted);padding:40px;text-align:center">Próximamente más ciudades.</p>';
+        grid.innerHTML = `<p style="color:var(--text-muted);padding:40px;text-align:center">${I18n.t('home.more_cities_coming_soon')}</p>`;
         return;
     }
 

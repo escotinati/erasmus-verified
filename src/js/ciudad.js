@@ -25,7 +25,7 @@
     document.title = `${city.name}, ${city.country} — Erasmus Verified`;
 
     document.getElementById('backLink').href = 'index.html';
-    document.getElementById('backLinkText').textContent = 'Inicio';
+    document.getElementById('backLinkText').textContent = I18n.t('nav.home');
     document.getElementById('footerBack').href = 'index.html';
 
     document.getElementById('cityFlag').textContent = city.flag;
@@ -33,10 +33,14 @@
     document.getElementById('cityName').textContent = city.name;
 
     let btns = buildMapBlock(city);
-    btns += `<div class="section-divider"><span>Unirse a los grupos</span></div>`;
+    btns += `<div class="section-divider"><span>${I18n.t('city.join_groups_divider')}</span></div>`;
 
     if (city.whatsapp_url) {
-        btns += buildGroupBtn({ platform: 'whatsapp', url: city.whatsapp_url, label: 'Grupo de WhatsApp' });
+        btns += buildGroupBtn({
+            platform: 'whatsapp',
+            url: city.whatsapp_url,
+            label: I18n.t('city.whatsapp_group_label'),
+        });
     } else {
         btns += buildComingSoon(city.name);
     }
@@ -88,9 +92,9 @@ function showCityError() {
     document.getElementById('cityPage').innerHTML = `
     <div style="text-align:center;padding:60px 20px;color:var(--on-surface-variant);">
       <span style="font-size:2.5rem;display:block;margin-bottom:16px;">😵</span>
-      <h2 style="font-size:1.2rem;font-family:'Syne',sans-serif;color:var(--on-surface);margin-bottom:8px;">Ciudad no encontrada</h2>
-      <p>Vuelve al inicio y selecciona tu destino.</p>
-      <a href="index.html" style="display:inline-block;margin-top:20px;color:var(--primary);">← Inicio</a>
+      <h2 style="font-size:1.2rem;font-family:'Syne',sans-serif;color:var(--on-surface);margin-bottom:8px;">${I18n.t('errors.city_not_found_title')}</h2>
+      <p>${I18n.t('errors.city_not_found_body')}</p>
+      <a href="index.html" style="display:inline-block;margin-top:20px;color:var(--primary);">${I18n.t('nav.back_home_arrow')}</a>
     </div>`;
 }
 
@@ -100,9 +104,9 @@ function buildGroupBtn(group) {
     const cls = isWa ? 'btn-wa' : isTg ? 'btn-tg' : 'btn-generic';
     const icon = isWa ? iconWa() : isTg ? iconTg() : iconGeneric();
     const label = isWa
-        ? 'Unirse al grupo de WhatsApp'
+        ? I18n.t('city.join_whatsapp_group')
         : isTg
-          ? 'Unirse al canal de Telegram'
+          ? I18n.t('city.join_telegram_channel')
           : group.label;
 
     return `
@@ -124,8 +128,8 @@ function buildComingSoon(cityName) {
     return `
     <div class="coming-soon">
       <span class="emoji">⏳</span>
-      <h3>Grupos próximamente</h3>
-      <p>Todavía no tenemos grupos para ${cityName}. Vuelve pronto.</p>
+      <h3>${I18n.t('city.groups_coming_soon_title')}</h3>
+      <p>${I18n.t('city.groups_coming_soon_prefix')} ${cityName}. ${I18n.t('common.check_back_soon')}</p>
     </div>`;
 }
 
@@ -140,10 +144,10 @@ async function buildContextualSections(cityId, ciudad) {
       <span class="info-icon material-symbols-outlined">apartment</span>
       <div>
         <p class="info-text" style="margin-bottom:12px">
-          <strong>Encuentra piso en ${ciudad}</strong><br>
-          Accede a nuestros colaboradores verificados para encontrar tu alojamiento antes de llegar.
+          <strong>${I18n.t('city.find_housing_prefix')} ${ciudad}</strong><br>
+          ${I18n.t('city.find_housing_body')}
         </p>
-        <a href="alojamiento.html" class="btn-primary-pill" style="display:inline-flex">Ver colaboradores →</a>
+        <a href="alojamiento.html" class="btn-primary-pill" style="display:inline-flex">${I18n.t('city.view_collaborators_cta')}</a>
       </div>
     </div>`;
 
@@ -157,7 +161,7 @@ async function buildContextualSections(cityId, ciudad) {
           <p class="service-desc">${I18n.tField(p.description)}</p>
           ${
               p.links.length > 0
-                  ? `<a href="${p.links[0].url}" target="_blank" rel="noopener noreferrer" class="btn-primary-pill">Ver viaje</a>`
+                  ? `<a href="${p.links[0].url}" target="_blank" rel="noopener noreferrer" class="btn-primary-pill">${I18n.t('city.view_trip_cta')}</a>`
                   : ''
           }
         </div>`
@@ -166,8 +170,8 @@ async function buildContextualSections(cityId, ciudad) {
 
         html += `
     <div style="margin-top:32px">
-      <span class="eyebrow eyebrow--primary">VIAJES</span>
-      <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px">Escapadas desde ${ciudad}</h2>
+      <span class="eyebrow eyebrow--primary">${I18n.t('nav.trips')}</span>
+      <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px">${I18n.t('city.escapadas_prefix')} ${ciudad}</h2>
       <div class="services-grid" style="margin-top:16px">${cards}</div>
     </div>`;
     }
@@ -185,7 +189,7 @@ function buildMapBlock(city) {
         <aside id="city-partners-list" class="partners-list"></aside>
       </div>
       <a href="${fullscreenUrl}" class="city-map-fullscreen-link">
-        Ver mapa a pantalla completa
+        ${I18n.t('city.map_fullscreen_link')}
       </a>
     </div>`;
 }

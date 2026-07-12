@@ -22,19 +22,21 @@
             <div class="topbar-left">
                 <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
                 <nav class="topbar-nav" id="mainNav">
-                    <a href="servicios.html">Servicios</a>
-                    <a href="alojamiento.html">Alojamiento</a>
-                    <a href="viajes.html">Viajes</a>
+                    <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                    <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                    <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                     <a
                         href="https://erasmusparties.org"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="nav-parties"
+                        data-i18n="nav.parties"
                         >🎉 Fiestas ↗</a
                     >
                 </nav>
             </div>
             <div class="topbar-right">
+                <button id="lang-switcher" class="lang-switcher" aria-label="Cambiar idioma">EN</button>
                 <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                     <span></span><span></span><span></span>
                 </button>
@@ -43,16 +45,22 @@
 
         <main style="flex: 1">
             <div class="section">
-                <span class="eyebrow eyebrow--primary">SERVICIOS VERIFICADOS</span>
-                <h1 class="section-title">Todo lo que necesitas para tu Erasmus</h1>
-                <p class="section-sub">
+                <span class="eyebrow eyebrow--primary" data-i18n="services.eyebrow"
+                    >SERVICIOS VERIFICADOS</span
+                >
+                <h1 class="section-title" data-i18n="services.title">
+                    Todo lo que necesitas para tu Erasmus
+                </h1>
+                <p class="section-sub" data-i18n="services.subtitle">
                     Una selección de SIM, cuentas bancarias y transporte probados por la comunidad
                     para que tu llegada sea lo más sencilla posible.
                 </p>
 
                 <!-- ── TARJETA SIM ──────────────────────────────────── -->
                 <div class="servicios-category">
-                    <span class="eyebrow eyebrow--primary">TARJETA SIM</span>
+                    <span class="eyebrow eyebrow--primary" data-i18n="services.sim_eyebrow"
+                        >TARJETA SIM</span
+                    >
                     <div class="services-grid">
                         <div class="service-card">
                             <div class="service-icon">
@@ -60,14 +68,18 @@
                             </div>
                             <h3 class="service-name">Orange Holiday Europe</h3>
                             <p class="service-desc">
-                                <strong>25€ / 30 días</strong> · 50 GB en roaming UE, llamadas
-                                ilimitadas dentro de la UE. Activación en tienda física.
+                                <strong data-i18n="services.sim_orange_price">25€ / 30 días</strong> ·
+                                <span data-i18n="services.sim_orange_desc"
+                                    >50 GB en roaming UE, llamadas ilimitadas dentro de la UE.
+                                    Activación en tienda física.</span
+                                >
                             </p>
                             <a
                                 href="https://orangeholiday.orange.es"
                                 class="btn-primary-pill"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                data-i18n="services.view_offer_cta"
                             >
                                 Ver oferta
                             </a>
@@ -79,15 +91,18 @@
                             </div>
                             <h3 class="service-name">Lebara Europe</h3>
                             <p class="service-desc">
-                                <strong>18€ / 30 días</strong> · 20 GB en roaming UE, llamadas
-                                ilimitadas a España. Compra 100% online, sin desplazarte a ninguna
-                                tienda.
+                                <strong data-i18n="services.sim_lebara_price">18€ / 30 días</strong> ·
+                                <span data-i18n="services.sim_lebara_desc"
+                                    >20 GB en roaming UE, llamadas ilimitadas a España. Compra 100%
+                                    online, sin desplazarte a ninguna tienda.</span
+                                >
                             </p>
                             <a
                                 href="https://lebara.es"
                                 class="btn-primary-pill"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                data-i18n="services.view_offer_cta"
                             >
                                 Ver oferta
                             </a>
@@ -99,15 +114,18 @@
                             </div>
                             <h3 class="service-name">eSIM Holafly</h3>
                             <p class="service-desc">
-                                <strong>34€ / 30 días</strong> · Datos ilimitados en Europa sin SIM
-                                física. Activación instantánea desde tu teléfono, sin esperar ningún
-                                envío.
+                                <strong data-i18n="services.sim_holafly_price">34€ / 30 días</strong> ·
+                                <span data-i18n="services.sim_holafly_desc"
+                                    >Datos ilimitados en Europa sin SIM física. Activación
+                                    instantánea desde tu teléfono, sin esperar ningún envío.</span
+                                >
                             </p>
                             <a
                                 href="https://esim.holafly.com"
                                 class="btn-primary-pill"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                data-i18n="services.view_offer_cta"
                             >
                                 Ver oferta
                             </a>
@@ -117,7 +135,9 @@
 
                 <!-- ── CUENTA BANCARIA ──────────────────────────────── -->
                 <div class="servicios-category">
-                    <span class="eyebrow eyebrow--primary">CUENTA BANCARIA</span>
+                    <span class="eyebrow eyebrow--primary" data-i18n="services.bank_eyebrow"
+                        >CUENTA BANCARIA</span
+                    >
                     <div class="services-grid services-grid--2col">
                         <div class="service-card">
                             <div class="service-icon">
@@ -125,15 +145,19 @@
                             </div>
                             <h3 class="service-name">N26</h3>
                             <p class="service-desc">
-                                <strong>Gratis</strong> · Apertura 100% online en 10 minutos, sin
-                                domicilio fijo. Tarjeta virtual disponible de inmediato para compras
-                                y suscripciones.
+                                <strong data-i18n="services.free_label">Gratis</strong> ·
+                                <span data-i18n="services.bank_n26_desc"
+                                    >Apertura 100% online en 10 minutos, sin domicilio fijo. Tarjeta
+                                    virtual disponible de inmediato para compras y
+                                    suscripciones.</span
+                                >
                             </p>
                             <a
                                 href="https://n26.com/es-es"
                                 class="btn-primary-pill"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                data-i18n="services.open_account_cta"
                             >
                                 Abrir cuenta
                             </a>
@@ -145,15 +169,18 @@
                             </div>
                             <h3 class="service-name">Revolut</h3>
                             <p class="service-desc">
-                                <strong>Gratis</strong> · Cambio de divisa sin comisión, apertura
-                                online inmediata. Ideal si viajas entre distintos países durante tu
-                                Erasmus.
+                                <strong data-i18n="services.free_label">Gratis</strong> ·
+                                <span data-i18n="services.bank_revolut_desc"
+                                    >Cambio de divisa sin comisión, apertura online inmediata. Ideal
+                                    si viajas entre distintos países durante tu Erasmus.</span
+                                >
                             </p>
                             <a
                                 href="https://revolut.com"
                                 class="btn-primary-pill"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                data-i18n="services.open_account_cta"
                             >
                                 Abrir cuenta
                             </a>
@@ -163,7 +190,9 @@
 
                 <!-- ── TRANSPORTE ───────────────────────────────────── -->
                 <div class="servicios-category">
-                    <span class="eyebrow eyebrow--primary">TRANSPORTE</span>
+                    <span class="eyebrow eyebrow--primary" data-i18n="services.transport_eyebrow"
+                        >TRANSPORTE</span
+                    >
                     <div style="max-width: 420px">
                         <div class="service-card">
                             <div class="service-icon">
@@ -171,16 +200,22 @@
                             </div>
                             <h3 class="service-name">Barik · Bilbao</h3>
                             <p class="service-desc">
-                                <strong>~20€/mes (tarifa joven)</strong> · Tarjeta recargable para
-                                bus, metro y tranvía en el Gran Bilbao. Descuento adicional con
-                                carnet de estudiante UE. Disponible en estaciones y puntos de venta
-                                oficiales.
+                                <strong data-i18n="services.transport_barik_price"
+                                    >~20€/mes (tarifa joven)</strong
+                                >
+                                ·
+                                <span data-i18n="services.transport_barik_desc"
+                                    >Tarjeta recargable para bus, metro y tranvía en el Gran Bilbao.
+                                    Descuento adicional con carnet de estudiante UE. Disponible en
+                                    estaciones y puntos de venta oficiales.</span
+                                >
                             </p>
                             <a
                                 href="https://barik.eus"
                                 class="btn-primary-pill"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                data-i18n="services.transport_barik_cta"
                             >
                                 Puntos de venta
                             </a>
@@ -192,17 +227,19 @@
                 <div class="info-box" style="margin-top: 64px">
                     <span class="info-icon material-symbols-outlined">lightbulb</span>
                     <p class="info-text">
-                        <strong>¿Echas en falta algún servicio?</strong> Si conoces una SIM, banco o
-                        tarjeta de transporte que debería estar aquí, escríbenos. Revisamos cada
-                        propuesta antes de incluirla.
+                        <strong data-i18n="services.callout_title">¿Echas en falta algún servicio?</strong>
+                        <span data-i18n="services.callout_body"
+                            >Si conoces una SIM, banco o tarjeta de transporte que debería estar
+                            aquí, escríbenos. Revisamos cada propuesta antes de incluirla.</span
+                        >
                     </p>
                 </div>
             </div>
         </main>
 
         <footer class="legacy-footer">
-            <a href="index.html">← Volver al inicio</a>
-            <span>Erasmus Verified · Comunidad Europa</span>
+            <a href="index.html" data-i18n="nav.back_to_home_arrow">← Volver al inicio</a>
+            <span data-i18n="footer.tagline">Erasmus Verified · Comunidad Europa</span>
         </footer>
 
         <!-- ── MOBILE NAV OVERLAY ─────────────────────────────────── -->
@@ -211,14 +248,15 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
             <nav class="mobile-nav-links">
-                <a href="servicios.html">Servicios</a>
-                <a href="alojamiento.html">Alojamiento</a>
-                <a href="viajes.html">Viajes</a>
+                <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                 <a
                     href="https://erasmusparties.org"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="nav-parties"
+                    data-i18n="nav.parties"
                     >🎉 Fiestas ↗</a
                 >
             </nav>
@@ -228,11 +266,11 @@
         <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
             <a href="servicios.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">storefront</span>
-                <span>Servicios</span>
+                <span data-i18n="nav.services">Servicios</span>
             </a>
             <a href="viajes.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">flight</span>
-                <span>Viajes</span>
+                <span data-i18n="nav.trips">Viajes</span>
             </a>
             <a
                 href="https://erasmusparties.org"
@@ -241,10 +279,13 @@
                 class="app-bottom-nav-item app-bottom-nav-item--parties"
             >
                 <span class="material-symbols-outlined">nightlife</span>
-                <span>Fiestas</span>
+                <span data-i18n="nav.parties_bottom">Fiestas</span>
             </a>
         </nav>
 
+        <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
         <script>
             /* ── Hamburger + ítem activo (nav global + bottom-nav) ───── */
             (function () {
@@ -288,6 +329,11 @@
                             a.classList.add('app-bottom-nav-item--active');
                     });
             })();
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+            });
         </script>
     </body>
 </html>
