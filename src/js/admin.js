@@ -96,6 +96,53 @@ function closeConfirmModal(result) {
     }
 }
 
+// ── TRADUCCIÓN (DeepL vía Edge Function) ─────────────────────
+// Un único listener delegado en vez de uno por botón: los botones de
+// las filas de link (partner_links) se crean/destruyen dinámicamente
+// en addLinkRow(), así que no hay un momento fijo en el que "engancharlos"
+// todos de una vez.
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-translate');
+    if (btn) handleTranslateClick(btn);
+});
+
+async function handleTranslateClick(btn) {
+    const sourceEl = document.getElementById(btn.dataset.source);
+    const targetEl = document.getElementById(btn.dataset.target);
+    if (!sourceEl || !targetEl) return;
+
+    const text = sourceEl.value.trim();
+    if (!text) {
+        showToast('No hay texto en español para traducir.', 'error');
+        return;
+    }
+
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    try {
+        const { data, error } = await window.supabaseClient.functions.invoke('translate', {
+            body: { text, target_lang: 'en' },
+        });
+
+        if (error || !data?.translation) {
+            showToast(
+                'Error al traducir: ' + (data?.error || error?.message || 'respuesta inválida'),
+                'error'
+            );
+            return;
+        }
+
+        targetEl.value = data.translation;
+    } catch (err) {
+        showToast('Error al traducir: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalLabel;
+    }
+}
+
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str).replace(/[&<>"']/g, (ch) => ({
@@ -249,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const filtered = !term
             ? allEvents
             : allEvents.filter((ev) =>
-                  [ev.title, ev.theme, ev.partners?.cities?.name].some((field) =>
+                  [ev.title?.es, ev.title?.en, ev.theme, ev.partners?.cities?.name].some((field) =>
                       (field || '').toLowerCase().includes(term)
                   )
               );
@@ -529,7 +576,8 @@ async function openModal(partnerId) {
 
     document.getElementById('f-name').value = partner.name;
     document.getElementById('f-category').value = partner.category;
-    document.getElementById('f-description').value = partner.description;
+    document.getElementById('f-description-es').value = partner.description?.es ?? '';
+    document.getElementById('f-description-en').value = partner.description?.en ?? '';
     document.getElementById('f-image').value = partner.image_url || '';
     document.getElementById('f-lat').value = partner.lat || '';
     document.getElementById('f-lng').value = partner.lng || '';
@@ -553,7 +601,15 @@ function closeModal() {
 }
 
 function clearForm() {
-    ['f-name', 'f-description', 'f-image', 'f-lat', 'f-lng', 'f-maps-url'].forEach((id) => {
+    [
+        'f-name',
+        'f-description-es',
+        'f-description-en',
+        'f-image',
+        'f-lat',
+        'f-lng',
+        'f-maps-url',
+    ].forEach((id) => {
         document.getElementById(id).value = '';
     });
     document.getElementById('f-maps-feedback').textContent = '';
@@ -564,21 +620,48 @@ function clearForm() {
     document.getElementById('links-container').innerHTML = '';
 }
 
+// Contador para generar ids únicos por fila (label-es/label-en) — varias
+// filas de link pueden coexistir en el mismo modal, así que no pueden
+// compartir id como el resto de campos del formulario.
+let linkRowCounter = 0;
+
 function addLinkRow(link = {}) {
     const container = document.getElementById('links-container');
     const row = document.createElement('div');
     row.className = 'admin-link-row';
+
+    const uid = `link-row-${linkRowCounter++}`;
+    const esId = `${uid}-label-es`;
+    const enId = `${uid}-label-en`;
+
     row.innerHTML = `
-    <select class="link-type">
-      <option value="WEBSITE"       ${link.type === 'WEBSITE' ? 'selected' : ''}>WEBSITE</option>
-      <option value="TICKETS"       ${link.type === 'TICKETS' ? 'selected' : ''}>TICKETS</option>
-      <option value="OWN_EVENT"     ${link.type === 'OWN_EVENT' ? 'selected' : ''}>OWN_EVENT</option>
-      <option value="WHATSAPP_CHAT" ${link.type === 'WHATSAPP_CHAT' ? 'selected' : ''}>WHATSAPP_CHAT</option>
-    </select>
-    <input class="link-label" type="text" placeholder="Etiqueta" value="${escapeHtml(link.label || '')}" />
-    <input class="link-url"   type="text" placeholder="URL"      value="${escapeHtml(link.url || '')}" />
-    <button type="button" class="admin-btn admin-btn--sm admin-btn--danger"
-      onclick="this.parentElement.remove()">×</button>
+    <div class="admin-link-row__main">
+      <select class="link-type">
+        <option value="WEBSITE"       ${link.type === 'WEBSITE' ? 'selected' : ''}>WEBSITE</option>
+        <option value="TICKETS"       ${link.type === 'TICKETS' ? 'selected' : ''}>TICKETS</option>
+        <option value="OWN_EVENT"     ${link.type === 'OWN_EVENT' ? 'selected' : ''}>OWN_EVENT</option>
+        <option value="WHATSAPP_CHAT" ${link.type === 'WHATSAPP_CHAT' ? 'selected' : ''}>WHATSAPP_CHAT</option>
+      </select>
+      <input class="link-url" type="text" placeholder="URL" value="${escapeHtml(link.url || '')}" />
+      <button type="button" class="admin-btn admin-btn--sm admin-btn--danger"
+        onclick="this.closest('.admin-link-row').remove()">×</button>
+    </div>
+    <div class="i18n-field i18n-field--compact">
+      <div class="i18n-field__lang">
+        <label>Etiqueta (ES)</label>
+        <input id="${esId}" class="i18n-input link-label-es" type="text" placeholder="Etiqueta"
+          value="${escapeHtml(link.label?.es || '')}" />
+      </div>
+      <div class="i18n-field__actions">
+        <button type="button" class="btn-translate" data-source="${esId}" data-target="${enId}"
+          title="Traducir al inglés">EN →</button>
+      </div>
+      <div class="i18n-field__lang">
+        <label>Etiqueta (EN)</label>
+        <input id="${enId}" class="i18n-input link-label-en" type="text" placeholder="Label"
+          value="${escapeHtml(link.label?.en || '')}" />
+      </div>
+    </div>
   `;
     container.appendChild(row);
 }
@@ -596,7 +679,10 @@ async function savePartner() {
         name,
         category: document.getElementById('f-category').value,
         city_id: cityId,
-        description: document.getElementById('f-description').value.trim(),
+        description: {
+            es: document.getElementById('f-description-es').value.trim(),
+            en: document.getElementById('f-description-en').value.trim(),
+        },
         image_url: document.getElementById('f-image').value.trim() || '',
         lat: parseFloat(document.getElementById('f-lat').value) || null,
         lng: parseFloat(document.getElementById('f-lng').value) || null,
@@ -635,11 +721,14 @@ async function savePartner() {
             .map((row, i) => ({
                 partner_id: savedId,
                 type: row.querySelector('.link-type').value,
-                label: row.querySelector('.link-label').value.trim(),
+                label: {
+                    es: row.querySelector('.link-label-es').value.trim(),
+                    en: row.querySelector('.link-label-en').value.trim(),
+                },
                 url: row.querySelector('.link-url').value.trim(),
                 sort_order: i,
             }))
-            .filter((l) => l.label && l.url);
+            .filter((l) => l.label.es && l.url);
 
         if (links.length > 0) {
             const { error: linksError } = await window.supabaseClient
@@ -706,12 +795,12 @@ function renderEventsTable(events) {
             (e) => `
     <tr>
       <td data-label="Título">
-        <div class="partner-name">${escapeHtml(e.title)}</div>
+        <div class="partner-name">${escapeHtml(e.title?.es || '')}</div>
         <div class="partner-desc">${escapeHtml(e.theme || '—')}</div>
       </td>
       <td data-label="Partner">${escapeHtml(e.partners?.name || '—')}</td>
       <td data-label="Fecha" class="col-num">${formatAdminDateTime(e.starts_at)}</td>
-      <td data-label="Precio">${escapeHtml(e.price_label || '—')}</td>
+      <td data-label="Precio">${escapeHtml(e.price_label?.es || '—')}</td>
       <td data-label="Prioridad" class="col-num">${e.priority}</td>
       <td data-label="Estado" class="col-center">
         <span class="admin-badge ${e.active ? 'admin-badge--active' : 'admin-badge--inactive'}">
@@ -776,7 +865,7 @@ function openDeleteEventModal(eventId) {
     deletingEventId = eventId;
     const event = allEvents.find((ev) => ev.id === eventId);
     document.getElementById('delete-event-modal-subtitle').innerHTML = event
-        ? `¿Seguro que quieres eliminar <strong>"${escapeHtml(event.title)}"</strong>? Esta acción no se puede deshacer.`
+        ? `¿Seguro que quieres eliminar <strong>"${escapeHtml(event.title?.es || '')}"</strong>? Esta acción no se puede deshacer.`
         : 'Esta acción no se puede deshacer.';
     document.getElementById('delete-event-modal').hidden = false;
 }
@@ -863,12 +952,15 @@ async function openEventModal(eventId) {
 
         await populateEventPartnerSelect(event.partner_id);
 
-        document.getElementById('ef-title').value = event.title;
+        document.getElementById('ef-title-es').value = event.title?.es ?? '';
+        document.getElementById('ef-title-en').value = event.title?.en ?? '';
         document.getElementById('ef-theme').value = event.theme || '';
-        document.getElementById('ef-description').value = event.description || '';
+        document.getElementById('ef-description-es').value = event.description?.es ?? '';
+        document.getElementById('ef-description-en').value = event.description?.en ?? '';
         document.getElementById('ef-image').value = event.image_url || '';
         document.getElementById('ef-starts-at').value = isoToLocalDateTimeInput(event.starts_at);
-        document.getElementById('ef-price-label').value = event.price_label || '';
+        document.getElementById('ef-price-label-es').value = event.price_label?.es ?? '';
+        document.getElementById('ef-price-label-en').value = event.price_label?.en ?? '';
         document.getElementById('ef-ticket-url').value = event.ticket_url || '';
         document.getElementById('ef-priority').value = event.priority;
         document.getElementById('ef-active').checked = event.active;
@@ -886,12 +978,15 @@ function closeEventModal() {
 
 function clearEventForm() {
     [
-        'ef-title',
+        'ef-title-es',
+        'ef-title-en',
         'ef-theme',
-        'ef-description',
+        'ef-description-es',
+        'ef-description-en',
         'ef-image',
         'ef-starts-at',
-        'ef-price-label',
+        'ef-price-label-es',
+        'ef-price-label-en',
         'ef-ticket-url',
     ].forEach((id) => {
         document.getElementById(id).value = '';
@@ -899,7 +994,7 @@ function clearEventForm() {
     document.getElementById('ef-partner-id').value = '';
     document.getElementById('ef-priority').value = '0';
     document.getElementById('ef-active').checked = true;
-    ['ef-title', 'ef-partner-id', 'ef-starts-at'].forEach((id) => setFieldError(id, ''));
+    ['ef-title-es', 'ef-partner-id', 'ef-starts-at'].forEach((id) => setFieldError(id, ''));
 }
 
 // Muestra (o limpia, si message es '') un error específico bajo el
@@ -912,29 +1007,39 @@ function setFieldError(fieldId, message) {
 }
 
 async function saveEvent() {
-    const title = document.getElementById('ef-title').value.trim();
+    // El español es el idioma obligatorio (fuente para traducir); el
+    // inglés es opcional — si se deja vacío, tField() en el sitio
+    // público ya cae de vuelta a 'es'.
+    const titleEs = document.getElementById('ef-title-es').value.trim();
+    const titleEn = document.getElementById('ef-title-en').value.trim();
     const partnerId = parseInt(document.getElementById('ef-partner-id').value, 10);
     const startsAtLocal = document.getElementById('ef-starts-at').value;
 
     // Se recalcula en cada intento: si el usuario corrige un campo y
     // vuelve a guardar, el mensaje de ESE campo desaparece aunque los
     // otros dos sigan sin rellenar.
-    setFieldError('ef-title', title ? '' : 'El título es obligatorio.');
+    setFieldError('ef-title-es', titleEs ? '' : 'El título (español) es obligatorio.');
     setFieldError('ef-partner-id', partnerId ? '' : 'Selecciona un partner.');
     setFieldError('ef-starts-at', startsAtLocal ? '' : 'La fecha y hora son obligatorias.');
 
-    if (!title || !partnerId || !startsAtLocal) {
+    if (!titleEs || !partnerId || !startsAtLocal) {
         return;
     }
 
     const eventData = {
         partner_id: partnerId,
-        title,
-        description: document.getElementById('ef-description').value.trim(),
+        title: { es: titleEs, en: titleEn },
+        description: {
+            es: document.getElementById('ef-description-es').value.trim(),
+            en: document.getElementById('ef-description-en').value.trim(),
+        },
         theme: document.getElementById('ef-theme').value.trim(),
         image_url: document.getElementById('ef-image').value.trim() || '',
         starts_at: localDateTimeToISO(startsAtLocal),
-        price_label: document.getElementById('ef-price-label').value.trim(),
+        price_label: {
+            es: document.getElementById('ef-price-label-es').value.trim(),
+            en: document.getElementById('ef-price-label-en').value.trim(),
+        },
         ticket_url: document.getElementById('ef-ticket-url').value.trim(),
         priority: parseInt(document.getElementById('ef-priority').value) || 0,
         active: document.getElementById('ef-active').checked,
@@ -959,7 +1064,7 @@ async function saveEvent() {
 
     closeEventModal();
     await loadEvents();
-    showToast(`Evento "${title}" guardado correctamente.`, 'success');
+    showToast(`Evento "${titleEs}" guardado correctamente.`, 'success');
 }
 
 // ── CIUDADES ──────────────────────────────────────────────────
@@ -1074,7 +1179,8 @@ async function openCityModal(cityId) {
         document.getElementById('cf-name').value = city.name;
         document.getElementById('cf-country').value = city.country;
         document.getElementById('cf-flag').value = city.flag;
-        document.getElementById('cf-description').value = city.description || '';
+        document.getElementById('cf-description-es').value = city.description?.es ?? '';
+        document.getElementById('cf-description-en').value = city.description?.en ?? '';
         document.getElementById('cf-image').value = city.image_url || '';
         document.getElementById('cf-lat').value = city.lat || '';
         document.getElementById('cf-lng').value = city.lng || '';
@@ -1096,7 +1202,8 @@ function clearCityForm() {
         'cf-name',
         'cf-country',
         'cf-flag',
-        'cf-description',
+        'cf-description-es',
+        'cf-description-en',
         'cf-image',
         'cf-lat',
         'cf-lng',
@@ -1137,7 +1244,10 @@ async function saveCity() {
         country,
         slug,
         flag: document.getElementById('cf-flag').value.trim(),
-        description: document.getElementById('cf-description').value.trim(),
+        description: {
+            es: document.getElementById('cf-description-es').value.trim(),
+            en: document.getElementById('cf-description-en').value.trim(),
+        },
         image_url: document.getElementById('cf-image').value.trim(),
         lat: parseFloat(document.getElementById('cf-lat').value) || null,
         lng: parseFloat(document.getElementById('cf-lng').value) || null,

@@ -22,6 +22,12 @@ export default defineConfig(({ mode }) => {
                 targets: [
                     { src: 'src/js/**/*', dest: 'src/js' },
                     { src: 'src/css/**/*', dest: 'src/css' },
+                    // src/utils/i18n.js se referencia como <script src="/src/utils/i18n.js">
+                    // (script clásico, no import) en index.html/ciudad.html/mapa.html — sin
+                    // este target el build de producción lo omite y esas páginas devuelven
+                    // 404 para ese script, aunque `npm run dev` no lo detecta porque Vite
+                    // sirve todo el repo directamente en desarrollo.
+                    { src: 'src/utils/**/*', dest: 'src/utils' },
                 ],
             }),
         ],
