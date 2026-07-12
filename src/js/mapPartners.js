@@ -16,15 +16,25 @@
  * y gestiona sus pines sobre `map`. `ciudad` filtra qué partners
  * se muestran.
  */
+// Etiqueta de categoría traducida, con fallback al label hardcodeado de
+// CATEGORY_META si no existe clave en translations.js (las categorías
+// fuera del CHECK de partners.category en Supabase, ej. "restaurants",
+// nunca llegan aquí con datos reales, así que no todas tienen traducción).
+function categoryLabel(category, fallbackLabel) {
+    const key = 'map.category_' + category;
+    const translated = I18n.t(key);
+    return translated !== key ? translated : fallbackLabel;
+}
+
 async function mountPartnersList(listContainerId, map, cityId, defaultCategory = null) {
     const container = document.getElementById(listContainerId);
-    container.innerHTML = '<p class="partners-list-loading">Cargando partners…</p>';
+    container.innerHTML = `<p class="partners-list-loading">${I18n.t('map.loading_partners')}</p>`;
 
     const partners = await fetchPartnersByCity(cityId);
     const groups = groupPartnersByCategory(partners);
 
     if (groups.length === 0) {
-        container.innerHTML = `<p class="partners-list-empty">Todavía no tenemos partners en esta ciudad.</p>`;
+        container.innerHTML = `<p class="partners-list-empty">${I18n.t('map.no_partners')}</p>`;
         return;
     }
 
@@ -58,6 +68,7 @@ async function mountPartnersList(listContainerId, map, cityId, defaultCategory =
         container.innerHTML = '';
         for (const { category, partners } of groups) {
             const meta = CATEGORY_META[category] || { label: category, color: '#64748b' };
+            const label = categoryLabel(category, meta.label);
             const isExpanded = state.expandedCategory === category;
             const isEmpty = partners.length === 0;
 
@@ -69,7 +80,7 @@ async function mountPartnersList(listContainerId, map, cityId, defaultCategory =
                 (isEmpty ? ' is-empty' : '');
             categoryBtn.innerHTML = `
       <span class="category-toggle__dot" style="--pin-color:${meta.color}"></span>
-      <span class="category-toggle__label">${meta.label}</span>
+      <span class="category-toggle__label">${label}</span>
     `;
             categoryBtn.addEventListener('click', () => toggleCategory(category));
             container.appendChild(categoryBtn);
@@ -80,7 +91,7 @@ async function mountPartnersList(listContainerId, map, cityId, defaultCategory =
                 // Coherente con el patrón .coming-soon que ya usas en ciudad.js
                 const comingSoon = document.createElement('p');
                 comingSoon.className = 'category-coming-soon';
-                comingSoon.textContent = `Todavía no tenemos partners de ${meta.label} en esta ciudad. Vuelve pronto.`;
+                comingSoon.textContent = `${I18n.t('map.no_partners_category_prefix')} ${label} ${I18n.t('map.no_partners_category_suffix')}`;
                 container.appendChild(comingSoon);
                 continue;
             }
@@ -195,7 +206,7 @@ function buildPartnerDetail(partner) {
     directions.target = '_blank';
     directions.rel = 'noopener noreferrer';
     directions.className = 'partner-detail__directions';
-    directions.textContent = 'Cómo llegar';
+    directions.textContent = I18n.t('map.directions');
     directions.addEventListener('click', () => {
         trackEvent('partner_directions_click', {
             partnerId: partner.id,

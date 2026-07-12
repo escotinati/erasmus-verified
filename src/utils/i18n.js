@@ -26,4 +26,38 @@ function tField(jsonbValue, lang = getLang()) {
     return jsonbValue[lang] ?? jsonbValue['es'] ?? jsonbValue['en'] ?? '';
 }
 
-window.I18n = { getLang, tField };
+// Traduce una cadena estática de la UI (no viene de Supabase, vive en
+// translations.js) a partir de una clave con puntos, ej. "nav.services".
+// Cae a español si falta en el idioma activo, y a la propia clave si
+// tampoco existe en español (así un data-i18n con una clave mal escrita
+// se nota a simple vista en vez de fallar en silencio).
+function t(key) {
+    const lang = getLang();
+    const keys = key.split('.');
+    const extract = (obj) => keys.reduce((o, k) => o?.[k], obj);
+    return extract(window.I18n.translations?.[lang]) ?? extract(window.I18n.translations?.['es']) ?? key;
+}
+
+// Resuelve todos los [data-i18n] del DOM en el idioma activo. Se llama
+// una vez, tras DOMContentLoaded (translations.js ya debe estar
+// cargado) — no hay cambio de idioma sin recargar la página completa,
+// así que no hace falta observar el DOM ni volver a llamarla después.
+function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const val = t(el.dataset.i18n);
+        if (el.hasAttribute('placeholder')) {
+            el.placeholder = val;
+        } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+            el.value = val;
+        } else {
+            el.textContent = val;
+        }
+    });
+    // Actualiza el label del switcher según el idioma activo — hecho
+    // aquí (no solo en langSwitcher.js) para que quede correcto incluso
+    // si algo más en la página vuelve a llamar a applyTranslations().
+    const switcher = document.getElementById('lang-switcher');
+    if (switcher) switcher.textContent = getLang() === 'es' ? 'EN' : 'ES';
+}
+
+window.I18n = { getLang, tField, t, applyTranslations };

@@ -37,14 +37,15 @@
             <div class="topbar-left">
                 <a href="index.html" class="logo">Erasmus<span class="logo-dot">Verified</span></a>
                 <nav class="topbar-nav" id="mainNav">
-                    <a href="servicios.html">Servicios</a>
-                    <a href="alojamiento.html">Alojamiento</a>
-                    <a href="viajes.html">Viajes</a>
+                    <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                    <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                    <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                     <a
                         href="https://erasmusparties.org"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="nav-parties"
+                        data-i18n="nav.parties"
                         >🎉 Fiestas ↗</a
                     >
                 </nav>
@@ -61,8 +62,9 @@
                     >
                         <polyline points="15 18 9 12 15 6" />
                     </svg>
-                    <span id="backLinkText">Volver</span>
+                    <span id="backLinkText" data-i18n="nav.back">Volver</span>
                 </a>
+                <button id="lang-switcher" class="lang-switcher" aria-label="Cambiar idioma">EN</button>
                 <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                     <span></span><span></span><span></span>
                 </button>
@@ -82,6 +84,8 @@
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
         <script src="/src/js/lib/supabaseClient.js"></script>
         <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
         <script src="/src/js/geocoder.js"></script>
         <script src="/src/js/map-helpers.js"></script>
         <script src="/src/js/services/partnersService.js"></script>
@@ -96,14 +100,15 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
             <nav class="mobile-nav-links">
-                <a href="servicios.html">Servicios</a>
-                <a href="alojamiento.html">Alojamiento</a>
-                <a href="viajes.html">Viajes</a>
+                <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                 <a
                     href="https://erasmusparties.org"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="nav-parties"
+                    data-i18n="nav.parties"
                     >🎉 Fiestas ↗</a
                 >
             </nav>
@@ -113,11 +118,11 @@
         <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
             <a href="servicios.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">storefront</span>
-                <span>Servicios</span>
+                <span data-i18n="nav.services">Servicios</span>
             </a>
             <a href="viajes.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">flight</span>
-                <span>Viajes</span>
+                <span data-i18n="nav.trips">Viajes</span>
             </a>
             <a
                 href="https://erasmusparties.org"
@@ -126,7 +131,7 @@
                 class="app-bottom-nav-item app-bottom-nav-item--parties"
             >
                 <span class="material-symbols-outlined">nightlife</span>
-                <span>Fiestas</span>
+                <span data-i18n="nav.parties_bottom">Fiestas</span>
             </a>
         </nav>
         <script>
@@ -174,6 +179,11 @@
                             a.classList.add('app-bottom-nav-item--active');
                     });
             })();
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+            });
         </script>
     </body>
 </html>

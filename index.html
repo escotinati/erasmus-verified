@@ -24,19 +24,21 @@
                 <div class="topnav-left">
                     <a href="index.html" class="brand">Erasmus Verified</a>
                     <nav class="topbar-nav" id="mainNav">
-                        <a href="servicios.html">Servicios</a>
-                        <a href="alojamiento.html">Alojamiento</a>
-                        <a href="viajes.html">Viajes</a>
+                        <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                        <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                        <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                         <a
                             href="https://erasmusparties.org"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="nav-parties"
+                            data-i18n="nav.parties"
                             >🎉 Fiestas ↗</a
                         >
                     </nav>
                 </div>
                 <div class="topnav-right">
+                    <button id="lang-switcher" class="lang-switcher" aria-label="Cambiar idioma">EN</button>
                     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
                         <span></span><span></span><span></span>
                     </button>
@@ -49,8 +51,11 @@
             <section class="hero">
                 <div class="hero-bg"></div>
                 <div class="hero-inner">
-                    <h1 class="hero-title">Vive Europa <br /><em>Sin Límites.</em></h1>
-                    <p class="hero-sub">
+                    <h1 class="hero-title">
+                        <span data-i18n="home.hero_title_line1">Vive Europa</span> <br />
+                        <em data-i18n="home.hero_title_line2">Sin Límites.</em>
+                    </h1>
+                    <p class="hero-sub" data-i18n="home.hero_subtitle">
                         Conéctate con alojamiento premium para estudiantes, eventos nocturnos
                         exclusivos y una comunidad vibrante en más de 50 centros universitarios
                         europeos.
@@ -63,11 +68,12 @@
                             <input
                                 type="text"
                                 placeholder="¿A dónde vas en tu próxima aventura?"
+                                data-i18n="home.search_placeholder_long"
                                 id="citySearch"
                             />
                         </div>
                         <button class="search-bar-btn">
-                            <span class="btn-text">Explorar</span>
+                            <span class="btn-text" data-i18n="home.search_cta">Explorar</span>
                             <span class="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </div>
@@ -79,8 +85,12 @@
             <section class="section cities-section" id="ciudades">
                 <div class="section-head">
                     <div>
-                        <span class="eyebrow eyebrow--secondary">DESTINOS</span>
-                        <h2 class="section-title">Mejores ciudades para tu intercambio</h2>
+                        <span class="eyebrow eyebrow--secondary" data-i18n="home.destinations_eyebrow"
+                            >DESTINOS</span
+                        >
+                        <h2 class="section-title" data-i18n="home.cities_title">
+                            Mejores ciudades para tu intercambio
+                        </h2>
                     </div>
                     <!-- Oculto para la demo (ciudades-todas.html aún no migrado a Supabase).
                          Reactivar cuando esa página lea de la tabla cities. -->
@@ -98,9 +108,9 @@
             <!-- ── TRENDING NIGHTS ───────────────────────────────────── -->
             <section class="section nights-section" id="noches">
                 <div class="nights-header">
-                    <span class="eyebrow eyebrow--secondary">VIDA NOCTURNA</span>
-                    <h2 class="section-title">Noches en tendencia</h2>
-                    <p class="section-sub">
+                    <span class="eyebrow eyebrow--secondary" data-i18n="nights.eyebrow">VIDA NOCTURNA</span>
+                    <h2 class="section-title" data-i18n="nights.section_title">Noches en tendencia</h2>
+                    <p class="section-sub" data-i18n="nights.section_subtitle">
                         Desde techno underground en Berlín hasta veladas en azoteas de Madrid. Obtén
                         acceso exclusivo a los mejores eventos en tu ciudad con Erasmus Verified.
                     </p>
@@ -108,16 +118,20 @@
 
                 <div class="events-scroll">
                    <!-- JS (nightsSection.js) renderiza aquí los eventos reales de partner_events desde Supabase. Ver fetchUpcomingEvents() en services/partnersService.js. -->
-                    <p class="events-loading" id="nightsLoading">Cargando fiestas…</p>
+                    <p class="events-loading" id="nightsLoading" data-i18n="nights.loading">Cargando fiestas…</p>
                 </div>
             </section>
 
             <!-- ── ALOJAMIENTO ───────────────────────────────────────── -->
             <section class="section alojamiento-section" id="alojamiento">
                 <div class="nights-header">
-                    <span class="eyebrow eyebrow--primary">ALOJAMIENTO</span>
-                    <h2 class="section-title">Nuestros colaboradores</h2>
-                    <p class="section-sub">
+                    <span class="eyebrow eyebrow--primary" data-i18n="home.accommodation_eyebrow"
+                        >ALOJAMIENTO</span
+                    >
+                    <h2 class="section-title" data-i18n="home.collaborators_title">
+                        Nuestros colaboradores
+                    </h2>
+                    <p class="section-sub" data-i18n="home.collaborators_subtitle">
                         Plataformas verificadas por la comunidad Erasmus para encontrar tu piso
                         antes de llegar.
                     </p>
@@ -131,7 +145,9 @@
                         class="collab-card"
                     >
                         <span class="collab-name">Uniplaces</span>
-                        <span class="collab-desc">Pisos para estudiantes en toda Europa</span>
+                        <span class="collab-desc" data-i18n="home.collab_uniplaces_desc"
+                            >Pisos para estudiantes en toda Europa</span
+                        >
                     </a>
                     <a
                         href="https://www.spotahome.com"
@@ -140,7 +156,9 @@
                         class="collab-card"
                     >
                         <span class="collab-name">Spotahome</span>
-                        <span class="collab-desc">Alquiler sin visita presencial</span>
+                        <span class="collab-desc" data-i18n="home.collab_spotahome_desc"
+                            >Alquiler sin visita presencial</span
+                        >
                     </a>
                     <a
                         href="https://housinganywhere.com"
@@ -149,7 +167,9 @@
                         class="collab-card"
                     >
                         <span class="collab-name">HousingAnywhere</span>
-                        <span class="collab-desc">Alojamiento flexible para Erasmus</span>
+                        <span class="collab-desc" data-i18n="home.collab_housinganywhere_desc"
+                            >Alojamiento flexible para Erasmus</span
+                        >
                     </a>
                     <a
                         href="https://badi.com"
@@ -158,13 +178,15 @@
                         class="collab-card"
                     >
                         <span class="collab-name">Badi</span>
-                        <span class="collab-desc">Comparte piso con estudiantes</span>
+                        <span class="collab-desc" data-i18n="home.collab_badi_desc"
+                            >Comparte piso con estudiantes</span
+                        >
                     </a>
                 </div>
 
                 <div class="alojamiento-section-footer">
                     <a href="alojamiento.html" class="section-link">
-                        Ver todos los colaboradores
+                        <span data-i18n="home.view_all_collaborators">Ver todos los colaboradores</span>
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
                 </div>
@@ -173,9 +195,11 @@
             <!-- ── ESSENTIAL SERVICES ───────────────────────────────── -->
             <section class="section services-section" id="servicios">
                 <div class="text-center">
-                    <span class="eyebrow eyebrow--primary">TRANSICIÓN SIN COMPLICACIONES</span>
-                    <h2 class="section-title">Servicios esenciales</h2>
-                    <p class="section-sub section-sub--centered">
+                    <span class="eyebrow eyebrow--primary" data-i18n="home.services_eyebrow"
+                        >TRANSICIÓN SIN COMPLICACIONES</span
+                    >
+                    <h2 class="section-title" data-i18n="home.services_title">Servicios esenciales</h2>
+                    <p class="section-sub section-sub--centered" data-i18n="home.services_subtitle">
                         Nosotros nos encargamos de lo aburrido para que tú te centres en los
                         recuerdos. Socios verificados para todo lo que necesites al llegar.
                     </p>
@@ -185,13 +209,15 @@
                         <div class="service-icon">
                             <span class="material-symbols-outlined">home</span>
                         </div>
-                        <h3 class="service-name">Alojamiento verificado</h3>
-                        <p class="service-desc">
+                        <h3 class="service-name" data-i18n="home.service_housing_title">
+                            Alojamiento verificado
+                        </h3>
+                        <p class="service-desc" data-i18n="home.service_housing_desc">
                             Evita las estafas. Ofrecemos una lista curada de apartamentos y casas
                             compartidas con contratos digitales y verificación de identidad.
                         </p>
                         <a href="#" class="service-link"
-                            >Explorar anuncios
+                            ><span data-i18n="home.service_housing_cta">Explorar anuncios</span>
                             <span class="material-symbols-outlined">chevron_right</span></a
                         >
                     </div>
@@ -199,14 +225,16 @@
                         <div class="service-icon">
                             <span class="material-symbols-outlined">shield</span>
                         </div>
-                        <h3 class="service-name">Seguro de intercambio</h3>
-                        <p class="service-desc">
+                        <h3 class="service-name" data-i18n="home.service_insurance_title">
+                            Seguro de intercambio
+                        </h3>
+                        <p class="service-desc" data-i18n="home.service_insurance_desc">
                             Seguro de salud y viaje integral diseñado para estudiantes
                             internacionales. Totalmente compatible con los requisitos
                             universitarios.
                         </p>
                         <a href="#" class="service-link"
-                            >Solicitar presupuesto
+                            ><span data-i18n="home.service_insurance_cta">Solicitar presupuesto</span>
                             <span class="material-symbols-outlined">chevron_right</span></a
                         >
                     </div>
@@ -214,13 +242,13 @@
                         <div class="service-icon">
                             <span class="material-symbols-outlined">language</span>
                         </div>
-                        <h3 class="service-name">SIM local y banca</h3>
-                        <p class="service-desc">
+                        <h3 class="service-name" data-i18n="home.service_sim_title">SIM local y banca</h3>
+                        <p class="service-desc" data-i18n="home.service_sim_desc">
                             Consigue tu número europeo y cuenta bancaria antes de aterrizar. Sin
                             papeleos, todo digital y sencillo.
                         </p>
                         <a href="#" class="service-link"
-                            >Pedir ahora
+                            ><span data-i18n="home.service_sim_cta">Pedir ahora</span>
                             <span class="material-symbols-outlined">chevron_right</span></a
                         >
                     </div>
@@ -231,14 +259,18 @@
             <section class="section cta-section" id="comunidad">
                 <div class="cta-card">
                     <div class="cta-text">
-                        <h2 class="cta-title">Únete a Erasmus Verified.</h2>
-                        <p class="cta-sub">
+                        <h2 class="cta-title" data-i18n="home.cta_title">Únete a Erasmus Verified.</h2>
+                        <p class="cta-sub" data-i18n="home.cta_subtitle">
                             Conéctate con miles de estudiantes que emprenden el mismo viaje.
                             Consejos compartidos, compañeros de piso y recuerdos inolvidables.
                         </p>
                         <div class="cta-actions">
-                            <button class="btn-primary-pill">Descargar la App</button>
-                            <button class="btn-ghost-pill">Unirse a la Comunidad</button>
+                            <button class="btn-primary-pill" data-i18n="home.cta_download_app">
+                                Descargar la App
+                            </button>
+                            <button class="btn-ghost-pill" data-i18n="home.cta_join_community">
+                                Unirse a la Comunidad
+                            </button>
                         </div>
                     </div>
                     <div class="cta-avatars">
@@ -287,16 +319,18 @@
                 <div class="footer-brand">
                     <span class="footer-logo">Erasmus Verified</span>
                     <p class="footer-copy">
-                        © <span id="copyright-year"></span> Erasmus Verified. Experiencias Premium para Estudiantes de
-                        Intercambio.
+                        © <span id="copyright-year"></span>
+                        <span data-i18n="footer.copyright"
+                            >Erasmus Verified. Experiencias Premium para Estudiantes de Intercambio.</span
+                        >
                     </p>
                 </div>
                 <nav class="footer-links">
-                    <a href="#">Sobre nosotros</a>
-                    <a href="#">Socios locales</a>
-                    <a href="#">Política de seguros</a>
-                    <a href="#">Privacidad</a>
-                    <a href="#">Términos</a>
+                    <a href="#" data-i18n="footer.about">Sobre nosotros</a>
+                    <a href="#" data-i18n="footer.local_partners">Socios locales</a>
+                    <a href="#" data-i18n="footer.insurance_policy">Política de seguros</a>
+                    <a href="#" data-i18n="footer.privacy">Privacidad</a>
+                    <a href="#" data-i18n="footer.terms">Términos</a>
                 </nav>
                 <div class="footer-social">
                     <a href="#" class="social-btn" aria-label="Web"
@@ -315,14 +349,15 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
             <nav class="mobile-nav-links">
-                <a href="servicios.html">Servicios</a>
-                <a href="alojamiento.html">Alojamiento</a>
-                <a href="viajes.html">Viajes</a>
+                <a href="servicios.html" data-i18n="nav.services">Servicios</a>
+                <a href="alojamiento.html" data-i18n="nav.accommodation">Alojamiento</a>
+                <a href="viajes.html" data-i18n="nav.trips">Viajes</a>
                 <a
                     href="https://erasmusparties.org"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="nav-parties"
+                    data-i18n="nav.parties"
                     >🎉 Fiestas ↗</a
                 >
             </nav>
@@ -332,11 +367,11 @@
         <nav class="app-bottom-nav" id="appBottomNav" aria-label="Navegación principal">
             <a href="servicios.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">storefront</span>
-                <span>Servicios</span>
+                <span data-i18n="nav.services">Servicios</span>
             </a>
             <a href="viajes.html" class="app-bottom-nav-item">
                 <span class="material-symbols-outlined">flight</span>
-                <span>Viajes</span>
+                <span data-i18n="nav.trips">Viajes</span>
             </a>
             <a
                 href="https://erasmusparties.org"
@@ -345,13 +380,15 @@
                 class="app-bottom-nav-item app-bottom-nav-item--parties"
             >
                 <span class="material-symbols-outlined">nightlife</span>
-                <span>Fiestas</span>
+                <span data-i18n="nav.parties_bottom">Fiestas</span>
             </a>
         </nav>
 
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
         <script src="/src/js/lib/supabaseClient.js"></script>
         <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
         <script src="/src/js/services/citiesService.js"></script>
         <script src="/src/js/services/partnersService.js"></script>
         <script src="/src/js/tracking.js"></script>
@@ -402,13 +439,23 @@
             })();
         </script>
         <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+            });
+        </script>
+        <script>
             (function () {
                 var input = document.getElementById('citySearch');
                 if (!input) return;
-                var LONG = '¿A dónde vas en tu próxima aventura?';
-                var SHORT = '¿A dónde vas?';
+                // Sobreescribe el placeholder que ya puso applyTranslations() con
+                // la variante corta en pantallas pequeñas — mismo idioma, solo
+                // más breve, así que sigue pasando por t() en vez de un string
+                // hardcodeado.
                 function update() {
-                    input.placeholder = window.innerWidth <= 600 ? SHORT : LONG;
+                    input.placeholder =
+                        window.innerWidth <= 600
+                            ? window.I18n.t('home.search_placeholder_short')
+                            : window.I18n.t('home.search_placeholder_long');
                 }
                 update();
                 window.addEventListener('resize', update);
