@@ -218,6 +218,12 @@ window.I18n.translations = {
             privacy: 'Privacidad',
             terms: 'Términos',
             tagline: 'Erasmus Verified · Comunidad Europa',
+            tagline_long:
+                'Experiencias premium para estudiantes de intercambio en más de 50 ciudades europeas.',
+            platform_title: 'Plataforma',
+            legal_title: 'Legal',
+            destinations: 'Destinos',
+            rights: 'Todos los derechos reservados.',
         },
     },
     en: {
@@ -425,6 +431,12 @@ window.I18n.translations = {
             privacy: 'Privacy',
             terms: 'Terms',
             tagline: 'Erasmus Verified · Europe Community',
+            tagline_long:
+                'Premium experiences for exchange students in over 50 European cities.',
+            platform_title: 'Platform',
+            legal_title: 'Legal',
+            destinations: 'Destinations',
+            rights: 'All rights reserved.',
         },
     },
 };

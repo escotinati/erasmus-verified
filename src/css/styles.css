@@ -1398,7 +1398,7 @@ header.topbar {
     background: #fff;
 }
 
-/* ── 3.2 Footer ─────────────────────────────────────────────── */
+/* ── 3.2 Footer — Sprint 3: 3 columnas con design tokens ─────── */
 
 .site-footer {
     background: var(--surface-container-low);
@@ -1406,70 +1406,95 @@ header.topbar {
 }
 
 .footer-inner {
-    max-width: var(--container-max);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--space-12);
+    padding: var(--space-16) var(--space-8);
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 48px var(--gutter);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
 }
 
 .footer-logo {
     font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--on-surface);
+    font-size: var(--text-h3);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: var(--space-3);
 }
 
-.footer-copy {
-    font-size: 14px;
-    color: var(--on-surface-variant);
+.footer-tagline {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+    max-width: 280px;
 }
 
-.footer-links {
+.footer-col-title {
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
-    flex-wrap: wrap;
-    gap: 28px;
+    flex-direction: column;
+    gap: var(--space-3);
 }
 
-.footer-links a {
-    font-size: 16px;
-    color: var(--on-surface-variant);
+.footer-col ul a {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
     text-decoration: none;
-    transition: color 0.15s;
+    transition: color var(--duration-base) var(--ease-out);
 }
 
-.footer-links a:hover {
-    color: var(--secondary);
+.footer-col ul a:hover {
+    color: var(--color-primary);
 }
 
-.footer-social {
-    display: flex;
-    gap: 12px;
+.footer-bottom {
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-6) var(--space-8);
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.social-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--outline-variant);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--on-surface-variant);
-    text-decoration: none;
-    transition:
-        border-color 0.15s,
-        color 0.15s;
+.footer-bottom p {
+    font-size: var(--text-small);
+    color: var(--color-text-muted);
 }
 
-.social-btn:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+@media (max-width: 768px) {
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+        padding: var(--space-12) var(--space-6);
+    }
+
+    .footer-tagline {
+        max-width: 100%;
+    }
+
+    .footer-bottom {
+        padding: var(--space-6);
+    }
+}
+
+/* Dual-brand: Parties */
+[data-brand='parties'] .footer-logo {
+    color: var(--color-primary); /* rosa en Parties, vía alias en tokens.css */
+}
+
+[data-brand='parties'] .footer-bottom {
+    border-top-color: var(--color-border);
 }
 
 /* Footer heredado — ciudad.html, servicios.html, viajes.html */
@@ -3092,14 +3117,6 @@ body.alojamiento-page {
     }
     .cta-avatars {
         display: none;
-    }
-    .footer-inner {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .footer-links {
-        justify-content: center;
     }
     .hero-legacy .topbar {
         padding: 18px var(--margin-mobile);
