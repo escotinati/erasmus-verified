@@ -67,12 +67,12 @@ async function fetchUpcomingEvents({
 
     return data.map((e) => ({
         id: e.id,
-        title: e.title,
-        description: e.description,
+        title: I18n.tField(e.title),
+        description: I18n.tField(e.description),
         theme: e.theme,
         image_url: e.image_url || e.partners?.image_url || '',
         starts_at: e.starts_at,
-        price_label: e.price_label,
+        price_label: I18n.tField(e.price_label),
         ticket_url: e.ticket_url,
         priority: e.priority,
         partner: e.partners ? { id: e.partners.id, name: e.partners.name } : null,
@@ -117,7 +117,7 @@ async function fetchNightlifePartners(limit = 12) {
         if (!linksByPartnerId[link.partner_id]) linksByPartnerId[link.partner_id] = [];
         linksByPartnerId[link.partner_id].push({
             type: link.type,
-            label: link.label,
+            label: I18n.tField(link.label),
             url: link.url,
             sort_order: link.sort_order,
         });
@@ -126,7 +126,7 @@ async function fetchNightlifePartners(limit = 12) {
     return partners.map((p) => ({
         id: p.id,
         name: p.name,
-        description: p.description,
+        description: I18n.tField(p.description),
         image_url: p.image_url,
         priority: p.priority,
         city: p.cities ? { id: p.cities.id, name: p.cities.name, flag: p.cities.flag } : null,
@@ -170,7 +170,7 @@ async function fetchPartnersByCity(cityId) {
         }
         linksByPartnerId[link.partner_id].push({
             type: link.type,
-            label: link.label,
+            label: I18n.tField(link.label),
             url: link.url,
             sort_order: link.sort_order,
         });
@@ -183,7 +183,7 @@ async function fetchPartnersByCity(cityId) {
         city_id: p.city_id,
         lat: p.lat,
         lng: p.lng,
-        description: p.description,
+        description: I18n.tField(p.description),
         image_url: p.image_url,
         priority: p.priority,
         active: p.active,

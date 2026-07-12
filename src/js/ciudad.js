@@ -154,7 +154,7 @@ async function buildContextualSections(cityId, ciudad) {
         <div class="service-card">
           <div class="service-icon"><span class="material-symbols-outlined">flight</span></div>
           <h3 class="service-name">${p.name}</h3>
-          <p class="service-desc">${p.description}</p>
+          <p class="service-desc">${I18n.tField(p.description)}</p>
           ${
               p.links.length > 0
                   ? `<a href="${p.links[0].url}" target="_blank" rel="noopener noreferrer" class="btn-primary-pill">Ver viaje</a>`

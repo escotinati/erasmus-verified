@@ -168,7 +168,7 @@ function buildPartnerDetail(partner) {
 
     const desc = document.createElement('p');
     desc.className = 'partner-detail__description';
-    desc.textContent = partner.description;
+    desc.textContent = I18n.tField(partner.description);
     detail.appendChild(desc);
 
     for (const link of partner.links) {
@@ -177,7 +177,7 @@ function buildPartnerDetail(partner) {
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
         a.className = 'partner-detail__link';
-        a.textContent = link.label;
+        a.textContent = I18n.tField(link.label);
         a.addEventListener('click', () => {
             trackEvent('partner_link_click', {
                 partnerId: partner.id,
