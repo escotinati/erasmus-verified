@@ -1016,6 +1016,7 @@ a.btn-primary-pill {
     align-items: center;
     justify-content: space-between;
     z-index: 10;
+    transition: box-shadow var(--duration-base) var(--ease-out);
 }
 
 header.topbar {
@@ -1027,6 +1028,16 @@ header.topbar {
     backdrop-filter: blur(16px);
     /* z-index alto: queda por encima de los tiles de Leaflet */
     z-index: 1001;
+}
+
+/* .topbar.scrolled — mismo patrón que .topnav.scrolled (línea 950);
+   toggle añadido en experience.js */
+.topbar.scrolled {
+    box-shadow: var(--shadow-md);
+}
+
+[data-brand='parties'] .topbar.scrolled {
+    box-shadow: 0 4px 12px rgba(225, 20, 123, 0.12);
 }
 
 .logo {
@@ -1497,24 +1508,6 @@ header.topbar {
     border-top-color: var(--color-border);
 }
 
-/* Footer heredado — ciudad.html, servicios.html, viajes.html */
-
-footer.legacy-footer {
-    border-top: 1px solid var(--outline-variant);
-    padding: 24px var(--margin-desktop);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--on-surface-variant);
-    font-size: 13px;
-    background: var(--surface-container-low);
-}
-
-footer.legacy-footer a {
-    color: var(--primary);
-    text-decoration: none;
-}
-
 /* ── 3.3 Hero ───────────────────────────────────────────────── */
 
 /* Hero principal — index.html */
@@ -1723,7 +1716,7 @@ footer.legacy-footer a {
 .section {
     max-width: var(--container-max);
     margin: 0 auto;
-    padding: 96px var(--margin-desktop);
+    padding: var(--space-16) var(--margin-desktop);
 }
 
 .section-head {
@@ -1930,7 +1923,7 @@ footer.legacy-footer a {
 .nights-section {
     background: var(--surface-container-low);
     max-width: 100%;
-    padding: 96px 0;
+    padding: var(--space-16) 0;
 }
 
 .nights-header {
@@ -2145,8 +2138,8 @@ footer.legacy-footer a {
 /* ── 4.3 Alojamiento section ────────────────────────────────── */
 
 .alojamiento-section {
-    padding-top: 96px;
-    padding-bottom: 96px;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
 }
 
 .alojamiento-section .collab-grid {
@@ -2161,8 +2154,8 @@ footer.legacy-footer a {
 /* ── 4.4 Services section ───────────────────────────────────── */
 
 .services-section {
-    padding-top: 96px;
-    padding-bottom: 96px;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
 }
 
 .services-grid {
@@ -2175,7 +2168,7 @@ footer.legacy-footer a {
 /* ── 4.4 CTA section ────────────────────────────────────────── */
 
 .cta-section {
-    padding: 96px var(--margin-desktop);
+    padding: var(--space-16) var(--margin-desktop);
 }
 
 .cta-card {
@@ -3049,10 +3042,6 @@ body.alojamiento-page {
         padding-left: var(--margin-mobile);
         padding-right: var(--margin-mobile);
     }
-    footer.legacy-footer {
-        padding-left: var(--margin-mobile);
-        padding-right: var(--margin-mobile);
-    }
     .bento-grid {
         min-height: 560px;
     }
@@ -3191,11 +3180,6 @@ body.alojamiento-page {
     }
     .cta-card {
         padding: 40px 24px;
-    }
-    footer.legacy-footer {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
     }
     main.city-main {
         padding: 40px 16px 60px;

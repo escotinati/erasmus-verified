@@ -237,9 +237,66 @@
             </div>
         </main>
 
-        <footer class="legacy-footer">
-            <a href="index.html" data-i18n="nav.back_to_home_arrow">← Volver al inicio</a>
-            <span data-i18n="footer.tagline">Erasmus Verified · Comunidad Europa</span>
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="footer-logo">Erasmus Verified</span>
+                    <p class="footer-tagline" data-i18n="footer.tagline_long">
+                        Experiencias premium para estudiantes de intercambio en más de 50
+                        ciudades europeas.
+                    </p>
+                </div>
+
+                <div class="footer-col">
+                    <p class="footer-col-title" data-i18n="footer.platform_title">Plataforma</p>
+                    <ul>
+                        <li>
+                            <a href="ciudades-todas.html" data-i18n="footer.destinations"
+                                >Destinos</a
+                            >
+                        </li>
+                        <li>
+                            <a href="alojamiento.html" data-i18n="nav.accommodation"
+                                >Alojamiento</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="https://erasmusparties.org"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-i18n="nav.parties_bottom"
+                                >Fiestas</a
+                            >
+                        </li>
+                        <li><a href="viajes.html" data-i18n="nav.trips">Viajes</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <p class="footer-col-title" data-i18n="footer.legal_title">Legal</p>
+                    <ul>
+                        <li><a href="#" data-i18n="footer.about">Sobre nosotros</a></li>
+                        <li>
+                            <a href="#" data-i18n="footer.local_partners">Socios locales</a>
+                        </li>
+                        <li>
+                            <a href="#" data-i18n="footer.insurance_policy"
+                                >Política de seguros</a
+                            >
+                        </li>
+                        <li><a href="#" data-i18n="footer.privacy">Privacidad</a></li>
+                        <li><a href="#" data-i18n="footer.terms">Términos</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>
+                    © <span id="copyright-year"></span> Erasmus Verified.
+                    <span data-i18n="footer.rights">Todos los derechos reservados.</span>
+                </p>
+            </div>
         </footer>
 
         <!-- ── MOBILE NAV OVERLAY ─────────────────────────────────── -->
@@ -328,6 +385,7 @@
                         if (href && !href.startsWith('http') && href === page)
                             a.classList.add('app-bottom-nav-item--active');
                     });
+                document.getElementById('copyright-year').textContent = new Date().getFullYear();
             })();
         </script>
         <script>
