@@ -62,6 +62,22 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.setAttribute('data-brand', 'parties');
     }
 
+    // Navbar scroll shadow para el patrón header.topbar / .hero-legacy .topbar
+    // (ciudad.html, mapa.html, servicios.html, viajes.html, alojamiento.html,
+    // ciudades.html). El patrón .topnav (index.html, ciudades-todas.html) ya
+    // tiene su propio listener con la misma clase .scrolled en index.js /
+    // el inline de ciudades-todas.html — no se duplica aquí.
+    var topbarHeader = document.querySelector('.topbar');
+    if (topbarHeader) {
+        window.addEventListener(
+            'scroll',
+            function () {
+                topbarHeader.classList.toggle('scrolled', window.scrollY > 10);
+            },
+            { passive: true }
+        );
+    }
+
     if (window.ERASMUS_EXPERIENCE.theme !== 'theme-parties') return;
 
     // 1. Logo: "Verified" → "Parties"

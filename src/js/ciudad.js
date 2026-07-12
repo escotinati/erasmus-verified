@@ -26,7 +26,6 @@
 
     document.getElementById('backLink').href = 'index.html';
     document.getElementById('backLinkText').textContent = I18n.t('nav.home');
-    document.getElementById('footerBack').href = 'index.html';
 
     document.getElementById('cityFlag').textContent = city.flag;
     document.getElementById('cityLocation').textContent = `${city.country} · Erasmus`;
