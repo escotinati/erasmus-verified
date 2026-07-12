@@ -191,10 +191,12 @@ body {
 /* ── 2.1 Buttons ────────────────────────────────────────────── */
 
 .btn-primary-pill {
-    background: var(--primary);
+    background: var(--color-primary);
     color: var(--on-primary);
     border: none;
     padding: 12px 24px;
+    /* Radio intencionalmente "full": es un botón pill, no se cambia a
+       --radius-md (rompería la forma que da nombre a la clase). */
     border-radius: var(--radius-full);
     font-family: var(--font-body);
     font-size: 14px;
@@ -202,16 +204,23 @@ body {
     letter-spacing: 0.02em;
     cursor: pointer;
     transition:
-        opacity 0.15s,
-        transform 0.15s;
+        background-color var(--duration-base) var(--ease-out),
+        opacity var(--duration-base) var(--ease-out),
+        transform var(--duration-base) var(--ease-out);
 }
 
 .btn-primary-pill:hover {
+    background-color: var(--color-primary-hover);
     opacity: 0.9;
 }
 
 .btn-primary-pill:active {
     transform: scale(0.96);
+}
+
+.btn-primary-pill:focus-visible {
+    box-shadow: var(--shadow-focus);
+    outline: none;
 }
 
 a.btn-primary-pill {
@@ -520,7 +529,7 @@ a.btn-primary-pill {
 .country-card,
 .city-card {
     position: relative;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
@@ -528,16 +537,17 @@ a.btn-primary-pill {
     aspect-ratio: 3/4;
     background: var(--surface-container);
     border: 1px solid var(--outline-variant);
+    box-shadow: var(--shadow-md);
     transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        border-color 0.25s;
+        transform var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out),
+        border-color var(--duration-base) var(--ease-out);
 }
 
 .country-card:hover,
 .city-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(70, 72, 212, 0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
     border-color: var(--primary);
 }
 
@@ -1043,7 +1053,7 @@ header.topbar {
     font-weight: 500;
     color: var(--on-surface-variant);
     text-decoration: none;
-    transition: color 0.15s;
+    transition: color var(--duration-base) var(--ease-out);
 }
 
 .topbar-nav a:hover {
@@ -2659,6 +2669,7 @@ main.city-main {
     font-size: 14px;
     cursor: pointer;
     margin-bottom: 8px;
+    transition: border-color var(--duration-fast) var(--ease-out);
 }
 
 .category-toggle.is-expanded {
@@ -3172,4 +3183,20 @@ body.alojamiento-page {
     main.city-main {
         padding: 40px 16px 60px;
     }
+}
+
+/* ==============================================
+   ERASMUS PARTIES — Dark brand overrides
+   Activo cuando <body data-brand="parties">
+   ============================================== */
+
+[data-brand="parties"] {
+    background-color: var(--color-bg); /* ya sobreescrito en tokens.css */
+    color: var(--color-text);
+}
+
+[data-brand="parties"] .city-card,
+[data-brand="parties"] .card {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
 }
