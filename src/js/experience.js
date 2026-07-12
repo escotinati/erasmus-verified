@@ -53,6 +53,13 @@ document.documentElement.classList.add(window.ERASMUS_EXPERIENCE.theme);
 // Se ejecutan tras DOMContentLoaded para que los elementos del
 // menú ya existan en el DOM.
 document.addEventListener('DOMContentLoaded', function () {
+    // Activar brand Parties si el dominio es erasmusparties.org
+    // (document.body no existe todavía cuando este script corre en <head>,
+    // por eso se hace aquí y no en el nivel superior del archivo).
+    if (window.location.hostname.includes('erasmusparties')) {
+        document.body.setAttribute('data-brand', 'parties');
+    }
+
     if (window.ERASMUS_EXPERIENCE.theme !== 'theme-parties') return;
 
     // 1. Logo: "Verified" → "Parties"

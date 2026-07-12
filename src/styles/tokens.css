@@ -1,30 +1,45 @@
 /* ==========================================================================
    ERASMUS VERIFIED — Design System Tokens
    Sprint 1: Fundación visual
+   Sprint 2: reconciliado con los tokens que YA existían en
+   src/css/styles.css (:root) — ver comentarios "Alias de compatibilidad".
+   No se solapan --primary, --secondary ni los tokens de forma/tipografía
+   que ya tenían el mismo nombre en el sistema existente.
    ========================================================================== */
 
 :root {
 
   /* ---------- COLORES: Verified ---------- */
-  --color-primary:        #4F46E5;
-  --color-primary-hover:  #4338CA;
+  /* Alias de compatibilidad con tokens legacy — src/css/styles.css ya
+     define estos colores bajo otro nombre; no se redefine el valor aquí,
+     solo se apunta al existente para que ambos sistemas usen SIEMPRE el
+     mismo hex sin tener que mantenerlo sincronizado a mano. */
+  --color-primary:        var(--primary);
+  --color-primary-hover:  var(--primary-hover, #3730a3);
+  --color-surface:        var(--surface);
+  --color-bg:             var(--background);
+  --color-dark:           var(--on-surface);
+  --color-text:           var(--on-surface);
+  --color-text-muted:     var(--on-surface-variant);
+  --color-border:         var(--outline-variant);
+  /* --color-accent no tiene equivalente directo: --accent (legacy) ya
+     apunta a --primary, no a un tono más claro como este, así que se
+     mantiene con su propio valor. */
   --color-accent:         #818CF8;
-  --color-surface:        #EEF2FF;
-  --color-bg:             #F5F3FF;
-  --color-dark:           #0F172A;
-  --color-text:           #111827;
-  --color-text-muted:     #6B7280;
-  --color-border:         #E2E0F0;
 
   /* ---------- COLORES: Semánticos ---------- */
+  /* Sin equivalente en el sistema existente — no había tokens de estado
+     (éxito/aviso/error/info) definidos, se añaden con valor propio. */
   --color-success:        #10B981;
   --color-warning:        #F59E0B;
   --color-error:          #EF4444;
   --color-info:           #3B82F6;
 
   /* ---------- TIPOGRAFÍA ---------- */
-  --font-display: 'Syne', system-ui, sans-serif;
-  --font-body:    'Inter', system-ui, sans-serif;
+  /* --font-display / --font-body: NO se redefinen aquí — src/css/styles.css
+     ya los define con el mismo nombre y el mismo valor ('Syne'/'Inter').
+     Redeclararlos sería un solapamiento real de tokens (Regla 1), no solo
+     un alias de compatibilidad. */
 
   --text-display: clamp(40px, 5vw, 56px);
   --text-h1:      clamp(28px, 4vw, 40px);
@@ -44,6 +59,8 @@
   --leading-normal: 1.6;
 
   /* ---------- ESPACIADO (base 8px) ---------- */
+  /* Sin equivalente: --gutter/--margin-desktop/--margin-mobile son
+     valores de layout puntuales, no una escala de espaciado. */
   --space-1:  4px;
   --space-2:  8px;
   --space-3:  12px;
@@ -55,20 +72,23 @@
   --space-20: 80px;
 
   /* ---------- RADIOS ---------- */
-  --radius-sm:   4px;
-  --radius-md:   8px;
-  --radius-lg:   12px;
+  /* --radius-sm/md/lg/full: NO se redefinen — mismo nombre y mismo valor
+     ya en src/css/styles.css (0.25rem/0.5rem/0.75rem/9999px = 4/8/12px).
+     Solo --radius-xl y --radius-2xl son nuevos de verdad. */
   --radius-xl:   16px;
   --radius-2xl:  24px;
-  --radius-full: 9999px;
 
   /* ---------- SOMBRAS ---------- */
+  /* Sin equivalente: el sistema existente usa box-shadow con valores
+     sueltos inline, no tokens con nombre. */
   --shadow-sm:    0 1px 3px rgba(0, 0, 0, .06);
   --shadow-md:    0 4px 12px rgba(0, 0, 0, .08);
   --shadow-lg:    0 12px 32px rgba(0, 0, 0, .12);
   --shadow-focus: 0 0 0 3px rgba(79, 70, 229, .25);
 
   /* ---------- ANIMACIONES ---------- */
+  /* Sin equivalente: transiciones existentes usan duraciones sueltas
+     (0.15s, 0.2s...) sin token compartido. */
   --duration-fast: 100ms;
   --duration-base: 200ms;
   --duration-slow: 350ms;
@@ -77,18 +97,27 @@
 
 /* ==========================================================================
    OVERRIDES: Erasmus Parties (dark brand)
-   Activar con: <body data-brand="parties">
+   Activo cuando <body data-brand="parties"> (ver src/js/experience.js).
+
+   Alias hacia .theme-parties en vez de un segundo hex hardcodeado: la
+   paleta oscura de Parties ya existe y ya se aplica en <html> vía
+   experience.js — esto solo evita mantener dos copias del mismo valor
+   que podrían desincronizarse. Como .theme-parties se aplica en <html>
+   y data-brand="parties" en <body> (hijo), el valor desciende por
+   herencia de custom properties con normalidad.
    ========================================================================== */
 
 [data-brand="parties"] {
-  --color-primary:        #E1147B;
-  --color-primary-hover:  #C2106B;
+  --color-primary:        var(--primary);
+  --color-primary-hover:  var(--primary-container, #C2106B);
+  --color-bg:             var(--background);
+  --color-surface:        var(--surface);
+  --color-dark:           var(--on-surface);
+  --color-text:           var(--on-surface);
+  --color-text-muted:     var(--on-surface-variant);
+  --color-border:         var(--outline-variant);
+  /* Sin equivalente directo en .theme-parties: se mantienen con valor
+     propio, igual que en Verified. */
   --color-accent:         #7C3AED;
-  --color-bg:             #0A0A0F;
-  --color-surface:        #16161E;
-  --color-dark:           #F9F9FF;
-  --color-text:           #F9F9FF;
-  --color-text-muted:     rgba(249, 249, 255, .55);
-  --color-border:         rgba(225, 20, 123, .15);
   --shadow-focus:         0 0 0 3px rgba(225, 20, 123, .3);
 }
