@@ -28,11 +28,13 @@ function buildNightCard(event, index = 0) {
     const card = document.createElement('div');
     card.className = `event-card anim-fade-up card-hoverable anim-delay-${(index % 8) + 1}`;
 
+    const safeImageUrl = sanitizeUrl(event.image_url);
+
     card.innerHTML = `
     <div class="event-img-wrap">
       ${
-          event.image_url
-              ? `<img src="${event.image_url}" alt="${I18n.tField(event.title)}" loading="lazy" />`
+          safeImageUrl
+              ? `<img src="${safeImageUrl}" alt="${escapeHtml(I18n.tField(event.title))}" loading="lazy" />`
               : `<div class="bento-card-placeholder"></div>`
       }
       <span class="event-badge event-badge--primary"></span>
@@ -64,10 +66,11 @@ function buildNightCard(event, index = 0) {
     const priceEl = card.querySelector('.event-price');
     if (priceEl) priceEl.textContent = I18n.tField(event.price_label);
 
-    if (event.ticket_url) {
+    const safeTicketUrl = sanitizeUrl(event.ticket_url);
+    if (safeTicketUrl) {
         const btn = document.createElement('a');
         btn.className = 'link-btn';
-        btn.href = event.ticket_url;
+        btn.href = safeTicketUrl;
         btn.target = '_blank';
         btn.rel = 'noopener noreferrer';
         btn.textContent = I18n.t('nights.view_event_cta');
