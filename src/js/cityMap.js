@@ -22,7 +22,7 @@ async function mountCityMap(containerId, { pais, ciudad, lat, lng, interactive =
 
     container.innerHTML = `
     <div class="city-map-loading">
-      <p>${I18n.t('map.loading_map_prefix')} ${ciudad}…</p>
+      <p>${I18n.t('map.loading_map_prefix')} ${escapeHtml(ciudad)}…</p>
     </div>`;
 
     let coords = null;
@@ -37,7 +37,7 @@ async function mountCityMap(containerId, { pais, ciudad, lat, lng, interactive =
         container.innerHTML = `
       <div class="city-map-error">
         <span class="city-map-error__icon">🗺️</span>
-        <p>${I18n.t('map.city_not_located_prefix')} ${ciudad} ${I18n.t('map.city_not_located_suffix')}</p>
+        <p>${I18n.t('map.city_not_located_prefix')} ${escapeHtml(ciudad)} ${I18n.t('map.city_not_located_suffix')}</p>
       </div>`;
         return null;
     }
