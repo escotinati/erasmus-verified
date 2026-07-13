@@ -86,6 +86,37 @@
     --accent-dim: rgba(225, 20, 123, 0.12);
     /* RGB del surface para backgrounds con alpha */
     --surface-rgb: 19, 19, 26;
+
+    /* Tokens de animación — más rápidos y con más recorrido que Verified,
+       coherente con el carácter nocturno/energético de esta experiencia. */
+    --anim-duration-fast: 180ms;
+    --anim-duration-base: 300ms;
+    --anim-duration-slow: 480ms;
+    --anim-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --anim-easing-enter: cubic-bezier(0, 0, 0.15, 1);
+    --anim-translate-sm: 14px;
+    --anim-translate-md: 24px;
+    --anim-scale-hover: 1.028;
+    --anim-shadow-hover: 0 8px 32px rgba(225, 20, 123, 0.18);
+}
+
+/* ── Theme: Erasmus Verified (por defecto) ──────────────────
+   La clase .theme-verified ya se aplica en <html> vía experience.js;
+   hasta ahora no necesitaba reglas propias porque :root ya define el
+   look institucional por defecto. Los tokens de animación sí son
+   exclusivos de tema (más lentos/sutiles que Parties), así que este
+   es el primer bloque que la necesita. */
+
+.theme-verified {
+    --anim-duration-fast: 250ms;
+    --anim-duration-base: 450ms;
+    --anim-duration-slow: 650ms;
+    --anim-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --anim-easing-enter: cubic-bezier(0, 0, 0.2, 1);
+    --anim-translate-sm: 10px;
+    --anim-translate-md: 18px;
+    --anim-scale-hover: 1.018;
+    --anim-shadow-hover: 0 8px 24px rgba(70, 72, 212, 0.12);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
@@ -205,17 +236,18 @@ body {
     cursor: pointer;
     transition:
         background-color var(--duration-base) var(--ease-out),
-        opacity var(--duration-base) var(--ease-out),
-        transform var(--duration-base) var(--ease-out);
+        opacity var(--anim-duration-fast) var(--anim-easing-standard),
+        transform var(--anim-duration-fast) var(--anim-easing-standard);
 }
 
 .btn-primary-pill:hover {
     background-color: var(--color-primary-hover);
-    opacity: 0.9;
+    opacity: 0.88;
+    transform: translateY(-2px);
 }
 
 .btn-primary-pill:active {
-    transform: scale(0.96);
+    transform: translateY(0) scale(0.96);
 }
 
 .btn-primary-pill:focus-visible {
@@ -240,11 +272,20 @@ a.btn-primary-pill {
     font-weight: 600;
     letter-spacing: 0.02em;
     cursor: pointer;
-    transition: background 0.15s;
+    transition:
+        background var(--anim-duration-fast) var(--anim-easing-standard),
+        opacity var(--anim-duration-fast) var(--anim-easing-standard),
+        transform var(--anim-duration-fast) var(--anim-easing-standard);
 }
 
 .btn-ghost-pill:hover {
     background: rgba(255, 255, 255, 0.1);
+    opacity: 0.88;
+    transform: translateY(-2px);
+}
+
+.btn-ghost-pill:active {
+    transform: translateY(0);
 }
 
 .icon-btn {
@@ -694,12 +735,21 @@ a.btn-primary-pill {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s;
+    transition:
+        background var(--anim-duration-fast) var(--anim-easing-standard),
+        opacity var(--anim-duration-fast) var(--anim-easing-standard),
+        transform var(--anim-duration-fast) var(--anim-easing-standard);
     white-space: nowrap;
 }
 
 .search-bar-btn:hover {
     background: var(--primary-container);
+    opacity: 0.88;
+    transform: translateY(-2px);
+}
+
+.search-bar-btn:active {
+    transform: translateY(0);
 }
 
 /* Autocomplete dropdown */

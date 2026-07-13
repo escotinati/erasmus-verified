@@ -65,8 +65,8 @@ async function initCiudadesPage() {
 
     grid.innerHTML = cities
         .map(
-            (city) => `
-    <a class="city-card" href="ciudad.html?ciudad=${city.id}">
+            (city, i) => `
+    <a class="city-card anim-fade-up anim-delay-${(i % 8) + 1}" href="ciudad.html?ciudad=${city.id}">
       <img class="card-img" src="${escapeHtml(city.image_url)}" alt="${escapeHtml(city.name)}" loading="lazy"/>
       <div class="card-overlay"></div>
       <div class="card-arrow">${ARROW_SVG}</div>
@@ -78,6 +78,8 @@ async function initCiudadesPage() {
   `
         )
         .join('');
+
+    if (window.initScrollReveal) window.initScrollReveal();
 }
 
 document.addEventListener('DOMContentLoaded', initCiudadesPage);

@@ -20,13 +20,13 @@ function formatEventDate(isoString) {
     return `${capitalized} · ${timeLabel}h`;
 }
 
-function buildNightCard(event) {
+function buildNightCard(event, index = 0) {
     const cityLabel = event.city ? `${event.city.flag || ''} ${event.city.name}`.trim() : '';
     const venueLabel = event.partner ? event.partner.name : '';
     const locationLabel = [venueLabel, cityLabel].filter(Boolean).join(' — ');
 
     const card = document.createElement('div');
-    card.className = 'event-card';
+    card.className = `event-card anim-fade-up card-hoverable anim-delay-${(index % 8) + 1}`;
 
     card.innerHTML = `
     <div class="event-img-wrap">
@@ -263,11 +263,16 @@ function renderEventCards(events) {
     const maxPriority = Math.max(...events.map((event) => event.priority || 0));
     const featuredEvent = maxPriority > 0 ? events.find((event) => event.priority === maxPriority) : null;
 
-    events.forEach((event) => {
-        const card = buildNightCard(event);
+    events.forEach((event, index) => {
+        const card = buildNightCard(event, index);
         if (event === featuredEvent) card.classList.add('event-card--featured');
         scroll.appendChild(card);
     });
+
+    // Las cards se regeneran por completo en cada cambio de filtro — hay
+    // que volver a observarlas cada vez, si no las nuevas quedarían con
+    // opacity:0 para siempre (ver src/js/utils/animations.js).
+    if (window.initScrollReveal) window.initScrollReveal();
 }
 
 // Vuelve a consultar Supabase con los filtros activos actuales y
