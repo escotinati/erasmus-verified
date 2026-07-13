@@ -51,10 +51,10 @@ async function initAutocomplete() {
             el.href = item.url;
             el.setAttribute('role', 'option');
             el.innerHTML = `
-        <span class="sdi-icon">${item.flag || ''}</span>
+        <span class="sdi-icon">${escapeHtml(item.flag || '')}</span>
         <span class="sdi-text">
-          <span class="sdi-name">${item.name}</span>
-          <span class="sdi-sub">${item.sub}</span>
+          <span class="sdi-name">${escapeHtml(item.name)}</span>
+          <span class="sdi-sub">${escapeHtml(item.sub)}</span>
         </span>
         <span class="sdi-type">${I18n.t('home.search_result_type_city')}</span>`;
             dropdown.appendChild(el);
@@ -184,18 +184,19 @@ function renderBento(grid, cards, animate = false) {
                     const wideCls = item.wide ? 'bento-card--wide' : '';
                     const href = `ciudad.html?ciudad=${encodeURIComponent(item.id)}`;
                     const delayCls = `anim-delay-${(i % 8) + 1}`;
+                    const safeImageUrl = sanitizeUrl(item.image_url);
 
                     return `
         <a class="bento-card ${mainCls} ${wideCls} anim-fade-up card-hoverable ${delayCls}" href="${href}">
           ${
-              item.image_url
-                  ? `<img src="${item.image_url}" alt="${item.name}" loading="lazy"/>`
+              safeImageUrl
+                  ? `<img src="${safeImageUrl}" alt="${escapeHtml(item.name)}" loading="lazy"/>`
                   : `<div class="bento-card-placeholder"></div>`
           }
           <div class="bento-card-overlay"></div>
           <div class="bento-card-body">
-            <h3>${item.flag} ${item.name}</h3>
-            ${I18n.tField(item.description) ? `<p>${I18n.tField(item.description)}</p>` : ''}
+            <h3>${escapeHtml(item.flag)} ${escapeHtml(item.name)}</h3>
+            ${I18n.tField(item.description) ? `<p>${escapeHtml(I18n.tField(item.description))}</p>` : ''}
           </div>
         </a>`;
                 })
