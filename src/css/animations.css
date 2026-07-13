@@ -1,0 +1,142 @@
+/* ══════════════════════════════════════════════════════════════
+   ANIMATIONS.CSS — Sistema de animación (Verified / Parties)
+
+   Usa exclusivamente los tokens --anim-* definidos por tema en
+   styles.css (.theme-verified / .theme-parties) — no hay valores
+   propios aquí, cada tema controla su propia velocidad/distancia.
+
+   Regla de rendimiento: solo se anima transform y opacity (nunca
+   height/width/top/left/margin/padding), para evitar layout
+   recalculation. will-change se aplica solo en el momento de la
+   animación de entrada (keyframe), nunca de forma global.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Scroll reveal (entrada al hacer scroll) ─────────────────
+   El JS (initScrollReveal, src/js/utils/animations.js) añade
+   .is-visible vía IntersectionObserver cuando el elemento entra
+   en el viewport. */
+
+.anim-fade-up {
+    opacity: 0;
+    transform: translateY(var(--anim-translate-md));
+    transition:
+        opacity var(--anim-duration-base) var(--anim-easing-enter),
+        transform var(--anim-duration-base) var(--anim-easing-enter);
+}
+.anim-fade-up.is-visible {
+    opacity: 1;
+}
+/* :not(:hover) evita que este reset de transform gane por orden de
+   cascada al :hover propio del componente (mismo empate de
+   especificidad que .card-hoverable:hover o .city-card:hover) una vez
+   que la tarjeta ya se reveló. */
+.anim-fade-up.is-visible:not(:hover) {
+    transform: translateY(0);
+}
+
+.anim-fade-in {
+    opacity: 0;
+    transition: opacity var(--anim-duration-slow) var(--anim-easing-standard);
+}
+.anim-fade-in.is-visible {
+    opacity: 1;
+}
+
+/* ── Stagger: retraso escalonado para listas de cards ────────
+   mod 8 en el índice de origen para que el patrón se reinicie
+   cada 8 elementos en listas largas (ver Paso 4). */
+
+.anim-delay-1 {
+    transition-delay: 60ms;
+}
+.anim-delay-2 {
+    transition-delay: 120ms;
+}
+.anim-delay-3 {
+    transition-delay: 180ms;
+}
+.anim-delay-4 {
+    transition-delay: 240ms;
+}
+.anim-delay-5 {
+    transition-delay: 300ms;
+}
+.anim-delay-6 {
+    transition-delay: 360ms;
+}
+.anim-delay-7 {
+    transition-delay: 420ms;
+}
+.anim-delay-8 {
+    transition-delay: 480ms;
+}
+
+/* ── Hover en tarjetas ────────────────────────────────────────
+   Solo para componentes sin hover propio ya afinado (event-card,
+   bento-card). .city-card/.city-item ya tienen su propia elevación
+   (Sprint 2 / diseño original) y no llevan esta clase para evitar
+   dos sistemas de hover compitiendo por transform/box-shadow en la
+   misma cascada. */
+
+.card-hoverable {
+    transition:
+        transform var(--anim-duration-fast) var(--anim-easing-standard),
+        box-shadow var(--anim-duration-fast) var(--anim-easing-standard);
+}
+.card-hoverable:hover {
+    transform: translateY(calc(var(--anim-translate-sm) * -0.6));
+    box-shadow: var(--anim-shadow-hover);
+    will-change: transform;
+}
+
+/* Glow exclusivo de theme-parties: además del shadow normal, un
+   anillo sutil en el magenta de marca. */
+.theme-parties .card-hoverable:hover {
+    box-shadow:
+        var(--anim-shadow-hover),
+        0 0 0 1px rgba(225, 20, 123, 0.15);
+}
+
+/* ── Animación de entrada de página (hero / header) ──────────
+   Solo para elementos above the fold, visibles sin scroll — no se
+   aplica a contenido que el usuario no ve al cargar la página. */
+
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(var(--anim-translate-sm));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anim-page-enter {
+    animation: page-enter var(--anim-duration-base) var(--anim-easing-enter) both;
+}
+
+.anim-page-enter:nth-child(1) {
+    animation-delay: 0ms;
+}
+.anim-page-enter:nth-child(2) {
+    animation-delay: 80ms;
+}
+.anim-page-enter:nth-child(3) {
+    animation-delay: 160ms;
+}
+.anim-page-enter:nth-child(4) {
+    animation-delay: 240ms;
+}
+
+/* ── prefers-reduced-motion: siempre al final ────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
