@@ -7,8 +7,9 @@
 
    Regla de rendimiento: solo se anima transform y opacity (nunca
    height/width/top/left/margin/padding), para evitar layout
-   recalculation. will-change se aplica solo en el momento de la
-   animación de entrada (keyframe), nunca de forma global.
+   recalculation. will-change se aplica en el elemento en reposo (no
+   en :hover) de los componentes que ya están en animación, nunca de
+   forma global.
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Scroll reveal (entrada al hacer scroll) ─────────────────
@@ -82,11 +83,11 @@
     transition:
         transform var(--anim-duration-fast) var(--anim-easing-standard),
         box-shadow var(--anim-duration-fast) var(--anim-easing-standard);
+    will-change: transform;
 }
 .card-hoverable:hover {
     transform: translateY(calc(var(--anim-translate-sm) * -0.6));
     box-shadow: var(--anim-shadow-hover);
-    will-change: transform;
 }
 
 /* Glow exclusivo de theme-parties: además del shadow normal, un
