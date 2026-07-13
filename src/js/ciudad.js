@@ -109,12 +109,12 @@ function buildGroupBtn(group) {
           : group.label;
 
     return `
-    <a href="${group.url}" target="_blank" rel="noopener noreferrer"
+    <a href="${sanitizeUrl(group.url, '#')}" target="_blank" rel="noopener noreferrer"
       class="action-btn ${cls}">
       ${icon}
       <div class="btn-label">
-        <strong>${label}</strong>
-        <span>${group.label}</span>
+        <strong>${escapeHtml(label)}</strong>
+        <span>${escapeHtml(group.label)}</span>
       </div>
       <svg class="btn-chevron" width="18" height="18" viewBox="0 0 24 24"
         fill="none" stroke="currentColor" stroke-width="2.5">
@@ -128,7 +128,7 @@ function buildComingSoon(cityName) {
     <div class="coming-soon">
       <span class="emoji">⏳</span>
       <h3>${I18n.t('city.groups_coming_soon_title')}</h3>
-      <p>${I18n.t('city.groups_coming_soon_prefix')} ${cityName}. ${I18n.t('common.check_back_soon')}</p>
+      <p>${I18n.t('city.groups_coming_soon_prefix')} ${escapeHtml(cityName)}. ${I18n.t('common.check_back_soon')}</p>
     </div>`;
 }
 
@@ -143,7 +143,7 @@ async function buildContextualSections(cityId, ciudad) {
       <span class="info-icon material-symbols-outlined">apartment</span>
       <div>
         <p class="info-text" style="margin-bottom:12px">
-          <strong>${I18n.t('city.find_housing_prefix')} ${ciudad}</strong><br>
+          <strong>${I18n.t('city.find_housing_prefix')} ${escapeHtml(ciudad)}</strong><br>
           ${I18n.t('city.find_housing_body')}
         </p>
         <a href="alojamiento.html" class="btn-primary-pill" style="display:inline-flex">${I18n.t('city.view_collaborators_cta')}</a>
@@ -156,11 +156,11 @@ async function buildContextualSections(cityId, ciudad) {
                 (p) => `
         <div class="service-card">
           <div class="service-icon"><span class="material-symbols-outlined">flight</span></div>
-          <h3 class="service-name">${p.name}</h3>
-          <p class="service-desc">${I18n.tField(p.description)}</p>
+          <h3 class="service-name">${escapeHtml(p.name)}</h3>
+          <p class="service-desc">${escapeHtml(I18n.tField(p.description))}</p>
           ${
               p.links.length > 0
-                  ? `<a href="${p.links[0].url}" target="_blank" rel="noopener noreferrer" class="btn-primary-pill">${I18n.t('city.view_trip_cta')}</a>`
+                  ? `<a href="${sanitizeUrl(p.links[0].url, '#')}" target="_blank" rel="noopener noreferrer" class="btn-primary-pill">${I18n.t('city.view_trip_cta')}</a>`
                   : ''
           }
         </div>`
@@ -170,7 +170,7 @@ async function buildContextualSections(cityId, ciudad) {
         html += `
     <div style="margin-top:32px">
       <span class="eyebrow eyebrow--primary">${I18n.t('nav.trips')}</span>
-      <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px">${I18n.t('city.escapadas_prefix')} ${ciudad}</h2>
+      <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px">${I18n.t('city.escapadas_prefix')} ${escapeHtml(ciudad)}</h2>
       <div class="services-grid" style="margin-top:16px">${cards}</div>
     </div>`;
     }
@@ -184,7 +184,7 @@ function buildMapBlock(city) {
     return `
     <div class="city-map-block">
       <div class="city-map-columns">
-        <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${city.name}"></div>
+        <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${escapeHtml(city.name)}"></div>
         <aside id="city-partners-list" class="partners-list"></aside>
       </div>
       <a href="${fullscreenUrl}" class="city-map-fullscreen-link">
