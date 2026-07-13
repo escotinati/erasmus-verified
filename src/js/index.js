@@ -179,13 +179,14 @@ function renderBento(grid, cards, animate = false) {
     setTimeout(
         () => {
             grid.innerHTML = cards
-                .map((item) => {
+                .map((item, i) => {
                     const mainCls = item.main ? 'bento-card--main' : '';
                     const wideCls = item.wide ? 'bento-card--wide' : '';
                     const href = `ciudad.html?ciudad=${encodeURIComponent(item.id)}`;
+                    const delayCls = `anim-delay-${(i % 8) + 1}`;
 
                     return `
-        <a class="bento-card ${mainCls} ${wideCls}" href="${href}">
+        <a class="bento-card ${mainCls} ${wideCls} anim-fade-up card-hoverable ${delayCls}" href="${href}">
           ${
               item.image_url
                   ? `<img src="${item.image_url}" alt="${item.name}" loading="lazy"/>`
@@ -205,6 +206,11 @@ function renderBento(grid, cards, animate = false) {
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => grid.classList.remove('bento-enter'));
             });
+
+            // Las cards se regeneran por completo en cada rotación (cada 30s)
+            // y en la carga inicial — hay que volver a observarlas cada vez,
+            // si no las nuevas quedarían con opacity:0 para siempre.
+            if (window.initScrollReveal) window.initScrollReveal();
         },
         animate ? 400 : 0
     );

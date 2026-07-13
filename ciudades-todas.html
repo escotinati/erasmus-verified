@@ -23,6 +23,7 @@
             rel="stylesheet"
         />
         <link rel="stylesheet" href="/src/css/styles.css" />
+        <link rel="stylesheet" href="/src/css/animations.css" />
         <script src="/src/js/experience.js"></script>
         <style>
             /* ── Estilos específicos de esta página ─────────────────── */
@@ -400,6 +401,7 @@
         <script src="/src/utils/translations.js"></script>
         <script src="/src/js/langSwitcher.js"></script>
         <script src="/src/js/services/citiesService.js"></script>
+        <script src="/src/js/utils/animations.js"></script>
         <script>
             (async function () {
                 // Mismo criterio anti-XSS que el resto del proyecto (admin.js):
@@ -463,6 +465,10 @@
                         }`;
 
                     const groups = groupByLetter(cities);
+                    // Índice global (no por letra) para que el stagger avance
+                    // ciudad a ciudad a través de todos los grupos, no que se
+                    // reinicie en cada encabezado de letra.
+                    let globalIndex = 0;
                     for (const [letter, group] of Object.entries(groups).sort()) {
                         const div = document.createElement('div');
                         div.className = 'letter-group';
@@ -470,20 +476,26 @@
         <div class="letter-heading">${escapeHtml(letter)}</div>
         <div class="city-items-grid">
           ${group
-              .map(
-                  (city) => `
-            <a class="city-item" href="${city.url}">
+              .map((city) => {
+                  const delayCls = `anim-delay-${(globalIndex++ % 8) + 1}`;
+                  return `
+            <a class="city-item anim-fade-up ${delayCls}" href="${city.url}">
               <span class="city-item-flag">${escapeHtml(city.flag)}</span>
               <div class="city-item-info">
                 <div class="city-item-name">${escapeHtml(city.name)}</div>
                 <div class="city-item-country">${escapeHtml(city.country)}</div>
               </div>
-            </a>`
-              )
+            </a>`;
+              })
               .join('')}
         </div>`;
                         section.insertBefore(div, noResult);
                     }
+
+                    // Los grupos se regeneran por completo en cada tecleo del
+                    // filtro — hay que volver a observarlas cada vez, si no
+                    // las nuevas quedarían con opacity:0 para siempre.
+                    if (window.initScrollReveal) window.initScrollReveal();
                 }
 
                 // Render inicial

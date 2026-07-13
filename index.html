@@ -23,6 +23,7 @@
             rel="stylesheet"
         />
         <link rel="stylesheet" href="/src/css/styles.css" />
+        <link rel="stylesheet" href="/src/css/animations.css" />
         <script src="/src/js/experience.js"></script>
     </head>
 
@@ -60,18 +61,18 @@
             <section class="hero">
                 <div class="hero-bg"></div>
                 <div class="hero-inner">
-                    <h1 class="hero-title">
+                    <h1 class="hero-title anim-page-enter">
                         <span data-i18n="home.hero_title_line1">Vive Europa</span> <br />
                         <em data-i18n="home.hero_title_line2">Sin Límites.</em>
                     </h1>
-                    <p class="hero-sub" data-i18n="home.hero_subtitle">
+                    <p class="hero-sub anim-page-enter" data-i18n="home.hero_subtitle">
                         Conéctate con alojamiento premium para estudiantes, eventos nocturnos
                         exclusivos y una comunidad vibrante en más de 50 centros universitarios
                         europeos.
                     </p>
 
                     <!-- Search bar -->
-                    <div class="search-bar">
+                    <div class="search-bar anim-page-enter">
                         <div class="search-bar-input">
                             <span class="material-symbols-outlined search-icon">location_on</span>
                             <input
@@ -434,6 +435,7 @@
         <script src="/src/js/services/citiesService.js"></script>
         <script src="/src/js/services/partnersService.js"></script>
         <script src="/src/js/tracking.js"></script>
+        <script src="/src/js/utils/animations.js"></script>
         <script src="/src/js/index.js"></script>
         <script src="/src/js/nightsSection.js"></script>
         <script>
