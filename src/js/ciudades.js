@@ -10,15 +10,8 @@
 
 const ARROW_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
 
-// Mismo criterio anti-XSS que el resto del proyecto (admin.js):
-// name/image_url ya son editables desde el admin, no datos estáticos
-// de confianza como antes.
-function escapeHtml(str) {
-    if (str === null || str === undefined) return '';
-    return String(str).replace(/[&<>"']/g, (ch) => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-    }[ch]));
-}
+// escapeHtml() vive ahora en src/js/utils/sanitize.js (window.escapeHtml),
+// cargado antes que este script en ciudades.html — no se duplica aquí.
 
 async function initCiudadesPage() {
     const params = new URLSearchParams(window.location.search);

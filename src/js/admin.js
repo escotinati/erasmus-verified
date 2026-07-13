@@ -143,12 +143,8 @@ async function handleTranslateClick(btn) {
     }
 }
 
-function escapeHtml(str) {
-    if (str === null || str === undefined) return '';
-    return String(str).replace(/[&<>"']/g, (ch) => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-    }[ch]));
-}
+// escapeHtml() vive ahora en src/js/utils/sanitize.js (window.escapeHtml),
+// cargado antes que este script en admin/index.html — no se duplica aquí.
 
 function extractCoordsFromGoogleMapsUrl(url) {
     let match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
