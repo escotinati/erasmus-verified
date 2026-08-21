@@ -343,23 +343,6 @@ a.btn-primary-pill {
     color: #fff;
 }
 
-.event-img-wrap .event-price {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-}
-
-.event-price {
-    background: var(--secondary-container);
-    color: var(--on-secondary-container);
-    padding: 4px 14px;
-    border-radius: var(--radius-full);
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
 .bento-badge {
     position: absolute;
     top: 14px;
@@ -530,6 +513,25 @@ a.btn-primary-pill {
 
 .event-venue .material-symbols-outlined {
     font-size: 18px;
+}
+
+.event-price-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    margin-top: 8px;
+}
+
+.event-price-row .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--on-surface-variant);
+}
+
+.event-price-row .event-price-text {
+    color: var(--on-surface);
 }
 
 .event-footer {
@@ -2143,6 +2145,10 @@ header.topbar {
     font-size: 12px;
 }
 
+.events-scroll .event-price-row {
+    font-size: 12px;
+}
+
 .events-scroll .event-desc {
     margin-top: 8px;
     font-size: 13px;
@@ -2152,20 +2158,11 @@ header.topbar {
     margin-top: 12px;
 }
 
-.events-scroll .event-badge,
-.events-scroll .event-price {
+.events-scroll .event-badge {
     padding: 3px 10px;
     font-size: 12px;
-}
-
-.events-scroll .event-badge {
     top: 12px;
     left: 12px;
-}
-
-.events-scroll .event-img-wrap .event-price {
-    top: 12px;
-    right: 12px;
 }
 
 .events-scroll .link-btn {
@@ -2954,7 +2951,13 @@ body.servicios-page {
 
 /* Precio de viaje: chip neutro con primario, no magenta de nightlife
    (.event-price global usa secondary-container para eventos nocturnos
-   en index.html; aquí se sobreescribe solo en el contexto de viajes) */
+   en index.html; aquí se sobreescribe solo en el contexto de viajes)
+   NOTA (feature/event-card-cta-price-row): desde este cambio ningún
+   elemento del home genera .event-price — el precio de nights-section
+   ahora es .event-price-row (fila con icono, no chip). Esta regla queda
+   dormida hasta que .event-card se reactive en viajes.html; revisar
+   entonces si el precio de viaje debe seguir siendo chip .event-price
+   o migrar también a .event-price-row. */
 body.viajes-page .event-price {
     background: var(--primary-fixed);
     color: var(--primary);

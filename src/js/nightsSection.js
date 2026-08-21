@@ -38,7 +38,6 @@ function buildNightCard(event, index = 0) {
               : `<div class="bento-card-placeholder"></div>`
       }
       <span class="event-badge event-badge--primary"></span>
-      ${I18n.tField(event.price_label) ? '<span class="event-price"></span>' : ''}
     </div>
     <div class="event-body">
       <div class="event-row">
@@ -51,6 +50,11 @@ function buildNightCard(event, index = 0) {
         </div>
       </div>
       <p class="event-date"></p>
+      ${
+          I18n.tField(event.price_label)
+              ? '<p class="event-price-row"><span class="material-symbols-outlined">confirmation_number</span><span class="event-price-text"></span></p>'
+              : ''
+      }
       <p class="event-desc"></p>
       <div class="event-footer"></div>
     </div>
@@ -63,8 +67,8 @@ function buildNightCard(event, index = 0) {
     card.querySelector('.event-date').textContent = formatEventDate(event.starts_at);
     card.querySelector('.event-desc').textContent = I18n.tField(event.description) || '';
 
-    const priceEl = card.querySelector('.event-price');
-    if (priceEl) priceEl.textContent = I18n.tField(event.price_label);
+    const priceTextEl = card.querySelector('.event-price-text');
+    if (priceTextEl) priceTextEl.textContent = I18n.tField(event.price_label);
 
     const safeTicketUrl = sanitizeUrl(event.ticket_url);
     if (safeTicketUrl) {
