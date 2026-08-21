@@ -546,7 +546,7 @@ a.btn-primary-pill {
 }
 
 .event-footer {
-    margin-top: 16px;
+    margin-top: 36px;
 }
 
 .event-date {
@@ -2093,6 +2093,7 @@ header.topbar {
 .events-scroll {
     max-width: var(--container-max);
     margin: 0 auto;
+    margin-top: 20px;
     padding: 0 var(--margin-desktop) 48px;
     display: flex;
     flex-direction: column;
