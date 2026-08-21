@@ -316,7 +316,7 @@ a.btn-primary-pill {
     font-family: var(--font-body);
     font-size: 14px;
     font-weight: 600;
-    padding: 12px 20px;
+    padding: 10px 12px;
     border-radius: var(--radius-full);
     text-decoration: none;
     border: none;
@@ -2186,7 +2186,6 @@ header.topbar {
 
 .events-scroll .event-cta-btn {
     font-size: 13px;
-    padding: 10px 8px;
 }
 
 @media (min-width: 768px) {
