@@ -308,6 +308,7 @@ a.btn-primary-pill {
 .event-cta-btn {
     display: block;
     width: 25%;
+    min-width: max-content;
     margin-left: auto;
     text-align: center;
     background: var(--primary);
@@ -321,8 +322,6 @@ a.btn-primary-pill {
     border: none;
     cursor: pointer;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     transition: opacity 0.15s ease;
 }
 
