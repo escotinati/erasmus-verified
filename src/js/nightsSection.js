@@ -56,7 +56,7 @@ function buildNightCard(event, index = 0) {
               : ''
       }
       <p class="event-desc"></p>
-      <div class="event-footer"></div>
+      <div class="event-footer event-footer--spaced"></div>
     </div>
   `;
 

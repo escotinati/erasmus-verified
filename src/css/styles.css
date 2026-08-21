@@ -549,6 +549,10 @@ a.btn-primary-pill {
     margin-top: 12px;
 }
 
+.event-footer--spaced {
+    margin-top: 20px;
+}
+
 .event-date {
     margin-top: 12px;
     color: var(--primary);
