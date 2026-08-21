@@ -307,7 +307,8 @@ a.btn-primary-pill {
 
 .event-cta-btn {
     display: block;
-    width: 100%;
+    width: 25%;
+    margin-left: auto;
     text-align: center;
     background: var(--primary);
     color: var(--on-primary);
