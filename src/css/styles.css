@@ -320,6 +320,9 @@ a.btn-primary-pill {
     text-decoration: none;
     border: none;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: opacity 0.15s ease;
 }
 
@@ -2171,6 +2174,10 @@ header.topbar {
     margin-top: 12px;
 }
 
+.events-scroll .event-footer--spaced {
+    margin-top: 20px;
+}
+
 .events-scroll .event-badge {
     padding: 3px 10px;
     font-size: 12px;
@@ -2180,6 +2187,7 @@ header.topbar {
 
 .events-scroll .event-cta-btn {
     font-size: 13px;
+    padding: 10px 8px;
 }
 
 @media (min-width: 768px) {
