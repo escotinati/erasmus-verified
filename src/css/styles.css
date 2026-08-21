@@ -305,20 +305,30 @@ a.btn-primary-pill {
     color: var(--primary);
 }
 
-.link-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
+.event-cta-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--primary);
+    color: var(--on-primary);
     font-family: var(--font-body);
     font-size: 14px;
     font-weight: 600;
-    color: var(--primary);
-    padding: 0;
+    padding: 12px 20px;
+    border-radius: var(--radius-full);
     text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
 }
 
-.link-btn:hover {
-    text-decoration: underline;
+.event-cta-btn:hover {
+    opacity: 0.88;
+}
+
+.event-cta-btn:focus-visible {
+    outline: 2px solid var(--on-primary);
+    outline-offset: 2px;
 }
 
 /* ── 2.2 Badges & chips ─────────────────────────────────────── */
@@ -2165,7 +2175,7 @@ header.topbar {
     left: 12px;
 }
 
-.events-scroll .link-btn {
+.events-scroll .event-cta-btn {
     font-size: 13px;
 }
 

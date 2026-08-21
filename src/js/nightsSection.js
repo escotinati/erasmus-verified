@@ -73,7 +73,7 @@ function buildNightCard(event, index = 0) {
     const safeTicketUrl = sanitizeUrl(event.ticket_url);
     if (safeTicketUrl) {
         const btn = document.createElement('a');
-        btn.className = 'link-btn';
+        btn.className = 'event-cta-btn';
         btn.href = safeTicketUrl;
         btn.target = '_blank';
         btn.rel = 'noopener noreferrer';
