@@ -22,14 +22,19 @@
 //  Las cabeceras de grupo + filas de partner (antes buildGroupSection(),
 //  DOM imperativo) las pinta ahora PartnerCategoryList.jsx (React) —
 //  tercera isla de React del proyecto, ver CLAUDE.md (sección "Lista de
-//  partners") y src/react/mount-partner-list.jsx. Este archivo sigue
-//  siendo el dueño de todo lo demás (estado, markers, Sheet): solo
-//  delega el pintado de esa lista.
+//  partners") y src/react/mount-partner-list.jsx. El contenido del
+//  Sheet que se abre al pulsar un partner (antes buildPartnerDetail(),
+//  también DOM imperativo) lo pinta a su vez PartnerDetail.jsx (React,
+//  ver src/react/mount-partner-detail.jsx) — cuarta isla. El propio
+//  <dialog> (sheet.js) sigue siendo vanilla a propósito, no se toca.
+//  Este archivo sigue siendo el dueño de todo lo demás (estado,
+//  markers, abrir/cerrar el Sheet): solo delega el pintado.
 //
 //  Depende de: fetchPartnersByCity/groupPartnersByCategory
 //  (partnersService.js), createPartnerMarker/setMarkerExpanded/
 //  CATEGORY_META (map-helpers.js), window.Sheet (sheet.js),
-//  window.mountPartnerCategoryList (mount-partner-list.jsx), y recibe
+//  window.mountPartnerCategoryList (mount-partner-list.jsx),
+//  window.mountPartnerDetail (mount-partner-detail.jsx), y recibe
 //  `map` (Leaflet, ya inicializado por cityMap.js) y `city` (el
 //  objeto completo de Supabase, no solo su id — lo pasan ciudad.js y
 //  mapa.js, que ya lo tienen en su propio scope antes de llamar).
@@ -266,6 +271,16 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
     }
 
     // ── Regla 7: abrir un partner → Sheet, no expansión inline ─────
+    // El contenido del Sheet lo pinta PartnerDetail.jsx (React) sobre
+    // un <div> vacío creado aquí mismo — mountPartnerDetail() crea un
+    // root NUEVO en cada llamada (a diferencia del root único y
+    // reutilizado de PartnerCategoryList): Sheet.create() crea un
+    // <dialog> nuevo cada vez que se abre un partner y no lo elimina
+    // del DOM al cerrarse, solo lo oculta, así que sin desmontar el
+    // root explícitamente cada partner visto dejaría un árbol de fibra
+    // de React huérfano en memoria. Por eso detailRoot.unmount() se
+    // llama en el onClose del propio Sheet, junto al resto de limpieza
+    // que ya hacía (setMarkerExpanded a false).
     function selectPartner(partnerId, triggerElement) {
         const partner = findPartnerById(partnerId);
         if (!partner) return;
@@ -273,12 +288,35 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
         const marker = markersByPartnerId[partnerId];
         setMarkerExpanded(marker, partner, true);
 
+        const contentEl = document.createElement('div');
+        const detailRoot = mountPartnerDetail(contentEl, {
+            // partnersService.js (fetchPartnersByCity) ya devuelve
+            // description/link.label resueltos — no hace falta tratarlos aquí.
+            partner,
+            directionsLabel: I18n.t('map.directions'),
+            onLinkClick: (link, safeUrl) => {
+                trackEvent('partner_link_click', {
+                    partnerId: partner.id,
+                    partnerName: partner.name,
+                    linkType: link.type,
+                    linkUrl: safeUrl, // el valor saneado, no el original — mismo criterio que el href
+                });
+            },
+            onDirectionsClick: () => {
+                trackEvent('partner_directions_click', {
+                    partnerId: partner.id,
+                    partnerName: partner.name,
+                });
+            },
+        });
+
         const sheet = Sheet.create({
             title: partner.name,
-            content: buildPartnerDetail(partner),
+            content: contentEl,
             closeLabel: I18n.t('common.close'),
             onClose: () => {
                 setMarkerExpanded(marker, partner, false);
+                detailRoot.unmount();
             },
         });
         sheet.open(triggerElement);
@@ -291,64 +329,4 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
         }
         return null;
     }
-}
-
-/**
- * Construye el bloque de detalle de un partner: descripción + sus
- * enlaces (web, entradas, fiesta propia si existe). Nodo del DOM, no
- * HTML — lo consume Sheet.create({ content }) directamente.
- */
-function buildPartnerDetail(partner) {
-    const detail = document.createElement('div');
-    detail.className = 'partner-detail';
-
-    const desc = document.createElement('p');
-    desc.className = 'partner-detail__description';
-    desc.textContent = I18n.tField(partner.description);
-    detail.appendChild(desc);
-
-    // partner.links viene de partner_links (Supabase), editable desde /admin
-    // por cualquier admin — no es contenido que controlemos nosotros. Sin
-    // sanitizeUrl aquí, un `javascript:` guardado en ese campo se ejecutaría
-    // en el navegador del estudiante al hacer clic. Ya es la tercera vez que
-    // este patrón se escapa de un archivo (index.js y nightsSection.js ya lo
-    // hacen bien): cualquier .href/.src que venga de Supabase pasa SIEMPRE
-    // por sanitizeUrl, sin excepciones "por ahora".
-    for (const link of partner.links) {
-        const safeUrl = sanitizeUrl(link.url);
-        if (!safeUrl) continue; // sin URL válida, no hay enlace — nunca un <a> muerto
-
-        const a = document.createElement('a');
-        a.href = safeUrl;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.className = 'partner-detail__link';
-        a.textContent = I18n.tField(link.label);
-        a.addEventListener('click', () => {
-            trackEvent('partner_link_click', {
-                partnerId: partner.id,
-                partnerName: partner.name,
-                linkType: link.type,
-                linkUrl: safeUrl, // el valor saneado, no el original — mismo criterio que el href
-            });
-        });
-        detail.appendChild(a);
-    }
-
-    // Botón "Cómo llegar" — Google Maps universal, según lo acordado.
-    const directions = document.createElement('a');
-    directions.href = `https://www.google.com/maps/dir/?api=1&destination=${partner.lat},${partner.lng}`;
-    directions.target = '_blank';
-    directions.rel = 'noopener noreferrer';
-    directions.className = 'partner-detail__directions';
-    directions.textContent = I18n.t('map.directions');
-    directions.addEventListener('click', () => {
-        trackEvent('partner_directions_click', {
-            partnerId: partner.id,
-            partnerName: partner.name,
-        });
-    });
-    detail.appendChild(directions);
-
-    return detail;
 }
