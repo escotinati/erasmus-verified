@@ -137,6 +137,15 @@ CARTO Light (`light_all`) vía CDN. La atribución a OpenStreetMap + CARTO es **
 - **Proveedor gratuito sin cuenta** (Esri "World Light Gray Base" u OpenStreetMap estándar): sin key ni registro, pero cambia ligeramente el aspecto visual (gris en vez del blanco actual) y depende de las políticas de uso gratuito de ese proveedor, que también podrían cambiar sin aviso.
 - **Migrar a Google Maps JavaScript API**: Google no ofrece tiles sueltas compatibles con Leaflet (no hay URL de tiles oficial tipo `.../{z}/{x}/{y}.png`, solo su propia librería `google.maps.Map`) — usar sus tiles con Leaflet requeriría URLs no oficiales que incumplen sus términos de servicio. La vía legítima implicaría sustituir Leaflet por la Google Maps JS API (cambio de código más grande, aunque contenido en `map-helpers.js` por diseño) y una cuenta de Google Cloud con facturación activada (tarjeta), con ~$200/mes gratis y pago por uso después.
 
+### Por qué el mapa no se migró a React
+
+El plan de migración a islas de React (ver [Tarjetas de resumen](#tarjetas-de-resumen-summarycard) y [Lista de partners](#lista-de-partners-partnercategorylist) más abajo) incluía en algún momento el bloque del mapa — se revisó y se decidió **no migrarlo**, ni ahora ni como línea de trabajo futura, por varios motivos que juntos hacen que no compense:
+
+- `cityMap.js`, `map-helpers.js` y `geocoder.js` son infraestructura pura (arrancar Leaflet, geocodificar direcciones, cachear coordenadas) — no pintan contenido que crezca o cambie con los datos (texto, fotos, listas), que es justo el patrón común a las cuatro islas ya migradas. Sin ese patrón, no hay nada que React resuelva mejor que el DOM imperativo que ya hay.
+- Los pines de partner (`createPartnerMarker`/`setMarkerExpanded` en `map-helpers.js`) son un `divIcon` de Leaflet construido con una sola línea de HTML (icono + color) — Leaflet exige ese HTML como texto plano, así que montar un componente React ahí no simplificaría nada: añadiría un paso de renderizado extra para acabar produciendo exactamente el mismo string.
+- El mapa en sí está estable — sin cambios de diseño pendientes ni problemas reales reportados (confirmado explícitamente por Álvaro antes de tomar esta decisión, no una suposición).
+- Reescribirlo de todas formas sería tocar código que ya funciona bien sin ningún beneficio para quien usa la web — el mismo criterio de no añadir complejidad que no resuelve un problema real que ya se ha aplicado en el resto del proyecto.
+
 ## Tarjetas de resumen (SummaryCard)
 
 El grid de partners del home (sección "Descubre partners") y la sección "Trending nights" (fiestas) ya no construyen sus tarjetas a mano con `innerHTML` — usan un componente React compartido. Es la **segunda isla de React** del proyecto (la primera es el menú, ver [Navegación](#navegación) más abajo) y la primera que pinta contenido real de datos, no solo chrome de página.
