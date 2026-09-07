@@ -386,6 +386,13 @@ main.city-main {
     background: var(--background);
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -10px 26px -12px rgba(19, 27, 46, 0.28);
+}
+
+/* will-change SOLO durante el arrastre real, no todo el rato: una capa
+   de composición permanente en el ancestro es justo el patrón que en
+   algunos navegadores móviles interfiere con el scroll táctil de un
+   hijo (aquí, .partners-list) — bug real reportado y confirmado. */
+.city-sheet--dragging {
     will-change: transform;
 }
 
@@ -456,12 +463,68 @@ main.city-main {
     transform: rotate(180deg);
 }
 
-.city-sheet .partners-list {
+/* Envuelve .partners-list (dueño de mapPartners.js/React) + los dos
+   desvanecidos — un wrapper propio en vez de tocar el aside en sí,
+   mismo motivo que listReactHost dentro de .partners-list: necesita
+   convivir con hermanos (los .city-sheet-fade) que React no gestiona. */
+.city-sheet-scroll-wrap {
+    position: relative;
     flex: 1;
     min-height: 0;
+}
+
+.city-sheet .partners-list {
     width: 100%;
+    height: 100%;
     overflow-y: auto;
+    /* Oculta la barra (Firefox / Chrome-Safari-Edge) sin quitar la
+       capacidad de hacer scroll — sigue funcionando con dedo, rueda o
+       teclado igual que antes. El desvanecido de abajo/arriba (ver
+       .city-sheet-fade) sustituye a la barra como pista de "hay más". */
+    scrollbar-width: none;
+    /* Aísla el paneo vertical de este elemento del arrastre del panel
+       (que vive solo en .city-sheet-grip-row) y evita que el scroll
+       "rebote" hacia el mapa de detrás al llegar al final. */
+    touch-action: pan-y;
+    overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
+}
+
+.city-sheet .partners-list::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+/* Clases is-scrolled/has-more las pone citySheet.js según el scroll
+   real de .partners-list (ver wireScrollFades()). */
+.city-sheet-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 28px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--duration-fast, 0.18s) ease;
+    z-index: 2;
+}
+
+.city-sheet-fade--top {
+    top: 0;
+    background: linear-gradient(to bottom, var(--background), transparent);
+}
+
+.city-sheet-fade--bottom {
+    bottom: 0;
+    background: linear-gradient(to top, var(--background), transparent);
+}
+
+.partners-list.is-scrolled ~ .city-sheet-fade--top {
+    opacity: 1;
+}
+
+.partners-list.has-more ~ .city-sheet-fade--bottom {
+    opacity: 1;
 }
 
 @media (min-width: 900px) {
@@ -512,7 +575,18 @@ main.city-main {
         display: none;
     }
     .city-sheet .partners-list {
+        /* La barra oculta + el desvanecido son un arreglo pensado para
+           el panel arrastrable de móvil (ver arriba) — en desktop la
+           lista siempre tuvo su scrollbar nativa visible, sin motivo
+           para cambiar eso aquí. */
         overflow-y: scroll;
+        scrollbar-width: auto;
+    }
+    .city-sheet .partners-list::-webkit-scrollbar {
+        display: block;
+    }
+    .city-sheet-fade {
+        display: none;
     }
 }
 

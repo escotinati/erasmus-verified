@@ -267,7 +267,11 @@ function buildMapBlock(city) {
               <span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_up</span>
             </button>
           </div>
-          <aside id="city-partners-list" class="partners-list"></aside>
+          <div class="city-sheet-scroll-wrap">
+            <aside id="city-partners-list" class="partners-list"></aside>
+            <div class="city-sheet-fade city-sheet-fade--top"></div>
+            <div class="city-sheet-fade city-sheet-fade--bottom"></div>
+          </div>
         </div>
       </div>
       <a href="${fullscreenUrl}" class="city-map-fullscreen-link">
