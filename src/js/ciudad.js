@@ -2,6 +2,17 @@
 //  CIUDAD.JS — Erasmus Verified
 // ─────────────────────────────────────────────────────────────
 
+// Lee --bp-md de tokens.css en vez de hardcodear 900 aquí — mismo
+// patrón que isDesktopLayout() en src/js/ui/sheet.js, así el punto de
+// corte del gesto-gate del mapa (ver mountCityMap más abajo) se queda
+// sincronizado con el mismo token que decide, en CSS, el resto del
+// layout de dos columnas.
+function isDesktopLayout() {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--bp-md');
+    const bpMd = parseFloat(raw) || 900;
+    return window.matchMedia('(min-width: ' + bpMd + 'px)').matches;
+}
+
 (async function () {
     const params = new URLSearchParams(window.location.search);
     const cityId = parseInt(params.get('ciudad'), 10);
@@ -66,8 +77,19 @@
     // mide su posición real y se calcula lo que queda de pantalla —
     // el calc() de ciudad.css queda solo como valor de arranque antes
     // de que este JS corra.
+    //
+    // OJO con "resize": en móvil, hacer scroll de página (o el propio
+    // gesto de arrastre del mapa/sheet) puede colapsar/expandir la
+    // barra de direcciones del navegador, y ESO dispara un evento
+    // "resize" con el mismo ancho pero distinto alto — si se
+    // recalculara en cada uno, la altura del bloque "respiraría" con
+    // cada scroll (bug real, reportado: la altura del mapa crecía al
+    // tocar/hacer scroll). Por eso solo se recalcula cuando cambia
+    // innerWidth de verdad (redimensionar ventana, o girar el móvil),
+    // nunca por un resize de solo-alto.
     const mapColumnsEl = document.querySelector('.city-map-columns');
     if (mapColumnsEl) {
+        let lastWidth = window.innerWidth;
         const syncMapBlockHeight = () => {
             if (window.innerWidth >= 900) {
                 document.documentElement.style.removeProperty('--city-map-h');
@@ -85,10 +107,15 @@
             );
         };
         syncMapBlockHeight();
-        window.addEventListener('resize', syncMapBlockHeight);
+        window.addEventListener('resize', () => {
+            if (window.innerWidth === lastWidth) return;
+            lastWidth = window.innerWidth;
+            syncMapBlockHeight();
+        });
         // Los webfonts pueden cambiar la altura de la cabecera (Syne en
         // el título) después del primer cálculo — se recalcula una vez
-        // más cuando terminan de cargar.
+        // más cuando terminan de cargar (no depende de "resize", así
+        // que no lo bloquea el filtro de ancho de arriba).
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(syncMapBlockHeight);
         }
@@ -99,6 +126,14 @@
         ciudad: city.name,
         lat: city.lat,
         lng: city.lng,
+        // Por debajo de --bp-md, el mapa arranca bloqueado (overlay
+        // "Toca para interactuar", ver cityMap.js) — el primer gesto
+        // sobre el mapa hace scroll de página con normalidad en vez de
+        // moverlo; un tap explícito lo activa. En desktop (columna de
+        // mapa fija, aspect-ratio propio, sin contenido debajo del
+        // bloque compitiendo por el mismo swipe) sigue interactivo
+        // desde el primer toque.
+        interactive: isDesktopLayout(),
     }).then(async (mapInstance) => {
         if (mapInstance) {
             await mountPartnersList('city-partners-list', mapInstance, city, {
