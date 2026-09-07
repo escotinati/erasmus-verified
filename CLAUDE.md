@@ -112,13 +112,25 @@ Nueva ciudad o partner: usar el panel de administración en `/admin` (ver secci�
 
 ## Mapa interactivo
 
-### `mountCityMap(containerId, { pais, ciudad, interactive })`
+### `mountCityMap(containerId, { pais, ciudad, lat, lng })`
 
-- `interactive: true` — usado en **ambas** páginas: `ciudad.html` y `mapa.html`. Ya no hay overlay "toca para interactuar"; el mapa responde directamente al toque/click.
+El mapa arranca siempre interactivo (pan/zoom directo al primer toque) en las dos páginas que lo usan, `ciudad.html` y `mapa.html` — no hay overlay "toca para interactuar" (existió, se quitó al introducir el panel arrastrable de `ciudad.html` de abajo, que ya resolvía el motivo por el que existía).
 
-En `ciudad.html` el mapa está dentro de `.city-map-columns` con layout de dos columnas en desktop (75 % mapa / 25 % lista de partners). En móvil el mapa usa `position: sticky` para quedarse visible mientras el usuario hace scroll por la lista.
+En `ciudad.html` el mapa está dentro de `.city-map-columns`, con layout de dos columnas en desktop (75 % mapa / 25 % lista de partners, igual que antes). En **móvil** ya no es "mapa fijo arriba + lista que fluye con la página": ver [Panel arrastrable de ciudad.html (CitySheet)](#panel-arrastrable-de-ciudadhtml-citysheet) más abajo.
 
-La variable CSS `--topbar-h` se inyecta dinámicamente en `src/js/ciudad.js` leyendo `header.topbar.offsetHeight`, y la usa tanto el `top` del sticky como el `padding-top` del móvil-nav.
+La variable CSS `--topbar-h` se inyecta dinámicamente en `src/js/ciudad.js` leyendo `header.topbar.offsetHeight`, y la usa el `padding-top` del móvil-nav, la altura de `.city-map-columns` en móvil (ver CitySheet) y (antes) el `top` del sticky ya retirado.
+
+### Panel arrastrable de ciudad.html (CitySheet)
+
+En móvil (`<900px`), `ciudad.html` ya no muestra "mapa fijo de 220px + lista que fluye con la página" — muestra el mapa a pantalla casi completa con un panel arrastrable encima, estilo Google Maps. `src/js/ui/citySheet.js` expone `window.CitySheet.mount(sheetEl)`, vanilla (mismo criterio que `sheet.js`: el único consumidor, `ciudad.js`, ya es vanilla).
+
+- `.city-map-columns` (móvil) pasa a tener una altura fija — `calc(100dvh - var(--topbar-h) - var(--nav-bottom-h) - 8px)`, la misma resta que ya hace `body { padding-bottom }` para el bottom-nav — y `overflow: hidden`. `.city-map-embed` es full-bleed dentro (`position: absolute; inset: 0`), y `.city-sheet` (el panel, con `.partners-list` dentro sin cambios) flota encima con `position: absolute; inset: 0` también, movido con `transform: translateY()` por JS.
+- 3 posiciones — peek / half / full —, nunca 0: el mapa no desaparece del todo ni en "full" (deja una franja visible arriba), igual que Google Maps.
+- El gesto de arrastre (Pointer Events + `setPointerCapture`, mismo patrón que el drag-to-close de `sheet.js`) vive **solo** en `.city-sheet-grip-row` (la cabecera con el tirador), nunca en todo el panel — si no, competiría con el scroll interno de `.partners-list`.
+- WCAG 2.2 (_Dragging Movements_) exige una alternativa de un solo puntero para cualquier gesto de arrastre: `.city-sheet-cycle-btn`, un botón junto al tirador, cicla las 3 posiciones con un tap. Un tap corto sobre la propia cabecera (sin arrastre real, por debajo de un umbral de movimiento) hace lo mismo por comodidad, pero el botón es la alternativa que cuenta a efectos de accesibilidad — no depende de distinguir tap de drag.
+- En desktop (`min-width: 900px`), `.city-sheet` vuelve a ser una columna normal del layout 75/25 (mismo ancho que tenía `.partners-list` antes de este cambio), sin transform ni cabecera arrastrable (`display: none` en `.city-sheet-grip-row`) — `ciudad.js` sigue fijando su altura por JS igual que antes.
+- **`mapa.html` no usa este patrón** — su mobile layout ya era distinto (`.map-with-list`, `mapa.css`: mapa `flex:1` + lista con scroll propio debajo, altura fija de página completa) y no compartía el problema (mapa sticky + scroll de página) que motivó CitySheet. No se ha migrado a este mismo panel arrastrable; sería trabajo aparte si algún día se decide unificar los dos.
+- Deliberadamente NO se rediseñaron las cabeceras de categoría a chips horizontales dentro del panel (una idea que se barajó) — `PartnerCategoryList.jsx` es compartido con `mapa.html`, y tocarlo habría afectado a esa página también sin que se hubiera pedido. El panel reutiliza la lista vertical de siempre, sin cambios en `PartnerCategoryList.jsx`/`mapPartners.js`.
 
 ### Geocodificación
 
@@ -225,7 +237,7 @@ El menú de las 8 páginas públicas (todo salvo `/admin`) es **React** (`src/re
 
 Cada página tiene un `<div id="nav-root"></div>` seguido de `<script type="module" src="/src/react/mount-*.jsx">` en el sitio donde antes iba el header estático — Vite descubre esos scripts automáticamente por estar referenciados desde un HTML ya registrado en `vite.config.js`, no hace falta añadirlos a mano. `Nav.jsx` incluye además el icono de cuenta (`#authBtn`, placeholder sin login todavía) y `TopbarNav.jsx` acepta un prop `backLink` opcional:
 
-- `ciudad.html` / `mapa.html`: llevan botón de "volver", configurado justo antes del `<script type="module">` con una línea `window.__BACK_LINK__ = { i18nKey, label, href }` — sus propios scripts (`ciudad.js`/`mapa.js`) sobreescriben `href`/texto tras cargar datos de Supabase.
+- `mapa.html`: lleva botón de "volver" (a la ciudad), configurado justo antes del `<script type="module">` con una línea `window.__BACK_LINK__ = { i18nKey, label, href }` — su propio script (`mapa.js`) sobreescribe `href`/texto tras cargar datos de Supabase. `ciudad.html` ya no lo lleva (se quitó el botón "Inicio" que volvía al home).
 - `ciudades.html`: el back-link va hardcodeado en `mount-hero-legacy-nav.jsx` (siempre "Todos los países" → `index.html`, nunca cambia).
 - El resto de páginas del patrón `header.topbar` no pasan `backLink` y `TopbarNav.jsx` no lo renderiza.
 

@@ -2,16 +2,6 @@
 //  CIUDAD.JS — Erasmus Verified
 // ─────────────────────────────────────────────────────────────
 
-// Lee --bp-md de tokens.css en vez de hardcodear 900 aquí — mismo
-// patrón que isDesktopLayout() en src/js/ui/sheet.js, así el punto de
-// corte del gesto del mapa se queda sincronizado con el mismo token
-// que decide, en CSS, el resto del layout de dos columnas.
-function isDesktopLayout() {
-    const raw = getComputedStyle(document.documentElement).getPropertyValue('--bp-md');
-    const bpMd = parseFloat(raw) || 900;
-    return window.matchMedia('(min-width: ' + bpMd + 'px)').matches;
-}
-
 (async function () {
     const params = new URLSearchParams(window.location.search);
     const cityId = parseInt(params.get('ciudad'), 10);
@@ -37,9 +27,6 @@ function isDesktopLayout() {
     }
 
     document.title = `${city.name}, ${city.country} — Erasmus Verified`;
-
-    document.getElementById('backLink').href = 'index.html';
-    document.getElementById('backLinkText').textContent = I18n.t('nav.home');
 
     document.getElementById('cityFlag').textContent = city.flag;
     document.getElementById('cityLocation').textContent = `${city.country} · Erasmus`;
@@ -71,37 +58,69 @@ function isDesktopLayout() {
         window.addEventListener('resize', setTopbarH);
     }
 
+    // La altura de .city-map-columns en móvil (mapa + sheet a pantalla
+    // casi completa, ver ciudad.css/citySheet.js) NO puede salir solo
+    // de un calc(100dvh - ...) fijo: a diferencia de mapa.html (el
+    // mapa es lo único de la página), aquí hay contenido real encima
+    // (cabecera, descripción) cuya altura varía por ciudad/idioma. Se
+    // mide su posición real y se calcula lo que queda de pantalla —
+    // el calc() de ciudad.css queda solo como valor de arranque antes
+    // de que este JS corra.
+    const mapColumnsEl = document.querySelector('.city-map-columns');
+    if (mapColumnsEl) {
+        const syncMapBlockHeight = () => {
+            if (window.innerWidth >= 900) {
+                document.documentElement.style.removeProperty('--city-map-h');
+                return;
+            }
+            const navBottomH =
+                parseFloat(
+                    getComputedStyle(document.documentElement).getPropertyValue('--nav-bottom-h')
+                ) || 60;
+            const top = mapColumnsEl.getBoundingClientRect().top;
+            const available = window.innerHeight - top - navBottomH - 8;
+            document.documentElement.style.setProperty(
+                '--city-map-h',
+                Math.max(available, 420) + 'px'
+            );
+        };
+        syncMapBlockHeight();
+        window.addEventListener('resize', syncMapBlockHeight);
+        // Los webfonts pueden cambiar la altura de la cabecera (Syne en
+        // el título) después del primer cálculo — se recalcula una vez
+        // más cuando terminan de cargar.
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(syncMapBlockHeight);
+        }
+    }
+
     mountCityMap('city-map-embed', {
         pais: city.country,
         ciudad: city.name,
         lat: city.lat,
         lng: city.lng,
-        // Por debajo de --bp-md, el mapa arranca bloqueado (ver
-        // cityMap.js: interactive:false activa el overlay "Toca para
-        // interactuar" que ya existía en el código, sin usar hasta
-        // ahora en ninguna página) — el primer gesto sobre el mapa
-        // hace scroll de página con normalidad en vez de moverlo; un
-        // tap explícito lo activa. En desktop (columna de mapa fija,
-        // aspect-ratio propio) no compite con el scroll de la misma
-        // forma, así que sigue interactivo desde el primer toque.
-        interactive: isDesktopLayout(),
     }).then(async (mapInstance) => {
         if (mapInstance) {
             await mountPartnersList('city-partners-list', mapInstance, city, {
                 autoOpenPartnerId: partnerId,
             });
             const mapEl = document.getElementById('city-map-embed');
-            const asideEl = document.getElementById('city-partners-list');
+            const sheetEl = document.getElementById('citySheet');
+            // En desktop el panel vuelve a ser una columna normal junto
+            // al mapa (ver ciudad.css): su altura la fija este mismo
+            // JS, igual que antes de que existiera CitySheet — en
+            // móvil no hace falta, la fija --topbar-h/--nav-bottom-h.
             const syncHeight = () => {
                 if (window.innerWidth >= 900) {
-                    asideEl.style.height = mapEl.offsetHeight + 'px';
+                    sheetEl.style.height = mapEl.offsetHeight + 'px';
                 } else {
-                    asideEl.style.height = '';
+                    sheetEl.style.height = '';
                 }
                 mapInstance.invalidateSize();
             };
             syncHeight();
             new ResizeObserver(syncHeight).observe(mapEl);
+            CitySheet.mount(sheetEl);
         }
     });
 })();
@@ -206,7 +225,15 @@ function buildMapBlock(city) {
     <div class="city-map-block">
       <div class="city-map-columns">
         <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${escapeHtml(city.name)}"></div>
-        <aside id="city-partners-list" class="partners-list"></aside>
+        <div id="citySheet" class="city-sheet" data-state="peek">
+          <div class="city-sheet-grip-row">
+            <div class="city-sheet-grip"></div>
+            <button type="button" class="city-sheet-cycle-btn" aria-expanded="false">
+              <span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_up</span>
+            </button>
+          </div>
+          <aside id="city-partners-list" class="partners-list"></aside>
+        </div>
       </div>
       <a href="${fullscreenUrl}" class="city-map-fullscreen-link">
         ${I18n.t('city.map_fullscreen_link')}
