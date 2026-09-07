@@ -289,28 +289,6 @@ main.city-main {
     margin-bottom: 8px;
 }
 
-/* Overlay "Toca para interactuar" — gesto-gate para móvil */
-
-.city-map-activate {
-    position: absolute;
-    inset: 0;
-    z-index: 1000;
-    /* por encima de los tiles de Leaflet */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.15);
-    color: #fff;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    backdrop-filter: blur(1px);
-}
-
 .city-map-fullscreen-link {
     display: inline-flex;
     align-items: center;
@@ -322,40 +300,155 @@ main.city-main {
     align-self: flex-start;
 }
 
+/* En móvil, .city-map-columns ya no es "mapa fijo arriba + lista que
+   fluye con la página" — es una composición a pantalla casi completa
+   (mapa de fondo + panel arrastrable encima, ver .city-sheet), estilo
+   Google Maps: el usuario ve primero el mapa entero, y despliega la
+   lista de partners con el dedo en vez de bajar por la página. Mismo
+   patrón que ya usa mapa.html (.map-with-list, mapa.css), altura
+   calculada igual: 100% de la pantalla menos topbar y bottom-nav.
+   --topbar-h lo inyecta ciudad.js (offsetHeight real del header);
+   --nav-bottom-h + 8px es EXACTAMENTE la misma resta que ya hace
+   `body { padding-bottom }` en base.css para el bottom-nav — mismo
+   número, no uno nuevo inventado aquí. */
 .city-map-columns {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    position: relative;
+    /* overflow:hidden no es solo estético: sin él, el panel arrastrado
+       hacia abajo (peek) sobresaldría por debajo de este contenedor —
+       su translateY lo desplaza más allá del borde inferior que ya
+       tenía por el inset:0 (ver .city-sheet). */
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    /* --city-map-h lo calcula ciudad.js midiendo la posición real de
+       este bloque (la cabecera de arriba varía de alto por ciudad/
+       idioma) — el calc() es solo el valor de arranque antes de que
+       ese JS corra. */
+    height: var(--city-map-h, calc(100dvh - var(--topbar-h, 65px) - var(--nav-bottom-h) - 8px));
+    min-height: 420px;
 }
 
 .city-map-columns .city-map-embed {
-    /* Sticky en móvil: el mapa queda fijo en la parte superior mientras
-       el usuario hace scroll por la lista de partners que hay debajo.
-       top usa --topbar-h, que ciudad.js inyecta como variable CSS
-       leyendo el offsetHeight real del header.topbar. */
-    position: sticky;
-    top: var(--topbar-h, 65px);
-    z-index: 10;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
     width: 100%;
-    height: 220px;
+    height: 100%;
+    /* El marco (borde/radio/margen) del bloque ahora lo pone
+       .city-map-columns entero (overflow:hidden + border-radius de
+       arriba) — el mapa aquí es full-bleed dentro de ese marco. */
+    margin-bottom: 0;
+    border: none;
+    border-radius: 0;
 }
 
-.city-map-columns .partners-list {
-    /* En móvil el scroll es de página (no del aside): el mapa sticky
-       solo tiene sentido si la lista crece libremente hacia abajo. */
+/* ── Panel arrastrable (Google Maps-style) — ver src/js/ui/citySheet.js ──
+   Flota sobre el mapa, nunca lo tapa del todo (el estado "full" deja
+   una franja de mapa visible arriba, ver CitySheet). El gesto de
+   arrastre vive SOLO en .city-sheet-grip-row, nunca en todo el panel:
+   si no, competiría con el scroll interno de .partners-list. */
+.city-sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    background: var(--background);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -10px 26px -12px rgba(19, 27, 46, 0.28);
+    will-change: transform;
+}
+
+.city-sheet:not(.city-sheet--dragging) {
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .city-sheet {
+        transition: none;
+    }
+}
+
+.city-sheet-grip-row {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px 8px;
+    /* Evita que el navegador interprete el arrastre vertical como
+       scroll de página/gestos nativos mientras se mueve el panel. */
+    touch-action: none;
+    user-select: none;
+    cursor: grab;
+    position: relative;
+}
+
+.city-sheet-grip-row:active {
+    cursor: grabbing;
+}
+
+.city-sheet-grip {
+    width: 38px;
+    height: 4px;
+    border-radius: var(--radius-full);
+    background: var(--outline-variant);
+}
+
+/* Alternativa sin arrastre (WCAG 2.2 — Dragging Movements): cicla las
+   3 posiciones con un tap, sin depender de que el usuario arrastre. */
+.city-sheet-cycle-btn {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    border-radius: 50%;
+    border: none;
+    background: var(--surface-container-low);
+    color: var(--on-surface-variant);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.city-sheet-cycle-btn .material-symbols-outlined {
+    font-size: 18px;
+    transition: transform var(--duration-fast, 0.18s) ease;
+}
+
+.city-sheet[data-state='peek'] .city-sheet-cycle-btn .material-symbols-outlined {
+    transform: rotate(0deg);
+}
+
+.city-sheet[data-state='half'] .city-sheet-cycle-btn .material-symbols-outlined,
+.city-sheet[data-state='full'] .city-sheet-cycle-btn .material-symbols-outlined {
+    transform: rotate(180deg);
+}
+
+.city-sheet .partners-list {
+    flex: 1;
+    min-height: 0;
     width: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 900px) {
-    /* --bp-md */
+    /* --bp-md: layout original de dos columnas, sin panel arrastrable */
     .city-map-columns {
         flex-direction: row;
         align-items: flex-start;
-        /* el mapa ya no se estira para igualar al listado:
-           su altura depende solo de su propio ancho (aspect-ratio) */
+        position: static;
+        overflow: visible;
+        border-radius: 0;
+        height: auto;
+        min-height: 0;
     }
     .city-map-columns .city-map-embed,
-    .city-map-columns .partners-list {
+    .city-sheet {
         flex: none;
     }
     .city-map-columns .city-map-embed {
@@ -363,19 +456,34 @@ main.city-main {
         width: calc(75% - 9px);
         aspect-ratio: 16 / 9;
         height: auto;
-        /* Anula el sticky de móvil: position:relative + top:0 restituye
-           el comportamiento original de escritorio (flujo flex normal,
-           sin desplazamiento). top:0 es necesario para cancelar el
-           top:var(--topbar-h) heredado de la regla móvil. */
+        /* Anula el full-bleed de móvil: position:relative + top:0
+           restituye el comportamiento original de escritorio (flujo
+           flex normal, sin desplazamiento), con su propio marco de
+           nuevo (el de .city-map-columns ya no aplica, overflow:visible
+           arriba). */
         position: relative;
         top: 0;
         z-index: auto;
-        /* la altura sale del aspect-ratio, no del listado de partners */
+        margin-bottom: 16px;
+        border: 1px solid var(--outline-variant);
+        border-radius: var(--radius-lg);
     }
-    .city-map-columns .partners-list {
-        /* 25% del ancho disponible, descontando el gap de 12px entre columnas */
+    .city-sheet {
+        /* Deja de ser un panel flotante: vuelve a ser una columna
+           normal del flex row, mismo ancho que el aside original.
+           La altura la sigue fijando ciudad.js (mismo valor que el
+           mapa) vía JS, igual que antes de este cambio. */
+        position: static;
         width: calc(25% - 3px);
-        max-height: none;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+        transform: none !important;
+    }
+    .city-sheet-grip-row {
+        display: none;
+    }
+    .city-sheet .partners-list {
         overflow-y: scroll;
     }
 }
