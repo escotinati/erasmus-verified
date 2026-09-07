@@ -15,12 +15,12 @@
 //  .hero-legacy, donde el topbar vive dentro de un <section> que ya
 //  hace de contenedor (ver mount-hero-legacy-nav.jsx).
 //
-//  `backLink` (opcional): { i18nKey, label, href }. Solo lo llevan
-//  ciudad.html, mapa.html (texto que sus scripts reescriben tras
-//  cargar datos de Supabase, con await de por medio — llega siempre
-//  después de que React haya montado, no hay carrera ahí) y
-//  ciudades.html (estático, nunca se reescribe). El resto de páginas
-//  del patrón header.topbar no lo pasan y no se renderiza.
+//  `backLink` (opcional): { i18nKey, label, href }. Solo lo lleva
+//  mapa.html (texto que su script reescribe tras cargar datos de
+//  Supabase, con await de por medio — llega siempre después de que
+//  React haya montado, no hay carrera ahí) y ciudades.html (estático,
+//  nunca se reescribe). El resto de páginas del patrón header.topbar
+//  no lo pasan y no se renderiza.
 //
 //  Ver Nav.jsx para la explicación larga de por qué este componente
 //  resuelve i18n/lang-switcher/tema Parties él mismo en vez de dejarlo

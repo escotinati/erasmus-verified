@@ -225,7 +225,7 @@ El menú de las 8 páginas públicas (todo salvo `/admin`) es **React** (`src/re
 
 Cada página tiene un `<div id="nav-root"></div>` seguido de `<script type="module" src="/src/react/mount-*.jsx">` en el sitio donde antes iba el header estático — Vite descubre esos scripts automáticamente por estar referenciados desde un HTML ya registrado en `vite.config.js`, no hace falta añadirlos a mano. `Nav.jsx` incluye además el icono de cuenta (`#authBtn`, placeholder sin login todavía) y `TopbarNav.jsx` acepta un prop `backLink` opcional:
 
-- `ciudad.html` / `mapa.html`: llevan botón de "volver", configurado justo antes del `<script type="module">` con una línea `window.__BACK_LINK__ = { i18nKey, label, href }` — sus propios scripts (`ciudad.js`/`mapa.js`) sobreescriben `href`/texto tras cargar datos de Supabase.
+- `mapa.html`: lleva botón de "volver" (a la ciudad), configurado justo antes del `<script type="module">` con una línea `window.__BACK_LINK__ = { i18nKey, label, href }` — su propio script (`mapa.js`) sobreescribe `href`/texto tras cargar datos de Supabase. `ciudad.html` ya no lo lleva (se quitó el botón "Inicio" que volvía al home).
 - `ciudades.html`: el back-link va hardcodeado en `mount-hero-legacy-nav.jsx` (siempre "Todos los países" → `index.html`, nunca cambia).
 - El resto de páginas del patrón `header.topbar` no pasan `backLink` y `TopbarNav.jsx` no lo renderiza.
 

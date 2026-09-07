@@ -38,9 +38,6 @@ function isDesktopLayout() {
 
     document.title = `${city.name}, ${city.country} — Erasmus Verified`;
 
-    document.getElementById('backLink').href = 'index.html';
-    document.getElementById('backLinkText').textContent = I18n.t('nav.home');
-
     document.getElementById('cityFlag').textContent = city.flag;
     document.getElementById('cityLocation').textContent = `${city.country} · Erasmus`;
     document.getElementById('cityName').textContent = city.name;

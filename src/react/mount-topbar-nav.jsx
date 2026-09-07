@@ -4,8 +4,8 @@
 //  servicios.html, viajes.html, alojamiento.html).
 //
 //  window.__BACK_LINK__ es opcional: solo lo define (con un <script>
-//  de una línea justo antes de este) ciudad.html/mapa.html, que sí
-//  llevan botón de "volver". El resto de páginas no lo definen y
+//  de una línea justo antes de este) mapa.html, que sí lleva botón de
+//  "volver" (a la ciudad). El resto de páginas no lo definen y
 //  TopbarNav simplemente no renderiza el botón.
 // ─────────────────────────────────────────────────────────────
 
