@@ -289,6 +289,34 @@ main.city-main {
     margin-bottom: 8px;
 }
 
+/* Overlay "Toca para interactuar" — gesto-gate para móvil (ver
+   cityMap.js: sigue haciendo falta incluso con el mapa a pantalla
+   completa + panel arrastrable, porque Leaflet secuestra el swipe de
+   scroll de página en cuanto empieza sobre el mapa). z-index alto
+   solo para ganarle a los panes de Leaflet (dentro de la misma pila
+   de apilamiento que .city-map-embed) — .city-sheet, con su propio
+   z-index más alto a nivel de .city-map-columns, sigue quedando
+   siempre por encima. */
+
+.city-map-activate {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.15);
+    color: #fff;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    backdrop-filter: blur(1px);
+}
+
 .city-map-fullscreen-link {
     display: inline-flex;
     align-items: center;
