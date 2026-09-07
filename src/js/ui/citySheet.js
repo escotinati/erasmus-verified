@@ -25,6 +25,13 @@
 //  usuario arrastre nada. Un tap corto sobre la propia cabecera hace
 //  lo mismo por comodidad, pero es un extra — el botón es la
 //  alternativa que cuenta a efectos de accesibilidad.
+//
+//  wireScrollFades() (más abajo) es lo segundo que hace mount(): pinta
+//  el desvanecido arriba/abajo de .partners-list (ver .city-sheet-fade
+//  en ciudad.css) según su scroll real — sustituye a la barra de
+//  scroll, oculta a propósito en móvil, como pista de "hay más
+//  contenido". No tiene relación con el arrastre/snap de arriba, vive
+//  en el mismo módulo solo porque ambos actúan sobre el mismo sheetEl.
 // ─────────────────────────────────────────────────────────────
 
 (function () {
@@ -68,6 +75,34 @@
             }
         }
         return best;
+    }
+
+    // Pinta las clases is-scrolled/has-more sobre .partners-list según
+    // su scroll real (ver .city-sheet-fade en ciudad.css) — sustituyen
+    // a la barra de scroll oculta como pista de "hay más contenido" en
+    // esa dirección. Un ResizeObserver además de "scroll" porque
+    // togglear una categoría (mapPartners.js) puede cambiar
+    // scrollHeight sin que el usuario haga scroll él mismo.
+    function wireScrollFades(sheetEl) {
+        const list = sheetEl.querySelector('.partners-list');
+        if (!list) return () => {};
+
+        function update() {
+            const atTop = list.scrollTop <= 2;
+            const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
+            list.classList.toggle('is-scrolled', !atTop);
+            list.classList.toggle('has-more', !atBottom);
+        }
+
+        list.addEventListener('scroll', update, { passive: true });
+        const observer = new ResizeObserver(update);
+        observer.observe(list);
+        update();
+
+        return () => {
+            list.removeEventListener('scroll', update);
+            observer.disconnect();
+        };
     }
 
     // sheetEl: el <div class="city-sheet"> ya insertado en el DOM, con
@@ -166,6 +201,8 @@
         window.addEventListener('resize', onLayoutChange);
         onLayoutChange();
 
+        const unwireScrollFades = wireScrollFades(sheetEl);
+
         return {
             setState,
             destroy() {
@@ -175,6 +212,7 @@
                 grip.removeEventListener('pointercancel', onPointerUp);
                 cycleBtn.removeEventListener('click', cycle);
                 window.removeEventListener('resize', onLayoutChange);
+                unwireScrollFades();
             },
         };
     }
