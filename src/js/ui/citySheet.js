@@ -20,18 +20,28 @@
 //  interno de la lista de partners.
 //
 //  WCAG 2.2 (Dragging Movements) exige una alternativa de un solo
-//  puntero para cualquier gesto de arrastre: .city-sheet-cycle-btn
-//  cicla las 3 posiciones con un simple tap, sin depender de que el
-//  usuario arrastre nada. Un tap corto sobre la propia cabecera hace
-//  lo mismo por comodidad, pero es un extra — el botón es la
-//  alternativa que cuenta a efectos de accesibilidad.
+//  puntero para cualquier gesto de arrastre: .city-sheet-grip-row ES
+//  un <button> (no un <div> con role/tabindex a mano — foco y
+//  activación por teclado gratis), así que un tap o un Enter/Espacio
+//  sobre la cabecera cicla las 3 posiciones sin depender de arrastrar
+//  nada. No hay un botón aparte para esto (lo hubo: .city-sheet-cycle-btn,
+//  retirado — la propia cabecera ya hacía de alternativa vía tap desde
+//  el principio, el botón separado era redundante).
+//
+//  La flecha (.city-sheet-arrow-icon) dentro de esa cabecera apunta
+//  arriba mientras quede contenido por ver — el panel puede
+//  expandirse más, o (ya en "full") la lista todavía no ha llegado al
+//  final — y abajo solo cuando de verdad no queda nada más: panel en
+//  "full" Y lista con scroll llegado al final. Ver
+//  updateArrowDirection() más abajo.
 //
 //  wireScrollFades() (más abajo) es lo segundo que hace mount(): pinta
 //  el desvanecido arriba/abajo de .partners-list (ver .city-sheet-fade
 //  en ciudad.css) según su scroll real — sustituye a la barra de
 //  scroll, oculta a propósito en móvil, como pista de "hay más
-//  contenido". No tiene relación con el arrastre/snap de arriba, vive
-//  en el mismo módulo solo porque ambos actúan sobre el mismo sheetEl.
+//  contenido". Le pasa un callback a mount() para que la flecha de
+//  arriba se actualice también cuando cambia el scroll de la lista,
+//  no solo cuando cambia la posición del panel.
 // ─────────────────────────────────────────────────────────────
 
 (function () {
@@ -82,8 +92,11 @@
     // a la barra de scroll oculta como pista de "hay más contenido" en
     // esa dirección. Un ResizeObserver además de "scroll" porque
     // togglear una categoría (mapPartners.js) puede cambiar
-    // scrollHeight sin que el usuario haga scroll él mismo.
-    function wireScrollFades(sheetEl) {
+    // scrollHeight sin que el usuario haga scroll él mismo. onChange
+    // se llama después de cada actualización — mount() lo usa para
+    // refrescar también la flecha de la cabecera (ver
+    // updateArrowDirection), que depende de este mismo "has-more".
+    function wireScrollFades(sheetEl, onChange) {
         const list = sheetEl.querySelector('.partners-list');
         if (!list) return () => {};
 
@@ -92,6 +105,7 @@
             const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
             list.classList.toggle('is-scrolled', !atTop);
             list.classList.toggle('has-more', !atBottom);
+            if (onChange) onChange();
         }
 
         list.addEventListener('scroll', update, { passive: true });
@@ -106,13 +120,13 @@
     }
 
     // sheetEl: el <div class="city-sheet"> ya insertado en el DOM, con
-    // .city-sheet-grip-row (cabecera arrastrable) y .city-sheet-cycle-btn
-    // (alternativa sin arrastre) dentro. Devuelve null si el marcado
-    // esperado no está — nunca lanza.
+    // .city-sheet-grip-row (cabecera, a la vez zona de arrastre y
+    // alternativa sin arrastre — ver comentario de arriba) dentro.
+    // Devuelve null si el marcado esperado no está — nunca lanza.
     function mount(sheetEl) {
         const grip = sheetEl.querySelector('.city-sheet-grip-row');
-        const cycleBtn = sheetEl.querySelector('.city-sheet-cycle-btn');
-        if (!grip || !cycleBtn) return null;
+        if (!grip) return null;
+        const list = sheetEl.querySelector('.partners-list');
 
         let current = 'peek';
         let dragging = false;
@@ -124,17 +138,27 @@
             return translateFor(current, sheetEl.getBoundingClientRect().height);
         }
 
+        // Arriba mientras quede algo por ver: el panel no está del
+        // todo desplegado, o (ya en "full") la lista aún no ha
+        // llegado a su final. Abajo solo cuando las dos cosas a la
+        // vez son ciertas — nada más que revelar, solo plegar.
+        function updateArrowDirection() {
+            const pointsDown = current === 'full' && !(list && list.classList.contains('has-more'));
+            grip.dataset.arrow = pointsDown ? 'down' : 'up';
+            grip.setAttribute('aria-expanded', String(pointsDown));
+            grip.setAttribute(
+                'aria-label',
+                pointsDown ? I18n.t('map.sheet_collapse') : I18n.t('map.sheet_expand')
+            );
+        }
+
         function apply(state, animate) {
             const height = sheetEl.getBoundingClientRect().height;
             const y = translateFor(state, height);
             sheetEl.classList.toggle('city-sheet--dragging', !animate);
             sheetEl.style.transform = 'translateY(' + y + 'px)';
             sheetEl.dataset.state = state;
-            cycleBtn.setAttribute('aria-expanded', String(state === 'full'));
-            cycleBtn.setAttribute(
-                'aria-label',
-                state === 'full' ? I18n.t('map.sheet_collapse') : I18n.t('map.sheet_expand')
-            );
+            updateArrowDirection();
         }
 
         function setState(state, animate = true) {
@@ -184,11 +208,21 @@
             setState(nearestState(y, height));
         }
 
+        // click con detail:0 = disparado por teclado (Enter/Espacio
+        // sobre el <button>), no por puntero — el tap por puntero ya
+        // lo gestiona onPointerUp() arriba (moved < TAP_THRESHOLD_PX);
+        // sin este filtro, un tap real dispararía cycle() dos veces
+        // (una desde pointerup, otra desde el click sintético que el
+        // navegador dispara después en cualquier <button>).
+        function onKeyboardClick(e) {
+            if (e.detail === 0) cycle();
+        }
+
         grip.addEventListener('pointerdown', onPointerDown);
         grip.addEventListener('pointermove', onPointerMove);
         grip.addEventListener('pointerup', onPointerUp);
         grip.addEventListener('pointercancel', onPointerUp);
-        cycleBtn.addEventListener('click', cycle);
+        grip.addEventListener('click', onKeyboardClick);
 
         function onLayoutChange() {
             if (isDesktopLayout()) {
@@ -201,7 +235,7 @@
         window.addEventListener('resize', onLayoutChange);
         onLayoutChange();
 
-        const unwireScrollFades = wireScrollFades(sheetEl);
+        const unwireScrollFades = wireScrollFades(sheetEl, updateArrowDirection);
 
         return {
             setState,
@@ -210,7 +244,7 @@
                 grip.removeEventListener('pointermove', onPointerMove);
                 grip.removeEventListener('pointerup', onPointerUp);
                 grip.removeEventListener('pointercancel', onPointerUp);
-                cycleBtn.removeEventListener('click', cycle);
+                grip.removeEventListener('click', onKeyboardClick);
                 window.removeEventListener('resize', onLayoutChange);
                 unwireScrollFades();
             },
