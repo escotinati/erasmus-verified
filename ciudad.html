@@ -41,6 +41,26 @@
             <div class="city-page" id="cityPage">
                 <div class="city-header">
                     <h1 class="city-name anim-page-enter" id="cityName"></h1>
+                    <!-- Oculto hasta que se sepa que la ciudad tiene partners
+                         (ciudad.js lo revela al montar la lista) — ver
+                         initCitySearch() en ciudad.js. Mismas clases que el
+                         buscador de index.html (components.css, genéricas,
+                         no exclusivas del home), mismo look a propósito. -->
+                    <div class="search-bar city-search-bar" id="citySearchBar" hidden>
+                        <div class="search-bar-input">
+                            <span class="material-symbols-outlined search-icon">search</span>
+                            <input
+                                type="text"
+                                id="citySearchInput"
+                                data-i18n="city.search_placeholder_long"
+                                placeholder="Busca un partner o un tipo (alojamiento, bares…)"
+                            />
+                        </div>
+                        <button type="button" class="search-bar-btn" id="citySearchBtn">
+                            <span class="btn-text" data-i18n="city.search_cta">Buscar</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="actions" id="actionsWrap"></div>
                 <div class="info-box anim-fade-up">

@@ -150,6 +150,12 @@ window.I18n.translations = {
             no_results_body: 'Prueba con otro nombre de ciudad o país.',
         },
         city: {
+            search_placeholder_long: 'Busca un partner o un tipo (alojamiento, bares…)',
+            search_placeholder_short: 'Buscar…',
+            search_cta: 'Buscar',
+            search_no_results: 'No se encontraron resultados',
+            search_sites_label: 'sitios',
+            search_result_type_category: 'Tipo',
             tip_label: 'Consejo:',
             tip_text:
                 'Al unirte, preséntate indicando tu universidad y fechas de Erasmus. La comunidad te recibirá con los brazos abiertos.',
@@ -394,6 +400,12 @@ window.I18n.translations = {
             no_results_body: 'Try another city or country name.',
         },
         city: {
+            search_placeholder_long: 'Search a partner or type (housing, bars…)',
+            search_placeholder_short: 'Search…',
+            search_cta: 'Search',
+            search_no_results: 'No results found',
+            search_sites_label: 'spots',
+            search_result_type_category: 'Type',
             tip_label: 'Tip:',
             tip_text:
                 'When you join, introduce yourself with your university and Erasmus dates. The community will welcome you with open arms.',

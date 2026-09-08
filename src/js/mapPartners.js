@@ -38,6 +38,11 @@
 //  `map` (Leaflet, ya inicializado por cityMap.js) y `city` (el
 //  objeto completo de Supabase, no solo su id — lo pasan ciudad.js y
 //  mapa.js, que ya lo tienen en su propio scope antes de llamar).
+//
+//  Devuelve { listGroups, selectPartner, activateOnlyCategory } (o
+//  undefined si la ciudad no tiene partners) — hoy solo lo consume
+//  ciudad.js, para el buscador local de la página (ver
+//  initCitySearch() ahí). mapa.js sigue sin usar el valor de retorno.
 // ─────────────────────────────────────────────────────────────
 
 // Copia local idéntica a la de src/react/navShared.jsx (isPartiesExperience,
@@ -195,6 +200,19 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
         requestAnimationFrame(() => map.invalidateSize());
     }
 
+    // Selección exclusiva ("solo esta categoría") — a diferencia de
+    // toggleCategory() (añade/quita una de varias activas a la vez),
+    // esto reemplaza el Set entero. Lo usa el buscador de ciudad.html
+    // (ver initCitySearch() en ciudad.js): buscar "Alojamiento" debe
+    // dejar viendo SOLO alojamientos, no sumarlos a lo que ya
+    // estuviera activo.
+    function activateOnlyCategory(category) {
+        state.activeCategories = new Set([category]);
+        syncMarkers();
+        renderList();
+        requestAnimationFrame(() => map.invalidateSize());
+    }
+
     function renderList() {
         Skeleton.clear(container);
 
@@ -329,4 +347,13 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
         }
         return null;
     }
+
+    // Handle mínimo para quien haya llamado a mountPartnersList() —
+    // hoy solo lo usa ciudad.js, para el buscador local de la página
+    // (ver initCitySearch()): listGroups (label/icon/color ya
+    // resueltos) para construir su índice, y selectPartner/
+    // activateOnlyCategory para reaccionar a un resultado sin
+    // duplicar el estado que ya vive aquí dentro. mapa.js sigue
+    // ignorando el valor de retorno sin problema.
+    return { listGroups, selectPartner, activateOnlyCategory };
 }

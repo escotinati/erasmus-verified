@@ -134,9 +134,14 @@ function isDesktopLayout() {
         interactive: isDesktopLayout(),
     }).then(async (mapInstance) => {
         if (mapInstance) {
-            await mountPartnersList('city-partners-list', mapInstance, city, {
-                autoOpenPartnerId: partnerId,
-            });
+            const partnersHandle = await mountPartnersList(
+                'city-partners-list',
+                mapInstance,
+                city,
+                {
+                    autoOpenPartnerId: partnerId,
+                }
+            );
             const mapEl = document.getElementById('city-map-embed');
             const sheetEl = document.getElementById('citySheet');
             // En desktop el panel vuelve a ser una columna normal junto
@@ -153,10 +158,202 @@ function isDesktopLayout() {
             };
             syncHeight();
             new ResizeObserver(syncHeight).observe(mapEl);
-            CitySheet.mount(sheetEl);
+            const citySheet = CitySheet.mount(sheetEl);
+
+            // Regla 3 del propio mapPartners.js ("Cuando existan
+            // partners y tipos de partners"): sin partnersHandle no
+            // hay nada que buscar (renderNoPartnersState() ya cubrió
+            // ese caso) — el buscador se queda oculto (atributo
+            // `hidden` de partida en ciudad.html).
+            if (partnersHandle) {
+                initCitySearch(partnersHandle.listGroups, {
+                    onSelectCategory: partnersHandle.activateOnlyCategory,
+                    onSelectPartner: partnersHandle.selectPartner,
+                    onResultSelected: () => citySheet && citySheet.setState('half'),
+                });
+            }
         }
     });
 })();
+
+// ── Buscador local de partners/categorías (debajo del <h1>) ────────
+// Mismo patrón que el autocomplete de index.js (normalize, dropdown de
+// hasta 8 resultados, teclado arriba/abajo/Enter/Escape) pero
+// simplificado: el índice sale de listGroups (ya en memoria, sin red)
+// y en vez de navegar a otra URL, cada resultado dispara un callback
+// que reutiliza el estado que mapPartners.js ya gestiona internamente
+// — nunca duplica esa lógica de filtrado aquí.
+function normalizeSearch(str) {
+    return str.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+function buildCitySearchIndex(groups) {
+    const items = [];
+    for (const group of groups) {
+        items.push({
+            type: 'category',
+            category: group.category,
+            name: group.label,
+            icon: group.icon,
+            color: group.color,
+            sub: `${group.partners.length} ${I18n.t('city.search_sites_label')}`,
+        });
+        for (const partner of group.partners) {
+            items.push({
+                type: 'partner',
+                id: partner.id,
+                category: group.category,
+                name: partner.name,
+                icon: group.icon,
+                color: group.color,
+                sub: group.label,
+            });
+        }
+    }
+    return items;
+}
+
+function initCitySearch(groups, { onSelectCategory, onSelectPartner, onResultSelected }) {
+    const bar = document.getElementById('citySearchBar');
+    const input = document.getElementById('citySearchInput');
+    const exploreBtn = document.getElementById('citySearchBtn');
+    if (!bar || !input || !groups || groups.length === 0) return;
+
+    const index = buildCitySearchIndex(groups);
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'search-dropdown';
+    dropdown.setAttribute('role', 'listbox');
+    bar.style.position = 'relative';
+    bar.appendChild(dropdown);
+    bar.hidden = false;
+
+    // Mismo patrón que el buscador del home (index.html): variante corta
+    // del placeholder en pantallas estrechas, mismo idioma, pasando
+    // siempre por t() en vez de un string hardcodeado. Aquí el corte es
+    // --bp-md (900px, isDesktopLayout()) en vez de 600px porque es el
+    // mismo punto en el que el resto del layout de esta página cambia
+    // (mapa+aside en columnas vs. panel arrastrable).
+    const updatePlaceholder = () => {
+        input.placeholder = isDesktopLayout()
+            ? I18n.t('city.search_placeholder_long')
+            : I18n.t('city.search_placeholder_short');
+    };
+    updatePlaceholder();
+    window.addEventListener('resize', updatePlaceholder);
+
+    let activeIdx = -1;
+
+    function selectResult(item) {
+        dropdown.classList.remove('is-open');
+        input.value = '';
+        input.blur();
+        if (item.type === 'category') onSelectCategory(item.category);
+        else onSelectPartner(item.id);
+        if (onResultSelected) onResultSelected();
+    }
+
+    function renderDropdown(results, query) {
+        dropdown.innerHTML = '';
+        activeIdx = -1;
+
+        if (!results.length) {
+            const empty = document.createElement('div');
+            empty.className = 'search-dropdown-empty';
+            empty.textContent = query ? I18n.t('city.search_no_results') : '';
+            if (query) dropdown.appendChild(empty);
+            dropdown.classList.toggle('is-open', !!query);
+            return;
+        }
+
+        results.slice(0, 8).forEach((item) => {
+            const el = document.createElement('button');
+            el.type = 'button';
+            el.className = 'search-dropdown-item';
+            el.setAttribute('role', 'option');
+            const typeLabel =
+                item.type === 'category'
+                    ? I18n.t('city.search_result_type_category')
+                    : I18n.t('home.search_result_type_partner');
+            el.innerHTML = `
+        <span class="material-symbols-outlined sdi-icon" style="color:${escapeHtml(item.color)}">${escapeHtml(item.icon)}</span>
+        <span class="sdi-text">
+          <span class="sdi-name">${escapeHtml(item.name)}</span>
+          <span class="sdi-sub">${escapeHtml(item.sub)}</span>
+        </span>
+        <span class="sdi-type">${escapeHtml(typeLabel)}</span>`;
+            el.addEventListener('click', () => selectResult(item));
+            dropdown.appendChild(el);
+        });
+        dropdown.classList.add('is-open');
+    }
+
+    function setActive(idx) {
+        const items = dropdown.querySelectorAll('.search-dropdown-item');
+        items.forEach((el) => el.classList.remove('is-active'));
+        activeIdx = Math.max(-1, Math.min(idx, items.length - 1));
+        if (activeIdx >= 0) items[activeIdx].classList.add('is-active');
+    }
+
+    function currentResults() {
+        const q = input.value.trim();
+        if (!q) return { q, results: [] };
+        const nq = normalizeSearch(q);
+        const results = index.filter((item) => normalizeSearch(item.name).includes(nq));
+        results.sort((a, b) => {
+            const an = normalizeSearch(a.name),
+                bn = normalizeSearch(b.name);
+            const aStarts = an.startsWith(nq),
+                bStarts = bn.startsWith(nq);
+            if (aStarts !== bStarts) return aStarts ? -1 : 1;
+            // Empatando en "empieza por", categorías antes que
+            // partners — buscar "aloja" debe encontrar primero el
+            // TIPO Alojamiento, no un partner que se llame parecido.
+            if (a.type !== b.type) return a.type === 'category' ? -1 : 1;
+            return an.localeCompare(bn);
+        });
+        return { q, results };
+    }
+
+    input.addEventListener('input', () => {
+        const { q, results } = currentResults();
+        renderDropdown(results, q);
+    });
+
+    input.addEventListener('focus', () => {
+        const { q, results } = currentResults();
+        if (q) renderDropdown(results, q);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        const items = dropdown.querySelectorAll('.search-dropdown-item');
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActive(activeIdx + 1);
+        }
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActive(activeIdx - 1);
+        }
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const target = activeIdx >= 0 ? items[activeIdx] : items[0];
+            if (target) target.click();
+        }
+        if (e.key === 'Escape') {
+            dropdown.classList.remove('is-open');
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!bar.contains(e.target)) dropdown.classList.remove('is-open');
+    });
+
+    exploreBtn.addEventListener('click', () => {
+        const { results } = currentResults();
+        if (results[0]) selectResult(results[0]);
+    });
+}
 
 function showCityError() {
     document.getElementById('cityPage').innerHTML = `
