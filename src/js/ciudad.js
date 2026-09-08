@@ -259,12 +259,9 @@ function buildMapBlock(city) {
       <div class="city-map-columns">
         <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${escapeHtml(city.name)}"></div>
         <div id="citySheet" class="city-sheet" data-state="peek">
-          <div class="city-sheet-grip-row">
-            <div class="city-sheet-grip"></div>
-            <button type="button" class="city-sheet-cycle-btn" aria-expanded="false">
-              <span class="material-symbols-outlined" aria-hidden="true">keyboard_arrow_up</span>
-            </button>
-          </div>
+          <button type="button" class="city-sheet-grip-row" data-arrow="up" aria-expanded="false">
+            <span class="material-symbols-outlined city-sheet-arrow-icon" aria-hidden="true">keyboard_arrow_up</span>
+          </button>
           <div class="city-sheet-scroll-wrap">
             <aside id="city-partners-list" class="partners-list"></aside>
             <div class="city-sheet-fade city-sheet-fade--top"></div>

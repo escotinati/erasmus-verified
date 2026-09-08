@@ -383,14 +383,28 @@ main.city-main {
     }
 }
 
+/* La cabecera del panel ES el control — no hay un botón aparte (ver
+   .city-sheet-arrow-icon más abajo): a la vez zona de arrastre
+   (Pointer Events, citySheet.js), alternativa sin arrastre (WCAG 2.2
+   — Dragging Movements: un tap sobre ella cicla las 3 posiciones,
+   igual que antes hacía el botón separado) y, ahora, el propio
+   indicador visual de si queda contenido por ver. Es un <button> de
+   verdad (no un <div role="button">) para foco/teclado gratis —
+   reset de estilos nativos + touch-action:none con más especificidad
+   que la regla global `button { touch-action: manipulation }`
+   (base.css), así que gana sin !important. */
 .city-sheet-grip-row {
     flex: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 14px 8px;
-    /* Evita que el navegador interprete el arrastre vertical como
-       scroll de página/gestos nativos mientras se mueve el panel. */
+    width: 100%;
+    min-height: var(--tap-min);
+    padding: 6px 14px;
+    margin: 0;
+    border: none;
+    background: none;
+    font: inherit;
     touch-action: none;
     user-select: none;
     cursor: grab;
@@ -401,42 +415,26 @@ main.city-main {
     cursor: grabbing;
 }
 
-.city-sheet-grip {
-    width: 38px;
-    height: 4px;
-    border-radius: var(--radius-full);
-    background: var(--outline-variant);
+.city-sheet-grip-row:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
 }
 
-/* Alternativa sin arrastre (WCAG 2.2 — Dragging Movements): cicla las
-   3 posiciones con un tap, sin depender de que el usuario arrastre. */
-.city-sheet-cycle-btn {
-    position: absolute;
-    right: 10px;
-    top: 6px;
-    width: var(--tap-min);
-    height: var(--tap-min);
-    border-radius: 50%;
-    border: none;
-    background: var(--surface-container-low);
+/* Flecha única arriba/abajo — sustituye a la barra decorativa + el
+   botón circular de antes. Arriba: "queda contenido por ver" (el
+   panel puede expandirse más, o la lista aún tiene más partners que
+   mostrar). Abajo: ya se ha visto todo, solo queda plegar. La decide
+   updateArrowDirection() en citySheet.js — combina el estado del
+   panel (peek/half/full) con el scroll real de la lista, no solo el
+   estado del panel: en "full" con la lista sin llegar al final,
+   sigue apuntando arriba. */
+.city-sheet-arrow-icon {
+    font-size: 22px;
     color: var(--on-surface-variant);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.city-sheet-cycle-btn .material-symbols-outlined {
-    font-size: 18px;
     transition: transform var(--duration-fast, 0.18s) ease;
 }
 
-.city-sheet[data-state='peek'] .city-sheet-cycle-btn .material-symbols-outlined {
-    transform: rotate(0deg);
-}
-
-.city-sheet[data-state='half'] .city-sheet-cycle-btn .material-symbols-outlined,
-.city-sheet[data-state='full'] .city-sheet-cycle-btn .material-symbols-outlined {
+.city-sheet-grip-row[data-arrow='down'] .city-sheet-arrow-icon {
     transform: rotate(180deg);
 }
 
