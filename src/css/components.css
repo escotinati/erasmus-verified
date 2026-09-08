@@ -714,6 +714,18 @@ a.city-card {
     flex-shrink: 0;
 }
 
+/* Fila sin resultados — mismo contenedor (.search-dropdown) que los
+   resultados reales, pero sin interacción (no es un <button>). Usada
+   hoy por el buscador local de ciudad.html (ver initCitySearch() en
+   ciudad.js); genérica por si algún futuro consumidor de
+   .search-dropdown también la necesita. */
+.search-dropdown-empty {
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--on-surface-variant);
+    text-align: center;
+}
+
 /* Popular pills — hero de index.html */
 
 /* ── 2.5 Bottom nav (mobile) ────────────────────────────────── */
@@ -1139,4 +1151,3 @@ dialog.sheet.sheet--visible::backdrop {
         background: var(--surface-container-low);
     }
 }
-

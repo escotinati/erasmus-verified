@@ -40,6 +40,66 @@ main.city-main {
     margin-bottom: 12px;
 }
 
+/* .search-bar (components.css) es de por sí un componente genérico,
+   ya usado en el hero de index.html dentro de .hero-panel — aquí no
+   hace falta ese envoltorio (ya trae su propio fondo/blur/sombra).
+   Ancho: sin max-width propio, así ocupa el 100% de .city-header —
+   igual que .city-map-block, hermano suyo dentro de .city-page — así
+   que ambos comparten el mismo ancho adaptable (520px en móvil,
+   1000px desde --bp-md) sin necesidad de repetir esos valores aquí. */
+.city-search-bar {
+    width: 100%;
+    margin: 64px 0 0;
+    text-align: left;
+}
+
+/* .search-bar (display:flex, components.css) empata en especificidad
+   con el [hidden] del stylesheet del navegador y gana por venir de una
+   hoja de autor — mismo caso ya resuelto en .partner-grid[hidden]
+   (pages/home.css). Sin esto, el atributo `hidden` de partida en
+   ciudad.html no ocultaba nada: el buscador se veía aunque la ciudad
+   no tuviera partners (initCitySearch(), ciudad.js, nunca llegaba a
+   quitarlo con `bar.hidden = false`). */
+.city-search-bar[hidden] {
+    display: none;
+}
+
+/* El botón genérico (.search-bar-btn, components.css) es mobile-first
+   icono-solo y solo recupera texto+flecha a partir de 600px — pero esa
+   regla (pages/home.css) no está escapada bajo el home y por tanto
+   "gotea" a cualquier página que use .search-bar, esta incluida. Aquí
+   el corte deseado es --bp-md (900px, el mismo en el que cambia el
+   resto del layout de esta página), así que se restaura el aspecto
+   icono-solo entre 600 y 899px con selectores más específicos —
+   ganan por especificidad, no dependen del orden de los @import. */
+@media (max-width: 899px) {
+    .city-search-bar.search-bar {
+        padding: 8px 8px 8px 16px;
+    }
+    .city-search-bar .search-bar-input input {
+        font-size: 16px;
+        padding-right: 46px;
+    }
+    .city-search-bar .search-bar-btn {
+        position: absolute;
+        top: 50%;
+        right: 6px;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        gap: 0;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .city-search-bar .search-bar-btn .material-symbols-outlined {
+        font-size: 20px;
+    }
+    .city-search-bar .search-bar-btn .btn-text {
+        display: none;
+    }
+}
+
 .section-divider {
     display: flex;
     align-items: center;
@@ -229,6 +289,23 @@ main.city-main {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+    /* Leaflet pinta sus panes internos (tiles, marcadores, popups) con
+       z-index propios bastante altos (~200-700, fijados por su propio
+       CSS) — en desktop, .city-map-embed vuelve a z-index:auto (ver
+       @media 900px más abajo), así que sin esto esos panes escapan a
+       la pila de apilamiento de la página entera y pintan por encima
+       de CUALQUIER hermano fuera de este bloque, sin importar el
+       z-index que tenga ese hermano (confirmado: tapaban el
+       .search-dropdown pese a su z-index:1000, porque ese 1000 vive
+       dentro de la pila local de .search-bar, con rango 20 a nivel de
+       raíz — Leaflet ni siquiera necesitaba superar el 1000, le
+       bastaba con superar el 20). isolation:isolate contiene TODO lo
+       de dentro (mapa, .city-sheet, el overlay .city-map-activate) en
+       su propia pila — de puertas afuera, este bloque vuelve a pintar
+       como un elemento normal sin z-index, así que cualquier hermano
+       con z-index explícito (como .search-bar) queda por delante sin
+       tener que competir número contra número. */
+    isolation: isolate;
 }
 
 .city-map-block .city-map-embed {

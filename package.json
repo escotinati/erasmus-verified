@@ -4,7 +4,7 @@
   "description": "Directorio de grupos de WhatsApp y Telegram para estudiantes Erasmus.",
   "main": "index.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "node scripts/check-sanitization.js && vite build",
     "preview": "vite preview",
     "format": "prettier --write \"**/*.{html,css,js}\"",
