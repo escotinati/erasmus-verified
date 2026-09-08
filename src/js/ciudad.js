@@ -39,8 +39,6 @@ function isDesktopLayout() {
 
     document.title = `${city.name}, ${city.country} — Erasmus Verified`;
 
-    document.getElementById('cityFlag').textContent = city.flag;
-    document.getElementById('cityLocation').textContent = `${city.country} · Erasmus`;
     document.getElementById('cityName').textContent = city.name;
 
     let btns = buildMapBlock(city);

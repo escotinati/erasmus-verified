@@ -150,7 +150,6 @@ window.I18n.translations = {
             no_results_body: 'Prueba con otro nombre de ciudad o país.',
         },
         city: {
-            desc_intro: 'Elige tu plataforma y únete a la comunidad Erasmus antes de llegar.',
             tip_label: 'Consejo:',
             tip_text:
                 'Al unirte, preséntate indicando tu universidad y fechas de Erasmus. La comunidad te recibirá con los brazos abiertos.',
@@ -395,7 +394,6 @@ window.I18n.translations = {
             no_results_body: 'Try another city or country name.',
         },
         city: {
-            desc_intro: 'Choose your platform and join the Erasmus community before you arrive.',
             tip_label: 'Tip:',
             tip_text:
                 'When you join, introduce yourself with your university and Erasmus dates. The community will welcome you with open arms.',
