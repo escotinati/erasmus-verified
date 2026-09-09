@@ -170,3 +170,22 @@
     color: var(--color-primary);
     margin-left: 4px;
 }
+
+/* .anim-fade-up (animations.css) no es solo un fade — también
+   desplaza el elemento con translateY() y lo devuelve a su sitio al
+   revelarse (.is-visible:not(:hover)). Se anula esa parte aquí, a
+   petición, dejando solo el fade de opacidad para .auth-card. Hace
+   falta anular las DOS reglas (no solo .is-visible:not(:hover)): esa
+   por sí sola solo resetea el desplazamiento inicial a 0, que es
+   translateY(0) — visualmente idéntico a transform:none, así que sin
+   tocar también la regla base .anim-fade-up (la que fija ese
+   desplazamiento inicial) no cambiaría nada. .auth-page delante en
+   ambos selectores porque animations.css se carga en su propio <link>
+   DESPUÉS de styles.css (donde vive auth.css) en el <head> de estas
+   páginas — a igual especificidad ganaría animations.css por orden de
+   cascada; con una clase más aquí gana este archivo sin depender del
+   orden de carga. */
+.auth-page .anim-fade-up,
+.auth-page .anim-fade-up.is-visible:not(:hover) {
+    transform: none;
+}
