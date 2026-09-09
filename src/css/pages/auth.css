@@ -127,6 +127,17 @@
     margin-top: var(--space-2);
 }
 
+/* .btn-primary-pill:hover (components.css) sube el botón 2px y le baja
+   la opacidad — en un botón full-width como este ese desplazamiento
+   vertical se nota más que en los pill normales (ancho de contenido),
+   así que se anula aquí a petición: mantiene el cambio de color como
+   única señal de hover, sin movimiento ni opacidad. */
+.auth-form .btn-primary-pill:hover {
+    background-color: var(--color-primary-hover);
+    opacity: 1;
+    transform: none;
+}
+
 .auth-form .btn-primary-pill:disabled {
     opacity: 0.6;
     cursor: not-allowed;
