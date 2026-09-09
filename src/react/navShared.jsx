@@ -7,7 +7,20 @@
 //  para el porqué): nada de esto depende de scripts externos
 //  enganchados a DOMContentLoaded para resolver texto/idioma/tema —
 //  cada pieza lee window.I18n / window.ERASMUS_EXPERIENCE ella misma.
+//
+//  AuthButton() llama a window.getSession()/window.signOut()
+//  (authService.js, rama feature/auth-profiles) — funciones globales
+//  sueltas de un <script> clásico, no algo que este módulo ES pueda
+//  importar. Igual que con window.I18n/window.ERASMUS_EXPERIENCE, es
+//  seguro asumir que ya existen cuando de verdad se necesitan (al
+//  efecto inicial, o al pulsar "Cerrar sesión"): los scripts clásicos
+//  de la página ya se han ejecutado en el parseo del HTML para cuando
+//  el scheduler de React llega a comprometer el primer render de este
+//  módulo (deferred), como ya se explica arriba para el resto de esta
+//  familia de componentes.
 // ─────────────────────────────────────────────────────────────
+
+import { useEffect, useRef, useState } from 'react';
 
 export const NAV_LINKS = [
     { href: 'servicios.html', i18n: 'nav.services', label: 'Servicios', flag: 'showServices' },
@@ -108,17 +121,101 @@ export function LangSwitcherButton() {
 }
 
 export function AuthButton() {
+    // null mientras se resuelve getSession() (evita el parpadeo de
+    // mostrar "Iniciar sesión/Crear cuenta" un instante y luego saltar
+    // a "Cerrar sesión" si sí había sesión) — el desplegable ni
+    // siquiera se abre hasta que loaded sea true.
+    const [session, setSession] = useState(null);
+    const [loaded, setLoaded] = useState(false);
+    const [open, setOpen] = useState(false);
+    const wrapRef = useRef(null);
+    const buttonRef = useRef(null);
+
+    useEffect(() => {
+        let cancelled = false;
+        window.getSession?.().then((s) => {
+            if (cancelled) return;
+            setSession(s);
+            setLoaded(true);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    // Cierre al hacer clic fuera y con Escape — mismo criterio de foco
+    // gestionado que ya exige el resto del nav (ver ARIA/foco de
+    // setFieldError() en admin.js, rama
+    // fix/admin-form-error-accessibility): Escape no solo cierra, sino
+    // que devuelve el foco al botón que abrió el desplegable, para no
+    // dejar el foco "perdido" en un elemento que acaba de desaparecer.
+    useEffect(() => {
+        if (!open) return;
+        function onPointerDown(e) {
+            if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+        }
+        function onKeyDown(e) {
+            if (e.key === 'Escape') {
+                setOpen(false);
+                buttonRef.current?.focus();
+            }
+        }
+        document.addEventListener('pointerdown', onPointerDown);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('pointerdown', onPointerDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [open]);
+
+    async function handleLogout() {
+        setOpen(false);
+        await window.signOut?.();
+        // Recarga completa a propósito (mismo criterio que
+        // LangSwitcherButton): no hay estado de sesión en memoria que
+        // sincronizar entre islas de React sueltas, así que la forma
+        // más simple y fiable de que TODA la página refleje "sin
+        // sesión" es recargar, no intentar propagar el cambio a mano.
+        window.location.href = 'index.html';
+    }
+
     return (
-        // Placeholder: solo el icono por ahora, sin modal de login/registro
-        // todavía (login real queda para una fase posterior).
-        <button
-            className="icon-btn"
-            id="authBtn"
-            aria-label="Iniciar sesión o registrarte"
-            title="Iniciar sesión o registrarte"
-        >
-            <span className="material-symbols-outlined">person</span>
-        </button>
+        <div className="auth-menu" ref={wrapRef}>
+            <button
+                ref={buttonRef}
+                className="icon-btn"
+                id="authBtn"
+                aria-label={session ? 'Mi cuenta' : 'Iniciar sesión o registrarte'}
+                title={session ? 'Mi cuenta' : 'Iniciar sesión o registrarte'}
+                aria-haspopup="true"
+                aria-expanded={open}
+                onClick={() => loaded && setOpen((o) => !o)}
+            >
+                <span className="material-symbols-outlined">person</span>
+            </button>
+            {open && loaded && (
+                <div className="auth-dropdown">
+                    {session ? (
+                        <button
+                            type="button"
+                            className="auth-dropdown-item"
+                            onClick={handleLogout}
+                        >
+                            {t('auth.logout_cta', 'Cerrar sesión')}
+                        </button>
+                    ) : (
+                        <>
+                            <a href="login.html" className="auth-dropdown-item">
+                                {t('auth.login_cta', 'Iniciar sesión')}
+                            </a>
+                            <a href="registro.html" className="auth-dropdown-item">
+                                {t('auth.register_cta', 'Crear cuenta')}
+                            </a>
+                        </>
+                    )}
+                </div>
+            )}
+        </div>
     );
 }
 

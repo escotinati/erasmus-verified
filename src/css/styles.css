@@ -25,5 +25,6 @@
 @import './pages/servicios.css';
 @import './pages/viajes.css';
 @import './pages/alojamiento.css';
+@import './pages/auth.css';
 @import './responsive.css';
 @import './transitions.css';
