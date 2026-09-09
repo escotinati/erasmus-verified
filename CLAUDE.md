@@ -14,7 +14,7 @@ La misma web sirve **dos marcas** desde un solo código: "Erasmus Verified" (la 
 
 - **Vite** como build tool — ya no se abre `index.html` directamente, se usa `npm run dev` para desarrollar y `npm run build` para generar la carpeta `dist/` que se despliega.
 - **Supabase** como backend — base de datos (Postgres) + login de administrador. Todas las páginas piden los datos de ciudades y partners a Supabase; no queda ningún dato estático de países/ciudades en el código (ver sección de Backend).
-- **React** (`src/react/*`, vía `@vitejs/plugin-react`) — **única excepción** a "sin ES Modules": son islas de React dentro de HTML/scripts clásicos, no una migración completa. Cuatro islas hoy: el menú compartido de las 8 páginas públicas (ver [Navegación](#navegación)), las tarjetas de partners/eventos del home (ver [Tarjetas de resumen](#tarjetas-de-resumen-summarycard)) — la primera vez que React pintó contenido real de datos, no solo chrome de página —, la lista de categorías/partners del aside en `ciudad.html`/`mapa.html` (ver [Lista de partners](#lista-de-partners-partnercategorylist)) y el contenido del Sheet que se abre al pulsar un partner (ver [Detalle de partner](#detalle-de-partner-partnerdetail)) — la primera con un root de React efímero, creado y desmontado en cada apertura en vez de reutilizado toda la vida de la página.
+- **React** (`src/react/*`, vía `@vitejs/plugin-react`) — **única excepción** a "sin ES Modules": son islas de React dentro de HTML/scripts clásicos, no una migración completa. Seis islas hoy: el menú compartido de las 8 páginas públicas (ver [Navegación](#navegación)), el footer compartido de las mismas 8 páginas (ver [Footer](#footer-footerjsx)), el bottom-nav móvil de esas 8 páginas (ver [Bottom-nav](#bottom-nav-móvil-768px) dentro de Navegación), las tarjetas de partners/eventos del home (ver [Tarjetas de resumen](#tarjetas-de-resumen-summarycard)) — la primera vez que React pintó contenido real de datos, no solo chrome de página —, la lista de categorías/partners del aside en `ciudad.html`/`mapa.html` (ver [Lista de partners](#lista-de-partners-partnercategorylist)) y el contenido del Sheet que se abre al pulsar un partner (ver [Detalle de partner](#detalle-de-partner-partnerdetail)) — la primera con un root de React efímero, creado y desmontado en cada apertura en vez de reutilizado toda la vida de la página.
 
 **Herramientas de desarrollo**: Prettier instalado como devDependency (`npm install` para instalar). Configuración en `.prettierrc`: 4 espacios, comillas simples, semi. Un hook de Claude Code formatea automáticamente JS/CSS/HTML tras cada edición — no hace falta ejecutarlo manualmente.
 
@@ -29,7 +29,7 @@ La misma web sirve **dos marcas** desde un solo código: "Erasmus Verified" (la 
 
 ## Arquitectura
 
-Todo el JS de páginas y módulos compartidos vive ahora en `src/js/` (antes era `js/`). El CSS vive en `src/css/`. Sigue sin haber ES Modules: todo son `<script>` clásicos con funciones y objetos globales, para mantener coherencia entre archivos — salvo `src/react/` (las cuatro islas de React, ver Stack arriba, [Navegación](#navegación), [Tarjetas de resumen](#tarjetas-de-resumen-summarycard), [Lista de partners](#lista-de-partners-partnercategorylist) y [Detalle de partner](#detalle-de-partner-partnerdetail)), la única carpeta con JSX/ES Modules de verdad.
+Todo el JS de páginas y módulos compartidos vive ahora en `src/js/` (antes era `js/`). El CSS vive en `src/css/`. Sigue sin haber ES Modules: todo son `<script>` clásicos con funciones y objetos globales, para mantener coherencia entre archivos — salvo `src/react/` (las seis islas de React, ver Stack arriba, [Navegación](#navegación), [Footer](#footer-footerjsx), [Tarjetas de resumen](#tarjetas-de-resumen-summarycard), [Lista de partners](#lista-de-partners-partnercategorylist) y [Detalle de partner](#detalle-de-partner-partnerdetail)), la única carpeta con JSX/ES Modules de verdad.
 
 ### Páginas y sus scripts
 
@@ -57,6 +57,8 @@ Todo el JS de páginas y módulos compartidos vive ahora en `src/js/` (antes era
 - `src/js/cityMap.js` — módulo reutilizable `mountCityMap(containerId, { pais, ciudad, interactive })`; devuelve una Promise con la instancia del mapa. Primero intenta usar coordenadas ya guardadas en Supabase antes de llamar al geocoder.
 - `src/js/mapPartners.js` — UI de la lista de partners + sincronización con marcadores del mapa. Los partners ahora vienen de `partnersService.js` (Supabase), no de un array estático. Las cabeceras de categoría + filas de partner las pinta `PartnerCategoryList.jsx` (React) — ver [Lista de partners](#lista-de-partners-partnercategorylist) — y el contenido del Sheet que se abre al pulsar un partner lo pinta `PartnerDetail.jsx` (React) — ver [Detalle de partner](#detalle-de-partner-partnerdetail).
 - `src/react/Nav.jsx`, `TopbarNav.jsx`, `navShared.jsx` — el menú compartido, en React. Ver [Navegación](#navegación) para el detalle completo (qué página usa cuál, por qué existe, y una regla de arquitectura importante sobre `DOMContentLoaded` que aplica a todo lo que interactúe con estos componentes desde fuera).
+- `src/react/Footer.jsx`, `mount-footer.jsx` — el footer compartido, en React. Ver [Footer](#footer-footerjsx).
+- `src/react/AppShell.jsx`, `mount-shell.jsx` — el bottom-nav móvil, en React. Ver [Bottom-nav](#bottom-nav-móvil-768px), dentro de la sección [Navegación](#navegación).
 - `src/react/SummaryCard.jsx`, `SummaryCardGrid.jsx`, `mount-summary-cards.jsx` — las tarjetas de partners (home) y eventos (fiestas), en React. Ver [Tarjetas de resumen](#tarjetas-de-resumen-summarycard) para el detalle completo y dos bugs reales ya corregidos ahí que conviene no repetir.
 - `src/react/PartnerCategoryList.jsx`, `mount-partner-list.jsx` — la lista de categorías/partners del aside en `ciudad.html`/`mapa.html`, en React. Ver [Lista de partners](#lista-de-partners-partnercategorylist).
 - `src/react/PartnerDetail.jsx`, `mount-partner-detail.jsx` — el contenido del Sheet (descripción + enlaces + "Cómo llegar") al abrir un partner, en React — `sheet.js` (el `<dialog>` en sí) sigue siendo vanilla a propósito, no se toca. Ver [Detalle de partner](#detalle-de-partner-partnerdetail).
@@ -83,6 +85,14 @@ Como esta web no tiene servidor propio, la única cosa que protege los datos es 
 - La "anon key" que aparece en `.env.local` es pública a propósito (viaja al navegador de cualquier visitante) — nunca hay que poner ahí la "service role key", que sí es secreta.
 - Antes de tocar políticas de RLS o la tabla `admins`, revisar bien el cambio: un error aquí puede dejar la web sin protección de escritura.
 
+### Guardarraíl de sanitización (Capa 1 + Capa 2)
+
+RLS protege quién puede escribir, pero no qué forma tiene el dato una vez guardado — para eso hay dos capas independientes, añadidas después de que un dato de Supabase sin sanear llegara al DOM (regresión real, ya pasada tres veces en este proyecto según el propio comentario de cabecera del script de la Capa 2):
+
+- **Capa 1 — SQL** (`supabase/migrations/20260904000000_add_https_url_check_constraints.sql`, corregida en `20260905000000_fix_https_url_check_constraints.sql`): CHECK constraints que exigen que toda URL guardada en Postgres empiece por `https://` (o esté vacía, en las columnas `NOT NULL DEFAULT ''`) — `partner_links.url`, `cities.whatsapp_url`, `cities.image_url`, `partners.image_url`, `partner_events.ticket_url`, `partner_events.image_url`. Bloquea esquemas ejecutables (`javascript:`, `data:`) a nivel de base de datos, pero **no valida que el destino sea legítimo** ni sustituye al escapado del frontend — un `https://sitio-falso.com` pasa esta validación sin problema.
+- **Capa 2 — build** (`scripts/check-sanitization.js`, corre en `npm run build` vía `node scripts/check-sanitization.js && vite build` — hace fallar el build si encuentra algo): recorre `src/js/` y `src/react/` buscando asignaciones a `.href`/`.src`/`.style`/`.style.PROP`/`.innerHTML` cuyo valor no pase por `sanitizeUrl()`/`escapeHtml()` (o `I18n.t()`/`I18n.tField()`, que son texto estático de traducción, nunca dato de Supabase). No es un parser AST de verdad ni un escáner XSS genérico — es un tokenizer de brackets/strings hecho a mano con una lista explícita de excepciones (`EXPLICIT_EXCEPTIONS` en el propio script); su trabajo es no perder de nuevo el patrón de bug ya conocido, no demostrar seguridad matemática. Además comprueba, por cada página HTML que cargue `supabaseClient.js`, que también cargue `src/js/utils/sanitize.js` en algún `<script src>` — y que ese `<script>` no aparezca antes que `supabaseClient.js` ni después de ningún script local que ya llame a `sanitizeUrl()`/`escapeHtml()`, para que esas funciones existan cuando se necesiten.
+- `src/js/utils/sanitize.js` es la única fuente de verdad de ambas funciones (`window.escapeHtml`, `window.sanitizeUrl` — sin ES Modules, como el resto del proyecto): `escapeHtml()` para interpolar campos de Supabase dentro de `innerHTML`, `sanitizeUrl()` para validar esquema `http`/`https` antes de usar un valor en `href`/`src` (devuelve un fallback si no es válido). Todas las islas de React que interpolan datos de Supabase (`SummaryCard.jsx`, `PartnerCategoryList.jsx`, `PartnerDetail.jsx`) las usan igual que el código clásico.
+
 ## Panel de administración (`/admin`)
 
 Herramienta interna (no aparece en la navegación pública) para gestionar ciudades y partners sin tocar código:
@@ -93,7 +103,7 @@ Herramienta interna (no aparece en la navegación pública) para gestionar ciuda
 - **Extractor de coordenadas**: pegando una URL de Google Maps se rellenan solos los campos de latitud/longitud (`extractCoordsFromGoogleMapsUrl` en `admin.js`).
 - **Reporte de clics**: un resumen de los clics registrados en `cta_clicks` durante los últimos 30 días, agrupados por partner.
 
-Todo el HTML/JS que pinta listas dinámicas en el panel escapa los textos que vienen de la base de datos (función `escapeHtml` en `admin.js`) para evitar que un dato mal formado rompa la página o inyecte código.
+Todo el HTML/JS que pinta listas dinámicas en el panel escapa los textos que vienen de la base de datos (función `escapeHtml`, movida de `admin.js` a `src/js/utils/sanitize.js` — ver [Guardarraíl de sanitización](#guardarraíl-de-sanitización-capa-1--capa-2) más abajo) para evitar que un dato mal formado rompa la página o inyecte código.
 
 ## Experiencia dual (Verified / Parties)
 
@@ -104,7 +114,7 @@ Todo el HTML/JS que pinta listas dinámicas en el panel escapa los textos que vi
 
 El resultado se guarda en `window.ERASMUS_EXPERIENCE` para que el resto de scripts lo puedan leer, y se añade una clase (`theme-verified` o `theme-parties`) al `<html>` para pintar los colores correctos.
 
-En la experiencia "Parties" además se ocultan los enlaces a Servicios/Alojamiento/Viajes y el logo cambia a "Erasmus Parties"; se añade un enlace "Verified ↗" para volver a la web completa. **En el nav** (menú de arriba) esto lo resuelve directamente `Nav.jsx`/`TopbarNav.jsx` leyendo `window.ERASMUS_EXPERIENCE` al renderizar — ver [Navegación](#navegación). Fuera del nav (footer, y cualquier `<a href="servicios.html">` etc. suelto en el HTML) lo sigue haciendo `experience.js` por JS tras `DOMContentLoaded`, como antes.
+En la experiencia "Parties" además se ocultan los enlaces a Servicios/Alojamiento/Viajes y el logo cambia a "Erasmus Parties"; se añade un enlace "Verified ↗" para volver a la web completa. Esto lo resuelven directamente los propios componentes React leyendo `window.ERASMUS_EXPERIENCE` al renderizar — no solo el nav (`Nav.jsx`/`TopbarNav.jsx`, ver [Navegación](#navegación)), también el footer (`Footer.jsx`, ver [Footer](#footer-footerjsx)) y el bottom-nav móvil (`AppShell.jsx`, ver [Bottom-nav](#bottom-nav-móvil-768px)). `experience.js` sigue mutando el DOM tras `DOMContentLoaded` como antes, pero solo le queda margen real sobre HTML suelto que ninguno de esos tres componentes gestiona — por ejemplo el enlace a `alojamiento.html` de la sección de servicios del home (`index.html`, fuera de nav/footer/bottom-nav) — porque cada uno de los tres se marca con `data-react-nav`/`data-react-footer` en su raíz y `experience.js` respeta ese guard para no tocar dos veces lo que React ya resolvió (ver la regla de arquitectura en [Navegación](#navegación)).
 
 ## Cómo añadir datos
 
@@ -237,6 +247,19 @@ La solución: `mountPartnerDetail()` crea un root nuevo en cada `selectPartner()
 
 **Regla**: si el contenedor de una isla de React no vive toda la vida de la página (se crea de nuevo en cada uso, como un modal/Sheet/tooltip efímero), el root tampoco debe reutilizarse — créalo en el momento de montar y desmóntalo explícitamente (`root.unmount()`) en el evento de cierre/limpieza correspondiente. El patrón de root único de `mountSummaryCards()`/`mountPartnerCategoryList()` es correcto solo para contenedores persistentes.
 
+## Footer (Footer.jsx)
+
+El `<footer>` compartido de las 8 páginas públicas ya no es HTML duplicado byte a byte en cada una — vive en `src/react/Footer.jsx`, otra isla de React, del mismo tipo "montada una vez, nunca vuelve a renderizarse" que `Nav.jsx`/`TopbarNav.jsx` (ver [Navegación](#navegación) para el porqué de esa regla — aplica igual aquí).
+
+### Qué hace cada archivo
+
+| Archivo                        | Qué hace                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/react/Footer.jsx`          | Componente único: marca/tagline, columna "Plataforma" (Destinos/Alojamiento/Fiestas/Viajes — Alojamiento y Viajes solo si `window.ERASMUS_EXPERIENCE.showAlojamiento`/`showViajes`, igual que hace `NavLinks` en `navShared.jsx`), columna "Legal" (enlaces `#`, sin páginas propias todavía) y el año de copyright (`new Date().getFullYear()`). Resuelve tema Parties/i18n él mismo al renderizar — mismas reglas que `Nav.jsx`/`TopbarNav.jsx`, nada de `DOMContentLoaded` (ver regla de arquitectura en [Navegación](#navegación)). Se marca con `data-react-footer="true"` en la raíz para que `experience.js` sepa que no debe tocarlo dos veces (mismo patrón que `data-react-nav`). |
+| `src/react/mount-footer.jsx`    | Expone el montaje sobre `<div id="footer-root">` — `createRoot(root).render(<Footer />)`, sin `.render()` reutilizable porque, como el nav, no necesita repintarse desde fuera.                                                                                                                                                                                                                                                                             |
+
+`<div id="footer-root"></div>` seguido de `<script type="module" src="/src/react/mount-footer.jsx">` aparece en las **8 páginas públicas**, `mapa.html` incluida — el comentario de cabecera de `Footer.jsx` todavía dice "todas salvo `mapa.html`" (una nota de una versión anterior a que se decidiera añadirlo también ahí); en el HTML real ya no hay excepción.
+
 ## Navegación
 
 El menú de las 8 páginas públicas (todo salvo `/admin`) es **React** (`src/react/Nav.jsx` / `TopbarNav.jsx`, ver más abajo) — antes era HTML duplicado byte a byte en cada página, ahora vive en un único sitio. Sigue habiendo tres estilos visuales de header según la página (heredados del diseño previo a la migración), pero los tres los renderiza el mismo par de componentes.
@@ -257,7 +280,7 @@ Cada página tiene un `<div id="nav-root"></div>` seguido de `<script type="modu
 
 Visualmente los tres patrones están **unificados**: mismo truco de grid de 3 columnas (`1fr auto 1fr`) que centra los links en todo el ancho de la barra, mismo icono de cuenta, y el mismo subrayado degradado en hover/foco (antes solo existía en `index.html`, escapado bajo `body.home-page`; ahora vive bajo los selectores `.topnav`/`.topbar` directamente en `src/css/layout.css`, así que aplica a las 8 páginas).
 
-`.mobile-nav` (el overlay del menú móvil) y el toggle de la hamburguesa también los renderiza React (`MobileNavOverlay` en `navShared.jsx`) — no queda ningún bloque `<div class="mobile-nav">` estático en el HTML. En móvil el hamburguesa queda oculto por CSS (`display: none` — la navegación la gestiona el bottom-nav), así que en la práctica solo se ve en desktop.
+`.mobile-nav` (el overlay del menú móvil) y el toggle de la hamburguesa también los renderiza React (`MobileNavOverlay` en `navShared.jsx`) — no queda ningún bloque `<div class="mobile-nav">` estático en el HTML. El `.hamburger-btn` (`id="hamburgerBtn"`) es `display: none` en TODOS los anchos, no solo en móvil — sin ningún `@media` que lo reactive en desktop (confirmado con grep y con el propio comentario de `components.css`: "`.hamburger-btn` no tiene ningún `display:flex` en ninguna parte del CSS"). React lo sigue montando, pero hoy es un botón inerte en cualquier ancho — la navegación desktop la resuelve `.topbar-nav`/`.topnav-links` (visibles desde `--bp-md`), nunca el hamburguesa; en móvil la gestiona el bottom-nav.
 
 ### Regla de arquitectura: nada de `DOMContentLoaded` para tocar el nav
 
@@ -273,24 +296,25 @@ Por eso:
 
 ### Bottom-nav (móvil, `<768px`)
 
-Clase `.app-bottom-nav` — `position: fixed; bottom: 0; height: 60px; z-index: 500`. Sigue siendo HTML estático (no migrado a React) en cada página pública (no en `/admin`). Contenido:
+Clase `.app-bottom-nav` — `position: fixed; bottom: 0; height: 60px; z-index: 500`. **Ya no es HTML estático**: se migró a React (`src/react/AppShell.jsx` + `mount-shell.jsx`, rama `feature/mobile-app-shell`) — antes era `<nav class="app-bottom-nav">` duplicado byte a byte en las 8 páginas públicas (con 2 variantes de markup, 4 ítems en `index.html` / 3 en el resto) más un `<script>` inline por página calculando el ítem activo; ahora vive en un único componente montado sobre `<div id="shell-root">` en las 8 páginas (no en `/admin`).
 
-- `index.html`: **4 ítems** — Servicios (`storefront`), Viajes (`flight`), Fiestas (`nightlife`, magenta `#e1147b`, `target="_blank"`), y **Cuenta** (`#authBtnMobile`, placeholder sin login todavía — mismo criterio que `#authBtn` del nav de escritorio, colocado el último a propósito, que es donde apps con bottom-nav suelen poner cuenta/perfil).
-- Resto de páginas públicas: **3 ítems** — Servicios, Viajes, Fiestas (sin Cuenta).
+Mismo patrón que `Nav.jsx` (ver la regla de arquitectura en [Navegación](#navegación)): nada de `DOMContentLoaded` buscando `.app-bottom-nav` después — el componente resuelve tema Parties, idioma e ítem activo él mismo al renderizar, marcado con `data-react-nav="true"` para que `experience.js` no lo toque dos veces (ver [Experiencia dual](#experiencia-dual-verified--parties)).
 
-El ítem activo se detecta con `window.location.pathname` y recibe `.app-bottom-nav-item--active`; ese trocito de JS sigue siendo un `<script>` inline por página (no se ha migrado, es la única pieza de navegación que no vive en React):
+**Contenido — ya no hay variante de 3 vs. 4 ítems ni ítem de Cuenta.** `AppShell.jsx` renderiza siempre **5 ítems**, iguales en las 8 páginas:
 
-```js
-var page =
-    (window.location.pathname.split('/').pop() || 'index.html').split('?')[0] || 'index.html';
-// app-bottom-nav-item → clase app-bottom-nav-item--active
-```
+1. **Inicio/Noches** — `index.html`, icono `home` (`nightlife` en la experiencia Parties, con el label cambiado a "Noches").
+2. **Mapa** — `mapa.html`, icono `map`.
+3. **Servicios** — `servicios.html`, icono `storefront`. Es el único ítem con etiqueta corta (`nav.services_short`, "Serv.") por debajo de 360px de ancho — con 5 ítems a ~64px cada uno, es la única etiqueta que realmente aprieta; el resto ya define su propio fallback corto igual al largo, así que no cambian visualmente en ningún ancho (`.app-bottom-nav-label-short`, oculta por defecto y visible solo bajo `@media (max-width: 359px)` en `components.css`).
+4. **Viajes** — `viajes.html`, icono `flight`.
+5. **Salto de dominio (Fiestas ↔ Verified)** — **ya no es "Cuenta"** (`#authBtnMobile` no existe en el HTML actual, ni en el nav de escritorio hay ya nada equivalente ahí). Es un enlace externo (`target="_blank"`) que cambia según la experiencia activa: en Verified apunta a `erasmusparties.org` (icono `nightlife`, magenta permanente vía `.app-bottom-nav-item--parties`, clase reutilizada de la época estática); en Parties apunta a `erasmusverified.com` (icono `verified`, clase `.nav-verified`). Nunca lleva `.app-bottom-nav-item--active` (no es una pestaña real de la página).
+
+El ítem activo se calcula con `currentPage()` (`navShared.jsx`, mismo helper que usa el nav de escritorio) comparado contra el `href` de cada ítem, y recibe `.app-bottom-nav-item--active` — ya no hay ningún `<script>` inline por página haciendo ese cálculo a mano.
 
 En móvil el cuerpo tiene `padding-bottom: 68px` para compensar la barra.
 
 ## CSS
 
-Sistema de diseño basado en Material Design 3 (tokens `--md-*`). Variables clave:
+Sistema de diseño basado en Material Design 3 — nombres de rol (`--primary`, `--surface-container-high`, `--on-surface-variant`...) definidos directamente en `:root` de `base.css`, **sin** el prefijo `--md-` (ese prefijo no aparece en ningún sitio del repo — verificado con grep; si lo ves mencionado en otro sitio, es una descripción desactualizada). Variables clave:
 
 - `--primary: #4648d4`, `--secondary: #a93349`
 - `--topbar-h` — altura real del `header.topbar`, inyectada por JS en `src/js/ciudad.js`; usada por `top` del mapa sticky y `padding-top` del mobile-nav dropdown
@@ -298,17 +322,26 @@ Sistema de diseño basado en Material Design 3 (tokens `--md-*`). Variables clav
 - Iconos: Material Symbols Outlined (CDN)
 - Contenedor máximo: `1280px`, gutter `24px`
 
-Los alias legacy (`--bg`, `--text`, `--accent`) existen solo para las páginas más antiguas.
+De los alias legacy que quedan en `base.css` (`--bg`, `--text`, `--text-muted`, `--accent`, `--accent-dim`, `--surface-2`, `--border`, `--radius`), ninguno tiene ya un solo consumidor en el CSS del repo (verificado con grep) — son código muerto sin limpiar, no "tokens en uso de páginas antiguas". Los dos alias del mismo bloque que sí se usan de verdad, `--wa`/`--tg` (colores de marca WhatsApp/Telegram), se consumen en `pages/ciudad.css`.
+
+### Tokens del design system (`src/styles/`)
+
+`src/styles/tokens.css` + `src/styles/typography.css` son una segunda capa de tokens/tipografía global, cargada en las 8 páginas públicas (no en `/admin`) justo ANTES de `styles.css` en el `<head>` — no sustituye a los tokens de `base.css`, convive con ellos. Los propios comentarios de `tokens.css` documentan la relación con el sistema "legacy" (`base.css`) tramo a tramo:
+
+- **Alias de compatibilidad**: la mayoría de tokens de color (`--color-primary`, `--color-bg`, `--color-surface`, `--color-dark`, `--color-text`, `--color-text-muted`, `--color-border`...) no redefinen un valor nuevo — apuntan con `var()` al token equivalente que YA existía en `base.css` (`--color-primary: var(--primary)`, etc.), para que ambos sistemas usen siempre el mismo hex sin mantenerlo sincronizado a mano en dos sitios. Mismo criterio para radios (`--radius-sm/md/lg/full` no se redeclaran; solo `--radius-xl`/`--radius-2xl` son nuevos de verdad, y `--radius-xl` no tiene consumidor todavía) y para `--font-display`/`--font-body` (tampoco se redeclaran: mismo nombre, mismo valor, ya en `base.css`).
+- **Tokens sin equivalente previo, genuinamente nuevos**: escala de espaciado `--space-1` … `--space-20` (base 8px), escala tipográfica `--text-display`/`--text-h1`/`--text-h2`/`--text-h3`/`--text-body`/`--text-small` + pesos/interlineados, colores semánticos `--color-success`/`--color-warning`/`--color-error`/`--color-info` (sin consumidor todavía), sombras `--shadow-sm/md/lg/focus`, duraciones `--duration-fast/base/slow` + `--ease-out`, y los breakpoints `--bp-sm` (600px) / `--bp-md` (900px) / `--bp-lg` (1200px) — mobile-first, siempre pensados para `min-width`. Los `@media` de CSS no pueden leer custom properties, así que en la práctica estos valores se repiten como literales (`900px`, `600px`...) en cada `@media` del proyecto; `--bp-md` sí se lee desde JS vía `getComputedStyle` en `isDesktopLayout()` (`src/js/ciudad.js`), para que el corte del gesto-gate del mapa no se desincronice del valor del token.
+- **`--header-h`/`--nav-bottom-h`/`--nav-bottom-total`/`--tap-min`**: alturas reales de chrome fijo, para poder escribir `calc(100dvh - var(--header-h))` (ver `pages/mapa.css`) en vez de un literal suelto. Son los valores REALES actuales, no un ideal de diseño — cambiarlos es una decisión visual aparte, no de este sistema de tokens.
+- `typography.css` aplica tipografía global a `body`/`h1`/`h2`/`h3` con estos tokens nuevos. Para `body`, `base.css` (mismo selector, misma especificidad, carga después) gana en la práctica en toda propiedad que ambos tocan (`font-size`, `line-height`...) — pero los headings sin una clase más específica encima SÍ quedan con el estilo de `typography.css`: es el caso, por ejemplo, del `<h1>` sin clase de `ciudades-todas.html` ("Todas las ciudades"), que toma tamaño/peso/color de aquí. En el resto de páginas cada `<h1>` ya lleva su propia clase (`.city-name`, `.hero-title`, `.section-title`...) que sobreescribe estos valores genéricos. `.heading-display`/`.overline` (y el resto de selectores `[class*="overline"]`) no tienen todavía ningún consumidor en el HTML actual.
 
 ### Estructura de `src/css/`
 
-`styles.css` ya no contiene reglas propias — es solo un manifiesto de `@import` que las 9 páginas públicas siguen cargando con el mismo `<link rel="stylesheet" href="/src/css/styles.css">` de siempre (no hubo que tocar ningún HTML). Vite resuelve esos `@import` tanto en dev (cada archivo se sirve y recarga por separado) como en build (los une en un único CSS por página, igual que cuando era un solo fichero — verificado que el CSS final compilado es byte a byte idéntico al de antes de la separación).
+`styles.css` ya no contiene reglas propias — es solo un manifiesto de `@import` que las 8 páginas públicas siguen cargando con el mismo `<link rel="stylesheet" href="/src/css/styles.css">` de siempre (no hubo que tocar ningún HTML). Vite resuelve esos `@import` tanto en dev (cada archivo se sirve y recarga por separado) como en build (los une en un único CSS por página, igual que cuando era un solo fichero — verificado que el CSS final compilado es byte a byte idéntico al de antes de la separación).
 
 El **orden** de los `@import` en `styles.css` importa: es exactamente el orden en el que vivían estas secciones dentro del monolito original. No lo reordenes sin comprobar antes que ninguna regla dependa de la cascada entre archivos.
 
 | Archivo                    | Contenido                                                                                                                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `base.css`                 | `:root` tokens (`--md-*`), temas `.theme-verified`/`.theme-parties`, reset, utilidades, tipografía base                                                                        |
+| `base.css`                 | `:root` tokens (nombres de rol de Material Design 3, sin prefijo — ver [Tokens del design system](#tokens-del-design-system-srcstyles)), temas `.theme-verified`/`.theme-parties`, reset, utilidades, tipografía base |
 | `components.css`           | Buttons, badges, cards, forms/inputs, bottom-nav, Sheet, Skeleton                                                                                                              |
 | `layout.css`               | Top nav/header (`.topnav`, `.topbar` — el HTML lo renderiza React, ver [Navegación](#navegación), pero las clases y este archivo no cambiaron), footer, hero, section wrappers |
 | `pages/home.css`           | Accordion grid de ciudades, nights section, services section, CTA (`index.html`)                                                                                               |
@@ -340,9 +373,11 @@ Para añadir CSS exclusivo de una página sin contaminar el global, usar una cla
 
 ### Zonas responsivas clave
 
-- `@media (min-width: 900px)` — desktop: ciudad-page max-width 1000px; `.city-map-columns` en fila 75/25
-- `@media (max-width: 768px)` — móvil: bottom-nav visible, hamburger y mobile-nav ocultos, `body { padding-bottom: 68px }`
-- `@media (max-width: 600px)` — móvil pequeño: grids de 2 columnas
+Todo el CSS del proyecto es mobile-first: los `@media` usan siempre `min-width`, nunca `max-width` (verificado con grep sobre `src/css/` — no hay un solo `max-width` en un breakpoint global; `admin.css`, aparte, sí tiene los suyos propios). Los tres cortes reales, que coinciden con los tokens `--bp-sm`/`--bp-md`/`--bp-lg` de `tokens.css` (ver [Tokens del design system](#tokens-del-design-system-srcstyles) — los `@media` no pueden leer custom properties, así que estos valores están repetidos como literales en cada archivo):
+
+- `@media (min-width: 600px)` (`--bp-sm`) — grids de 2 columnas (`pages/home.css` y otros)
+- `@media (min-width: 900px)` (`--bp-md`) — desktop: `.city-page` max-width 1000px; `.city-map-columns` en fila 75/25; el bottom-nav (`.app-bottom-nav`) se oculta y `body { padding-bottom: 0 }` (por debajo de este corte, mobile-first, `body` lleva `padding-bottom: calc(var(--nav-bottom-h) + 8px)` — 68px con el valor actual de `--nav-bottom-h`, pero como `calc()`, no como literal); el top nav/header (`.topnav-links`/`.icon-btn`/`.topbar-nav`) se hace visible
+- `@media (min-width: 1200px)` (`--bp-lg`) — tier final de `.cta-card`/`.services-grid`
 
 ## Dependencias externas
 
@@ -359,7 +394,7 @@ Instaladas vía npm (ver `package.json`):
 
 - `vite` + `vite-plugin-static-copy` — build tool
 - `@vitejs/plugin-react` — transforma el JSX de `src/react/*` (ver [Navegación](#navegación) y [Tarjetas de resumen](#tarjetas-de-resumen-summarycard))
-- `react` + `react-dom` — para las dos islas de React del proyecto (menú y tarjetas de resumen), no hay más React fuera de `src/react/`
+- `react` + `react-dom` — para las seis islas de React del proyecto (ver el Stack en [Proyecto](#proyecto), arriba), no hay más React fuera de `src/react/`
 - `@supabase/supabase-js` — cliente de Supabase (aunque en el navegador se usa la versión CDN cargada como `<script>`, no este paquete)
 - `prettier` — formateo de código
 
