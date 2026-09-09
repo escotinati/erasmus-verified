@@ -258,9 +258,6 @@ window.I18n.translations = {
             rights: 'Todos los derechos reservados.',
         },
         auth: {
-            menu_label: 'Cuenta',
-            login_cta: 'Iniciar sesión',
-            register_cta: 'Crear cuenta',
             logout_cta: 'Cerrar sesión',
 
             register_eyebrow: 'Únete a la comunidad',
@@ -550,9 +547,6 @@ window.I18n.translations = {
             rights: 'All rights reserved.',
         },
         auth: {
-            menu_label: 'Account',
-            login_cta: 'Log in',
-            register_cta: 'Create account',
             logout_cta: 'Log out',
 
             register_eyebrow: 'Join the community',

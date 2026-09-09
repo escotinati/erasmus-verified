@@ -121,12 +121,12 @@ export function LangSwitcherButton() {
 }
 
 export function AuthButton() {
-    // null mientras se resuelve getSession() (evita el parpadeo de
-    // mostrar "Iniciar sesión/Crear cuenta" un instante y luego saltar
-    // a "Cerrar sesión" si sí había sesión) — el desplegable ni
-    // siquiera se abre hasta que loaded sea true.
+    // null hasta que se resuelve getSession() — y también mientras no
+    // hay sesión de verdad, así que sirve directamente como condición
+    // para las dos ramas de abajo: sin sesión (incluido "todavía no lo
+    // sabemos") es un <a> normal a login.html, con sesión es el
+    // desplegable con "Cerrar sesión".
     const [session, setSession] = useState(null);
-    const [loaded, setLoaded] = useState(false);
     const [open, setOpen] = useState(false);
     const wrapRef = useRef(null);
     const buttonRef = useRef(null);
@@ -136,7 +136,6 @@ export function AuthButton() {
         window.getSession?.().then((s) => {
             if (cancelled) return;
             setSession(s);
-            setLoaded(true);
         });
         return () => {
             cancelled = true;
@@ -149,6 +148,10 @@ export function AuthButton() {
     // fix/admin-form-error-accessibility): Escape no solo cierra, sino
     // que devuelve el foco al botón que abrió el desplegable, para no
     // dejar el foco "perdido" en un elemento que acaba de desaparecer.
+    // Solo hace falta en la rama CON sesión (la única que llega a
+    // abrir un desplegable de verdad), pero el hook en sí no puede
+    // colgarse de un `if` — por eso `open` ya es `false` siempre en la
+    // otra rama y este efecto no hace nada.
     useEffect(() => {
         if (!open) return;
         function onPointerDown(e) {
@@ -179,40 +182,45 @@ export function AuthButton() {
         window.location.href = 'index.html';
     }
 
+    // Sin sesión: el icono ES el enlace a login.html, sin desplegable
+    // — login.html ya enlaza a registro.html para quien no tenga
+    // cuenta todavía, así que no hace falta ofrecer las dos opciones
+    // aquí. Cubre también el instante antes de que getSession()
+    // resuelva (session sigue en null): no hay ninguna sesión real que
+    // "perder" por dejar navegar a login.html un poco antes de tiempo.
+    if (!session) {
+        return (
+            <a
+                className="icon-btn"
+                id="authBtn"
+                href="login.html"
+                aria-label="Iniciar sesión o registrarte"
+                title="Iniciar sesión o registrarte"
+            >
+                <span className="material-symbols-outlined">person</span>
+            </a>
+        );
+    }
+
     return (
         <div className="auth-menu" ref={wrapRef}>
             <button
                 ref={buttonRef}
                 className="icon-btn"
                 id="authBtn"
-                aria-label={session ? 'Mi cuenta' : 'Iniciar sesión o registrarte'}
-                title={session ? 'Mi cuenta' : 'Iniciar sesión o registrarte'}
+                aria-label="Mi cuenta"
+                title="Mi cuenta"
                 aria-haspopup="true"
                 aria-expanded={open}
-                onClick={() => loaded && setOpen((o) => !o)}
+                onClick={() => setOpen((o) => !o)}
             >
                 <span className="material-symbols-outlined">person</span>
             </button>
-            {open && loaded && (
+            {open && (
                 <div className="auth-dropdown">
-                    {session ? (
-                        <button
-                            type="button"
-                            className="auth-dropdown-item"
-                            onClick={handleLogout}
-                        >
-                            {t('auth.logout_cta', 'Cerrar sesión')}
-                        </button>
-                    ) : (
-                        <>
-                            <a href="login.html" className="auth-dropdown-item">
-                                {t('auth.login_cta', 'Iniciar sesión')}
-                            </a>
-                            <a href="registro.html" className="auth-dropdown-item">
-                                {t('auth.register_cta', 'Crear cuenta')}
-                            </a>
-                        </>
-                    )}
+                    <button type="button" className="auth-dropdown-item" onClick={handleLogout}>
+                        {t('auth.logout_cta', 'Cerrar sesión')}
+                    </button>
                 </div>
             )}
         </div>
