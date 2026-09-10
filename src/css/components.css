@@ -835,10 +835,16 @@ a.city-card {
 }
 
 /* Etiqueta corta <360px (AppShell.jsx): por defecto se muestra el
-   texto completo y se oculta el corto; a 320px con 5 ítems tocan
-   64px/tab y "Servicios" es la única etiqueta que realmente aprieta
-   — el resto ya define su propio shortFallback igual al fallback
-   completo, así que no cambian visualmente en ningún ancho. */
+   texto completo y se oculta el corto. Con 5 ítems (320px ÷ 5 ≈ 64px/
+   tab) "Servicios" llegó a apretar de verdad ahí; ya sin la pestaña
+   "Inicio"/"Noches" —redundante con el logo, ver el comentario de
+   AppShell.jsx— quedan 4 ítems (320px ÷ 4 ≈ 76px/tab) y ningún label,
+   "Servicios" incluido, roza ya el límite (medido: 45px de 76px
+   disponibles). El breakpoint se deja tal cual de todos modos, como
+   margen de seguridad para pantallas aún más estrechas o con la fuente
+   del sistema más ancha — el resto de labels ya define su propio
+   shortFallback igual al fallback completo, así que no cambian
+   visualmente en ningún ancho. */
 .app-bottom-nav-label-short {
     display: none;
 }
