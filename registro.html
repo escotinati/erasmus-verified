@@ -52,7 +52,6 @@
                                 data-i18n="auth.email_placeholder"
                                 placeholder="tucorreo@ejemplo.com"
                             />
-                            <p class="auth-error" id="reg-email-error" role="alert"></p>
                         </div>
 
                         <div class="auth-field">
@@ -69,17 +68,29 @@
                             <p class="auth-hint" id="reg-password-hint" data-i18n="auth.password_hint">
                                 Mínimo 6 caracteres.
                             </p>
-                            <p class="auth-error" id="reg-password-error" role="alert"></p>
                         </div>
 
                         <div class="auth-field">
                             <label for="reg-city" data-i18n="auth.city_label">Ciudad</label>
-                            <select id="reg-city" name="city" required aria-describedby="reg-city-error">
-                                <option value="" data-i18n="auth.city_placeholder">
-                                    — Selecciona tu ciudad —
-                                </option>
-                            </select>
-                            <p class="auth-error" id="reg-city-error" role="alert"></p>
+                            <div class="auth-input-group">
+                                <!-- Autocompletable: texto libre + dropdown (mismo patrón que
+                                     #citySearch en index.js — .search-dropdown/.search-dropdown-item/
+                                     .sdi-* ya son clases globales de components.css, sin CSS nuevo).
+                                     El id real de la ciudad seleccionada vive en el input oculto de
+                                     abajo (reg-city-id) — este campo de texto es solo lo que ve/
+                                     teclea el usuario, nunca lo que se manda a signUp(). -->
+                                <input
+                                    id="reg-city"
+                                    type="text"
+                                    autocomplete="off"
+                                    required
+                                    aria-describedby="reg-city-error"
+                                    data-i18n="auth.city_placeholder"
+                                    placeholder="Escribe tu ciudad..."
+                                />
+                                <div class="search-dropdown" id="reg-city-dropdown" role="listbox"></div>
+                            </div>
+                            <input type="hidden" id="reg-city-id" name="cityId" />
                         </div>
 
                         <div class="auth-field">
@@ -114,8 +125,6 @@
                                 <span data-i18n="auth.interest_travel">Viajes</span>
                             </label>
                         </fieldset>
-
-                        <p class="auth-error" id="register-form-error" role="alert"></p>
 
                         <button
                             type="submit"

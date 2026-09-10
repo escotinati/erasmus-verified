@@ -264,7 +264,6 @@ window.I18n.translations = {
             register_title: 'Crea tu cuenta',
             register_subtitle:
                 'Regístrate para guardar tus preferencias y sacarle más partido a tu Erasmus.',
-            login_eyebrow: 'Bienvenido de nuevo',
             login_title: 'Inicia sesión',
             login_subtitle: 'Accede con tu email y contraseña para continuar.',
 
@@ -273,7 +272,7 @@ window.I18n.translations = {
             password_label: 'Contraseña',
             password_hint: 'Mínimo 6 caracteres.',
             city_label: 'Ciudad',
-            city_placeholder: '— Selecciona tu ciudad —',
+            city_placeholder: 'Escribe tu ciudad...',
             university_label: 'Universidad de origen',
             university_placeholder: 'Opcional',
             interests_label: 'Intereses',
@@ -552,7 +551,6 @@ window.I18n.translations = {
             register_eyebrow: 'Join the community',
             register_title: 'Create your account',
             register_subtitle: 'Sign up to save your preferences and get more out of your Erasmus.',
-            login_eyebrow: 'Welcome back',
             login_title: 'Log in',
             login_subtitle: 'Enter your email and password to continue.',
 
@@ -561,7 +559,7 @@ window.I18n.translations = {
             password_label: 'Password',
             password_hint: 'At least 6 characters.',
             city_label: 'City',
-            city_placeholder: '— Select your city —',
+            city_placeholder: 'Type your city...',
             university_label: 'Home university',
             university_placeholder: 'Optional',
             interests_label: 'Interests',

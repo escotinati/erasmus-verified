@@ -22,23 +22,35 @@
     </head>
 
     <body class="auth-page">
+        <!-- Fondo degradado a pantalla completa (fixed, detrás de todo el
+             contenido) — ver .auth-bg en auth.css. Fuera de <main> a
+             propósito: cubre todo el viewport (nav + footer incluidos),
+             no solo el ancho de .auth-section. -->
+        <div class="auth-bg" aria-hidden="true">
+            <div class="auth-bg-glow auth-bg-glow--1"></div>
+            <div class="auth-bg-glow auth-bg-glow--2"></div>
+        </div>
+
         <!-- ── TOP NAV (React, rama react/menu) — ver src/react/TopbarNav.jsx ── -->
         <div id="nav-root"></div>
         <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
 
         <main style="flex: 1">
-            <div class="section auth-section">
-                <span class="eyebrow eyebrow--primary anim-page-enter" data-i18n="auth.login_eyebrow"
-                    >BIENVENIDO DE NUEVO</span
+            <div class="section auth-section auth-section--login">
+                <h1
+                    class="section-title auth-section__title anim-page-enter"
+                    data-i18n="auth.login_title"
                 >
-                <h1 class="section-title anim-page-enter" data-i18n="auth.login_title">
                     Inicia sesión
                 </h1>
-                <p class="section-sub anim-page-enter" data-i18n="auth.login_subtitle">
+                <p
+                    class="section-sub auth-section__sub anim-page-enter"
+                    data-i18n="auth.login_subtitle"
+                >
                     Accede con tu email y contraseña para continuar.
                 </p>
 
-                <div class="auth-card anim-fade-up anim-delay-1">
+                <div class="auth-card auth-card--login anim-fade-up anim-delay-1">
                     <form id="login-form" class="auth-form" novalidate>
                         <div class="auth-field">
                             <label for="login-email" data-i18n="auth.email_label">Email</label>
@@ -52,7 +64,6 @@
                                 data-i18n="auth.email_placeholder"
                                 placeholder="tucorreo@ejemplo.com"
                             />
-                            <p class="auth-error" id="login-email-error" role="alert"></p>
                         </div>
 
                         <div class="auth-field">
@@ -67,10 +78,7 @@
                                 required
                                 aria-describedby="login-password-error"
                             />
-                            <p class="auth-error" id="login-password-error" role="alert"></p>
                         </div>
-
-                        <p class="auth-error" id="login-form-error" role="alert"></p>
 
                         <button
                             type="submit"

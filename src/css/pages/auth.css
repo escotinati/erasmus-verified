@@ -11,6 +11,106 @@
     max-width: 640px;
 }
 
+/* ═══ login.html — cabecera centrada + fondo decorativo ═══
+   Solo aplica a login.html (registro.html conserva el layout
+   original, alineado a la izquierda, con más campos que llenan el
+   ancho de sobra) — todo bajo .auth-section--login para no tocar
+   .auth-section a secas. */
+.auth-section--login {
+    max-width: 480px;
+    text-align: center;
+}
+
+.auth-section--login .auth-section__title,
+.auth-section--login .auth-section__sub {
+    text-align: center;
+}
+
+.auth-section--login .auth-section__sub {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Fondo degradado a pantalla completa — ver el comentario en login.html
+   sobre por qué vive fuera de .auth-section. position:fixed lo ancla al
+   viewport (no al documento), así que cubre el mismo ancho/alto visible
+   sea cual sea el tamaño de pantalla, sin generar scroll propio; z-index
+   negativo lo deja por detrás de nav/tarjeta/footer sin necesidad de que
+   ninguno de ellos declare su propio z-index (ver stacking del "canvas
+   background" del body: un z-index negativo pinta por delante de ese
+   fondo pero por detrás de cualquier contenido en flujo normal). */
+.auth-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Mismo gradiente de marca primary→secondary que ya usa el subrayado
+   del nav (layout.css), aquí como manchas ambientales. Tamaño en vw/vh
+   con clamp(): crecen y encogen con la pantalla sin quedarse minúsculas
+   en móvil ni desproporcionadas en desktop grande. */
+.auth-bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(clamp(48px, 8vw, 96px));
+}
+
+.auth-bg-glow--1 {
+    top: -15vh;
+    left: -10vw;
+    width: clamp(320px, 55vw, 720px);
+    height: clamp(320px, 55vh, 720px);
+    background: var(--color-primary);
+    opacity: 0.16;
+}
+
+.auth-bg-glow--2 {
+    bottom: -15vh;
+    right: -10vw;
+    width: clamp(280px, 50vw, 640px);
+    height: clamp(280px, 50vh, 640px);
+    background: var(--color-secondary, var(--secondary));
+    opacity: 0.14;
+}
+
+.auth-card--login {
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    position: relative;
+    /* Sombra propia, algo más presente que la .auth-card compartida
+       (registro.js no la lleva): esta tarjeta queda sola en el centro
+       de la pantalla, sin una lista larga de campos alrededor que le
+       dé peso visual, así que necesita algo más de profundidad propia. */
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+    /* Contorno de 1px con el mismo gradiente de marca primary→secondary
+       que usa el subrayado del nav (técnica border-image vía doble
+       background + background-clip), en vez del --color-border plano de
+       .auth-card — sin añadir ningún elemento nuevo ni tocar el grosor
+       del borde existente. */
+    background-image: linear-gradient(var(--color-surface), var(--color-surface)),
+        linear-gradient(90deg, var(--color-primary), var(--color-secondary, var(--secondary)));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+/* A petición, sin icono — solo queda como wrapper posicionado para el
+   dropdown de sugerencias de reg-city (.search-dropdown, ver
+   registro.js), que necesita un ancestro position:relative para anclar
+   su position:absolute. El input dentro usa el padding normal de
+   .auth-field input[type=...] más abajo, sin hueco extra reservado. */
+.auth-input-group {
+    position: relative;
+}
+
+.auth-input-group input {
+    width: 100%;
+}
+
 .auth-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -58,8 +158,7 @@
 
 .auth-field input[type='email'],
 .auth-field input[type='password'],
-.auth-field input[type='text'],
-.auth-field select {
+.auth-field input[type='text'] {
     font-family: var(--font-body);
     font-size: 15px;
     color: var(--color-text);
@@ -70,8 +169,7 @@
     transition: border-color var(--duration-base) var(--ease-out);
 }
 
-.auth-field input:focus,
-.auth-field select:focus {
+.auth-field input:focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: var(--shadow-focus);
@@ -82,8 +180,7 @@
    panel de administración, pero vía atributo ARIA en vez de una clase
    propia: así el borde de error y "esto es inválido para lectores de
    pantalla" nunca pueden desincronizarse entre sí. */
-.auth-field input[aria-invalid='true'],
-.auth-field select[aria-invalid='true'] {
+.auth-field input[aria-invalid='true'] {
     border-color: var(--color-error);
 }
 
@@ -92,12 +189,14 @@
     color: var(--color-text-muted);
 }
 
+/* A petición: sin min-height que reserve hueco — login.js/registro.js
+   (renderAuthError()) ya no dejan este <p> vacío en el DOM mientras no
+   hay error, lo insertan/quitan del todo, así que no hay hueco vacío
+   que "reservar": el formulario sube/baja de altura real al aparecer
+   o desaparecer un error, a propósito. */
 .auth-error {
     font-size: 13px;
     color: var(--color-error);
-    /* Reserva el hueco aunque esté vacío — evita que el formulario
-       "salte" verticalmente al aparecer/desaparecer un error. */
-    min-height: 1.4em;
 }
 
 .auth-field--interests {
