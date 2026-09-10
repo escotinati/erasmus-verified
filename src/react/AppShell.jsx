@@ -5,8 +5,24 @@
 //  páginas públicas (con 2 variantes de markup: 4 ítems en index.html,
 //  3 en el resto) + un <script> inline duplicado calculando el ítem
 //  activo. Ahora vive aquí una sola vez, con un array de configuración
-//  único que cubre las 5 pestañas ya aprobadas por el usuario — ver
-//  docs/mobile-app-shell.md.
+//  único — ver docs/mobile-app-shell.md.
+//
+//  A petición: sin pestaña "Inicio"/"Noches" — el logo (topnav/topbar,
+//  siempre visible) ya lleva a index.html en las dos experiencias, así
+//  que esa pestaña era una redundancia pura, no una ruta a la que solo
+//  se pudiera llegar desde aquí (a diferencia de servicios/viajes, que
+//  no tienen acceso equivalente en el topnav móvil).
+//
+//  A petición: sin pestaña "Mapa" tampoco (no llevaba a una página útil
+//  en el flujo actual). En su lugar, "Perfil" → login.html: antes de
+//  esto no había NINGÚN punto de acceso a login/registro en móvil — el
+//  icono de cuenta del topnav/topbar (#authBtn, navShared.jsx) es
+//  .icon-btn, oculto por debajo de --bp-md. Enlace simple (como
+//  servicios/viajes), sin la lógica de sesión de AuthButton: no hay
+//  página de perfil propia todavía a la que llevar a un usuario ya
+//  logueado, así que esa lógica se queda en el icono de escritorio por
+//  ahora — si en el futuro se añade una página de perfil real, esta
+//  pestaña es el sitio natural para adoptar ese mismo comportamiento.
 //
 //  Mismo patrón que Nav.jsx (leer su comentario largo para el porqué):
 //  nada de esto depende de un script externo enganchado a
@@ -26,20 +42,6 @@ function buildItems() {
 
     return [
         {
-            key: 'home',
-            href: 'index.html',
-            icon: parties ? 'nightlife' : 'home',
-            i18n: parties ? 'nav.nights_bottom' : 'nav.home',
-            fallback: parties ? 'Noches' : 'Inicio',
-        },
-        {
-            key: 'map',
-            href: 'mapa.html',
-            icon: 'map',
-            i18n: 'nav.map',
-            fallback: 'Mapa',
-        },
-        {
             key: 'services',
             href: 'servicios.html',
             icon: 'storefront',
@@ -54,6 +56,13 @@ function buildItems() {
             icon: 'flight',
             i18n: 'nav.trips',
             fallback: 'Viajes',
+        },
+        {
+            key: 'profile',
+            href: 'login.html',
+            icon: 'person',
+            i18n: 'nav.account',
+            fallback: 'Perfil',
         },
         {
             // Salto de dominio (Fiestas↔Verified): no es una pestaña real,
