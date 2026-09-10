@@ -105,9 +105,19 @@
                 </div>
             </section>
 
-            <!-- ── TICKER ───────────────────────────────────────────── -->
-            <div class="ticker" aria-hidden="true">
-                <div class="ticker-track" id="tickerTrack"></div>
+            <!-- ── PARTNERS / ANUNCIANTES ───────────────────────────────
+                 Sustituye al antiguo ticker (marquee de texto en bucle
+                 continuo) por una fila de bloques fijos — cada uno con su
+                 tipo (Partner/Anunciante) y un título, en vez de texto que
+                 se desplaza solo. Contenido de relleno (JS,
+                 initPartnersBanner en index.js) hasta que exista una
+                 fuente real de datos, mismo criterio que tenía el ticker
+                 anterior. -->
+            <div class="partners-banner">
+                <span class="partners-banner-label" data-i18n="home.partners_banner_label"
+                    >Partners y anunciantes verificados</span
+                >
+                <div class="partners-banner-track" id="partnersBannerTrack"></div>
             </div>
 
             <!-- ── TOP CITIES ACCORDION ─────────────────────────────── -->

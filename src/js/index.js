@@ -494,32 +494,63 @@ function renderPartnerGridSkeleton() {
     });
 }
 
-// ── 5. TICKER ─────────────────────────────────────────────────
+// ── 5. PARTNERS / ANUNCIANTES ────────────────────────────────
+// Sustituye al antiguo ticker (marquee de texto en bucle). Contenido de
+// relleno con títulos variados y ficticios — no hay tabla de partners
+// "destacados"/anunciantes en Supabase todavía (mismo motivo que
+// HOME_STUDENTS_COUNT más abajo), pendiente de sustituir por datos
+// reales cuando exista esa fuente. shuffle() está definido más abajo
+// (sección del accordion) pero, al ser function declaration, queda
+// hoisted — se puede llamar aquí sin problema aunque esté "después" en
+// el archivo.
 
-function initTicker() {
-    const track = document.getElementById('tickerTrack');
+// `type` es una clave interna (no el texto mostrado) — se traduce vía
+// home.partners_banner_type_partner/_advertiser y decide también el
+// modificador de color (.partners-banner-item--partner/--advertiser,
+// ver home.css), nunca un string ya traducido a mano como antes.
+const PARTNERS_BANNER_ITEMS = [
+    { type: 'partner', title: 'CityStay Alojamientos' },
+    { type: 'advertiser', title: 'EuroSim Telecom' },
+    { type: 'partner', title: 'NightPass Rutas' },
+    { type: 'advertiser', title: 'TravelBuddy Tours' },
+    { type: 'partner', title: 'UniHousing Group' },
+    { type: 'advertiser', title: 'CampusBank Finanzas' },
+    { type: 'partner', title: 'ErasmusEats Delivery' },
+    { type: 'advertiser', title: 'GlobalMove Seguros' },
+];
+
+function initPartnersBanner() {
+    const track = document.getElementById('partnersBannerTrack');
     if (!track) return;
 
-    const items = [
-        I18n.t('home.ticker_1'),
-        I18n.t('home.ticker_2'),
-        I18n.t('home.ticker_3'),
-        I18n.t('home.ticker_4'),
-    ];
-    const html = items
-        .map((text) => `<span class="ticker-item">${escapeHtml(text)}</span>`)
+    // shuffle() (no muta el array original) — orden distinto en cada
+    // carga, mismo criterio "aleatorio" pedido para los títulos.
+    track.innerHTML = shuffle(PARTNERS_BANNER_ITEMS)
+        .map((item) => {
+            const typeLabel = I18n.t(`home.partners_banner_type_${item.type}`);
+            // Monograma (inicial del título) como placeholder del logo —
+            // aria-hidden porque no añade información sobre el título
+            // que ya lee el texto de al lado; el día que haya logo real
+            // este mismo <span> pasa a ser un <img> con su propio alt
+            // (ver comentario de .partners-banner-item-logo en home.css).
+            const initial = escapeHtml(item.title.trim().charAt(0).toUpperCase());
+            return `
+        <div class="partners-banner-item partners-banner-item--${item.type}">
+          <span class="partners-banner-item-logo" aria-hidden="true">${initial}</span>
+          <span class="partners-banner-item-text">
+            <span class="partners-banner-item-type">${escapeHtml(typeLabel)}</span>
+            <span class="partners-banner-item-title">${escapeHtml(item.title)}</span>
+          </span>
+        </div>`;
+        })
         .join('');
-    // Contenido duplicado una vez: @keyframes ticker-scroll anima hasta
-    // -50%, momento en el que la segunda copia ya ocupa exactamente el
-    // sitio de la primera → loop sin salto visible.
-    track.innerHTML = html + html;
 }
 
 // ── 6. STATS ANIMADOS ───────────────────────────────────────
 
 // Cifra de marca, no viene de Supabase (no hay tabla de estudiantes) —
-// mismo criterio que el contenido estático del ticker. TODO: sustituir
-// por un recuento real si en algún momento se registra en BD.
+// mismo criterio que el contenido de relleno de partners-banner. TODO:
+// sustituir por un recuento real si en algún momento se registra en BD.
 const HOME_STUDENTS_COUNT = 30000;
 
 function animateCount(el, target, duration = 1200, format = (n) => String(n)) {
@@ -789,7 +820,7 @@ function initBottomNav() {
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
     initHeroTitleAnim();
-    initTicker();
+    initPartnersBanner();
     initCitiesScrollEffect();
     initBottomNav();
     initStudentsStat();

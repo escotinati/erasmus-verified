@@ -271,51 +271,140 @@
     color: var(--on-surface-variant);
 }
 
-/* Ticker — franja de marquee CSS puro, contenido duplicado en el
-   propio track (ver initTicker en index.js) para loop continuo sin
-   salto. TODO: sustituir el contenido estático por datos reales
-   (recuento de cta_clicks, nº de partners activos…) en una fase
-   posterior. */
-.ticker {
+/* Partners / anunciantes — sustituye al antiguo ticker (marquee de
+   texto en bucle continuo) por una fila de píldoras fijas que se
+   ajustan (wrap) en pantallas estrechas en vez de desplazarse solas.
+   Mismo fondo/borde que tenía .ticker, para no perder la separación
+   visual entre el hero y el accordion de ciudades. Contenido de
+   relleno hasta que exista una fuente real de datos (ver
+   initPartnersBanner en index.js). */
+.partners-banner {
     overflow: hidden;
     background: var(--surface-container-low);
     border-top: 1px solid var(--outline-variant);
     border-bottom: 1px solid var(--outline-variant);
-    padding: 14px 0;
+    padding: 32px var(--margin-mobile);
 }
 
-.ticker-track {
+/* Etiqueta de contexto ("Partners y anunciantes verificados") — a
+   petición, deliberadamente discreta: sin mayúsculas, sin negrita, sin
+   tracking ancho (el tratamiento típico de "grito" que sí llevan los
+   eyebrow .eyebrow--primary/--secondary de otras páginas). Solo
+   debe intuirse al pasar la vista, no competir con las tarjetas de
+   debajo — de ahí también la opacity reducida en vez de un color
+   apagado propio. */
+.partners-banner-label {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
+
+.partners-banner-track {
+    max-width: var(--container-max);
+    margin: 0 auto;
     display: flex;
-    width: max-content;
-    animation: ticker-scroll 26s linear infinite;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
 }
 
-.ticker-item {
-    display: inline-flex;
+/* Tarjeta individual — ya no una píldora de solo texto: reserva un
+   hueco de logo real (.partners-banner-item-logo) a la izquierda,
+   pensado para partners/anunciantes con imagen propia. Hoy ese hueco
+   muestra un monograma (inicial del título) como placeholder — mismo
+   criterio que un avatar sin foto todavía — pero es el mismo elemento
+   que, con datos reales, pasaría a contener un <img class="partners-
+   banner-item-logo-img"> (object-fit:contain) sin tocar el layout de
+   alrededor. */
+.partners-banner-item {
+    display: flex;
     align-items: center;
-    padding: 0 28px;
-    font-size: 13px;
+    gap: 12px;
+    padding: 10px 18px 10px 10px;
+    background: var(--surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    transition:
+        transform var(--duration-base, 0.2s) var(--ease-out, ease),
+        border-color var(--duration-base, 0.2s),
+        box-shadow var(--duration-base, 0.2s);
+}
+
+.partners-banner-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Marco del logo — cuadrado fijo, esquinas redondeadas, mismo tamaño
+   tanto para el monograma placeholder de hoy como para un <img> real
+   mañana (object-fit:contain dentro de este marco no cambiaría nada
+   del layout de la tarjeta). font-family: display (Syne), no body —
+   un monograma es más "marca" que "texto de UI". */
+.partners-banner-item-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.partners-banner-item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.partners-banner-item-type {
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--on-surface-variant);
+}
+
+/* Distinción Partner/Anunciante por color — nunca la ÚNICA señal: el
+   texto de .partners-banner-item-type ya dice "Partner"/"Anunciante"
+   explícitamente, el color (aquí + en el marco del logo) solo refuerza
+   esa lectura para quien escanea la fila de un vistazo (regla de
+   accesibilidad: el color nunca es el único vehículo de la
+   información). --primary-fixed ya existe como tinte claro de
+   --primary (tokens.css); --secondary no tiene un equivalente propio,
+   así que se calcula aquí con color-mix() — misma técnica que ya usa
+   .search-bar-btn:hover (components.css) para su degradado, no una
+   novedad en el proyecto. */
+.partners-banner-item--partner .partners-banner-item-logo {
+    color: var(--primary);
+    background: var(--primary-fixed);
+}
+
+.partners-banner-item--partner .partners-banner-item-type {
+    color: var(--primary);
+}
+
+.partners-banner-item--advertiser .partners-banner-item-logo {
+    color: var(--secondary);
+    background: color-mix(in srgb, var(--secondary) 15%, white);
+}
+
+.partners-banner-item--advertiser .partners-banner-item-type {
+    color: var(--secondary);
+}
+
+.partners-banner-item-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--on-surface);
     white-space: nowrap;
-}
-
-.ticker-item::after {
-    content: '•';
-    margin-left: 28px;
-    color: var(--outline);
-}
-
-@keyframes ticker-scroll {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        /* -50% porque el contenido está duplicado una vez en el track */
-        transform: translateX(-50%);
-    }
 }
 
 /* Pills de categoría del grid de partners */
