@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Crear cuenta — Erasmus Verified</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Design System tokens -->
+        <link rel="stylesheet" href="/src/styles/tokens.css" />
+        <link rel="stylesheet" href="/src/styles/typography.css" />
+        <link rel="stylesheet" href="/src/css/styles.css" />
+        <link rel="stylesheet" href="/src/css/animations.css" />
+        <script src="/src/js/experience.js"></script>
+    </head>
+
+    <body class="auth-page">
+        <!-- ── TOP NAV (React, rama react/menu) — ver src/react/TopbarNav.jsx ── -->
+        <div id="nav-root"></div>
+        <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
+
+        <main style="flex: 1">
+            <div class="section auth-section">
+                <span class="eyebrow eyebrow--primary anim-page-enter" data-i18n="auth.register_eyebrow"
+                    >ÚNETE A LA COMUNIDAD</span
+                >
+                <h1 class="section-title anim-page-enter" data-i18n="auth.register_title">
+                    Crea tu cuenta
+                </h1>
+                <p class="section-sub anim-page-enter" data-i18n="auth.register_subtitle">
+                    Regístrate para guardar tus preferencias y sacarle más partido a tu Erasmus.
+                </p>
+
+                <div class="auth-card anim-fade-up anim-delay-1">
+                    <form id="register-form" class="auth-form" novalidate>
+                        <div class="auth-field">
+                            <label for="reg-email" data-i18n="auth.email_label">Email</label>
+                            <input
+                                id="reg-email"
+                                name="email"
+                                type="email"
+                                autocomplete="email"
+                                required
+                                aria-describedby="reg-email-error"
+                                data-i18n="auth.email_placeholder"
+                                placeholder="tucorreo@ejemplo.com"
+                            />
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-password" data-i18n="auth.password_label">Contraseña</label>
+                            <input
+                                id="reg-password"
+                                name="password"
+                                type="password"
+                                autocomplete="new-password"
+                                minlength="6"
+                                required
+                                aria-describedby="reg-password-hint reg-password-error"
+                            />
+                            <p class="auth-hint" id="reg-password-hint" data-i18n="auth.password_hint">
+                                Mínimo 6 caracteres.
+                            </p>
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-city" data-i18n="auth.city_label">Ciudad</label>
+                            <div class="auth-input-group">
+                                <!-- Autocompletable: texto libre + dropdown (mismo patrón que
+                                     #citySearch en index.js — .search-dropdown/.search-dropdown-item/
+                                     .sdi-* ya son clases globales de components.css, sin CSS nuevo).
+                                     El id real de la ciudad seleccionada vive en el input oculto de
+                                     abajo (reg-city-id) — este campo de texto es solo lo que ve/
+                                     teclea el usuario, nunca lo que se manda a signUp(). -->
+                                <input
+                                    id="reg-city"
+                                    type="text"
+                                    autocomplete="off"
+                                    required
+                                    aria-describedby="reg-city-error"
+                                    data-i18n="auth.city_placeholder"
+                                    placeholder="Escribe tu ciudad..."
+                                />
+                                <div class="search-dropdown" id="reg-city-dropdown" role="listbox"></div>
+                            </div>
+                            <input type="hidden" id="reg-city-id" name="cityId" />
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-university" data-i18n="auth.university_label"
+                                >Universidad de origen</label
+                            >
+                            <input
+                                id="reg-university"
+                                name="university"
+                                type="text"
+                                autocomplete="organization"
+                                data-i18n="auth.university_placeholder"
+                                placeholder="Opcional"
+                            />
+                        </div>
+
+                        <fieldset class="auth-field auth-field--interests">
+                            <legend data-i18n="auth.interests_label">Intereses</legend>
+                            <p class="auth-hint" data-i18n="auth.interests_hint">
+                                Opcional — nos ayuda a mostrarte contenido relevante.
+                            </p>
+                            <label class="auth-checkbox">
+                                <input type="checkbox" name="interests" value="nightlife" />
+                                <span data-i18n="auth.interest_nightlife">Fiestas</span>
+                            </label>
+                            <label class="auth-checkbox">
+                                <input type="checkbox" name="interests" value="housing" />
+                                <span data-i18n="auth.interest_housing">Alojamiento</span>
+                            </label>
+                            <label class="auth-checkbox">
+                                <input type="checkbox" name="interests" value="travel" />
+                                <span data-i18n="auth.interest_travel">Viajes</span>
+                            </label>
+                        </fieldset>
+
+                        <button
+                            type="submit"
+                            class="btn-primary-pill"
+                            id="register-submit"
+                            data-i18n="auth.register_submit_cta"
+                        >
+                            Crear cuenta
+                        </button>
+                    </form>
+
+                    <div class="info-box auth-success-box" id="register-success" role="status" hidden>
+                        <span class="info-icon material-symbols-outlined">mark_email_read</span>
+                        <p class="info-text">
+                            <strong data-i18n="auth.register_success_title">Revisa tu correo</strong>
+                            <span data-i18n="auth.register_success_body"
+                                >Te hemos enviado un enlace de confirmación a tu email. Confírmalo
+                                para poder iniciar sesión.</span
+                            >
+                        </p>
+                    </div>
+
+                    <p class="auth-switch">
+                        <span data-i18n="auth.already_have_account">¿Ya tienes cuenta?</span>
+                        <a href="login.html" data-i18n="auth.go_to_login">Inicia sesión</a>
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER (React, rama react/menu) — ver src/react/Footer.jsx -->
+        <div id="footer-root"></div>
+        <script type="module" src="/src/react/mount-footer.jsx"></script>
+
+        <!-- ── APP BOTTOM NAV (React) — ver src/react/AppShell.jsx ── -->
+        <div id="shell-root"></div>
+        <script type="module" src="/src/react/mount-shell.jsx"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+        <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
+        <script src="/src/js/utils/speculationRules.js"></script>
+        <script src="/src/js/services/citiesService.js"></script>
+        <script src="/src/js/utils/sanitize.js"></script>
+        <script src="/src/js/services/authService.js"></script>
+        <script src="/src/js/utils/animations.js"></script>
+        <script src="/src/js/registro.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+                if (window.initScrollReveal) window.initScrollReveal();
+            });
+        </script>
+    </body>
+</html>

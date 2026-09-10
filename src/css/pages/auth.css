@@ -1,0 +1,290 @@
+/* ═══════════════════════════════════════════════════════════
+   AUTH.CSS — registro.html / login.html
+   Único CSS nuevo de esta rama — reutiliza el wrapper .section, la
+   cabecera .eyebrow/.section-title/.section-sub y el botón
+   .btn-primary-pill que ya existían (ver servicios.html/viajes.html);
+   aquí solo vive lo que esas dos páginas necesitan y no tenía ya un
+   componente global: la tarjeta del formulario y sus campos.
+   ─────────────────────────────────────────────────────── */
+
+.auth-section {
+    max-width: 640px;
+}
+
+/* ═══ login.html — cabecera centrada + fondo decorativo ═══
+   Solo aplica a login.html (registro.html conserva el layout
+   original, alineado a la izquierda, con más campos que llenan el
+   ancho de sobra) — todo bajo .auth-section--login para no tocar
+   .auth-section a secas. */
+.auth-section--login {
+    max-width: 480px;
+    text-align: center;
+}
+
+.auth-section--login .auth-section__title,
+.auth-section--login .auth-section__sub {
+    text-align: center;
+}
+
+.auth-section--login .auth-section__sub {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Fondo degradado a pantalla completa — ver el comentario en login.html
+   sobre por qué vive fuera de .auth-section. position:fixed lo ancla al
+   viewport (no al documento), así que cubre el mismo ancho/alto visible
+   sea cual sea el tamaño de pantalla, sin generar scroll propio; z-index
+   negativo lo deja por detrás de nav/tarjeta/footer sin necesidad de que
+   ninguno de ellos declare su propio z-index (ver stacking del "canvas
+   background" del body: un z-index negativo pinta por delante de ese
+   fondo pero por detrás de cualquier contenido en flujo normal). */
+.auth-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Mismo gradiente de marca primary→secondary que ya usa el subrayado
+   del nav (layout.css), aquí como manchas ambientales. Tamaño en vw/vh
+   con clamp(): crecen y encogen con la pantalla sin quedarse minúsculas
+   en móvil ni desproporcionadas en desktop grande. */
+.auth-bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(clamp(48px, 8vw, 96px));
+}
+
+.auth-bg-glow--1 {
+    top: -15vh;
+    left: -10vw;
+    width: clamp(320px, 55vw, 720px);
+    height: clamp(320px, 55vh, 720px);
+    background: var(--color-primary);
+    opacity: 0.16;
+}
+
+.auth-bg-glow--2 {
+    bottom: -15vh;
+    right: -10vw;
+    width: clamp(280px, 50vw, 640px);
+    height: clamp(280px, 50vh, 640px);
+    background: var(--color-secondary, var(--secondary));
+    opacity: 0.14;
+}
+
+.auth-card--login {
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    position: relative;
+    /* Sombra propia, algo más presente que la .auth-card compartida
+       (registro.js no la lleva): esta tarjeta queda sola en el centro
+       de la pantalla, sin una lista larga de campos alrededor que le
+       dé peso visual, así que necesita algo más de profundidad propia. */
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+    /* Contorno de 1px con el mismo gradiente de marca primary→secondary
+       que usa el subrayado del nav (técnica border-image vía doble
+       background + background-clip), en vez del --color-border plano de
+       .auth-card — sin añadir ningún elemento nuevo ni tocar el grosor
+       del borde existente. */
+    background-image: linear-gradient(var(--color-surface), var(--color-surface)),
+        linear-gradient(90deg, var(--color-primary), var(--color-secondary, var(--secondary)));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+/* A petición, sin icono — solo queda como wrapper posicionado para el
+   dropdown de sugerencias de reg-city (.search-dropdown, ver
+   registro.js), que necesita un ancestro position:relative para anclar
+   su position:absolute. El input dentro usa el padding normal de
+   .auth-field input[type=...] más abajo, sin hueco extra reservado. */
+.auth-input-group {
+    position: relative;
+}
+
+.auth-input-group input {
+    width: 100%;
+}
+
+.auth-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    margin-top: var(--space-8);
+    box-shadow: var(--shadow-sm);
+}
+
+/* [hidden] la pone registro.js al llegar la confirmación de éxito
+   (sustituye el formulario por #register-success) — mismo bug de
+   especificidad que .auth-success-box[hidden] más abajo: sin este
+   override, display:flex seguiría ganando y el formulario nunca
+   llegaría a ocultarse. */
+.auth-form[hidden] {
+    display: none;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    /* Reset del <fieldset> nativo cuando .auth-field es un fieldset
+       (ver .auth-field--interests) — border/padding/margin propios
+       de <fieldset>, no del resto de .auth-field (<div>). */
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.auth-field label,
+.auth-field legend {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    padding: 0;
+}
+
+.auth-field input[type='email'],
+.auth-field input[type='password'],
+.auth-field input[type='text'] {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--color-text);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    transition: border-color var(--duration-base) var(--ease-out);
+}
+
+.auth-field input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+}
+
+/* aria-invalid lo fija setFieldError() (registro.js/login.js) en cada
+   intento de envío — mismo patrón que .admin-input--invalid en el
+   panel de administración, pero vía atributo ARIA en vez de una clase
+   propia: así el borde de error y "esto es inválido para lectores de
+   pantalla" nunca pueden desincronizarse entre sí. */
+.auth-field input[aria-invalid='true'] {
+    border-color: var(--color-error);
+}
+
+.auth-hint {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* A petición: sin min-height que reserve hueco — login.js/registro.js
+   (renderAuthError()) ya no dejan este <p> vacío en el DOM mientras no
+   hay error, lo insertan/quitan del todo, así que no hay hueco vacío
+   que "reservar": el formulario sube/baja de altura real al aparecer
+   o desaparecer un error, a propósito. */
+.auth-error {
+    font-size: 13px;
+    color: var(--color-error);
+}
+
+.auth-field--interests {
+    gap: var(--space-2);
+}
+
+.auth-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.auth-checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.auth-form .btn-primary-pill {
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--space-2);
+}
+
+/* .btn-primary-pill:hover (components.css) sube el botón 2px y le baja
+   la opacidad — en un botón full-width como este ese desplazamiento
+   vertical se nota más que en los pill normales (ancho de contenido),
+   así que se anula aquí a petición: mantiene el cambio de color como
+   única señal de hover, sin movimiento ni opacidad. */
+.auth-form .btn-primary-pill:hover {
+    background-color: var(--color-primary-hover);
+    opacity: 1;
+    transform: none;
+}
+
+.auth-form .btn-primary-pill:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-success-box {
+    margin-top: var(--space-6);
+}
+
+/* .info-box (pages/ciudad.css) es display:flex — empata en
+   especificidad con el [hidden] del navegador y gana por venir de una
+   hoja de autor que carga después. Mismo bug ya resuelto antes para
+   .city-search-bar[hidden]: sin esto, el aviso de "revisa tu correo"
+   se veía aunque registro.js no hubiera quitado el atributo hidden
+   todavía. */
+.auth-success-box[hidden] {
+    display: none;
+}
+
+.auth-switch {
+    margin-top: var(--space-6);
+    text-align: center;
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.auth-switch a {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-left: 4px;
+}
+
+/* .anim-fade-up (animations.css) no es solo un fade — también
+   desplaza el elemento con translateY() y lo devuelve a su sitio al
+   revelarse (.is-visible:not(:hover)). Se anula esa parte aquí, a
+   petición, dejando solo el fade de opacidad para .auth-card. Hace
+   falta anular las DOS reglas (no solo .is-visible:not(:hover)): esa
+   por sí sola solo resetea el desplazamiento inicial a 0, que es
+   translateY(0) — visualmente idéntico a transform:none, así que sin
+   tocar también la regla base .anim-fade-up (la que fija ese
+   desplazamiento inicial) no cambiaría nada. .auth-page delante en
+   ambos selectores porque animations.css se carga en su propio <link>
+   DESPUÉS de styles.css (donde vive auth.css) en el <head> de estas
+   páginas — a igual especificidad ganaría animations.css por orden de
+   cascada; con una clase más aquí gana este archivo sin depender del
+   orden de carga. */
+.auth-page .anim-fade-up,
+.auth-page .anim-fade-up.is-visible:not(:hover) {
+    transform: none;
+}

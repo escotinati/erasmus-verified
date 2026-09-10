@@ -45,6 +45,8 @@ export default defineConfig(({ mode }) => {
                     alojamiento: resolve(__dirname, 'alojamiento.html'),
                     servicios: resolve(__dirname, 'servicios.html'),
                     viajes: resolve(__dirname, 'viajes.html'),
+                    registro: resolve(__dirname, 'registro.html'),
+                    login: resolve(__dirname, 'login.html'),
                     admin: resolve(__dirname, 'admin/index.html'),
                 },
             },

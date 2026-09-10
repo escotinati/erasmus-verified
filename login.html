@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Iniciar sesión — Erasmus Verified</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Design System tokens -->
+        <link rel="stylesheet" href="/src/styles/tokens.css" />
+        <link rel="stylesheet" href="/src/styles/typography.css" />
+        <link rel="stylesheet" href="/src/css/styles.css" />
+        <link rel="stylesheet" href="/src/css/animations.css" />
+        <script src="/src/js/experience.js"></script>
+    </head>
+
+    <body class="auth-page">
+        <!-- Fondo degradado a pantalla completa (fixed, detrás de todo el
+             contenido) — ver .auth-bg en auth.css. Fuera de <main> a
+             propósito: cubre todo el viewport (nav + footer incluidos),
+             no solo el ancho de .auth-section. -->
+        <div class="auth-bg" aria-hidden="true">
+            <div class="auth-bg-glow auth-bg-glow--1"></div>
+            <div class="auth-bg-glow auth-bg-glow--2"></div>
+        </div>
+
+        <!-- ── TOP NAV (React, rama react/menu) — ver src/react/TopbarNav.jsx ── -->
+        <div id="nav-root"></div>
+        <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
+
+        <main style="flex: 1">
+            <div class="section auth-section auth-section--login">
+                <h1
+                    class="section-title auth-section__title anim-page-enter"
+                    data-i18n="auth.login_title"
+                >
+                    Inicia sesión
+                </h1>
+                <p
+                    class="section-sub auth-section__sub anim-page-enter"
+                    data-i18n="auth.login_subtitle"
+                >
+                    Accede con tu email y contraseña para continuar.
+                </p>
+
+                <div class="auth-card auth-card--login anim-fade-up anim-delay-1">
+                    <form id="login-form" class="auth-form" novalidate>
+                        <div class="auth-field">
+                            <label for="login-email" data-i18n="auth.email_label">Email</label>
+                            <input
+                                id="login-email"
+                                name="email"
+                                type="email"
+                                autocomplete="email"
+                                required
+                                aria-describedby="login-email-error"
+                                data-i18n="auth.email_placeholder"
+                                placeholder="tucorreo@ejemplo.com"
+                            />
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="login-password" data-i18n="auth.password_label"
+                                >Contraseña</label
+                            >
+                            <input
+                                id="login-password"
+                                name="password"
+                                type="password"
+                                autocomplete="current-password"
+                                required
+                                aria-describedby="login-password-error"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn-primary-pill"
+                            id="login-submit"
+                            data-i18n="auth.login_submit_cta"
+                        >
+                            Iniciar sesión
+                        </button>
+                    </form>
+
+                    <p class="auth-switch">
+                        <span data-i18n="auth.no_account_yet">¿Todavía no tienes cuenta?</span>
+                        <a href="registro.html" data-i18n="auth.go_to_register">Regístrate</a>
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER (React, rama react/menu) — ver src/react/Footer.jsx -->
+        <div id="footer-root"></div>
+        <script type="module" src="/src/react/mount-footer.jsx"></script>
+
+        <!-- ── APP BOTTOM NAV (React) — ver src/react/AppShell.jsx ── -->
+        <div id="shell-root"></div>
+        <script type="module" src="/src/react/mount-shell.jsx"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+        <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
+        <script src="/src/js/utils/speculationRules.js"></script>
+        <script src="/src/js/utils/sanitize.js"></script>
+        <script src="/src/js/services/authService.js"></script>
+        <script src="/src/js/utils/animations.js"></script>
+        <script src="/src/js/login.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+                if (window.initScrollReveal) window.initScrollReveal();
+            });
+        </script>
+    </body>
+</html>

@@ -263,6 +263,51 @@ window.I18n.translations = {
             destinations: 'Destinos',
             rights: 'Todos los derechos reservados.',
         },
+        auth: {
+            logout_cta: 'Cerrar sesión',
+
+            register_eyebrow: 'Únete a la comunidad',
+            register_title: 'Crea tu cuenta',
+            register_subtitle:
+                'Regístrate para guardar tus preferencias y sacarle más partido a tu Erasmus.',
+            login_title: 'Inicia sesión',
+            login_subtitle: 'Accede con tu email y contraseña para continuar.',
+
+            email_label: 'Email',
+            email_placeholder: 'tucorreo@ejemplo.com',
+            password_label: 'Contraseña',
+            password_hint: 'Mínimo 6 caracteres.',
+            city_label: 'Ciudad',
+            city_placeholder: 'Escribe tu ciudad...',
+            university_label: 'Universidad de origen',
+            university_placeholder: 'Opcional',
+            interests_label: 'Intereses',
+            interests_hint: 'Opcional — nos ayuda a mostrarte contenido relevante.',
+            interest_nightlife: 'Fiestas',
+            interest_housing: 'Alojamiento',
+            interest_travel: 'Viajes',
+
+            register_submit_cta: 'Crear cuenta',
+            login_submit_cta: 'Iniciar sesión',
+            register_submitting: 'Creando cuenta…',
+            login_submitting: 'Entrando…',
+
+            already_have_account: '¿Ya tienes cuenta?',
+            no_account_yet: '¿Todavía no tienes cuenta?',
+            go_to_login: 'Inicia sesión',
+            go_to_register: 'Regístrate',
+
+            register_success_title: 'Revisa tu correo',
+            register_success_body:
+                'Te hemos enviado un enlace de confirmación a tu email. Confírmalo para poder iniciar sesión.',
+
+            error_email_required: 'Introduce tu email.',
+            error_email_invalid: 'Introduce un email válido.',
+            error_password_required: 'Introduce tu contraseña.',
+            error_password_short: 'La contraseña debe tener al menos 6 caracteres.',
+            error_city_required: 'Selecciona tu ciudad.',
+            error_generic: 'Ha ocurrido un error. Inténtalo de nuevo.',
+        },
     },
     en: {
         nav: {
@@ -511,6 +556,50 @@ window.I18n.translations = {
             legal_title: 'Legal',
             destinations: 'Destinations',
             rights: 'All rights reserved.',
+        },
+        auth: {
+            logout_cta: 'Log out',
+
+            register_eyebrow: 'Join the community',
+            register_title: 'Create your account',
+            register_subtitle: 'Sign up to save your preferences and get more out of your Erasmus.',
+            login_title: 'Log in',
+            login_subtitle: 'Enter your email and password to continue.',
+
+            email_label: 'Email',
+            email_placeholder: 'you@example.com',
+            password_label: 'Password',
+            password_hint: 'At least 6 characters.',
+            city_label: 'City',
+            city_placeholder: 'Type your city...',
+            university_label: 'Home university',
+            university_placeholder: 'Optional',
+            interests_label: 'Interests',
+            interests_hint: "Optional — helps us show you relevant content.",
+            interest_nightlife: 'Nightlife',
+            interest_housing: 'Housing',
+            interest_travel: 'Travel',
+
+            register_submit_cta: 'Create account',
+            login_submit_cta: 'Log in',
+            register_submitting: 'Creating account…',
+            login_submitting: 'Logging in…',
+
+            already_have_account: 'Already have an account?',
+            no_account_yet: "Don't have an account yet?",
+            go_to_login: 'Log in',
+            go_to_register: 'Sign up',
+
+            register_success_title: 'Check your email',
+            register_success_body:
+                "We've sent you a confirmation link. Confirm it to be able to log in.",
+
+            error_email_required: 'Enter your email.',
+            error_email_invalid: 'Enter a valid email.',
+            error_password_required: 'Enter your password.',
+            error_password_short: 'Password must be at least 6 characters.',
+            error_city_required: 'Select your city.',
+            error_generic: 'Something went wrong. Please try again.',
         },
     },
 };

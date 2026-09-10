@@ -89,6 +89,62 @@ a.btn-primary-pill {
     color: var(--primary);
 }
 
+/* Menú de cuenta (#authBtn, navShared.jsx). Contenedor de
+   posicionamiento propio para el desplegable — mismo criterio que
+   .search-bar con .search-dropdown, en vez de darle position:relative
+   a .icon-btn (que hoy solo consume este botón, pero no hay motivo
+   para acoplar la posición de un desplegable a una clase genérica de
+   icono). inline-flex para no alterar el layout de fila que ya tenía
+   #authBtn dentro de .topbar-right/.topnav-right. */
+.auth-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Mismo lenguaje visual que .search-dropdown (fondo opaco, borde,
+   radio, sombra) en vez de inventar un patrón nuevo — la diferencia
+   es que aquí React monta/desmonta el elemento condicionalmente
+   (AuthButton, navShared.jsx), así que no hace falta un toggle
+   display:none/.is-open como en .search-dropdown: si existe en el
+   DOM, se pinta. */
+.auth-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 190px;
+    background: #fff;
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    box-shadow:
+        0 8px 32px rgba(70, 72, 212, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+    z-index: 1000;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.auth-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--on-surface);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.auth-dropdown-item:hover {
+    background: var(--surface-container-low);
+}
+
 .link-btn {
     background: none;
     border: none;
