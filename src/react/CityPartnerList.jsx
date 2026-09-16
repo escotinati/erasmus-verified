@@ -99,7 +99,7 @@ function PartnerCard({ partner, group, onSelectPartner, onDirectionsClick }) {
                         href={directionsHref}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="city-partners-btn"
+                        className="btn-outline-pill"
                         onClick={() => onDirectionsClick(partner)}
                     >
                         <span className="material-symbols-outlined" aria-hidden="true">
@@ -110,7 +110,7 @@ function PartnerCard({ partner, group, onSelectPartner, onDirectionsClick }) {
                 ) : null}
                 <button
                     type="button"
-                    className="city-partners-btn city-partners-btn--primary"
+                    className="btn-primary-pill btn-primary-pill--sm"
                     onClick={(e) => onSelectPartner(partner.id, e.currentTarget)}
                 >
                     {I18n.t('home.partners_cta_default')}

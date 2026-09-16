@@ -780,45 +780,15 @@ h3.city-partners-group__header {
     padding-top: 4px;
 }
 
-.city-partners-btn {
+/* "Get directions"/"View more" ya no son .city-partners-btn propio —
+   son .btn-outline-pill/.btn-primary-pill--sm (components.css, botón
+   compartido con el resto del proyecto). flex:1 se queda aquí porque
+   es una decisión de ESTA fila de acciones (repartir el ancho a
+   partes iguales), no del botón en sí — un .btn-primary-pill--sm
+   usado en otro sitio no debería estirarse por defecto. */
+.city-partners-card__actions > a,
+.city-partners-card__actions > button {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: var(--tap-min);
-    border-radius: var(--radius-full);
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    font-weight: 700;
-    padding: 9px 10px;
-    border: 1px solid var(--outline-variant);
-    background: var(--surface);
-    color: var(--on-surface);
-    text-decoration: none;
-    cursor: pointer;
-    transition:
-        background var(--duration-fast) var(--ease-out),
-        border-color var(--duration-fast) var(--ease-out);
-}
-
-.city-partners-btn .material-symbols-outlined {
-    font-size: 16px;
-}
-
-.city-partners-btn:hover {
-    border-color: var(--on-surface-variant);
-}
-
-.city-partners-btn--primary {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: var(--on-primary, #fff);
-}
-
-.city-partners-btn--primary:hover {
-    background: var(--primary-hover, var(--primary));
-    border-color: var(--primary-hover, var(--primary));
 }
 
 .city-partners-more {

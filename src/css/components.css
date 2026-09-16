@@ -5,6 +5,10 @@
 /* ── 2.1 Buttons ────────────────────────────────────────────── */
 
 .btn-primary-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     background: var(--color-primary);
     color: var(--on-primary);
     border: none;
@@ -16,6 +20,7 @@
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.02em;
+    text-decoration: none;
     cursor: pointer;
     transition:
         background-color var(--duration-base) var(--ease-out),
@@ -38,10 +43,61 @@
     outline: none;
 }
 
-a.btn-primary-pill {
+/* Variante compacta — tarjetas de partner (city-partners-card,
+   ciudad.html sin mapa), donde el pill grande por defecto no encaja
+   junto a un icono en una fila de acciones estrecha. Unifica lo que
+   antes era .city-partners-btn--primary (ciudad.css), reimplementado
+   desde cero en vez de reusar esta clase — mismo componente, dos
+   tamaños. min-height explícito porque el padding reducido por sí
+   solo se queda por debajo de --tap-min. */
+.btn-primary-pill--sm {
+    gap: 6px;
+    min-height: var(--tap-min);
+    padding: 9px 10px;
+    font-size: 12.5px;
+}
+
+.btn-primary-pill .material-symbols-outlined,
+.btn-outline-pill .material-symbols-outlined {
+    font-size: 16px;
+}
+
+/* Pill con borde, sin relleno — para una acción secundaria junto a un
+   .btn-primary-pill sobre fondo claro (tarjeta, no hero). No es lo
+   mismo que .btn-ghost-pill: ese es texto blanco sobre transparente,
+   pensado para fondos oscuros/imagen (hero), ilegible sobre una
+   tarjeta blanca. Un único tamaño hoy (el que ya tenía
+   .city-partners-btn) — sin variante grande porque todavía no hay
+   ningún botón outline a tamaño completo en el proyecto; añadir un
+   --sm o una talla grande el día que haga falta es trivial. */
+.btn-outline-pill {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: var(--tap-min);
+    border-radius: var(--radius-full);
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 9px 10px;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface);
+    color: var(--on-surface);
     text-decoration: none;
+    cursor: pointer;
+    transition:
+        background var(--duration-fast) var(--ease-out),
+        border-color var(--duration-fast) var(--ease-out);
+}
+
+.btn-outline-pill:hover {
+    border-color: var(--on-surface-variant);
+}
+
+.btn-outline-pill:focus-visible {
+    box-shadow: var(--shadow-focus);
+    outline: none;
 }
 
 .btn-ghost-pill {
