@@ -144,3 +144,22 @@ document.addEventListener('DOMContentLoaded', function () {
         nav.appendChild(a);
     });
 });
+
+// ─────────────────────────────────────────────────────────────
+//  Bugfix FOUT Material Symbols: los iconos empiezan invisibles
+//  (ver .material-symbols-outlined en base.css) y se revelan solo
+//  cuando la fuente está lista, evitando el flash de texto literal
+//  ("search", "map"...) en el primer arranque sin caché.
+//  Red de seguridad: si la promesa no resuelve (fuente falla,
+//  navegador raro), revelamos igualmente a los 1500ms.
+// ─────────────────────────────────────────────────────────────
+(function revealIconsWhenFontsReady() {
+    const reveal = () => document.documentElement.classList.add('fonts-loaded');
+
+    if ('fonts' in document) {
+        document.fonts.ready.then(reveal);
+        setTimeout(reveal, 1500);
+    } else {
+        reveal();
+    }
+})();

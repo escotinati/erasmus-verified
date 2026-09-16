@@ -201,6 +201,25 @@ button,
     line-height: 1;
     vertical-align: middle;
     user-select: none;
+
+    /* Bugfix FOUT: mientras la fuente Material Symbols no ha cargado,
+       el navegador muestra el texto de respaldo literal ("search",
+       "expand_more"...). display:inline-block + width/height:1em +
+       overflow:hidden evita que ese texto pueda inflar el layout
+       (generaliza el parche puntual que ya existía en .search-bar-btn
+       a TODOS los iconos). opacity se controla desde .fonts-loaded
+       más abajo, vía experience.js. */
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.fonts-loaded .material-symbols-outlined {
+    opacity: 1;
 }
 
 /* ── Typography ─────────────────────────────────────────────── */
