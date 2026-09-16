@@ -106,7 +106,16 @@ export default function PartnerCategoryList({
                                                 alt=""
                                             />
                                         ) : null}
-                                        {partner.name}
+                                        <span className="partner-toggle__name">{partner.name}</span>
+                                        {/* distanceMeters solo existe si el usuario dio
+                                            permiso de ubicación (ver mapPartners.js,
+                                            getUserLocation()) — sin permiso/soporte no
+                                            se renderiza nada, nunca un "-- m" a medias. */}
+                                        {partner.distanceMeters != null ? (
+                                            <span className="partner-toggle__distance">
+                                                {window.formatDistance(partner.distanceMeters)}
+                                            </span>
+                                        ) : null}
                                     </button>
                                 );
                             })}

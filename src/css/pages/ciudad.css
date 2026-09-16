@@ -464,6 +464,24 @@ main.city-main {
     flex-shrink: 0;
 }
 
+/* Nombre a la izquierda, distancia (getUserLocation(), mapPartners.js)
+   pegada a la derecha — flex:1 en el nombre es lo que empuja la
+   distancia al borde del botón; sin distancia, el nombre simplemente
+   ocupa todo el ancho como antes. */
+.partner-toggle__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.partner-toggle__distance {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--on-surface-variant);
+}
+
 /* Detalle de partner: descripción + enlaces (contenido del Sheet) */
 
 .partner-detail {
@@ -726,6 +744,23 @@ h3.city-partners-group__header {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--cat-color);
+}
+
+/* Distancia al partner (getUserLocation(), cityPartners.js) — línea
+   propia entre la cabecera y la descripción, solo si el usuario dio
+   permiso de ubicación. */
+.city-partners-card__distance {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--on-surface-variant);
+}
+
+.city-partners-card__distance .material-symbols-outlined {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
 }
 
 .city-partners-card__desc {
