@@ -75,6 +75,19 @@ function PartnerCard({ partner, group, onSelectPartner, onDirectionsClick }) {
                 </div>
             </div>
 
+            {/* distanceMeters solo existe si el usuario dio permiso de
+                ubicación (ver cityPartners.js, getUserLocation()) — sin
+                permiso/soporte, ningún partner lo trae y esta línea no
+                se renderiza, nunca un "-- m" a medias. */}
+            {partner.distanceMeters != null ? (
+                <span className="city-partners-card__distance">
+                    <span className="material-symbols-outlined" aria-hidden="true">
+                        near_me
+                    </span>
+                    {window.formatDistance(partner.distanceMeters)}
+                </span>
+            ) : null}
+
             {partner.description ? <p className="city-partners-card__desc">{partner.description}</p> : null}
 
             <div className="city-partners-card__actions">

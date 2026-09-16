@@ -36,9 +36,10 @@
 //  map-helpers.js — ver el comentario de cabecera de ese archivo),
 //  window.Sheet (sheet.js), window.mountPartnerCategoryList
 //  (mount-partner-list.jsx), window.mountPartnerDetail
-//  (mount-partner-detail.jsx), y recibe `map` (Leaflet, ya inicializado
-//  por cityMap.js) y `city` (el objeto completo de Supabase, no solo
-//  su id).
+//  (mount-partner-detail.jsx), getUserLocation/distanceMeters
+//  (geolocation.js) para la distancia a cada partner, y recibe `map`
+//  (Leaflet, ya inicializado por cityMap.js) y `city` (el objeto
+//  completo de Supabase, no solo su id).
 //
 //  Devuelve { listGroups, selectPartner, activateOnlyCategory } (o
 //  undefined si la ciudad no tiene partners). A partir de la rama
@@ -140,6 +141,22 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
 
     syncMarkers();
     renderList();
+
+    // Distancia a cada partner ("a 800 m") — mismo criterio que
+    // cityPartners.js: pedida automáticamente al cargar, sin bloquear
+    // el primer render; getUserLocation() nunca rechaza, así que sin
+    // permiso/soporte ningún partner recibe distancia y no hace falta
+    // ningún catch aquí.
+    getUserLocation().then((coords) => {
+        if (!coords) return;
+        for (const group of listGroups) {
+            for (const partner of group.partners) {
+                if (partner.lat == null || partner.lng == null) continue;
+                partner.distanceMeters = distanceMeters(coords.lat, coords.lng, partner.lat, partner.lng);
+            }
+        }
+        renderList();
+    });
 
     // Deep link desde el buscador global (index.js) — ?partner=ID en
     // ciudad.html. selectPartner() ya valida por su cuenta que el id

@@ -32,7 +32,9 @@
 //  Depende de: fetchPartnersByCity/groupPartnersByCategory
 //  (partnersService.js), CATEGORY_META (categoryMeta.js), window.Sheet
 //  (sheet.js), window.mountPartnerDetail (mount-partner-detail.jsx),
-//  window.mountCityPartnerList (mount-city-partner-list.jsx).
+//  window.mountCityPartnerList (mount-city-partner-list.jsx),
+//  getUserLocation/distanceMeters (geolocation.js) para la distancia a
+//  cada partner.
 // ─────────────────────────────────────────────────────────────
 
 // Copia local idéntica a la de mapPartners.js/navShared.jsx/index.js —
@@ -87,6 +89,25 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
     Skeleton.clear(container);
     const listRoot = mountCityPartnerList(container);
     renderList();
+
+    // Distancia a cada partner ("a 800 m") — pedida automáticamente al
+    // cargar, sin bloquear el primer render (la lista ya está pintada
+    // cuando esto resuelve). getUserLocation() nunca rechaza: sin
+    // permiso/soporte, resuelve null y ningún partner recibe distancia
+    // (mountCityPartnerList/CityPartnerList.jsx ya tratan
+    // distanceMeters como opcional). Los objetos partner son los
+    // mismos que ya vive listGroups — se mutan in place y se vuelve a
+    // pintar, mismo patrón que toggleCollapse()/enterFocus().
+    getUserLocation().then((coords) => {
+        if (!coords) return;
+        for (const group of listGroups) {
+            for (const partner of group.partners) {
+                if (partner.lat == null || partner.lng == null) continue;
+                partner.distanceMeters = distanceMeters(coords.lat, coords.lng, partner.lat, partner.lng);
+            }
+        }
+        renderList();
+    });
 
     // Deep link desde el buscador global (index.js) — ?partner=ID en
     // ciudad.html. selectPartner() ya valida por su cuenta que el id
