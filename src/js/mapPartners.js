@@ -31,18 +31,22 @@
 //  markers, abrir/cerrar el Sheet): solo delega el pintado.
 //
 //  Depende de: fetchPartnersByCity/groupPartnersByCategory
-//  (partnersService.js), createPartnerMarker/setMarkerExpanded/
-//  CATEGORY_META (map-helpers.js), window.Sheet (sheet.js),
-//  window.mountPartnerCategoryList (mount-partner-list.jsx),
-//  window.mountPartnerDetail (mount-partner-detail.jsx), y recibe
-//  `map` (Leaflet, ya inicializado por cityMap.js) y `city` (el
-//  objeto completo de Supabase, no solo su id — lo pasan ciudad.js y
-//  mapa.js, que ya lo tienen en su propio scope antes de llamar).
+//  (partnersService.js), createPartnerMarker/setMarkerExpanded
+//  (map-helpers.js), CATEGORY_META (categoryMeta.js, cargado antes que
+//  map-helpers.js — ver el comentario de cabecera de ese archivo),
+//  window.Sheet (sheet.js), window.mountPartnerCategoryList
+//  (mount-partner-list.jsx), window.mountPartnerDetail
+//  (mount-partner-detail.jsx), y recibe `map` (Leaflet, ya inicializado
+//  por cityMap.js) y `city` (el objeto completo de Supabase, no solo
+//  su id).
 //
 //  Devuelve { listGroups, selectPartner, activateOnlyCategory } (o
-//  undefined si la ciudad no tiene partners) — hoy solo lo consume
-//  ciudad.js, para el buscador local de la página (ver
-//  initCitySearch() ahí). mapa.js sigue sin usar el valor de retorno.
+//  undefined si la ciudad no tiene partners). A partir de la rama
+//  feature/city-no-map, solo mapa.js llama a esto — ciudad.html ya no
+//  tiene mapa con el que sincronizar nada, y usa en su lugar
+//  cityPartners.js (mountCityPartners), que expone la misma forma de
+//  retorno para que ciudad.js no tuviera que cambiar su integración
+//  con el buscador local (initCitySearch()).
 // ─────────────────────────────────────────────────────────────
 
 // Copia local idéntica a la de src/react/navShared.jsx (isPartiesExperience,

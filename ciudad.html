@@ -21,15 +21,6 @@
         <link rel="stylesheet" href="/src/css/styles.css?v=3" />
         <link rel="stylesheet" href="/src/css/animations.css" />
         <script src="/src/js/experience.js"></script>
-
-        <!-- NUEVO -->
-        <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-            crossorigin=""
-        />
-        <!-- NUEVO -->
     </head>
 
     <body>
@@ -81,21 +72,18 @@
         <div id="footer-root"></div>
         <script type="module" src="/src/react/mount-footer.jsx"></script>
 
-        <!-- ── LISTA DE PARTNERS (React) — expone window.mountPartnerCategoryList()
-             para la lista de categorías/partners del aside, ver
-             src/react/mount-partner-list.jsx ── -->
-        <script type="module" src="/src/react/mount-partner-list.jsx"></script>
+        <!-- ── LISTA DE PARTNERS SIN MAPA (React) — expone
+             window.mountCityPartnerList(), ver cityPartners.js y
+             src/react/mount-city-partner-list.jsx. Sustituye a
+             mount-partner-list.jsx en esta página (esa isla sigue
+             existiendo tal cual para mapa.html). ── -->
+        <script type="module" src="/src/react/mount-city-partner-list.jsx"></script>
 
         <!-- ── DETALLE DE PARTNER (React) — expone window.mountPartnerDetail()
              para el contenido del Sheet al abrir un partner, ver
              src/react/mount-partner-detail.jsx ── -->
         <script type="module" src="/src/react/mount-partner-detail.jsx"></script>
 
-        <script
-            src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""
-        ></script>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
         <script src="/src/js/lib/supabaseClient.js"></script>
         <script src="/src/utils/i18n.js"></script>
@@ -105,16 +93,13 @@
         <script src="/src/js/services/citiesService.js"></script>
         <script src="/src/js/utils/sanitize.js"></script>
         <script src="/src/js/services/authService.js"></script>
-        <script src="/src/js/geocoder.js"></script>
-        <script src="/src/js/map-helpers.js"></script>
+        <script src="/src/js/categoryMeta.js"></script>
         <script src="/src/js/services/partnersService.js"></script>
         <script src="/src/js/tracking.js"></script>
         <script src="/src/js/utils/animations.js"></script>
         <script src="/src/js/ui/sheet.js"></script>
-        <script src="/src/js/ui/citySheet.js"></script>
         <script src="/src/js/utils/skeleton.js"></script>
-        <script src="/src/js/mapPartners.js"></script>
-        <script src="/src/js/cityMap.js"></script>
+        <script src="/src/js/cityPartners.js"></script>
         <script src="/src/js/ciudad.js"></script>
 
         <!-- Mobile-nav overlay: ahora vive en src/react/TopbarNav.jsx (rama react/menu) -->

@@ -9,6 +9,10 @@
 //  Expuesto como funciones globales (sin export/import) para mantener
 //  consistencia con el resto del proyecto: son scripts clásicos, no ES
 //  Modules (salvo las dos islas de React en src/react/, ver CLAUDE.md).
+//
+//  CATEGORY_META vive en categoryMeta.js (cargado ANTES que este
+//  archivo en mapa.html) — se extrajo de aquí porque ciudad.html
+//  (rama feature/city-no-map) también lo necesita sin cargar Leaflet.
 // ─────────────────────────────────────────────────────────────
 
 let map = null;
@@ -52,33 +56,6 @@ function addMarker({ lat, lng }, { label, color = '#4648d4' } = {}) {
     marker.addTo(map);
     return marker;
 }
-
-/**
- * Metadatos visuales por categoría. nightlife en azul, según lo acordado.
- * Las demás categorías quedan definidas para cuando tengan partners reales.
- */
-const CATEGORY_META = {
-    nightlife: { label: 'Nightlife', color: '#2563eb', icon: 'nightlife' },
-    housing: { label: 'Alojamiento', color: '#0e7490', icon: 'home' },
-    services: { label: 'Bar', color: '#ca8a04', icon: 'local_bar' },
-    community: { label: 'Comunidad', color: '#16a34a', icon: 'groups' },
-    travel: { label: 'Viajes', color: '#7c3aed', icon: 'flight' },
-    restaurants: { label: 'Restaurantes', color: '#dc2626', icon: 'restaurant' },
-    sports: { label: 'Deporte', color: '#ea580c', icon: 'sports_soccer' },
-    culture: { label: 'Cultura', color: '#db2777', icon: 'theater_comedy' },
-    shopping: { label: 'Compras', color: '#9333ea', icon: 'shopping_bag' },
-    wellness: { label: 'Bienestar', color: '#059669', icon: 'spa' },
-    events: { label: 'Eventos', color: '#d97706', icon: 'event' },
-    education: { label: 'Formación', color: '#0284c7', icon: 'school' },
-    transport: { label: 'Transporte', color: '#64748b', icon: 'directions_bus' },
-    food: { label: 'Comida rápida', color: '#f59e0b', icon: 'fastfood' },
-    coworking: { label: 'Coworking', color: '#0891b2', icon: 'business_center' },
-    healthcare: { label: 'Salud', color: '#16a34a', icon: 'medical_services' },
-    language: { label: 'Idiomas', color: '#7c3aed', icon: 'translate' },
-    volunteering: { label: 'Voluntariado', color: '#be185d', icon: 'volunteer_activism' },
-    music: { label: 'Música', color: '#1d4ed8', icon: 'music_note' },
-    photography: { label: 'Fotografía', color: '#92400e', icon: 'photo_camera' },
-};
 
 /**
  * Crea (sin añadir al mapa) un marker de partner, con icono de categoría.

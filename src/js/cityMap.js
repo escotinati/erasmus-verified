@@ -1,29 +1,25 @@
 // ─────────────────────────────────────────────────────────────
 //  CITYMAP.JS — Erasmus Parties
 //
-//  Módulo único de "mapa de ciudad", usado por ciudad.html (embebido)
-//  y mapa.html (pantalla completa). Encapsula geocodificación +
-//  inicialización de Leaflet para que ninguna página repita esta lógica.
+//  Módulo único de "mapa de ciudad". Encapsula geocodificación +
+//  inicialización de Leaflet para que ninguna página repita esta
+//  lógica. Hoy solo lo llama mapa.js (pantalla completa) — ciudad.html
+//  ya no tiene mapa embebido (rama feature/city-no-map, ver
+//  cityPartners.js); este módulo se queda igual porque mapa.html sigue
+//  necesitándolo tal cual.
 //
 //  API: mountCityMap(containerId, { pais, ciudad, lat, lng, interactive })
 //   - containerId: id del <div> donde se monta el mapa
 //   - pais, ciudad: para geocodeo y el pin principal
 //   - interactive: si es false, el mapa empieza "bloqueado" (sin zoom/pan)
-//     y muestra un overlay "Toca para interactuar" — pensado para el
-//     mapa EMBEBIDO en ciudad.html en móvil.
-//
-//  Por qué sigue haciendo falta con el panel arrastrable (CitySheet):
-//  se probó a quitarlo asumiendo que un contenedor de altura fija ya
-//  no competía con el scroll de página — falso en la práctica. Leaflet
-//  hace preventDefault() en touchmove para paneear el mapa; eso
-//  secuestra CUALQUIER swipe vertical que empiece sobre el mapa, y el
-//  mapa sigue ocupando casi toda la pantalla (hay contenido real
-//  encima y debajo, a diferencia de mapa.html, que es la página
-//  entera). Sin este gate, un usuario no puede hacer scroll de página
-//  con un dedo que empiece sobre el mapa. Si es true (mapa.html,
-//  pantalla completa — ahí no hay nada que hacer scroll más allá del
-//  propio mapa — y el mapa embebido en desktop, columna fija sin este
-//  conflicto), no hay overlay.
+//     y muestra un overlay "Toca para interactuar". Pensado en su día
+//     para el mapa embebido de ciudad.html en móvil (evitar que Leaflet
+//     secuestrase el scroll de página) — mapa.js siempre pasa `true`
+//     (pantalla completa, nada que hacer scroll más allá del propio
+//     mapa), así que esta rama no se ejecuta hoy en ningún caso real.
+//     Se deja tal cual (no es código muerto de verdad: sigue siendo
+//     parte de la API pública del módulo) por si un futuro mapa
+//     embebido vuelve a necesitarlo.
 //
 //  Devuelve una Promise que resuelve cuando el mapa está listo (o null
 //  si no se pudo geocodificar la ciudad).
@@ -89,10 +85,10 @@ async function mountCityMap(containerId, { pais, ciudad, lat, lng, interactive =
             { once: true }
         );
 
-        // `container` (.city-map-embed) ya es position:absolute (ver
-        // ciudad.css, composición mapa+sheet) — contexto de
-        // posicionamiento válido de sobra para este overlay
-        // absolute/inset:0, sin necesitar ningún ajuste extra.
+        // El overlay es absolute/inset:0 — necesita que `container` ya
+        // tenga su propio contexto de posicionamiento (relative/
+        // absolute) puesto por quien llame a mountCityMap(), esta
+        // función no se lo añade.
         container.appendChild(overlay);
     }
 
