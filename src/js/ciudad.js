@@ -4,9 +4,9 @@
 
 // Lee --bp-md de tokens.css en vez de hardcodear 900 aquí — mismo
 // patrón que isDesktopLayout() en src/js/ui/sheet.js, así el punto de
-// corte del gesto-gate del mapa (ver mountCityMap más abajo) se queda
-// sincronizado con el mismo token que decide, en CSS, el resto del
-// layout de dos columnas.
+// corte del placeholder corto/largo del buscador (ver initCitySearch()
+// más abajo) se queda sincronizado con el mismo token que decide, en
+// CSS, el resto del layout de la página.
 function isDesktopLayout() {
     const raw = getComputedStyle(document.documentElement).getPropertyValue('--bp-md');
     const bpMd = parseFloat(raw) || 900;
@@ -18,7 +18,7 @@ function isDesktopLayout() {
     const cityId = parseInt(params.get('ciudad'), 10);
     // Deep link desde el buscador global (index.js): ciudad.html?ciudad=X&partner=Y
     // abre directo el Sheet de ese partner. NaN si no viene el parámetro
-    // (mountPartnersList ya trata cualquier valor "falsy" como ausencia).
+    // (mountCityPartners ya trata cualquier valor "falsy" como ausencia).
     const partnerId = parseInt(params.get('partner'), 10);
 
     if (!cityId) {
@@ -41,7 +41,7 @@ function isDesktopLayout() {
 
     document.getElementById('cityName').textContent = city.name;
 
-    let btns = buildMapBlock(city);
+    let btns = buildPartnersBlock(city);
     btns += `<div class="section-divider"><span>${I18n.t('city.join_groups_divider')}</span></div>`;
 
     if (city.whatsapp_url) {
@@ -67,113 +67,20 @@ function isDesktopLayout() {
         window.addEventListener('resize', setTopbarH);
     }
 
-    // La altura de .city-map-columns en móvil (mapa + sheet a pantalla
-    // casi completa, ver ciudad.css/citySheet.js) NO puede salir solo
-    // de un calc(100dvh - ...) fijo: a diferencia de mapa.html (el
-    // mapa es lo único de la página), aquí hay contenido real encima
-    // (cabecera, descripción) cuya altura varía por ciudad/idioma. Se
-    // mide su posición real y se calcula lo que queda de pantalla —
-    // el calc() de ciudad.css queda solo como valor de arranque antes
-    // de que este JS corra.
-    //
-    // OJO con "resize": en móvil, hacer scroll de página (o el propio
-    // gesto de arrastre del mapa/sheet) puede colapsar/expandir la
-    // barra de direcciones del navegador, y ESO dispara un evento
-    // "resize" con el mismo ancho pero distinto alto — si se
-    // recalculara en cada uno, la altura del bloque "respiraría" con
-    // cada scroll (bug real, reportado: la altura del mapa crecía al
-    // tocar/hacer scroll). Por eso solo se recalcula cuando cambia
-    // innerWidth de verdad (redimensionar ventana, o girar el móvil),
-    // nunca por un resize de solo-alto.
-    const mapColumnsEl = document.querySelector('.city-map-columns');
-    if (mapColumnsEl) {
-        let lastWidth = window.innerWidth;
-        const syncMapBlockHeight = () => {
-            if (window.innerWidth >= 900) {
-                document.documentElement.style.removeProperty('--city-map-h');
-                return;
-            }
-            const navBottomH =
-                parseFloat(
-                    getComputedStyle(document.documentElement).getPropertyValue('--nav-bottom-h')
-                ) || 60;
-            const top = mapColumnsEl.getBoundingClientRect().top;
-            const available = window.innerHeight - top - navBottomH - 8;
-            document.documentElement.style.setProperty(
-                '--city-map-h',
-                Math.max(available, 420) + 'px'
-            );
-        };
-        syncMapBlockHeight();
-        window.addEventListener('resize', () => {
-            if (window.innerWidth === lastWidth) return;
-            lastWidth = window.innerWidth;
-            syncMapBlockHeight();
-        });
-        // Los webfonts pueden cambiar la altura de la cabecera (Syne en
-        // el título) después del primer cálculo — se recalcula una vez
-        // más cuando terminan de cargar (no depende de "resize", así
-        // que no lo bloquea el filtro de ancho de arriba).
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(syncMapBlockHeight);
-        }
-    }
-
-    mountCityMap('city-map-embed', {
-        pais: city.country,
-        ciudad: city.name,
-        lat: city.lat,
-        lng: city.lng,
-        // Por debajo de --bp-md, el mapa arranca bloqueado (overlay
-        // "Toca para interactuar", ver cityMap.js) — el primer gesto
-        // sobre el mapa hace scroll de página con normalidad en vez de
-        // moverlo; un tap explícito lo activa. En desktop (columna de
-        // mapa fija, aspect-ratio propio, sin contenido debajo del
-        // bloque compitiendo por el mismo swipe) sigue interactivo
-        // desde el primer toque.
-        interactive: isDesktopLayout(),
-    }).then(async (mapInstance) => {
-        if (mapInstance) {
-            const partnersHandle = await mountPartnersList(
-                'city-partners-list',
-                mapInstance,
-                city,
-                {
-                    autoOpenPartnerId: partnerId,
-                }
-            );
-            const mapEl = document.getElementById('city-map-embed');
-            const sheetEl = document.getElementById('citySheet');
-            // En desktop el panel vuelve a ser una columna normal junto
-            // al mapa (ver ciudad.css): su altura la fija este mismo
-            // JS, igual que antes de que existiera CitySheet — en
-            // móvil no hace falta, la fija --topbar-h/--nav-bottom-h.
-            const syncHeight = () => {
-                if (window.innerWidth >= 900) {
-                    sheetEl.style.height = mapEl.offsetHeight + 'px';
-                } else {
-                    sheetEl.style.height = '';
-                }
-                mapInstance.invalidateSize();
-            };
-            syncHeight();
-            new ResizeObserver(syncHeight).observe(mapEl);
-            const citySheet = CitySheet.mount(sheetEl);
-
-            // Regla 3 del propio mapPartners.js ("Cuando existan
-            // partners y tipos de partners"): sin partnersHandle no
-            // hay nada que buscar (renderNoPartnersState() ya cubrió
-            // ese caso) — el buscador se queda oculto (atributo
-            // `hidden` de partida en ciudad.html).
-            if (partnersHandle) {
-                initCitySearch(partnersHandle.listGroups, {
-                    onSelectCategory: partnersHandle.activateOnlyCategory,
-                    onSelectPartner: partnersHandle.selectPartner,
-                    onResultSelected: () => citySheet && citySheet.setState('half'),
-                });
-            }
-        }
+    const partnersHandle = await mountCityPartners('city-partners', city, {
+        autoOpenPartnerId: partnerId,
     });
+
+    // Mismo criterio que la Regla 3 de mapPartners.js: sin
+    // partnersHandle no hay nada que buscar (renderNoPartnersState() ya
+    // cubrió ese caso) — el buscador se queda oculto (atributo `hidden`
+    // de partida en ciudad.html).
+    if (partnersHandle) {
+        initCitySearch(partnersHandle.listGroups, {
+            onSelectCategory: partnersHandle.activateOnlyCategory,
+            onSelectPartner: partnersHandle.selectPartner,
+        });
+    }
 })();
 
 // ── Buscador local de partners/categorías (debajo del <h1>) ────────
@@ -181,7 +88,7 @@ function isDesktopLayout() {
 // hasta 8 resultados, teclado arriba/abajo/Enter/Escape) pero
 // simplificado: el índice sale de listGroups (ya en memoria, sin red)
 // y en vez de navegar a otra URL, cada resultado dispara un callback
-// que reutiliza el estado que mapPartners.js ya gestiona internamente
+// que reutiliza el estado que cityPartners.js ya gestiona internamente
 // — nunca duplica esa lógica de filtrado aquí.
 function normalizeSearch(str) {
     return str.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -449,26 +356,19 @@ async function buildContextualSections(cityId, ciudad) {
     if (window.initScrollReveal) window.initScrollReveal();
 }
 
-function buildMapBlock(city) {
+// Sustituye a buildMapBlock() (mapa embebido + CitySheet) — rama
+// feature/city-no-map. Solo un enlace a mapa.html (mismo destino que
+// tenía el CTA "ver a pantalla completa" de antes) + el contenedor
+// donde mountCityPartners() (cityPartners.js) monta la lista.
+function buildPartnersBlock(city) {
     const fullscreenUrl = `mapa.html?city=${city.id}`;
     return `
-    <div class="city-map-block">
-      <div class="city-map-columns">
-        <div id="city-map-embed" class="city-map-embed" aria-label="Mapa de ${escapeHtml(city.name)}"></div>
-        <div id="citySheet" class="city-sheet" data-state="peek">
-          <button type="button" class="city-sheet-grip-row" data-arrow="up" aria-expanded="false">
-            <span class="material-symbols-outlined city-sheet-arrow-icon" aria-hidden="true">keyboard_arrow_up</span>
-          </button>
-          <div class="city-sheet-scroll-wrap">
-            <aside id="city-partners-list" class="partners-list"></aside>
-            <div class="city-sheet-fade city-sheet-fade--top"></div>
-            <div class="city-sheet-fade city-sheet-fade--bottom"></div>
-          </div>
-        </div>
-      </div>
-      <a href="${fullscreenUrl}" class="city-map-fullscreen-link">
+    <div class="city-partners-block">
+      <a href="${fullscreenUrl}" class="city-partners-map-link">
+        <span class="material-symbols-outlined" aria-hidden="true">map</span>
         ${I18n.t('city.map_fullscreen_link')}
       </a>
+      <div id="city-partners" class="city-partners" aria-label="Partners de ${escapeHtml(city.name)}"></div>
     </div>`;
 }
 
@@ -490,12 +390,5 @@ function iconGeneric() {
     <circle cx="9" cy="7" r="4"/>
     <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
     <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>`;
-}
-
-function iconMap() {
-    return `<svg class="btn-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"/>
-    <circle cx="12" cy="10" r="3"/>
   </svg>`;
 }

@@ -170,6 +170,8 @@ window.I18n.translations = {
             view_trip_cta: 'Ver viaje',
             escapadas_prefix: 'Escapadas desde',
             map_fullscreen_link: 'Ver mapa a pantalla completa',
+            partners_more_cta: 'Ver todo en',
+            partners_back_to_categories: 'Todas las categorías',
         },
         map: {
             loading_partners: 'Cargando partners…',
@@ -463,6 +465,8 @@ window.I18n.translations = {
             view_trip_cta: 'View trip',
             escapadas_prefix: 'Getaways from',
             map_fullscreen_link: 'View fullscreen map',
+            partners_more_cta: 'See all in',
+            partners_back_to_categories: 'All categories',
         },
         map: {
             loading_partners: 'Loading partners…',
