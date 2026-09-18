@@ -28,7 +28,9 @@
 
         <main style="flex: 1">
             <div class="section auth-section">
-                <span class="eyebrow eyebrow--primary anim-page-enter" data-i18n="auth.register_eyebrow"
+                <span
+                    class="eyebrow eyebrow--primary anim-page-enter"
+                    data-i18n="auth.register_eyebrow"
                     >ÚNETE A LA COMUNIDAD</span
                 >
                 <h1 class="section-title anim-page-enter" data-i18n="auth.register_title">
@@ -55,7 +57,9 @@
                         </div>
 
                         <div class="auth-field">
-                            <label for="reg-password" data-i18n="auth.password_label">Contraseña</label>
+                            <label for="reg-password" data-i18n="auth.password_label"
+                                >Contraseña</label
+                            >
                             <input
                                 id="reg-password"
                                 name="password"
@@ -65,9 +69,43 @@
                                 required
                                 aria-describedby="reg-password-hint reg-password-error"
                             />
-                            <p class="auth-hint" id="reg-password-hint" data-i18n="auth.password_hint">
+                            <p
+                                class="auth-hint"
+                                id="reg-password-hint"
+                                data-i18n="auth.password_hint"
+                            >
                                 Mínimo 6 caracteres.
                             </p>
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-first-name" data-i18n="auth.first_name_label"
+                                >Nombre</label
+                            >
+                            <input
+                                id="reg-first-name"
+                                name="firstName"
+                                type="text"
+                                autocomplete="given-name"
+                                required
+                                aria-describedby="reg-first-name-error"
+                                data-i18n="auth.first_name_placeholder"
+                                placeholder="Tu nombre"
+                            />
+                        </div>
+
+                        <div class="auth-field">
+                            <label for="reg-last-name" data-i18n="auth.last_name_label"
+                                >Apellidos</label
+                            >
+                            <input
+                                id="reg-last-name"
+                                name="lastName"
+                                type="text"
+                                autocomplete="family-name"
+                                data-i18n="auth.last_name_placeholder"
+                                placeholder="Opcional"
+                            />
                         </div>
 
                         <div class="auth-field">
@@ -88,7 +126,11 @@
                                     data-i18n="auth.city_placeholder"
                                     placeholder="Escribe tu ciudad..."
                                 />
-                                <div class="search-dropdown" id="reg-city-dropdown" role="listbox"></div>
+                                <div
+                                    class="search-dropdown"
+                                    id="reg-city-dropdown"
+                                    role="listbox"
+                                ></div>
                             </div>
                             <input type="hidden" id="reg-city-id" name="cityId" />
                         </div>
@@ -136,10 +178,17 @@
                         </button>
                     </form>
 
-                    <div class="info-box auth-success-box" id="register-success" role="status" hidden>
+                    <div
+                        class="info-box auth-success-box"
+                        id="register-success"
+                        role="status"
+                        hidden
+                    >
                         <span class="info-icon material-symbols-outlined">mark_email_read</span>
                         <p class="info-text">
-                            <strong data-i18n="auth.register_success_title">Revisa tu correo</strong>
+                            <strong data-i18n="auth.register_success_title"
+                                >Revisa tu correo</strong
+                            >
                             <span data-i18n="auth.register_success_body"
                                 >Te hemos enviado un enlace de confirmación a tu email. Confírmalo
                                 para poder iniciar sesión.</span

@@ -10,7 +10,9 @@
 //  trigger handle_new_user (ya aplicado en Supabase) al leer
 //  raw_user_meta_data del usuario recién creado. signUp() solo tiene
 //  que mandar esas claves exactas dentro de options.data — city_id,
-//  university, interests — para que el trigger las encuentre.
+//  university, interests, first_name, last_name — para que el
+//  trigger las encuentre; cualquier otro nombre de clave se pierde en
+//  silencio, sin dar error.
 //
 //  Depende de: window.supabaseClient (supabaseClient.js)
 // ─────────────────────────────────────────────────────────────
@@ -22,7 +24,7 @@
 // así que un valor no numérico rompería el INSERT — validar la
 // selección de ciudad ANTES de llamar a esta función es cosa de quien
 // la llama (ver registro.js), no de aquí.
-async function signUp({ email, password, cityId, university, interests }) {
+async function signUp({ email, password, cityId, university, interests, firstName, lastName }) {
     return window.supabaseClient.auth.signUp({
         email,
         password,
@@ -31,6 +33,12 @@ async function signUp({ email, password, cityId, university, interests }) {
                 city_id: cityId,
                 university: university || '',
                 interests: interests || [],
+                first_name: firstName,
+                // lastName puede venir vacío del formulario (campo
+                // opcional) — el trigger ya convierte '' a NULL con
+                // nullif(), así que mandar string vacío es seguro,
+                // mismo criterio que university.
+                last_name: lastName || '',
             },
         },
     });

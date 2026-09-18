@@ -2,7 +2,8 @@
 //  REGISTRO.JS — Erasmus Verified
 //
 //  Formulario de registro: email + contraseña (mínimo 6 caracteres) +
-//  ciudad obligatoria + universidad/intereses opcionales. El perfil
+//  nombre obligatorio + ciudad obligatoria + apellidos/universidad/
+//  intereses opcionales. El perfil
 //  (public.profiles) NO se inserta desde aquí — lo crea el trigger
 //  handle_new_user (ya aplicado en Supabase) al leer las claves que
 //  signUp() manda en options.data (ver authService.js); este archivo
@@ -95,10 +96,7 @@ function getEmailError(value) {
 // en vez de compartido: cada script de página es autocontenido, sin
 // ES Modules entre archivos clásicos (ver Stack en CLAUDE.md).
 function normalize(str) {
-    return str
-        .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
-        .toLowerCase();
+    return str.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }
 
 // Autocompletado de ciudad — mismo patrón que #citySearch en index.js
@@ -280,11 +278,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const email = emailInput.value.trim();
         const password = document.getElementById('reg-password').value;
+        const firstName = document.getElementById('reg-first-name').value.trim();
+        const lastName = document.getElementById('reg-last-name').value.trim();
         const cityId = document.getElementById('reg-city-id').value;
         const university = document.getElementById('reg-university').value.trim();
-        const interests = Array.from(
-            form.querySelectorAll('input[name="interests"]:checked')
-        ).map((el) => el.value);
+        const interests = Array.from(form.querySelectorAll('input[name="interests"]:checked')).map(
+            (el) => el.value
+        );
         const emailError = getEmailError(email);
 
         // Única fuente de verdad para qué campo falla y por qué — el
@@ -304,6 +304,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 message: !password
                     ? I18n.t('auth.error_password_required')
                     : I18n.t('auth.error_password_short'),
+            },
+            {
+                id: 'reg-first-name',
+                valid: Boolean(firstName),
+                message: I18n.t('auth.error_first_name_required'),
             },
             {
                 id: 'reg-city',
@@ -330,6 +335,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             cityId: parseInt(cityId, 10),
             university,
             interests,
+            firstName,
+            lastName,
         });
 
         if (error) {
