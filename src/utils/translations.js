@@ -40,6 +40,7 @@ window.I18n.translations = {
         home: {
             hero_title_line1: 'Encuentra todo lo que necesitas',
             hero_title_line2: 'en tu Erasmus',
+            hero_greeting_suffix: '¿qué necesitas hoy?',
             hero_subtitle:
                 'Conéctate con alojamiento para estudiantes, eventos exclusivos y una comunidad vibrante.',
             search_placeholder_long: '¿A dónde vas en tu próxima aventura?',
@@ -336,6 +337,7 @@ window.I18n.translations = {
         home: {
             hero_title_line1: 'Find everything you need',
             hero_title_line2: 'for your Erasmus',
+            hero_greeting_suffix: 'what do you need today?',
             hero_subtitle:
                 'Connect with premium student housing, exclusive nightlife events and a vibrant community in more than 50 European university cities.',
             search_placeholder_long: "Where's your next adventure?",
@@ -575,7 +577,7 @@ window.I18n.translations = {
             university_label: 'Home university',
             university_placeholder: 'Optional',
             interests_label: 'Interests',
-            interests_hint: "Optional — helps us show you relevant content.",
+            interests_hint: 'Optional — helps us show you relevant content.',
             interest_nightlife: 'Nightlife',
             interest_housing: 'Housing',
             interest_travel: 'Travel',

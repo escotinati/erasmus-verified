@@ -562,7 +562,16 @@ function updatePartnersStat(city, allPartnersForCity) {
 
 // ── 7. ANIMACIÓN DEL H1 (palabra a palabra) ─────────────────
 
-function initHeroTitleAnim() {
+// Solo la parte local del email (antes de la @), con mayúscula
+// inicial — nunca se traduce, es literal (a diferencia del sufijo de
+// saludo, que sí sale de I18n.t()). Sin dominio: mostrar
+// "ana@gmail.com" completo sería ruido, no un saludo.
+function displayNameFromEmail(email) {
+    const local = (email || '').split('@')[0];
+    return local ? local.charAt(0).toUpperCase() + local.slice(1) : '';
+}
+
+function initHeroTitleAnim(session) {
     // Se asegura de que el texto ya esté traducido antes de trocearlo en
     // palabras — no se puede confiar en el orden de los listeners de
     // DOMContentLoaded entre scripts (ver nota en el PR de esta rama).
@@ -573,11 +582,25 @@ function initHeroTitleAnim() {
 
     spans.forEach((el) => {
         const text = el.textContent;
+        // Con sesión, sustituye el titular genérico por un saludo
+        // personalizado — DESPUÉS de applyTranslations() (así no lo
+        // pisa) y ANTES del troceado en palabras de más abajo (así el
+        // saludo hereda la misma animación palabra a palabra que el
+        // texto genérico, en vez de aparecer de golpe sin animar).
+        const key = el.getAttribute('data-i18n');
+        let finalText = text;
+        if (session?.user?.email) {
+            if (key === 'home.hero_title_line1') {
+                finalText = `${displayNameFromEmail(session.user.email)},`;
+            } else if (key === 'home.hero_title_line2') {
+                finalText = I18n.t('home.hero_greeting_suffix');
+            }
+        }
         // Se quita data-i18n para que un applyTranslations() posterior
         // (el del script inline al final del body) no vuelva a
         // sobrescribir el innerHTML y borre las palabras ya envueltas.
         el.removeAttribute('data-i18n');
-        el.innerHTML = text
+        el.innerHTML = finalText
             .split(' ')
             .filter(Boolean)
             .map((word, i) => {
@@ -788,7 +811,8 @@ function initBottomNav() {
 
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-    initHeroTitleAnim();
+    const session = await getSession();
+    initHeroTitleAnim(session);
     initTicker();
     initCitiesScrollEffect();
     initBottomNav();
