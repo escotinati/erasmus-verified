@@ -83,10 +83,47 @@ a.btn-primary-pill {
     padding: 6px;
     border-radius: var(--radius-full);
     transition: color 0.15s;
+    /* Ancla de posicionamiento para .auth-status-dot — hoy solo lo
+       consume este botón (#authBtn, navShared.jsx), sin efecto en
+       ningún otro .icon-btn existente. */
+    position: relative;
 }
 
 .icon-btn:hover {
     color: var(--primary);
+}
+
+/* Avatar con la inicial del email (AuthButton(), navShared.jsx) —
+   sustituye al icono person genérico solo cuando hay sesión. */
+.auth-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-full);
+    background: var(--primary);
+    color: var(--on-primary);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Punto de "sesión activa" en la esquina del icono/avatar — solo se
+   renderiza en la rama CON sesión de AuthButton(). El borde con
+   --surface (no un color fijo) recorta el punto contra el fondo del
+   header en vez de quedar pegado al avatar, y cambia solo con el
+   tema Verified/Parties sin tocar esta regla. */
+.auth-status-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-success);
+    border: 2px solid var(--surface);
 }
 
 /* Menú de cuenta (#authBtn, navShared.jsx). Contenedor de

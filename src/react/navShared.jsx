@@ -57,6 +57,15 @@ export function t(key, fallback) {
     return window.I18n?.t ? window.I18n.t(key) : fallback;
 }
 
+// v1 del avatar: inicial del EMAIL, no del nombre real (no hay campo
+// "nombre" en profiles hoy) ni foto de perfil — se ha hablado de pasar
+// a una de esas dos opciones más adelante, pero por ahora es
+// intencional que sea solo esto, no una implementación a medias.
+function initialFromSession(session) {
+    const email = session?.user?.email;
+    return email ? email.charAt(0).toUpperCase() : null;
+}
+
 export function NavLinks({ page, onLinkClick }) {
     const parties = isPartiesExperience();
     const links = parties
@@ -214,7 +223,12 @@ export function AuthButton() {
                 aria-expanded={open}
                 onClick={() => setOpen((o) => !o)}
             >
-                <span className="material-symbols-outlined">person</span>
+                {initialFromSession(session) ? (
+                    <span className="auth-avatar">{initialFromSession(session)}</span>
+                ) : (
+                    <span className="material-symbols-outlined">person</span>
+                )}
+                <span className="auth-status-dot" aria-hidden="true" />
             </button>
             {open && (
                 <div className="auth-dropdown">
