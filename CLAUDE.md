@@ -407,7 +407,7 @@ Para añadir CSS exclusivo de una página sin contaminar el global, usar una cla
 ### Convenciones de componentes
 
 - **Eyebrows de categoría** (`.eyebrow`): usar siempre `eyebrow--primary` (azul `#4648d4`) para categorías de contenido. `eyebrow--secondary` (rojo `#a93349`) queda reservado para destacar la marca o alertas.
-- **CTAs de service-card**: usar `<a class="btn-primary-pill">` en lugar de `<a class="service-link">`. `.service-link` con flecha `arrow_forward` queda descartado.
+- **CTAs de las cards de servicios** (`Card layout="service"`): externas → CTA `offer` (`.btn-primary-pill`); enlaces a una página interna → CTA `link` (texto + chevron, `to`). Ya no existe `.service-link` — se definen en `CTA_KINDS` (`Card.jsx`), ver [Familia de cards](#familia-de-cards-card).
 
 ### Zonas responsivas clave
 
