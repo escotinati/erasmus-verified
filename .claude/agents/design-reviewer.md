@@ -25,7 +25,7 @@ de marca.
    no se introduce una tercera fuente ni se usa Syne en párrafos largos.
 
 4. **Reutilización de componentes**: antes de aprobar una tarjeta o card
-   nueva, comprueba si `SummaryCard.jsx` (variantes partner/evento) ya cubre
+   nueva, comprueba si `Card.jsx` (familia de cards: slots opcionales + `CTA_KINDS`) ya cubre
    el caso. El proyecto tiene una decisión activa de ir migrando tarjetas a
    este componente — no apruebes una reimplementación paralela sin motivo.
 

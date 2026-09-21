@@ -13,7 +13,7 @@
 //  son scripts clásicos normales, sin type="module", nunca cruzan esta
 //  frontera). mount-nav.jsx no necesitó nunca algo así porque se
 //  auto-monta una única vez contra un <div> fijo y no vuelve a
-//  renderizarse; SummaryCard sí necesita repintarse en cada cambio de
+//  renderizarse; Card sí necesita repintarse en cada cambio de
 //  filtro desde código clásico (index.js/nightsSection.js), de ahí que
 //  aquí haga falta devolver una factoría reutilizable en vez de
 //  auto-montarse como los demás mount-*.jsx.
@@ -34,10 +34,8 @@ export function mountSummaryCards(containerEl) {
     containerEl.innerHTML = '';
     const root = createRoot(containerEl);
     return {
-        render(items, variant, getCardProps) {
-            root.render(
-                <SummaryCardGrid items={items} variant={variant} getCardProps={getCardProps} />
-            );
+        render(items, getCardProps) {
+            root.render(<SummaryCardGrid items={items} getCardProps={getCardProps} />);
         },
     };
 }

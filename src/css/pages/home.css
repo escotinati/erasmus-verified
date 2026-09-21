@@ -190,7 +190,7 @@
 /* ── 4.0 Hero extras: tipografía slab, ticker, chip, stats,
         pills de categoría y grid de partners (rediseño home) ──── */
 
-/* Placeholder genérico para accordion-card / event-img-wrap / partner-card-img-wrap
+/* Placeholder genérico para accordion-card / card__media
    cuando el partner/ciudad no tiene image_url — los tres contenedores son
    position:relative con altura definida, así que un inset:0 absoluto
    siempre encaja. (Existía como clase referenciada en JS desde antes de
@@ -405,106 +405,6 @@
 
 .partners-empty[hidden] {
     display: none;
-}
-
-.partner-card {
-    display: flex;
-    flex-direction: column;
-    border-radius: 20px;
-    overflow: hidden;
-    background: var(--surface);
-    text-decoration: none;
-    transition:
-        transform var(--anim-duration-fast) var(--anim-easing-standard),
-        box-shadow var(--anim-duration-fast) var(--anim-easing-standard);
-}
-
-.partner-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--anim-shadow-hover);
-}
-
-.partner-card-img-wrap {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    background: var(--surface-container-low);
-}
-
-.partner-card-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--anim-duration-slow) var(--anim-easing-standard);
-}
-
-.partner-card:hover .partner-card-img-wrap img {
-    transform: scale(1.06);
-}
-
-.partner-card-category {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 4px 12px;
-    border-radius: var(--radius-full);
-    background: rgba(19, 27, 46, 0.72);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.partner-card-body {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.partner-card-name {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--on-surface);
-}
-
-.partner-card-desc {
-    font-size: 13px;
-    color: var(--on-surface-variant);
-    line-height: 1.5;
-}
-
-/* Visible por defecto (móvil/táctil no tiene :hover — un CTA oculto
-   ahí sería un objetivo invisible pero tocable, peor que no animarlo).
-   El fade+slide-on-hover solo se activa en dispositivos con hover de
-   verdad y puntero fino (ratón/trackpad), dentro del media query de
-   abajo. */
-.partner-card-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 10px;
-    color: var(--primary);
-    font-size: 13px;
-    font-weight: 700;
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .partner-card-cta {
-        opacity: 0;
-        transform: translateY(6px);
-        transition:
-            opacity var(--anim-duration-fast) var(--anim-easing-standard),
-            transform var(--anim-duration-fast) var(--anim-easing-standard);
-    }
-
-    .partner-card:hover .partner-card-cta,
-    .partner-card:focus-within .partner-card-cta {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 @media (min-width: 600px) {
@@ -1112,7 +1012,7 @@
 /* Mobile-first: 82% de ancho (una card + fragmento de la siguiente,
    típico de carrusel) es el valor móvil por defecto, revierte a 0
    (el grid controla el ancho) en --bp-md. */
-.events-scroll .event-card {
+.events-scroll .card {
     flex: 0 0 82%;
     min-width: 82%;
 }
@@ -1156,139 +1056,23 @@
     display: none;
 }
 
-/* Tarjetas compactas — solo dentro del scroll de la home. La regla base
-   .event-card (§2.3) está reservada para reactivarse en viajes.html, así
-   que este rediseño se aísla con el selector descendiente .events-scroll
-   en vez de tocarla, para no heredar el tamaño reducido si eso ocurre. */
-.events-scroll .event-card {
+/* Card dentro del carrusel/grid de eventos: rellena su celda. El diseño
+   de la card en sí (radio, hover, badge, CTA…) vive en card.css — aquí
+   solo lo que depende de estar dentro de .events-scroll. */
+.events-scroll .card {
     width: 100%;
     min-width: 100%;
-    /* Mismo tratamiento que .partner-card (grid de la ciudad activa):
-       plana en reposo, eleva + sombra en hover — sustituye al lift
-       genérico de .card-hoverable (misma cascada, más específico por
-       venir de .events-scroll) para igualar el valor exacto. */
-    border-radius: 20px;
-    box-shadow: none;
-    transition:
-        transform var(--anim-duration-fast) var(--anim-easing-standard),
-        box-shadow var(--anim-duration-fast) var(--anim-easing-standard);
-}
-
-.events-scroll .event-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--anim-shadow-hover);
-}
-
-.events-scroll .event-img-wrap {
-    height: auto;
-    aspect-ratio: 4 / 3;
-}
-
-.events-scroll .event-img-wrap img {
-    transition: transform var(--anim-duration-slow) var(--anim-easing-standard);
-}
-
-.events-scroll .event-card:hover .event-img-wrap img {
-    transform: scale(1.06);
-}
-
-/* Badge de tema — mismo estilo oscuro translúcido que .partner-card-category */
-.events-scroll .event-badge--primary {
-    background: rgba(19, 27, 46, 0.72);
-    color: #fff;
-}
-
-.events-scroll .event-badge {
-    padding: 3px 10px;
-    font-size: 12px;
-    top: 12px;
-    left: 12px;
-}
-
-/* Fecha + precio en una sola línea de texto (sin icono, sin chip de
-   color) — antes eran una fila con icono de calendario y un chip de
-   precio aparte, dos piezas decorativas para un dato que es solo
-   texto. Misma información, un único elemento. */
-.events-scroll .event-date {
-    margin-top: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-/* Precio en su propia línea, debajo de la fecha — texto plano, no el
-   chip de color que traía la regla base (§2.2), para no reintroducir
-   una pieza decorativa más en la card. */
-.events-scroll .event-price {
-    margin-top: 2px;
-    background: none;
-    padding: 0;
-    border-radius: 0;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--on-surface-variant);
-}
-
-.events-scroll .event-body {
-    padding: 20px;
-}
-
-.events-scroll .event-name {
-    font-size: 18px;
-}
-
-.events-scroll .event-venue {
-    font-size: 12px;
-}
-
-.events-scroll .event-desc {
-    margin-top: 8px;
-    font-size: 13px;
-}
-
-.events-scroll .event-footer {
-    margin-top: 14px;
-}
-
-/* CTA siempre visible (ver comentario en nightsSection.js) — mismo
-   botón exacto que .search-bar-btn del hero, ver §2.4 (se añade ahí
-   al selector para no duplicar la regla). Sin width:100%, así que se
-   ajusta a su contenido y queda alineado a la derecha del footer. */
-
-/* Móvil: carrusel horizontal con scroll-snap en vez de columna apilada
-   — esta sección se llama .events-scroll desde antes de esta rama
-   porque ya tuvo scroll horizontal alguna vez (se unificó con Verified
-   en una decisión de negocio anterior). Lo recupero solo aquí, solo
-   en móvil: el resto del rediseño (elevar+zoom en hover, CTA con
-   degradado) depende de :hover, que el táctil no tiene, así que sin
-   esto las cards se quedan indistinguibles de una lista plana. Cada
-   card ocupa el 82% del ancho — el 18% restante deja asomar la
-   siguiente, que es la señal visual de "hay más, desliza". */
-/* .events-scroll y .events-scroll .event-card: valores móviles ya
-   son el base (mobile-first, ver reglas sin @media más arriba) — no
-   hace falta repetirlos aquí. */
-
-/* El resto del rediseño (plano en reposo, sombra/zoom solo en :hover)
-   asume que hay hover de verdad — en táctil, donde nunca se dispara,
-   las cards se quedarían sin ninguna presencia visual en reposo. Un
-   único ajuste para touch: una sombra sutil permanente, sin necesidad
-   de replicar toda la lógica de :hover. Mismo criterio en .partner-card. */
-@media (hover: none) {
-    .events-scroll .event-card,
-    .partner-card {
-        box-shadow: 0 2px 14px rgba(19, 27, 46, 0.08);
-    }
 }
 
 @media (min-width: 900px) {
     /* --bp-md */
-    .events-scroll .event-card {
+    .events-scroll .card {
         min-width: 0;
     }
 
     /* Evento con mayor priority (> 0): ocupa las 2 columnas y se
        coloca primero visualmente, aunque no sea el primero por fecha. */
-    .events-scroll .event-card--featured {
+    .events-scroll .card--featured {
         grid-column: span 2;
         order: -1;
     }

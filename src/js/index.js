@@ -386,23 +386,26 @@ function getPartnerCardProps(partner, index) {
 
     return {
         imageUrl: partner.image_url,
-        badgeText: catMeta ? I18n.t(catMeta.pillKey) : '',
-        name: partner.name,
+        badge: catMeta ? I18n.t(catMeta.pillKey) : '',
+        title: partner.name,
         description: partner.description || '',
-        ctaLabel: primaryLink ? primaryLink.label || I18n.t('home.partners_cta_default') : '',
-        ctaHref: primaryLink ? primaryLink.url : '',
-        onCtaClick: primaryLink
-            ? (e) => {
-                  e.stopPropagation();
-                  trackEvent('partner_card_click', {
-                      partnerId: partner.id,
-                      partnerName: partner.name,
-                      category: partner.category,
-                      url: primaryLink.url,
-                  });
+        cta: primaryLink
+            ? {
+                  kind: 'info',
+                  label: primaryLink.label || I18n.t('home.partners_cta_default'),
+                  href: primaryLink.url,
+                  onClick: (e) => {
+                      e.stopPropagation();
+                      trackEvent('partner_card_click', {
+                          partnerId: partner.id,
+                          partnerName: partner.name,
+                          category: partner.category,
+                          url: primaryLink.url,
+                      });
+                  },
               }
             : undefined,
-        animClassName: `anim-slam anim-delay-${(index % 8) + 1}`,
+        className: `anim-slam anim-delay-${(index % 8) + 1}`,
     };
 }
 
@@ -455,7 +458,7 @@ function renderPartnersSection(allPartnersForCity) {
             inScope.length === 0
                 ? I18n.t('home.partners_empty_city')
                 : I18n.t('home.partners_empty_category');
-        partnerCardsRoot.render([], 'partner', getPartnerCardProps);
+        partnerCardsRoot.render([], getPartnerCardProps);
         return;
     }
 
@@ -465,7 +468,7 @@ function renderPartnersSection(allPartnersForCity) {
     // useEffect tras cada render suyo (ver SummaryCardGrid.jsx) —
     // llamarlo aquí también corría antes de que React comprometiera
     // las tarjetas nuevas al DOM, dejándolas en opacity:0 para siempre.
-    partnerCardsRoot.render(selectVisiblePartners(filtered), 'partner', getPartnerCardProps);
+    partnerCardsRoot.render(selectVisiblePartners(filtered), getPartnerCardProps);
 }
 
 // Skeleton del grid de partners — se pinta ANTES de esperar a
@@ -481,12 +484,12 @@ function renderPartnerGridSkeleton() {
     if (empty) empty.hidden = true;
     Skeleton.render(grid, MAX_VISIBLE_PARTNERS, () => {
         const card = document.createElement('div');
-        card.className = 'partner-card';
+        card.className = 'card';
         const imgWrap = document.createElement('div');
-        imgWrap.className = 'partner-card-img-wrap';
+        imgWrap.className = 'card__media';
         imgWrap.appendChild(Skeleton.block('skeleton--fill'));
         const body = document.createElement('div');
-        body.className = 'partner-card-body';
+        body.className = 'card__body';
         body.appendChild(Skeleton.block('skeleton--text skeleton--text-title'));
         body.appendChild(Skeleton.block('skeleton--text'));
         card.append(imgWrap, body);
