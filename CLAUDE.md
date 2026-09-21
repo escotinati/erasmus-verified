@@ -12,20 +12,34 @@ La misma web sirve **dos marcas** desde un solo código: "Erasmus Verified" (la 
 
 **Stack**: HTML + CSS + JS vanilla (sin ES Modules, todo con `<script>` clásicos y funciones/objetos globales), más:
 
-- **Vite** como build tool — ya no se abre `index.html` directamente, se usa `npm run dev` para desarrollar y `npm run build` para generar la carpeta `dist/` que se despliega.
+- **Vite** (v8) como build tool — ya no se abre `index.html` directamente, se usa `npm run dev` para desarrollar y `npm run build` para generar la carpeta `dist/` que se despliega.
 - **Supabase** como backend — base de datos (Postgres) + login de administrador. Todas las páginas piden los datos de ciudades y partners a Supabase; no queda ningún dato estático de países/ciudades en el código (ver sección de Backend).
-- **React** (`src/react/*`, vía `@vitejs/plugin-react`) — **única excepción** a "sin ES Modules": son islas de React dentro de HTML/scripts clásicos, no una migración completa. Islas hoy: el menú compartido de las 10 páginas públicas (ver [Navegación](#navegación)), el footer compartido de las mismas 10 páginas (ver [Footer](#footer-footerjsx)), el bottom-nav móvil (ver [Bottom-nav](#bottom-nav-móvil-768px) dentro de Navegación) y el botón flotante de volver arriba (`BackToTop.jsx`, montado junto al bottom-nav en `mount-shell.jsx`); **la familia de cards** (`Card.jsx` y sus montadores para el home, colaboradores, servicios y ciudades — ver [Familia de cards](#familia-de-cards-card)) — la primera vez que React pintó contenido real de datos, no solo chrome de página —; la lista de categorías/partners del aside en `ciudad.html`/`mapa.html` (ver [Lista de partners](#lista-de-partners-partnercategorylist)); y el contenido del Sheet que se abre al pulsar un partner (ver [Detalle de partner](#detalle-de-partner-partnerdetail)) — la primera con un root de React efímero, creado y desmontado en cada apertura en vez de reutilizado toda la vida de la página.
+- **React** 19 (`src/react/*`, vía `@vitejs/plugin-react`) — **única excepción** a "sin ES Modules": son islas de React dentro de HTML/scripts clásicos, no una migración completa. Islas hoy: el menú compartido de las 10 páginas públicas (ver [Navegación](#navegación)), el footer compartido de las mismas 10 páginas (ver [Footer](#footer-footerjsx)), el bottom-nav móvil (ver [Bottom-nav](#bottom-nav-móvil-768px) dentro de Navegación) y el botón flotante de volver arriba (`BackToTop.jsx`, montado junto al bottom-nav en `mount-shell.jsx`); **la familia de cards** (`Card.jsx` y sus montadores para el home, colaboradores, servicios y ciudades — ver [Familia de cards](#familia-de-cards-card)) — la primera vez que React pintó contenido real de datos, no solo chrome de página —; la lista de categorías/partners del aside en `ciudad.html`/`mapa.html` (ver [Lista de partners](#lista-de-partners-partnercategorylist)); y el contenido del Sheet que se abre al pulsar un partner (ver [Detalle de partner](#detalle-de-partner-partnerdetail)) — la primera con un root de React efímero, creado y desmontado en cada apertura en vez de reutilizado toda la vida de la página.
 
-**Herramientas de desarrollo**: Prettier instalado como devDependency (`npm install` para instalar). Configuración en `.prettierrc`: 4 espacios, comillas simples, semi. Un hook de Claude Code formatea automáticamente JS/CSS/HTML tras cada edición — no hace falta ejecutarlo manualmente.
+**Herramientas de desarrollo**: Prettier instalado como devDependency (`npm install` para instalar). Configuración en `.prettierrc`: 4 espacios, comillas simples, semi, `printWidth: 100`, `trailingComma: es5`. Un hook de Claude Code (`.claude/settings.json`, `PostToolUse` sobre `Write|Edit`) formatea automáticamente los archivos **`.js`, `.css` y `.html`** tras cada edición — **no** `.jsx` ni `.md`: para `src/react/*.jsx` y `CLAUDE.md` hay que pasar `npx prettier --write <archivo>` a mano. `npm run format` tiene el mismo alcance que el hook (html/css/js). Ojo: varios archivos **usan finales de línea CRLF** (los `.html`, `home.css`, `nightsSection.js`, entre otros) y algunos ya estaban sin formatear antes de que existiera el hook — al editarlos con un script, conserva los finales de línea (un `git diff` de cientos de líneas para un cambio pequeño es la señal de que se han convertido) y no reformatees un archivo entero de paso, para no ensuciar el diff.
 
 **Comandos**:
 
 - `npm run dev` — levanta el servidor de desarrollo de Vite (recarga en caliente)
 - `npm run build` — genera la versión de producción en `dist/`
 - `npm run preview` — sirve `dist/` en local para probar el build final
-- `npm run format` — pasa Prettier a mano por todo el proyecto (normalmente no hace falta, ya hay un hook)
+- `npm run format` — pasa Prettier a mano por los `.html`/`.css`/`.js` del proyecto (normalmente no hace falta, ya hay un hook)
+- `npm run check:sanitization` — solo el chequeo de sanitización (Capa 2, ver [Guardarraíl de sanitización](#guardarraíl-de-sanitización-capa-1--capa-2)); ya corre dentro de `npm run build`
+- **WSL / `/mnt/c`**: Vite no detecta los cambios de archivo en unidades de Windows montadas y puede servir código antiguo tras editar (síntoma real: errores que ya no existen en el código). Solución: reiniciar `npm run dev` o arrancarlo con `CHOKIDAR_USEPOLLING=true npm run dev`.
 
 **Variables de entorno**: copiar `.env.example` a `.env.local` (este último **nunca se sube al repo**, está en `.gitignore`) y rellenar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `VITE_CARTO_API_KEY` con los datos del proyecto de Supabase y de CARTO (ver [Tiles del mapa](#tiles-del-mapa)). Vite las inyecta como `window.__SUPABASE_URL__` / `window.__SUPABASE_KEY__` / `window.__CARTO_API_KEY__` en el `<head>` de cada página (ver `vite.config.js`).
+
+**Estructura del repo** (además de `src/` y las páginas `.html` de la raíz):
+
+- `admin/index.html` — el panel de administración (ver [Panel de administración](#panel-de-administración-admin)).
+- `supabase/migrations/` — solo **parte** de las migraciones (8 archivos: seed de ciudades, lectura pública, i18n JSONB, FKs/índices, CHECK de URLs). Lo creado directamente en el dashboard — `profiles`, el trigger `handle_new_user`, `private.is_admin()`, etc. — **no** está en el repo: el estado real de la base de datos se consulta con el MCP de Supabase (o el agente `supabase-schema-guardian`), nunca se deduce de estos archivos.
+- `supabase/functions/translate/` — Edge Function que traduce con DeepL (ver [Internacionalización](#internacionalización-i18n)).
+- `scripts/check-sanitization.js` — el chequeo de la Capa 2 de sanitización.
+- `dev/sheet-demo.html` — demo interna de `sheet.js` aislado; fuera del flujo público (no se enlaza ni entra en `vite.config.js`), `npm run dev` la sirve como cualquier archivo.
+- `docs/` — notas técnicas puntuales, ver [Documentos y deuda técnica](#documentos-y-deuda-técnica).
+- `.claude/` — `settings.json` (el hook de Prettier), `skills/` (`/add-city`, `/add-partner`) y `agents/` (revisores, ver [Agentes de revisión](#agentes-de-revisión-claudeagents)).
+- `erasmus-verified/` — **copia antigua del proyecto con su propio `.git`, ignorada por git** (`.gitignore`). No es código vivo: no la edites ni busques ahí.
+- `README.md` — **obsoleto** (describe la primera versión estática con enlaces WhatsApp/Telegram en un objeto JS). La fuente de verdad es este archivo.
 
 ## Arquitectura
 
@@ -33,32 +47,43 @@ Todo el JS de páginas y módulos compartidos vive ahora en `src/js/` (antes era
 
 ### Páginas y sus scripts
 
-| Página                | Script               | Propósito                                                                                                                   |
-| --------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `index.html`          | `src/js/index.js`    | Autocomplete de búsqueda, hero con stats animadas, accordion grid de ciudades (con efecto pin & scrub al hacer scroll)      |
-| `ciudades-todas.html` | inline               | Listado completo de ciudades con filtro alfabético                                                                          |
-| `ciudades.html`       | `src/js/ciudades.js` | Grid de ciudades de un país (hero con foto)                                                                                 |
-| `ciudad.html`         | `src/js/ciudad.js`   | Detalle de ciudad, botones WhatsApp/Telegram, mapa embebido                                                                 |
-| `mapa.html`           | `src/js/mapa.js`     | Mapa a pantalla completa con lista de partners                                                                              |
-| `alojamiento.html`    | inline               | Página de alojamiento para estudiantes Erasmus                                                                              |
-| `servicios.html`      | inline               | Servicios verificados: SIM, banca, transporte                                                                               |
-| `viajes.html`         | inline               | Viajes en grupo para estudiantes Erasmus                                                                                    |
-| `login.html`          | `src/js/login.js`    | Login de usuario (email + contraseña) — ver [Autenticación de usuarios](#autenticación-de-usuarios-loginhtml--registrohtml) |
-| `registro.html`       | `src/js/registro.js` | Registro de usuario (email + contraseña + ciudad + universidad/intereses opcionales) — ver sección propia                   |
-| `admin/index.html`    | `src/js/admin.js`    | Panel de administración (login + gestión de ciudades/partners) — ver sección propia                                         |
+| Página                | Script                                | Propósito                                                                                                                                                                                                                                                                                                                    |
+| --------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`          | `src/js/index.js`, `nightsSection.js` | Home: hero con buscador (autocomplete de ciudades y partners) y stats animadas, ticker, acordeón de ciudades (pin & scrub), "Descubre partners" (pills de categoría + grid de cards de la ciudad activa), "Trending nights" (eventos con filtros de ciudad/tema/partner/fecha), colaboradores de alojamiento, servicios, CTA |
+| `ciudades-todas.html` | inline                                | Directorio completo de ciudades con filtro por texto agrupado por letra (`CityCards`, ver [Familia de cards](#familia-de-cards-card))                                                                                                                                                                                        |
+| `ciudades.html`       | `src/js/ciudades.js`                  | Ciudades de un país (`?pais=`): hero con la foto de la primera ciudad + grid de `CityCards`                                                                                                                                                                                                                                  |
+| `ciudad.html`         | `ciudad.js`, `cityPartners.js`        | Ciudad (`?ciudad=ID`, opcional `&partner=ID` abre ese partner): grupo de WhatsApp, buscador local, lista de partners por categoría **sin mapa** (con enlace a `mapa.html`), alojamiento y escapadas. Ver [Ciudad sin mapa](#ciudad-sin-mapa-ciudadhtml)                                                                      |
+| `mapa.html`           | `src/js/mapa.js`                      | Mapa a pantalla completa (`?city=ID`) con lista de partners sincronizada. Ver [Mapa interactivo](#mapa-interactivo-mapahtml)                                                                                                                                                                                                 |
+| `alojamiento.html`    | inline                                | Colaboradores de alojamiento para estudiantes Erasmus (`CollabGrid`)                                                                                                                                                                                                                                                         |
+| `servicios.html`      | inline                                | Servicios verificados: SIM, banca, transporte (`ServiceCards`)                                                                                                                                                                                                                                                               |
+| `viajes.html`         | inline                                | Colaboradores de viajes en grupo (`CollabGrid`)                                                                                                                                                                                                                                                                              |
+| `login.html`          | `src/js/login.js`                     | Login de usuario (email + contraseña) — ver [Autenticación de usuarios](#autenticación-de-usuarios-loginhtml--registrohtml)                                                                                                                                                                                                  |
+| `registro.html`       | `src/js/registro.js`                  | Registro de usuario (email + contraseña + nombre + ciudad + apellidos/universidad/intereses opcionales) — ver sección propia                                                                                                                                                                                                 |
+| `admin/index.html`    | `src/js/admin.js`                     | Panel de administración (login + ciudades, partners, eventos, reporte de clics) — ver sección propia                                                                                                                                                                                                                         |
+
+Las 10 páginas públicas son todas menos `admin/index.html`. Los `<script>` inline de `alojamiento`/`servicios`/`viajes` son solo de arranque (`I18n.applyTranslations()` + `initScrollReveal()`; `alojamiento.html` además redirige a `index.html` en la experiencia Parties, donde no existe esa sección). **`ciudades-todas.html` es la excepción**: su script inline (~170 líneas) lleva el filtro por texto, la agrupación por letra y `renderGroups()`, que regenera los grupos en cada tecleo (desmontando antes los roots de `CityCards`, ver [Familia de cards](#familia-de-cards-card)). Al crear una página nueva, `docs/page-boilerplate.md` lista qué `<link>`/`<script>` necesita (tokens, tipografía, `sanitize.js`…) — ya se olvidó tres veces.
 
 ### Módulos compartidos (cargados donde se necesitan)
 
 - `src/js/lib/supabaseClient.js` — crea `window.supabaseClient`, el cliente de Supabase que usan todos los demás scripts para hablar con la base de datos.
-- `src/js/services/citiesService.js` — funciones `fetchActiveCities()`, `fetchCityById(id)`, `fetchAllCities()` para leer ciudades desde Supabase.
-- `src/js/services/partnersService.js` — función `fetchPartnersByCity(cityId)` (trae partners + sus links) y `groupPartnersByCategory(partners)`.
-- `src/js/tracking.js` — función `trackEvent(nombre, datos)`; registra clics en links de partners (tabla `cta_clicks` en Supabase) y los imprime en consola para depurar.
+- `src/js/services/citiesService.js` — `fetchActiveCities()` (solo `active=true`, orden por prioridad), `fetchCityById(id)` y `fetchAllCities()` (directorio completo, activas o no) para leer ciudades desde Supabase.
+- `src/js/services/partnersService.js` — `fetchPartnersByCity(cityId)` (partners + sus links, con `description`/`label` ya traducidos por `I18n.tField()`), `groupPartnersByCategory(partners)`, `fetchAllPartnersForSearch()` (índice del buscador del home; `fetchNightlifePartners(limit)` existe pero **no la usa nadie**), y `fetchUpcomingEvents({ … filtros })` (eventos del home; RLS ya limita a activos y no pasados, ver [Seguridad](#seguridad-importante)).
+- `src/js/tracking.js` — `trackEvent(nombre, datos)`: imprime **todos** los eventos en consola, pero **solo persiste en `cta_clicks`** `partner_link_click` y `partner_directions_click` (los clics de los enlaces del Sheet y de "Cómo llegar"). `partner_card_click` (cards del home), `event_ticket_click` (entradas) y `search_result_click` se quedan en consola: **no aparecen en el reporte de clics del admin**.
 - `src/js/services/authService.js` — `signUp()`/`signIn()`/`signOut()`/`getSession()` sobre Supabase Auth. Cargado en las 10 páginas públicas (no solo `login.html`/`registro.html`): `AuthButton()` (`navShared.jsx`) llama a `window.getSession()`/`window.signOut()` desde el propio nav compartido para pintar el icono de cuenta en toda la web. Ver [Autenticación de usuarios](#autenticación-de-usuarios-loginhtml--registrohtml).
 - `src/js/experience.js` — decide si la página se muestra como "Verified" o "Parties" según el dominio. Se carga como primer script de cada página. Ver sección [Experiencia dual](#experiencia-dual-verified--parties).
 - `src/js/geocoder.js` — cliente Nominatim + caché en localStorage (`erasmus_city_coords_v1`). Solo hace falta si una ciudad no trae ya sus coordenadas guardadas en Supabase.
-- `src/js/map-helpers.js` — **único archivo que conoce Leaflet** (variable global `L`); cambiar proveedor de mapas = reescribir solo este archivo. Contiene `CATEGORY_META` con las categorías de partners y sus colores.
-- `src/js/cityMap.js` — módulo reutilizable `mountCityMap(containerId, { pais, ciudad, interactive })`; devuelve una Promise con la instancia del mapa. Primero intenta usar coordenadas ya guardadas en Supabase antes de llamar al geocoder.
-- `src/js/mapPartners.js` — UI de la lista de partners + sincronización con marcadores del mapa. Los partners ahora vienen de `partnersService.js` (Supabase), no de un array estático. Las cabeceras de categoría + filas de partner las pinta `PartnerCategoryList.jsx` (React) — ver [Lista de partners](#lista-de-partners-partnercategorylist) — y el contenido del Sheet que se abre al pulsar un partner lo pinta `PartnerDetail.jsx` (React) — ver [Detalle de partner](#detalle-de-partner-partnerdetail).
+- `src/js/map-helpers.js` — **único archivo que conoce Leaflet** (variable global `L`); cambiar proveedor de mapas = reescribir solo este archivo. Usa `CATEGORY_META` (ver `categoryMeta.js`) para los colores de los pines.
+- `src/js/categoryMeta.js` — `CATEGORY_META`: las 20 categorías de partner con su `label`, `color` e `icon`. Se extrajo de `map-helpers.js` porque `ciudad.html` lo necesita sin cargar Leaflet; en páginas que usan los dos hay que cargarlo **antes** que `map-helpers.js` (script clásico, variable global). Es una de las dos listas de categorías que deben coincidir a mano con el desplegable del admin — ver [Documentos y deuda técnica](#documentos-y-deuda-técnica).
+- `src/js/cityMap.js` — `mountCityMap(containerId, { pais, ciudad, lat, lng, interactive })`; devuelve una Promise con la instancia del mapa. Primero usa las coordenadas ya guardadas en Supabase y solo llama al geocoder si faltan. Hoy **solo lo usa `mapa.html`**; `interactive: false` (mapa bloqueado con overlay "toca para interactuar") sigue soportado pero ninguna página lo pide ya.
+- `src/js/mapPartners.js` — la lista de partners de **`mapa.html`** + su sincronización con los marcadores del mapa (categorías activas = pines visibles). Los partners vienen de `partnersService.js`. Las cabeceras de categoría + filas de partner las pinta `PartnerCategoryList.jsx` (React) — ver [Lista de partners](#lista-de-partners-partnercategorylist) — y el contenido del Sheet que se abre al pulsar un partner lo pinta `PartnerDetail.jsx` — ver [Detalle de partner](#detalle-de-partner-partnerdetail). `ciudad.html` **ya no lo usa**: tiene su propia versión sin mapa, `cityPartners.js`.
+- `src/js/cityPartners.js` — la lista de partners de `ciudad.html` sin mapa (`mountCityPartners()`). Ver [Ciudad sin mapa](#ciudad-sin-mapa-ciudadhtml).
+- `src/js/nightsSection.js` — la sección "Trending nights" del home: barra de filtros (ciudad, tema, partner, fecha) que **vuelve a consultar Supabase** en cada cambio (`fetchUpcomingEvents`) y pinta las cards de evento con `Card`; la de mayor `priority` (> 0) ocupa dos columnas (`card--featured`). Visible en ambas experiencias.
+- `src/js/ui/sheet.js` — el `<dialog>` que se abre al pulsar un partner (focus trap, arrastrar para cerrar). Vanilla a propósito (su cabecera rechaza convertirse en isla de React); su contenido lo pinta `PartnerDetail.jsx`. `dev/sheet-demo.html` lo prueba aislado.
+- `src/js/utils/animations.js` — `window.initScrollReveal()`: un único `IntersectionObserver` que añade `is-visible` a `.anim-fade-up`/`.anim-fade-in`/`.anim-slam` (una sola vez por elemento; con `prefers-reduced-motion` los muestra directamente). Hay que **volver a llamarla tras cada re-render de una lista dinámica** — desde React, dentro de un `useEffect`, nunca desde el script clásico (ver [Familia de cards](#familia-de-cards-card)).
+- `src/js/utils/skeleton.js` — `window.Skeleton` (`block()`, `render()`, `clear()`): estados de carga con las mismas clases CSS que el contenido final (`.skeleton`, `components.css` §2.7) para que el layout no salte. Un único sistema para todas las páginas.
+- `src/js/utils/geolocation.js` — `getUserLocation()` (nunca rechaza: resuelve `null` si no hay permiso/soporte) y `distanceMeters()`, para el "a 800 m" de cada partner en `ciudad.html` y `mapa.html`.
+- `src/js/utils/speculationRules.js` — prefetch (Speculation Rules, `eager`) de las rutas de `BOTTOM_NAV_ROUTES` para que la view transition no se note lenta en 3G; degrada limpio donde no hay soporte (Safari, Firefox). **La lista está desfasada** respecto al bottom-nav actual (`AppShell.jsx`): aún prefetchea `index.html` y `mapa.html`, que ya no son pestañas, y no incluye `login.html` ("Perfil").
+- `src/utils/i18n.js`, `src/utils/translations.js`, `src/js/langSwitcher.js` — el sistema de traducción. Ver [Internacionalización](#internacionalización-i18n).
 - `src/react/Nav.jsx`, `TopbarNav.jsx`, `navShared.jsx` — el menú compartido, en React. Ver [Navegación](#navegación) para el detalle completo (qué página usa cuál, por qué existe, y una regla de arquitectura importante sobre `DOMContentLoaded` que aplica a todo lo que interactúe con estos componentes desde fuera).
 - `src/react/Footer.jsx`, `mount-footer.jsx` — el footer compartido, en React. Ver [Footer](#footer-footerjsx).
 - `src/react/AppShell.jsx`, `mount-shell.jsx` — el bottom-nav móvil, en React. Ver [Bottom-nav](#bottom-nav-móvil-768px), dentro de la sección [Navegación](#navegación).
@@ -75,20 +100,26 @@ La base de datos y el panel de administración viven en un proyecto de Supabase 
 
 ### Tablas principales
 
-- `cities` — ciudades: nombre, país, bandera, descripción, imagen, coordenadas, link de WhatsApp, si está activa, prioridad de orden.
-- `partners` — partners de una ciudad: nombre, categoría, descripción, imagen, coordenadas, si está activo, prioridad.
-- `partner_links` — los enlaces de cada partner (web, entradas, WhatsApp, etc.), ligados a `partners` por `partner_id`.
-- `partner_events` — eventos/noches de un partner (título, descripción, imagen, fecha, precio, enlace de entradas), ligados a `partners` por `partner_id`. Alimentan la sección "Trending nights" del home (visible en ambas experiencias, Verified y Parties — no es una página separada).
-- `cta_clicks` — un registro por cada clic en un enlace de partner, para saber qué se usa más. Se alimenta desde `tracking.js`.
-- `admins` — lista de usuarios (por `user_id` de Supabase Auth) que tienen permiso para escribir en las tablas de arriba. **Esto es lo único que decide quién puede editar datos** — no basta con iniciar sesión, hay que estar en esta tabla.
+Estado comprobado contra la base de datos real (todas con RLS activado). Los campos de texto que ve el usuario son **JSONB `{ "es": …, "en": … }`** (ver [Internacionalización](#internacionalización-i18n)).
+
+- `cities` — `name`, `country`, `flag`, `slug`, `description` (jsonb), `image_url`, `lat`/`lng`, `whatsapp_url`, `active`, `priority`. El grupo de la ciudad es solo **WhatsApp** (no hay campo de Telegram).
+- `partners` — `city_id`, `name`, `category` (texto libre: ver `CATEGORY_META` / [deuda técnica](#documentos-y-deuda-técnica)), `description` (jsonb), `image_url`, `lat`/`lng`, `active`, `priority`.
+- `partner_links` — los enlaces de cada partner: `partner_id`, `type`, `url`, `label` (jsonb), `sort_order`.
+- `partner_events` — eventos/noches: `partner_id`, `theme`, `title`/`description`/`price_label` (jsonb), `image_url`, `starts_at` (timestamptz), `ticket_url`, `priority`, `active`. Alimentan "Trending nights" del home (ambas experiencias, no es una página separada).
+- `cta_clicks` — `partner_id`, `link_type`, `domain`, `path`, `created_at`: un registro por clic **en los enlaces del Sheet y en "Cómo llegar"** (los únicos dos eventos que `tracking.js` persiste). Se alimenta desde `tracking.js`.
+- `admins` — solo `user_id` (Supabase Auth). **Esto es lo único que decide quién puede editar datos** — no basta con iniciar sesión, hay que estar en esta tabla. Las políticas lo comprueban con `private.is_admin()`.
 - `profiles` — perfil de cada usuario final registrado (no admin): `id` (mismo `uuid` que `auth.users.id`), `first_name` (nullable), `last_name` (nullable), `city_id`, `university`, `interests` (array de texto: subconjunto de `nightlife`/`housing`/`travel`), `membership_tier` (`free`/`verified`/`plus` — pensado para una futura tarjeta Erasmus unificada, no se fija todavía desde ningún formulario, siempre nace en `free`). Se rellena sola vía trigger, nunca por `INSERT` explícito desde el frontend — ver [Autenticación de usuarios](#autenticación-de-usuarios-loginhtml--registrohtml).
+
+**Funciones y triggers**: `public.handle_new_user()` (crea la fila de `profiles` al registrarse), `public.touch_updated_at()` (mantiene `updated_at`) y `private.is_admin()` (en el esquema `private`, no en `public`).
+
+**Edge Function** `translate` (`supabase/functions/translate/`): proxy hacia DeepL para el botón de traducir del admin; exige un JWT válido y guarda la clave de DeepL como secret de la función (nunca en el navegador ni en el repo).
 
 ### Seguridad (importante)
 
-Como esta web no tiene servidor propio, la única cosa que protege los datos es la configuración de Postgres (Row Level Security / RLS):
+Como esta web no tiene servidor propio, la única cosa que protege los datos es la configuración de Postgres (Row Level Security / RLS). Políticas reales:
 
-- Cualquier visitante puede **leer** ciudades y partners activos (son públicos, se ven sin iniciar sesión).
-- Solo un usuario que esté en la tabla `admins` puede **crear, editar o borrar** ciudades, partners o sus links.
+- **Lectura pública** — `cities`: **todas**, activas o no (a propósito: el directorio completo muestra también ciudades sin grupo activo); `partners`: solo `active = true`; `partner_links`: todos; `partner_events`: solo `active = true` **y `starts_at >= now() - 1 día`** — un evento pasado desaparece solo del sitio al día siguiente (relevante al actualizar fechas: si las dejas en el pasado, no se verán aunque estén activos).
+- **Escritura** — solo quien pase `private.is_admin()` puede crear, editar o borrar ciudades, partners, links y eventos. `cta_clicks`: cualquiera (anónimo o no) puede **insertar**, solo un admin puede **leer**. `profiles`: cada usuario solo lee y actualiza **su propia** fila; no hay política de `INSERT` (lo hace el trigger).
 - La "anon key" que aparece en `.env.local` es pública a propósito (viaja al navegador de cualquier visitante) — nunca hay que poner ahí la "service role key", que sí es secreta.
 - Antes de tocar políticas de RLS o la tabla `admins`, revisar bien el cambio: un error aquí puede dejar la web sin protección de escritura.
 
@@ -102,13 +133,15 @@ RLS protege quién puede escribir, pero no qué forma tiene el dato una vez guar
 
 ## Panel de administración (`/admin`)
 
-Herramienta interna (no aparece en la navegación pública) para gestionar ciudades y partners sin tocar código:
+Herramienta interna (no aparece en la navegación pública) para gestionar los datos sin tocar código. Un único `admin.js` con toasts, modal de confirmación genérico y un resumen (contadores) en el dashboard:
 
 - **Login**: email + contraseña (Supabase Auth). Solo entran quienes ya tienen cuenta creada y están en la tabla `admins`.
 - **Ciudades**: crear, editar, activar/desactivar. El slug se genera automático a partir del nombre.
-- **Partners**: crear, editar, activar/desactivar, gestionar sus links (web, entradas, etc.).
+- **Partners**: crear, editar, activar/desactivar, gestionar sus links (web, entradas, etc.). Desactivar un partner **con algún evento futuro activo** pide confirmación antes (`partnerHasFutureActiveEvent`).
+- **Eventos** (`partner_events`): crear, editar, activar/desactivar y **borrar de verdad** (con modal propio). La fecha/hora se edita en hora local del navegador y se guarda como ISO; `priority > 0` destaca la card en el home; la URL de entradas e imagen deben ser `https://` (validado en el formulario y, además, por los CHECK de la base de datos).
+- **Traducción con DeepL**: los campos multiidioma (descripción del partner; título, descripción y precio del evento; etiqueta de los links) tienen un botón que rellena la versión EN llamando a la Edge Function `translate`.
 - **Extractor de coordenadas**: pegando una URL de Google Maps se rellenan solos los campos de latitud/longitud (`extractCoordsFromGoogleMapsUrl` en `admin.js`).
-- **Reporte de clics**: un resumen de los clics registrados en `cta_clicks` durante los últimos 30 días, agrupados por partner.
+- **Reporte de clics**: un resumen de `cta_clicks` de los últimos 30 días, agrupados por partner. Solo cuenta clics de enlaces del Sheet y de "Cómo llegar" (ver `tracking.js`).
 
 Todo el HTML/JS que pinta listas dinámicas en el panel escapa los textos que vienen de la base de datos (función `escapeHtml`, movida de `admin.js` a `src/js/utils/sanitize.js` — ver [Guardarraíl de sanitización](#guardarraíl-de-sanitización-capa-1--capa-2) más abajo) para evitar que un dato mal formado rompa la página o inyecte código.
 
@@ -138,6 +171,18 @@ El proyecto de Supabase (`puivkbjgbfnlpepyednt`) necesita **"Allow new users to 
 
 **Otro límite de Supabase con el que tropezar, mismo espíritu que el anterior**: el envío del email de confirmación tiene un rate limit propio de la cuenta (`HTTP 429 — "email rate limit exceeded"`) — salta si se hacen varios registros de prueba seguidos en poco tiempo, antes de que `auth.users` llegue a crear nada. Tampoco es un bug de `signUp()`/`registro.js`; si aparece este mensaje probando en local, esperar o espaciar los registros de prueba.
 
+## Internacionalización (i18n)
+
+Dos idiomas, **español (`es`) e inglés (`en`)**. No hay librería (i18next, etc.): un helper mínimo, `window.I18n` (`src/utils/i18n.js`).
+
+- **Idioma activo** — `localStorage['lang']` manda; si no hay nada guardado, se usa el idioma del navegador (`navigator.language`), y **cualquier idioma que no sea `es` cae a `en`**. Cambiar de idioma **recarga la página completa** (`langSwitcher.js` / `LangSwitcherButton` en el nav guardan el idioma y hacen `location.reload()`): nada se reescribe en caliente ni se observa el DOM.
+- **Dos tipos de texto, dos mecanismos distintos**:
+    1. **Texto de interfaz** (estático, vive en el repo): `src/utils/translations.js` (`window.I18n.translations = { es: {…}, en: {…} }`, claves anidadas `sección.clave`, p. ej. `nav.services`). En HTML se marca con `data-i18n="nav.services"` y `I18n.applyTranslations()` lo resuelve una vez tras `DOMContentLoaded` (en `INPUT`/`TEXTAREA` escribe `value`, o `placeholder` si lo tiene). En JS se usa `I18n.t('clave')`. Si una clave falta en el idioma activo cae al español, y si tampoco existe, **devuelve la propia clave** (un `data-i18n` mal escrito se nota a simple vista en vez de fallar en silencio). **Al añadir un texto nuevo, añádelo a `es` y a `en`.**
+    2. **Texto de datos** (viene de Supabase): campos **JSONB `{ "es": …, "en": … }`** (`partners.description`, `cities.description`, `partner_links.label`, `partner_events.title`/`description`/`price_label`). Se leen con `I18n.tField(valor)` (idioma activo → `es` → `en` → `''`; tolera un string plano legacy). `fetchPartnersByCity()` (`partnersService.js`) ya devuelve `description` y `label` de los links traducidos, así que los componentes React los reciben listos; los eventos (`title`, `price_label`…) los traduce `nightsSection.js` al construir cada card.
+- **En las islas de React**, los textos se resuelven **al renderizar** con `t(clave, fallback)` de `navShared.jsx` (que llama a `window.I18n.t`), **no** con `data-i18n` + `applyTranslations()`: un script clásico enganchado a `DOMContentLoaded` puede correr antes de que React monte (ver la regla de arquitectura en [Navegación](#navegación)). Los datos multiidioma que pintan (`servicesData.js`, `collabData.js`) llevan una clave de i18n y un `fallback` en español por si `I18n` no estuviera cargado.
+- **Carga** — `i18n.js` y `translations.js` son scripts clásicos; se copian tal cual al build con `vite-plugin-static-copy` (`src/utils/**/*`), porque no pasan por Vite (sin ese target el build de producción los omite y dan 404, aunque `npm run dev` no lo detecta).
+- **Admin** — los campos JSONB se editan con dos cajas (ES/EN) y un botón «traducir» que rellena la EN vía la Edge Function `translate` (DeepL) — ver [Panel de administración](#panel-de-administración-admin).
+
 ## Experiencia dual (Verified / Parties)
 
 `src/js/experience.js` es el primer script que carga cada página. Decide qué "experiencia" mostrar:
@@ -149,45 +194,33 @@ El resultado se guarda en `window.ERASMUS_EXPERIENCE` para que el resto de scrip
 
 En la experiencia "Parties" además se ocultan los enlaces a Servicios/Alojamiento/Viajes y el logo cambia a "Erasmus Parties"; se añade un enlace "Verified ↗" para volver a la web completa. Esto lo resuelven directamente los propios componentes React leyendo `window.ERASMUS_EXPERIENCE` al renderizar — no solo el nav (`Nav.jsx`/`TopbarNav.jsx`, ver [Navegación](#navegación)), también el footer (`Footer.jsx`, ver [Footer](#footer-footerjsx)) y el bottom-nav móvil (`AppShell.jsx`, ver [Bottom-nav](#bottom-nav-móvil-768px)). `experience.js` sigue mutando el DOM tras `DOMContentLoaded` como antes, pero solo le queda margen real sobre HTML suelto que ninguno de esos tres componentes gestiona — por ejemplo el enlace a `alojamiento.html` de la sección de servicios del home (`index.html`, fuera de nav/footer/bottom-nav) — porque cada uno de los tres se marca con `data-react-nav`/`data-react-footer` en su raíz y `experience.js` respeta ese guard para no tocar dos veces lo que React ya resolvió (ver la regla de arquitectura en [Navegación](#navegación)).
 
+En la experiencia Parties, `alojamiento.html` **redirige a `index.html`** (su `<script>` inline lo hace antes de pintar): esa sección no existe en esa marca, igual que se ocultan por CSS `.alojamiento-section`, `.services-section` y `.cities-section` del home.
+
 ## Cómo añadir datos
 
-Nueva ciudad o partner: usar el panel de administración en `/admin` (ver sección de arriba) — es la única forma, no hay ninguna página que siga leyendo de un archivo estático. Los datos quedan en Supabase y aparecen automáticamente en home, ciudad, ciudades del país, listado completo y mapa. Ver los skills `/add-city` y `/add-partner` si quieres que Claude te guíe paso a paso con los campos exactos del formulario.
+Nueva ciudad, partner o evento: usar el panel de administración en `/admin` (ver sección de arriba) — es la única forma, no hay ninguna página que siga leyendo de un archivo estático. Los datos quedan en Supabase y aparecen automáticamente en home, ciudad, ciudades del país, listado completo y mapa. Ver los skills `/add-city` y `/add-partner` si quieres que Claude te guíe paso a paso con los campos exactos del formulario.
 
-## Mapa interactivo
+## Mapa interactivo (`mapa.html`)
+
+El mapa Leaflet vive **solo en `mapa.html`** (a pantalla completa, con la lista de partners al lado). `ciudad.html` **ya no tiene mapa**: sustituyó el mapa embebido + panel arrastrable (CitySheet) por una lista de partners con tarjetas y un enlace a `mapa.html` — ver [Ciudad sin mapa](#ciudad-sin-mapa-ciudadhtml). Por eso `mapPartners.js` y `cityMap.js` son ahora de `mapa.html`, y la lista de `ciudad.html` la gestiona `cityPartners.js`.
 
 ### `mountCityMap(containerId, { pais, ciudad, lat, lng, interactive })`
 
-- `interactive: true` — mapa.html (pantalla completa: ahí no hay nada que hacer scroll más allá del propio mapa) y el mapa embebido de `ciudad.html` en **desktop** (columna fija de 75%, sin contenido compitiendo por el mismo swipe).
-- `interactive: false` — el mapa embebido de `ciudad.html` en **móvil**: arranca bloqueado y muestra overlay "toca para interactuar" (`.city-map-activate`, `cityMap.js`). **Se probó a quitarlo** al introducir el panel arrastrable (CitySheet, ver abajo), asumiendo que un contenedor de altura fija ya no competía con el scroll de página — falso en la práctica, confirmado por Álvaro probándolo en el navegador: Leaflet hace `preventDefault()` en `touchmove` para paneear, así que sin este gate cualquier swipe vertical que empiece sobre el mapa (que ocupa casi toda la pantalla) secuestra el scroll de página en vez de dejarlo pasar. El gate se restauró.
+- `mapa.js` la llama con `interactive` por defecto (`true`); la altura del mapa la fija JS (`window.innerHeight - altura del header`) y se resincroniza en `resize`.
+- `interactive: false` (mapa bloqueado con overlay `.city-map-activate` "toca para interactuar") sigue soportado en `cityMap.js`, pero **hoy ninguna página lo usa**: se introdujo para el mapa embebido de `ciudad.html` en móvil, donde Leaflet secuestraba el scroll de página con `preventDefault()` en `touchmove`. Si algún día vuelve a haber un mapa dentro de una página que hace scroll, hay que usarlo — se probó a quitarlo y era un fallo real, confirmado en el navegador.
+- En móvil, `mapa.html` usa `.map-with-list` (`mapa.css`): mapa `flex: 1` + lista con scroll propio debajo, a altura de página completa. No comparte el problema de scroll de antes, porque no hay contenido de página más allá del propio mapa.
 
-En `ciudad.html` el mapa está dentro de `.city-map-columns`, con layout de dos columnas en desktop (75 % mapa / 25 % lista de partners, igual que antes). En **móvil** ya no es "mapa fijo arriba + lista que fluye con la página": ver [Panel arrastrable de ciudad.html (CitySheet)](#panel-arrastrable-de-ciudadhtml-citysheet) más abajo.
+### Ciudad sin mapa (`ciudad.html`)
 
-La variable CSS `--topbar-h` se inyecta dinámicamente en `src/js/ciudad.js` leyendo `header.topbar.offsetHeight`, y la usa el `padding-top` del móvil-nav, la altura de `.city-map-columns` en móvil (ver CitySheet) y (antes) el `top` del sticky ya retirado.
+`ciudad.js` (orquesta la página) + `cityPartners.js` (la lista) + `CityPartnerList.jsx` (las cards). Se quitó el mapa embebido en el PR #81 y esta sección sustituye a las antiguas "Panel arrastrable (CitySheet)" y "Buscador local"; `citySheet.js` ya no existe.
 
-### Panel arrastrable de ciudad.html (CitySheet)
-
-En móvil (`<900px`), `ciudad.html` ya no muestra "mapa fijo de 220px + lista que fluye con la página" — muestra el mapa a pantalla casi completa con un panel arrastrable encima, estilo Google Maps. `src/js/ui/citySheet.js` expone `window.CitySheet.mount(sheetEl)`, vanilla (mismo criterio que `sheet.js`: el único consumidor, `ciudad.js`, ya es vanilla).
-
-- `.city-map-columns` (móvil) pasa a tener una altura fija — `calc(100dvh - var(--topbar-h) - var(--nav-bottom-h) - 8px)` como valor de arranque, corregido enseguida por JS (`ciudad.js`, variable `--city-map-h`) midiendo la posición real del bloque, porque a diferencia de `mapa.html` aquí hay contenido real encima (cabecera, descripción) de alto variable — y `overflow: hidden`. `.city-map-embed` es full-bleed dentro (`position: absolute; inset: 0`), y `.city-sheet` (el panel, con `.partners-list` dentro sin cambios) flota encima con `position: absolute; inset: 0` también, movido con `transform: translateY()` por JS.
-- **Bug real ya corregido**: ese cálculo de `--city-map-h` NO puede recalcularse en cada evento `resize` sin más — en móvil, hacer scroll de página (o el propio gesto del mapa/sheet) puede colapsar/expandir la barra de direcciones del navegador, y eso dispara `resize` con el mismo ancho pero distinto alto; recalcular ahí hacía que la altura del bloque "respirase" con cada scroll/toque (confirmado por Álvaro: la altura del mapa crecía visiblemente al hacer scroll o tocarlo). La solución: el listener de `resize` en `ciudad.js` solo recalcula si `window.innerWidth` cambió de verdad (redimensionar ventana / girar el móvil), nunca por un resize de solo-alto.
-- 3 posiciones — peek / half / full —, nunca 0: el mapa no desaparece del todo ni en "full" (deja una franja visible arriba), igual que Google Maps.
-- El gesto de arrastre (Pointer Events + `setPointerCapture`, mismo patrón que el drag-to-close de `sheet.js`) vive **solo** en `.city-sheet-grip-row` (la cabecera), nunca en todo el panel — si no, competiría con el scroll interno de `.partners-list`.
-- `.city-sheet-grip-row` es un `<button>` de verdad, no un `<div>` con tirador decorativo + un botón circular aparte (hubo esa versión, se simplificó): la cabecera entera ES el control — zona de arrastre, alternativa sin arrastre (WCAG 2.2 _Dragging Movements_: un tap la cicla entre las 3 posiciones, igual que antes hacía el botón separado) y, a la vez, el propio indicador visual de "queda contenido por ver" vía una única flecha (`.city-sheet-arrow-icon`, rotada 180° con `data-arrow="up"/"down"`). Ser un `<button>` real (no `role="button"` a mano) da foco y activación por teclado (Enter/Espacio) gratis — necesario para no perder accesibilidad al quitar el botón dedicado. citySheet.js distingue un tap del puntero (ya gestionado en `pointerup`) de una activación por teclado con `e.detail === 0` en el listener de `click`, para no disparar el ciclo dos veces.
-- **La flecha no depende solo del estado del panel**: apunta arriba mientras quede algo por ver (el panel no está en "full", o sí lo está pero `.partners-list` todavía no ha llegado al final de su scroll) y solo pasa a abajo cuando las dos cosas son ciertas a la vez — panel en "full" **y** lista en su scroll máximo. `updateArrowDirection()` se llama tanto al cambiar de posición el panel como desde `wireScrollFades()` (mismo `has-more` que ya usa el desvanecido de la lista, ver más abajo), así que se mantiene correcta aunque el usuario solo haga scroll dentro de la lista sin tocar el panel.
-- En desktop (`min-width: 900px`), `.city-sheet` vuelve a ser una columna normal del layout 75/25 (mismo ancho que tenía `.partners-list` antes de este cambio), sin transform ni cabecera arrastrable (`display: none` en `.city-sheet-grip-row`) — `ciudad.js` sigue fijando su altura por JS igual que antes.
-- **`mapa.html` no usa este patrón** — su mobile layout ya era distinto (`.map-with-list`, `mapa.css`: mapa `flex:1` + lista con scroll propio debajo, altura fija de página completa) y no compartía el problema (mapa sticky + scroll de página) que motivó CitySheet. No se ha migrado a este mismo panel arrastrable; sería trabajo aparte si algún día se decide unificar los dos.
-- Deliberadamente NO se rediseñaron las cabeceras de categoría a chips horizontales dentro del panel (una idea que se barajó) — `PartnerCategoryList.jsx` es compartido con `mapa.html`, y tocarlo habría afectado a esa página también sin que se hubiera pedido. El panel reutiliza la lista vertical de siempre, sin cambios en `PartnerCategoryList.jsx`/`mapPartners.js`.
-- **Bug real ya corregido: `.partners-list` no hacía scroll en móvil**, dejando inaccesibles los partners que no cabían en el estado "full". `.partners-list` vive dentro de un `.city-sheet-scroll-wrap` propio (mismo motivo que `listReactHost`: necesita convivir con hermanos que React no gestiona, aquí dos `.city-sheet-fade`). El arreglo son varias piezas juntas: `scrollbar-width: none` + `::-webkit-scrollbar{display:none}` oculta la barra sin quitar la capacidad de hacer scroll; `touch-action: pan-y` + `overscroll-behavior-y: contain` aíslan su gesto y evitan que rebote hacia el mapa; y sobre todo, `will-change: transform` en `.city-sheet` pasó de estar siempre activo a solo durante `.city-sheet--dragging` — una capa de composición permanente en el ancestro es justo el patrón que interfiere con el scroll táctil de un hijo en algunos navegadores móviles. Como sustituto de la barra oculta, `citySheet.js` (`wireScrollFades()`) pinta clases `is-scrolled`/`has-more` sobre `.partners-list` según su scroll real, que activan un desvanecido de 28px arriba/abajo (`.city-sheet-fade`) como pista de "hay más contenido" — con un `ResizeObserver` además de "scroll", porque togglear una categoría cambia `scrollHeight` sin que el usuario haga scroll él mismo. En desktop nada de esto aplica: la lista sigue con su scrollbar nativa visible de siempre (`overflow-y: scroll` + `scrollbar-width: auto` + `::-webkit-scrollbar{display:block}`, revertido explícitamente en el media query).
-
-### Buscador local de `ciudad.html`
-
-Debajo del `<h1>` del nombre de ciudad (`.city-header`) hay un buscador — mismas clases que el de `index.html` (`.search-bar`/`.search-dropdown`/`.sdi-*`, genéricas en `components.css`, no exclusivas del home) para el mismo aspecto visual, pero con un propósito distinto: no busca ciudades en toda la web, busca **tipos de partner y partners dentro de esta misma ciudad**.
-
-- **Oculto por defecto** (`hidden` en `ciudad.html`) — solo se revela si `mountPartnersList()` devuelve un handle real, es decir, si la ciudad tiene partners. Sin partners no hay nada que buscar.
-- El índice de búsqueda sale de `listGroups` (ya en memoria, con label/icon/color resueltos — cero llamadas de red nuevas): una entrada por categoría (`type: 'category'`) y una por partner (`type: 'partner'`), filtradas por substring normalizado (acentos/mayúsculas, misma función `normalizeSearch()` que el `normalize()` de `index.js`) y ordenadas por prefijo → categoría antes que partner en empate → alfabético.
-- **Seleccionar una categoría** llama a `activateOnlyCategory(category)` (nueva en `mapPartners.js`, junto a `toggleCategory()`) — a diferencia de esta última (añade/quita una de varias activas), reemplaza el Set entero: buscar "Alojamiento" dejar viendo **solo** alojamientos, apaga el resto. **Seleccionar un partner** llama a `selectPartner(id)`, la misma función que ya usa el deep-link `?partner=ID` — activa su categoría si hiciera falta y abre su Sheet, sin duplicar esa lógica.
-- `mountPartnersList()` ahora **devuelve** `{ listGroups, selectPartner, activateOnlyCategory }` (o `undefined` si la ciudad no tiene partners) para que `ciudad.js` pueda conectar el buscador sin que este archivo conozca su existencia — `mapa.js` sigue llamando a la misma función e ignorando el valor de retorno, sin cambios de comportamiento ahí.
-- En móvil, elegir cualquier resultado expande el panel a "half" (`citySheet.setState('half')`) para que el usuario vea el efecto sin tener que además arrastrar.
+- **Orden de la página**: `<h1>` con el nombre + buscador local → bloque con el enlace a `mapa.html?city=ID` → grupo de WhatsApp (`cities.whatsapp_url`; sin él, un aviso "próximamente") → consejo → `#city-extra` (enlace a `alojamiento.html` y, si la ciudad tiene partners `travel`, sus "escapadas" como `ServiceCards`; ver [Familia de cards](#familia-de-cards-card)) → lista de partners (`#city-partners`). El botón "Inicio" del header ya no existe.
+- **Lista** — `mountCityPartners(containerId, city, { autoOpenPartnerId })` pide los partners (`fetchPartnersByCity`), los agrupa por categoría y devuelve `{ listGroups, selectPartner, activateOnlyCategory }` (la misma forma que `mountPartnersList()` de `mapPartners.js`, a propósito). El estado es otro que en el mapa, porque no hay pines que filtrar: `collapsedCategories` (plegar/desplegar una categoría, solo visual) y `focusCategory` ("ver todo de esta categoría sola"). Cada categoría enseña como mucho **6 cards** (`CAP` en `CityPartnerList.jsx`) y un botón "ver todo (+N)" que entra en modo foco, con vuelta atrás; con una sola categoría no hay control de plegar. Se duplicó `mapPartners.js` en vez de convertirlo en un "si hay mapa / si no": cuando dos contextos divergen de verdad, se copia (mismo criterio que `isPartiesExperience()`/`normalize()`).
+- **Experiencia Parties**: las categorías que no son `nightlife` arrancan **plegadas**, para no enterrar lo propio de esa marca bajo lo de otras categorías. Un deep link (`?partner=ID`, o el resultado del buscador global de `index.js`) las despliega si hace falta.
+- **Cards** — cada partner es un `Card layout="compact"` (avatar o monograma con el color de la categoría, categoría, distancia, descripción a 2 líneas) con dos botones: "Cómo llegar" (enlace directo a Google Maps con las coordenadas; **no se pinta sin `lat`/`lng`**) y "Ver más", que abre el mismo Sheet de siempre (`sheet.js` + `PartnerDetail.jsx`). "Cómo llegar" dispara `trackEvent('partner_directions_click')` y los enlaces del Sheet `partner_link_click` — los dos únicos eventos que se persisten en `cta_clicks`; "Ver más" solo abre el Sheet.
+- **Distancia** — `getUserLocation()` (`utils/geolocation.js`) se pide sola al cargar la lista, **sin bloquear el primer render**: cuando resuelve, se calcula `distanceMeters` y se repinta. Sin permiso o soporte devuelve `null` y no sale ninguna distancia (nunca un "-- m").
+- **Buscador local** (`initCitySearch()` en `ciudad.js`) — mismas clases que el de `index.html` (`.search-bar`/`.search-dropdown`/`.sdi-*`, genéricas en `components.css`) pero busca **tipos de partner y partners de esta ciudad**. Oculto (`hidden`) hasta que `mountCityPartners()` devuelve un handle, es decir, si la ciudad tiene partners. El índice sale de `listGroups` (en memoria, cero red): una entrada por categoría y una por partner, filtradas por substring normalizado (acentos/mayúsculas) y ordenadas por prefijo → categoría antes que partner → alfabético. Elegir una **categoría** llama a `activateOnlyCategory` (entra en modo foco) y elegir un **partner** a `selectPartner(id)` (la misma función del deep link `?partner=ID`: despliega su categoría si hace falta y abre su Sheet). La lista de `mapa.html` conserva el mismo contrato, con `activateOnlyCategory` = "solo estos pines".
+- `--topbar-h` sigue inyectándose en `ciudad.js` (altura real de `header.topbar`); hoy solo la lee `layout.css` (`padding-top` del menú móvil `.mobile-nav`).
 
 ### Geocodificación
 
@@ -238,14 +271,10 @@ La idea es que TODAS las cards de la web sean miembros de la misma familia (`Car
 
 ### Dos bugs reales ya corregidos aquí — no los repitas en la próxima isla de React
 
-1. **`mountSummaryCards()` vacía el contenedor a mano** (`containerEl.innerHTML = ''`) antes de `createRoot()`. `createRoot()` (React 18) **no** borra los hijos preexistentes del contenedor al montarse — eso solo pasaba con la antigua `ReactDOM.render()` (React ≤17). Sin este vaciado explícito, el esqueleto de carga (`Skeleton.render()`, DOM imperativo pintado ANTES de que exista el root) se quedaba mezclado para siempre con las tarjetas reales.
+1. **`mountSummaryCards()` vacía el contenedor a mano** (`containerEl.innerHTML = ''`) antes de `createRoot()`. `createRoot()` (React 18+) **no** borra los hijos preexistentes del contenedor al montarse — eso solo pasaba con la antigua `ReactDOM.render()` (React ≤17). Sin este vaciado explícito, el esqueleto de carga (`Skeleton.render()`, DOM imperativo pintado ANTES de que exista el root) se quedaba mezclado para siempre con las tarjetas reales.
 2. **`initScrollReveal()` se dispara dentro de `SummaryCardGrid.jsx`, en un `useEffect`** — nunca justo después de llamar a `.render()` desde `index.js`/`nightsSection.js`. Un `root.render()` sobre un root **ya montado** es una actualización normal de React, no el mount inicial, y esas actualizaciones no se comprometen al DOM de forma síncrona. Un script clásico que llamara a `initScrollReveal()` en la línea siguiente podía correr antes de que las tarjetas nuevas existieran de verdad — su `querySelectorAll` no encontraba nada que observar, y esas tarjetas se quedaban con la clase `anim-slam`/`anim-fade-up` pero sin `is-visible`, en `opacity: 0` para siempre.
 
 **Regla general para la próxima isla de React que se añada**: cualquier efecto que dependa de que el DOM ya refleje el último render (medirlo, leerlo, engancharle un `IntersectionObserver`...) va DENTRO del componente (`useEffect`/`useLayoutEffect`), nunca en el script clásico que llama a `.render()` justo después. Es el mismo tipo de carrera que la regla de `DOMContentLoaded` del nav (ver más abajo) — misma solución: resolverlo dentro de React, no confiar en que un script externo acierte el timing.
-
-## Lista de partners (PartnerCategoryList)
-
-La cabecera de categoría (pastilla de activar/desactivar, o heading simple si la ciudad solo tiene una categoría con partners) + la lista de partners de esa categoría, en el aside de `ciudad.html`/`mapa.html`, ya no se construyen a mano con DOM imperativo (`buildGroupSection()`) — usan un componente React compartido. Es la **tercera isla de React** del proyecto (ver [Familia de cards](#familia-de-cards-card) para la segunda) y la primera con foto de contenido real (miniatura de partner, 28px) en la propia fila, no solo en la tarjeta de resumen.
 
 ### Reglas al tocar o ampliar la familia (salidas de la revisión final)
 
@@ -254,6 +283,10 @@ La cabecera de categoría (pastilla de activar/desactivar, o heading simple si l
 - **Contraste conocido en Parties (no de la familia, de los tokens)**: con `?exp=parties`, el color primario/categoría sobre superficie da ~4.0:1 (fecha del evento, CTA `info`/`link`) y ~3.6:1 (etiqueta de categoría de las cards de ciudad) — por debajo de 4.5:1 para texto pequeño. Es el mismo color que ya usaban esos elementos antes de la migración; se arregla en los tokens del tema, no en `Card`. En Verified no hay ningún fallo.
 - **El anillo de foco global es de baja opacidad** (`rgba(…, 0.25)`, ~1.4:1 sobre la superficie): no llega a 3:1 (WCAG 1.4.11). También es anterior a la familia y afecta a toda la web.
 - **`prefers-reduced-motion`** solo acorta las transiciones a ~0 (regla global); el desplazamiento de hover (`translateY(-5px)`) sigue aplicándose, sin animar.
+
+## Lista de partners (PartnerCategoryList)
+
+La cabecera de categoría (pastilla de activar/desactivar, o heading simple si la ciudad solo tiene una categoría con partners) + la lista de partners de esa categoría, en el aside de `ciudad.html`/`mapa.html`, ya no se construyen a mano con DOM imperativo (`buildGroupSection()`) — usan un componente React compartido. Es la **tercera isla de React** del proyecto (ver [Familia de cards](#familia-de-cards-card) para la segunda) y la primera con foto de contenido real (miniatura de partner, 28px) en la propia fila, no solo en la tarjeta de resumen.
 
 ### Qué hace cada archivo
 
@@ -395,10 +428,11 @@ El **orden** de los `@import` en `styles.css` importa: es exactamente el orden e
 | `layout.css`               | Top nav/header (`.topnav`, `.topbar` — el HTML lo renderiza React, ver [Navegación](#navegación), pero las clases y este archivo no cambiaron), footer, hero, section wrappers                                        |
 | `pages/home.css`           | Accordion grid de ciudades, nights section, services section, CTA (`index.html`)                                                                                                                                      |
 | `pages/ciudades-todas.css` | `.all-cities-hero` — el resto de estilos de esa página (`.filter-bar`, `.city-items-grid`...) siguen en el `<style>` inline de `ciudades-todas.html`                                                                  |
-| `pages/ciudad.css`         | Layout de ciudad, mapa embebido, partners list                                                                                                                                                                        |
+| `pages/ciudad.css`         | Layout de ciudad (`.city-page`, header, buscador local) y la lista de partners sin mapa (`.city-partners-*`: grupos, foco, "ver todo"); el diseño de cada card vive en `card.css`                                     |
 | `pages/mapa.css`           | `.map-page-main`, `.map-canvas`, `.erasmus-pin__dot`, map-with-list                                                                                                                                                   |
 | `pages/servicios.css`      | `body.servicios-page` (gradiente), `.servicios-category`, `.services-grid--2col`                                                                                                                                      |
 | `pages/alojamiento.css`    | Estilos propios de `alojamiento.html`                                                                                                                                                                                 |
+| `pages/auth.css`           | Tarjeta y formularios de `login.html`/`registro.html` (`.auth-card`…), incluido el autocompletado de ciudad del registro                                                                                              |
 | `responsive.css`           | Media queries globales que afectan a múltiples archivos                                                                                                                                                               |
 | `transitions.css`          | View Transitions entre páginas                                                                                                                                                                                        |
 
@@ -424,25 +458,27 @@ Para añadir CSS exclusivo de una página sin contaminar el global, usar una cla
 Todo el CSS del proyecto es mobile-first: los `@media` usan siempre `min-width`, nunca `max-width` (verificado con grep sobre `src/css/` — no hay un solo `max-width` en un breakpoint global; `admin.css`, aparte, sí tiene los suyos propios). Los tres cortes reales, que coinciden con los tokens `--bp-sm`/`--bp-md`/`--bp-lg` de `tokens.css` (ver [Tokens del design system](#tokens-del-design-system-srcstyles) — los `@media` no pueden leer custom properties, así que estos valores están repetidos como literales en cada archivo):
 
 - `@media (min-width: 600px)` (`--bp-sm`) — grids de 2 columnas (`pages/home.css` y otros)
-- `@media (min-width: 900px)` (`--bp-md`) — desktop: `.city-page` max-width 1000px; `.city-map-columns` en fila 75/25; el bottom-nav (`.app-bottom-nav`) se oculta y `body { padding-bottom: 0 }` (por debajo de este corte, mobile-first, `body` lleva `padding-bottom: calc(var(--nav-bottom-h) + 8px)` — 68px con el valor actual de `--nav-bottom-h`, pero como `calc()`, no como literal); el top nav/header (`.topnav-links`/`.icon-btn`/`.topbar-nav`) se hace visible
+- `@media (min-width: 900px)` (`--bp-md`) — desktop: `.city-page` max-width 1000px; el bottom-nav (`.app-bottom-nav`) se oculta y `body { padding-bottom: 0 }` (por debajo de este corte, mobile-first, `body` lleva `padding-bottom: calc(var(--nav-bottom-h) + 8px)` — 68px con el valor actual de `--nav-bottom-h`, pero como `calc()`, no como literal); el top nav/header (`.topnav-links`/`.icon-btn`/`.topbar-nav`) se hace visible
 - `@media (min-width: 1200px)` (`--bp-lg`) — tier final de `.cta-card`/`.services-grid`
 
 ## Dependencias externas
 
 Vía CDN, sin instalación:
 
-- Leaflet 1.9.4 — `unpkg.com`
+- Leaflet 1.9.4 — `unpkg.com` (solo `mapa.html`)
 - Supabase JS SDK (versión UMD) — `cdn.jsdelivr.net`, crea el objeto global `supabase` que usa `supabaseClient.js`
 - Google Fonts — Syne + Inter
 - Material Symbols Outlined — Google
 - Nominatim — API pública de OpenStreetMap (geocodificación)
+- CARTO Basemaps — tiles del mapa, con API key (ver [Tiles del mapa](#tiles-del-mapa))
+- DeepL — solo desde la Edge Function `translate` de Supabase, nunca desde el navegador
 - Unsplash — imágenes de países y ciudades
 
 Instaladas vía npm (ver `package.json`):
 
-- `vite` + `vite-plugin-static-copy` — build tool
+- `vite` (v8) + `vite-plugin-static-copy` — build tool. El plugin copia tal cual `src/js/**`, `src/css/**` y `src/utils/**` a `dist/` porque los scripts clásicos (`<script src="/src/js/…">`) no pasan por el bundler de Vite; sin esos targets el build de producción devuelve 404 para ellos aunque `npm run dev` funcione
 - `@vitejs/plugin-react` — transforma el JSX de `src/react/*` (ver [Navegación](#navegación) y [Familia de cards](#familia-de-cards-card))
-- `react` + `react-dom` — para las islas de React del proyecto (ver el Stack en [Proyecto](#proyecto), arriba), no hay más React fuera de `src/react/`
+- `react` + `react-dom` (v19) — para las islas de React del proyecto (ver el Stack en [Proyecto](#proyecto), arriba), no hay más React fuera de `src/react/`
 - `@supabase/supabase-js` — cliente de Supabase (aunque en el navegador se usa la versión CDN cargada como `<script>`, no este paquete)
 - `prettier` — formateo de código
 
@@ -450,4 +486,38 @@ Instaladas vía npm (ver `package.json`):
 
 - Commits con prefijo convencional: `feat:`, `fix:`, `refactor:`, `docs:`
 - Ramas de feature: `feature/nombre-descriptivo`
-- PRs hacia `main`; `main` se despliega automáticamente vía GitHub Pages / Netlify / Vercel
+- PRs hacia `main`. Se despliega en **Vercel** (proyecto `erasmus-verified`, enlazado a este repo de GitHub); los agentes de revisión asumen un _Vercel Preview_ por rama. El repo no contiene configuración de despliegue (`vercel.json`, `.github/`): no hay CI propia, la única comprobación automática que corre en el build es `check-sanitization.js` (dentro de `npm run build`).
+
+## Agentes de revisión (`.claude/agents/`)
+
+Siete subagentes de Claude Code, cada uno con un único cometido; `pr-orchestrator` los encadena antes de abrir una PR:
+
+| Agente                     | Para qué                                                                                                                                            |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `supabase-schema-guardian` | Verifica el estado **real** de la base de datos antes de escribir migraciones, tocar RLS o el admin — ya que el repo no tiene todas las migraciones |
+| `functionality-reviewer`   | Revisión estática de lógica: tracking de CTAs, prioridad de ciudades, i18n completo, estados vacíos y de error                                      |
+| `code-reviewer`            | Convenciones propias (tokens, `apply_migration` vs `execute_sql`, Conventional Commits, sin `alert()`)                                              |
+| `security-auditor`         | RLS, XSS en el admin, URLs sin sanear en `href`, secretos expuestos, CHECK de URLs                                                                  |
+| `design-reviewer`          | Consistencia con el design system (tokens, paleta por tema, tipografía, reutilización de `Card`); no revisa accesibilidad                           |
+| `accessibility-auditor`    | Lighthouse, `prefers-reduced-motion`, contraste, touch targets ≥44px                                                                                |
+| `pr-orchestrator`          | Ejecuta los anteriores en secuencia y consolida un único informe (la PR la abre Álvaro a mano)                                                      |
+
+Además hay dos _skills_ invocables con `/`: `/add-city` y `/add-partner` (guían el alta por el panel de administración).
+
+## Documentos y deuda técnica
+
+Notas puntuales en `docs/` — son fotos de un momento, no documentación viva; ante una duda, manda el código y este archivo:
+
+- `docs/page-boilerplate.md` — censo de qué `<link>`/`<script>` carga cada página pública y por qué. Útil como lista de comprobación al crear una página (dice "8 páginas"; hoy son 10).
+- `docs/design-tokens-link-fix.md` — el bug de 4 páginas que no cargaban `tokens.css`/`typography.css` (las variables se descartaban en silencio).
+- `docs/mobile-audit.md` — auditoría de los `@media` previa a los breakpoints 600/900/1200. Nombra clases que ya no existen (`.event-card`, `.collab-card`…): es histórica.
+- `docs/tech-debt.md` — **categorías de partner en dos listas** que deben coincidir a mano: el `<select id="f-category">` del admin y `CATEGORY_META`. Hoy el admin ofrece 5 (`nightlife`, `housing`, `services`, `community`, `travel`) y `CATEGORY_META` tiene 20, así que 15 categorías solo se pueden asignar tocando la base de datos. (El documento dice que `CATEGORY_META` está en `map-helpers.js`: ahora está en `categoryMeta.js`.)
+
+**Deuda conocida que no está en ningún documento**:
+
+- Solo 2 de los 5 eventos de `trackEvent` se persisten: los clics en las cards del home (`partner_card_click`), en entradas de evento (`event_ticket_click`) y en resultados de búsqueda (`search_result_click`) no llegan a `cta_clicks`, así que el reporte de clics del admin no los ve.
+- `initBottomNav()` en `index.js` es código muerto (busca `.bottom-nav-item`, la clase del bottom-nav antiguo; hoy es `AppShell.jsx`).
+- `BOTTOM_NAV_ROUTES` de `speculationRules.js` no coincide con el bottom-nav actual (ver arriba).
+- `fetchNightlifePartners()` (`partnersService.js`) no tiene ningún llamador; `.accordion-card-flag` (`home.css`) no tiene ningún uso.
+- `README.md` describe la versión estática original y está obsoleto.
+- Contraste y anillo de foco global débiles en Parties: ver [Familia de cards](#familia-de-cards-card) (reglas al ampliarla).
