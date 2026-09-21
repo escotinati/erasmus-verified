@@ -8,8 +8,6 @@
 //  activo todavía (directorio completo, no solo active=true).
 // ─────────────────────────────────────────────────────────────
 
-const ARROW_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
-
 // escapeHtml() vive ahora en src/js/utils/sanitize.js (window.escapeHtml),
 // cargado antes que este script en ciudades.html — no se duplica aquí.
 
@@ -25,7 +23,7 @@ async function initCiudadesPage() {
     if (gridEl) {
         Skeleton.render(gridEl, 6, () => {
             const card = document.createElement('div');
-            card.className = 'city-card';
+            card.className = 'card card--photo';
             card.appendChild(Skeleton.block('skeleton--fill'));
             return card;
         });
@@ -84,23 +82,18 @@ async function initCiudadesPage() {
     if (count === 2) grid.classList.add('cols-2');
 
     Skeleton.clear(grid);
-    grid.innerHTML = cities
-        .map(
-            (city, i) => `
-    <a class="city-card anim-fade-up anim-delay-${(i % 8) + 1}" href="ciudad.html?ciudad=${city.id}">
-      <img class="card-img" src="${escapeHtml(sanitizeUrl(city.image_url))}" alt="${escapeHtml(city.name)}" loading="lazy"/>
-      <div class="card-overlay"></div>
-      <div class="card-arrow">${ARROW_SVG}</div>
-      <div class="card-body">
-        <div class="card-name">${escapeHtml(city.name)}</div>
-        <span class="card-tag">${I18n.t('cities.active_groups_tag')}</span>
-      </div>
-    </a>
-  `
-        )
-        .join('');
-
-    if (window.initScrollReveal) window.initScrollReveal();
+    // Las cards las pinta React (CityCards.jsx, mount-city-cards.jsx). El
+    // reveal por scroll lo dispara el propio componente en un useEffect.
+    window.mountCityCards(
+        grid,
+        cities.map((city) => ({
+            name: city.name,
+            to: `ciudad.html?ciudad=${city.id}`,
+            imageUrl: city.image_url,
+            tag: I18n.t('cities.active_groups_tag'),
+        })),
+        { arrow: true }
+    );
 }
 
 document.addEventListener('DOMContentLoaded', initCiudadesPage);

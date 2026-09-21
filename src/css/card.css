@@ -427,3 +427,150 @@
     margin-top: 0;
     display: block;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Layout "photo" (Card layout="photo") — ciudades (CityCards)
+   Foto a sangre 3:4 con degradado; título + badge/meta abajo; toda la
+   card es un <a> interno. Sustituye a a.city-card/.country-card y a
+   .card-img/.card-overlay/.card-body/.card-arrow/.card-name/.card-tag/
+   .card-meta (antes en components.css).
+
+   Selector .card.card--photo (0,2,0) a propósito: gana a .anim-fade-up
+   (animations.css) para que esta lista de transition no se reemplace
+   entera (transition es shorthand) y para que en :hover el transform no
+   caiga a translateY(--anim-translate-md) — antes la card de
+   ciudades.html "se hundía" 18px al pasar el ratón.
+   ═══════════════════════════════════════════════════════════ */
+
+.card.card--photo {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    background: var(--surface-container);
+    border: 1px solid var(--outline-variant);
+    cursor: pointer;
+    transition:
+        opacity var(--anim-duration-base) var(--anim-easing-enter),
+        transform var(--anim-duration-base) var(--anim-easing-enter),
+        border-color 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card.card--photo:hover {
+    border-color: var(--primary);
+    box-shadow: none;
+    transform: translateY(0);
+}
+
+.card__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    filter: brightness(0.75);
+}
+
+.card--photo:hover .card__photo {
+    transform: scale(1.06);
+    filter: brightness(0.6);
+}
+
+.card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 30%, rgba(19, 27, 46, 0.88) 100%);
+}
+
+.card__caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 18px 18px;
+    z-index: 2;
+}
+
+.card--photo .card__title {
+    font-size: 17px;
+    color: #fff;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+/* Etiqueta verde ("grupos activos") — antes .card-tag */
+.card--photo .card__badge {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #00e5a0;
+    background: rgba(0, 229, 160, 0.12);
+    border: 1px solid rgba(0, 229, 160, 0.22);
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+}
+
+.card--photo .card__badge::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+/* País bajo el nombre — antes .card-meta (texto plano, sin icono) */
+.card--photo .card__meta {
+    display: inline;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 500;
+}
+
+.card__arrow {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    width: 30px;
+    height: 30px;
+    background: rgba(70, 72, 212, 0.18);
+    border: 1px solid rgba(70, 72, 212, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+        opacity 0.2s,
+        transform 0.2s;
+}
+
+.card--photo:hover .card__arrow {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* hover="reveal" (directorio ciudades-todas): foto en blanco y negro en
+   reposo que pasa a color al hover — más propio de elegir entre muchas
+   cards que el zoom+oscurecido de una sola protagonista. El color ya lo da
+   la foto, así que el borde no cambia. */
+.card--photo-reveal .card__photo {
+    filter: grayscale(100%) brightness(0.85);
+    transition: filter var(--anim-duration-base) var(--anim-easing-standard);
+}
+
+.card.card--photo-reveal:hover {
+    border-color: var(--outline-variant);
+}
+
+.card--photo-reveal:hover .card__photo {
+    filter: grayscale(0%) brightness(0.85);
+    transform: none;
+}
