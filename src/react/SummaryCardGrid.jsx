@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-//  SummaryCardGrid.jsx — itera `items` y monta un <SummaryCard> por
+//  SummaryCardGrid.jsx — itera `items` y monta un <Card> por
 //  cada uno. No sabe nada de la forma de un partner ni de un evento:
 //  esa traducción la hace `getCardProps(item, index)`, que pasa el
 //  padre (getPartnerCardProps en index.js / getEventCardProps en
@@ -27,9 +27,9 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useEffect } from 'react';
-import SummaryCard from './SummaryCard.jsx';
+import Card from './Card.jsx';
 
-export default function SummaryCardGrid({ items, variant, getCardProps }) {
+export default function SummaryCardGrid({ items, getCardProps }) {
     useEffect(() => {
         if (window.initScrollReveal) window.initScrollReveal();
     });
@@ -37,7 +37,7 @@ export default function SummaryCardGrid({ items, variant, getCardProps }) {
     return (
         <>
             {items.map((item, index) => (
-                <SummaryCard key={item.id} variant={variant} {...getCardProps(item, index)} />
+                <Card key={item.id} {...getCardProps(item, index)} />
             ))}
         </>
     );

@@ -1,0 +1,161 @@
+/* ═══════════════════════════════════════════════════════════
+   Card — familia única de cards (Card.jsx)
+   ───────────────────────────────────────────────────────────
+   Una sola estructura (media → body → footer) con slots opcionales.
+   Sustituye a las cards partner-card y event-card (antes repartidas entre
+   home.css y components.css). Lo que depende del CONTENEDOR (carrusel/grid de eventos)
+   sigue en home.css bajo .events-scroll .card.
+   ═══════════════════════════════════════════════════════════ */
+
+.card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--surface);
+    text-decoration: none;
+    transition:
+        transform var(--anim-duration-fast) var(--anim-easing-standard),
+        box-shadow var(--anim-duration-fast) var(--anim-easing-standard);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--anim-shadow-hover);
+}
+
+/* Sin hover real (táctil) la card plana no tendría presencia en reposo:
+   sombra sutil permanente en vez de replicar toda la lógica de :hover. */
+@media (hover: none) {
+    .card {
+        box-shadow: 0 2px 14px rgba(19, 27, 46, 0.08);
+    }
+}
+
+/* ── Media ─────────────────────────────────────────────────── */
+
+.card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--surface-container-low);
+}
+
+.card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--anim-duration-slow) var(--anim-easing-standard);
+}
+
+.card:hover .card__media img {
+    transform: scale(1.06);
+}
+
+.card__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    background: rgba(19, 27, 46, 0.72);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Body ──────────────────────────────────────────────────── */
+
+.card__body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card__title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--on-surface);
+}
+
+.card__meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+}
+
+.card__meta .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.card__date {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: capitalize;
+}
+
+.card__price {
+    margin-top: -2px; /* fecha→precio más juntos que el gap normal del body */
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+}
+
+.card__desc {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--on-surface-variant);
+    line-height: 1.5;
+}
+
+/* ── CTA (tipos definidos en CTA_KINDS, Card.jsx) ──────────── */
+
+.card__footer {
+    display: flex;
+    margin-top: 10px;
+}
+
+.card__footer--tickets {
+    justify-content: flex-end;
+    margin-top: 10px; /* + gap 4px del body = 14px, como el footer del evento original */
+}
+
+/* .card-cta--tickets: mismo botón que .search-bar-btn del hero — sus reglas
+   viven en components.css (selector compartido, un único sitio). */
+
+/* info: visible por defecto (móvil/táctil no tiene :hover — un CTA oculto ahí
+   sería un objetivo invisible pero tocable). El fade+slide solo se activa en
+   dispositivos con hover real y puntero fino. */
+.card-cta--info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .card-cta--info {
+        opacity: 0;
+        transform: translateY(6px);
+        transition:
+            opacity var(--anim-duration-fast) var(--anim-easing-standard),
+            transform var(--anim-duration-fast) var(--anim-easing-standard);
+    }
+
+    .card:hover .card-cta--info,
+    .card:focus-within .card-cta--info {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

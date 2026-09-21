@@ -215,7 +215,7 @@ function renderEventCards(events) {
         empty.textContent = hasActiveFilters()
             ? I18n.t('nights.no_results_filtered')
             : I18n.t('nights.no_results_empty');
-        eventCardsRoot.render([], 'event', getEventCardProps);
+        eventCardsRoot.render([], getEventCardProps);
         return;
     }
 
@@ -232,8 +232,8 @@ function renderEventCards(events) {
         maxPriority > 0 ? events.find((event) => event.priority === maxPriority) : null;
 
     // Cierra sobre featuredEvent (se recalcula en cada llamada) para poder
-    // seguir marcando la card destacada con event-card--featured sin que
-    // SummaryCard/SummaryCardGrid necesiten saber qué es un "evento
+    // seguir marcando la card destacada con card--featured sin que
+    // Card/SummaryCardGrid necesiten saber qué es un "evento
     // destacado" — es la misma clase que ya existía, solo se añade al
     // animClassName que ya se calcula fuera del componente.
     function getEventCardProps(event, index) {
@@ -244,21 +244,25 @@ function renderEventCards(events) {
 
         return {
             imageUrl: event.image_url,
-            badgeText: event.theme || 'Fiesta',
-            name: I18n.tField(event.title),
-            metaLine,
-            dateLine: formatEventDate(event.starts_at),
-            priceLabel: I18n.tField(event.price_label) || '',
-            ctaLabel: I18n.t('nights.view_event_cta'),
-            ctaHref: event.ticket_url,
-            onCtaClick: () =>
-                trackEvent('event_ticket_click', {
-                    eventId: event.id,
-                    eventTitle: I18n.tField(event.title),
-                    partnerId: event.partner?.id,
-                    ticketUrl: event.ticket_url,
-                }),
-            animClassName: event === featuredEvent ? `${anim} event-card--featured` : anim,
+            imageAlt: I18n.tField(event.title),
+            badge: event.theme || 'Fiesta',
+            title: I18n.tField(event.title),
+            meta: metaLine,
+            date: formatEventDate(event.starts_at),
+            price: I18n.tField(event.price_label) || '',
+            cta: {
+                kind: 'tickets',
+                label: I18n.t('nights.view_event_cta'),
+                href: event.ticket_url,
+                onClick: () =>
+                    trackEvent('event_ticket_click', {
+                        eventId: event.id,
+                        eventTitle: I18n.tField(event.title),
+                        partnerId: event.partner?.id,
+                        ticketUrl: event.ticket_url,
+                    }),
+            },
+            className: event === featuredEvent ? `${anim} card--featured` : anim,
         };
     }
 
@@ -266,7 +270,7 @@ function renderEventCards(events) {
     // useEffect tras cada render suyo (ver SummaryCardGrid.jsx) —
     // llamarlo aquí también corría antes de que React comprometiera
     // las tarjetas nuevas al DOM, dejándolas en opacity:0 para siempre.
-    eventCardsRoot.render(events, 'event', getEventCardProps);
+    eventCardsRoot.render(events, getEventCardProps);
 }
 
 // Vuelve a consultar Supabase con los filtros activos actuales y
@@ -276,16 +280,16 @@ async function applyFilters() {
     renderEventCards(events);
 }
 
-// Misma forma que .event-card real: imagen 4:3 + título + venue + fecha.
+// Misma forma que .card real: imagen 4:3 + título + venue + fecha.
 function renderEventsSkeleton(scroll) {
     Skeleton.render(scroll, 3, () => {
         const card = document.createElement('div');
-        card.className = 'event-card';
+        card.className = 'card';
         const imgWrap = document.createElement('div');
-        imgWrap.className = 'event-img-wrap';
+        imgWrap.className = 'card__media';
         imgWrap.appendChild(Skeleton.block('skeleton--fill'));
         const body = document.createElement('div');
-        body.className = 'event-body';
+        body.className = 'card__body';
         body.appendChild(Skeleton.block('skeleton--text skeleton--text-title'));
         body.appendChild(Skeleton.block('skeleton--text-sm'));
         body.appendChild(Skeleton.block('skeleton--text-sm'));
