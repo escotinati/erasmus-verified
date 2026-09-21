@@ -5,7 +5,7 @@
 //  mapPartners.js) — misma estructura, copiada campo a campo, sin
 //  rediseño.
 //
-//  Presentacional puro (sin fetch ni estado propio, como SummaryCard):
+//  Presentacional puro (sin fetch ni estado propio, como Card):
 //  cada grupo llega con `label`/`icon`/`color` YA resueltos —
 //  mapPartners.js (script clásico) los calcula con CATEGORY_META
 //  (map-helpers.js) y categoryLabel()/I18n antes de llamar a
@@ -15,12 +15,12 @@
 //  sanitizeUrl/I18n solo cruzan esa frontera vía las propiedades que
 //  sí se exponen explícitamente en window. Es la misma división de
 //  trabajo que getPartnerCardProps()/getEventCardProps() ya hacen
-//  para SummaryCard: la traducción de dominio vive en el script
+//  para Card: la traducción de dominio vive en el script
 //  clásico, el componente solo pinta.
 //
 //  Foto de partner (28px): sanea `image_url` con sanitizeUrl() (global,
 //  ver src/js/utils/sanitize.js) antes de usarla como src, igual que
-//  SummaryCard con imageUrl/ctaHref. Si no hay imagen válida, no se
+//  Card con imageUrl/cta.href. Si no hay imagen válida, no se
 //  renderiza la etiqueta <img> en absoluto — sin hueco ni icono de
 //  imagen rota, solo el nombre.
 // ─────────────────────────────────────────────────────────────

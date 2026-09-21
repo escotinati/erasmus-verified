@@ -377,8 +377,8 @@ function selectVisiblePartners(list) {
 }
 
 // Reconstruye exactamente lo que pintaba buildPartnerCard(), pero como
-// props de <SummaryCard variant="partner">: sanitizeUrl() de
-// imageUrl/ctaHref ahora vive dentro del propio componente.
+// props de <Card> (Card.jsx): sanitizeUrl() de imageUrl/cta.href
+// vive dentro del propio componente.
 function getPartnerCardProps(partner, index) {
     const categories = getHomeCategories();
     const catMeta = categories.find((c) => c.key === partner.category);
@@ -474,7 +474,7 @@ function renderPartnersSection(allPartnersForCity) {
 // Skeleton del grid de partners — se pinta ANTES de esperar a
 // Supabase (ver DOMContentLoaded), no dentro de selectCity: hoy esa
 // sección se queda completamente vacía (ni texto) mientras se espera
-// fetchPartnersByCity, sin ningún aviso. Misma forma que .partner-card
+// fetchPartnersByCity, sin ningún aviso. Misma forma que .card
 // real: imagen 4:3 + nombre + descripción.
 function renderPartnerGridSkeleton() {
     const grid = document.getElementById('partnerGrid');

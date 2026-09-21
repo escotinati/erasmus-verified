@@ -244,6 +244,14 @@ La idea es que TODAS las cards de la web sean miembros de la misma familia (`Car
 
 La cabecera de categoría (pastilla de activar/desactivar, o heading simple si la ciudad solo tiene una categoría con partners) + la lista de partners de esa categoría, en el aside de `ciudad.html`/`mapa.html`, ya no se construyen a mano con DOM imperativo (`buildGroupSection()`) — usan un componente React compartido. Es la **tercera isla de React** del proyecto (ver [Tarjetas de resumen](#tarjetas-de-resumen-summarycard) para la segunda) y la primera con foto de contenido real (miniatura de partner, 28px) en la propia fila, no solo en la tarjeta de resumen.
 
+### Reglas al tocar o ampliar la familia (salidas de la revisión final)
+
+- **El anillo de foco es un `box-shadow`** (`:focus-visible` global en `src/styles/typography.css`, `outline: none`). Cualquier `.card--*` **enfocable** (un `<a>`) que ponga `box-shadow: none` (en reposo o en `:hover`) lo anula y deja la card sin indicador de foco por teclado — pasó con `tile` en la fase 3a y se corrigió en la revisión. Si una card nueva es un enlace, restablece `:focus-visible { box-shadow: var(--shadow-focus) }` después de sus reglas de hover (mismo peso de selector, gana la última). Ya lo hacen `.card--tile` y `.card--photo`.
+- **Área táctil**: los CTA de texto (`info`, `link`) miden ~22–24px de alto; un `::after` invisible (`inset: -12px -8px`) amplía la zona pulsable a ≥44px sin cambiar el diseño. Un CTA de texto nuevo debe hacer lo mismo.
+- **Contraste conocido en Parties (no de la familia, de los tokens)**: con `?exp=parties`, el color primario/categoría sobre superficie da ~4.0:1 (fecha del evento, CTA `info`/`link`) y ~3.6:1 (etiqueta de categoría de las cards de ciudad) — por debajo de 4.5:1 para texto pequeño. Es el mismo color que ya usaban esos elementos antes de la migración; se arregla en los tokens del tema, no en `Card`. En Verified no hay ningún fallo.
+- **El anillo de foco global es de baja opacidad** (`rgba(…, 0.25)`, ~1.4:1 sobre la superficie): no llega a 3:1 (WCAG 1.4.11). También es anterior a la familia y afecta a toda la web.
+- **`prefers-reduced-motion`** solo acorta las transiciones a ~0 (regla global); el desplazamiento de hover (`translateY(-5px)`) sigue aplicándose, sin animar.
+
 ### Qué hace cada archivo
 
 | Archivo                             | Qué hace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -387,7 +395,6 @@ El **orden** de los `@import` en `styles.css` importa: es exactamente el orden e
 | `pages/ciudad.css`         | Layout de ciudad, mapa embebido, partners list                                                                                                                                                                        |
 | `pages/mapa.css`           | `.map-page-main`, `.map-canvas`, `.erasmus-pin__dot`, map-with-list                                                                                                                                                   |
 | `pages/servicios.css`      | `body.servicios-page` (gradiente), `.servicios-category`, `.services-grid--2col`                                                                                                                                      |
-| `pages/viajes.css`         | `.event-badge--partner`, `body.viajes-page .event-price`                                                                                                                                                              |
 | `pages/alojamiento.css`    | Estilos propios de `alojamiento.html`                                                                                                                                                                                 |
 | `responsive.css`           | Media queries globales que afectan a múltiples archivos                                                                                                                                                               |
 | `transitions.css`          | View Transitions entre páginas                                                                                                                                                                                        |
@@ -401,7 +408,7 @@ El panel de administración tiene su propio archivo separado, `src/css/admin.css
 Para añadir CSS exclusivo de una página sin contaminar el global, usar una clase en el `<body>`:
 
 - `servicios.html` → `<body class="servicios-page">` → reglas en `pages/servicios.css`
-- `viajes.html` → `<body class="viajes-page">` → reglas en `pages/viajes.css`
+- `viajes.html` → `<body class="viajes-page">` — hoy sin CSS propio (`pages/viajes.css` se eliminó en la revisión de la familia de cards: solo tenía dos reglas huérfanas de `.event-*`); si hace falta CSS exclusivo, se recrea ese archivo y su `@import` en `styles.css`
 - `ciudades-todas.html` → bloque `<style>` inline en el `<head>` (excepción deliberada: la mayoría de estilos de esa página son exclusivos suyos y no justifican clase de body — solo `.all-cities-hero` se comparte vía `pages/ciudades-todas.css`)
 
 ### Convenciones de componentes

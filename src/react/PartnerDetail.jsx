@@ -7,7 +7,7 @@
 //  siendo vanilla a propósito (focus trap, drag-to-close, <dialog>
 //  nativo — ver el comentario de cabecera de ese archivo).
 //
-//  Presentacional puro (sin fetch ni estado propio, como SummaryCard/
+//  Presentacional puro (sin fetch ni estado propio, como Card/
 //  PartnerCategoryList): partner.description y cada link.label llegan
 //  YA traducidos — de hecho fetchPartnersByCity() (partnersService.js)
 //  ya los resuelve con I18n.tField() antes de que este componente los
@@ -24,7 +24,7 @@
 //  es válida, ese link no se renderiza — nunca un <a> muerto.
 //
 //  No llama a trackEvent(): delega en onLinkClick(link, safeUrl) y
-//  onDirectionsClick(), igual que SummaryCard delega onCtaClick — el
+//  onDirectionsClick(), igual que Card delega cta.onClick — el
 //  tracking se queda en mapPartners.js.
 //
 //  Sin `id` en los links: fetchPartnersByCity() no incluye ese campo

@@ -839,7 +839,7 @@ dialog.sheet.sheet--visible::backdrop {
    Sustituye a los textos "Cargando…" y a los contenedores vacíos
    mientras se espera Supabase — src/js/utils/skeleton.js genera los
    nodos, siempre dentro de las mismas clases CSS reales del contenido
-   final (accordion-card, card, city-card…) para que el layout
+   final (accordion-card, card…) para que el layout
    no salte al llegar los datos. Un único primitivo (.skeleton) para
    todas las páginas — nada de un sistema de shimmer copiado por
    archivo. Timing con los tokens --anim-* ya existentes
@@ -872,7 +872,7 @@ dialog.sheet.sheet--visible::backdrop {
 }
 
 /* Relleno de imagen dentro de un contenedor position:relative
-   (accordion-card, city-card, card__media) — mismo patrón
+   (accordion-card, card__media) — mismo patrón
    que el <img>/.card-img-placeholder real que sustituye. */
 .skeleton--fill {
     position: absolute;
