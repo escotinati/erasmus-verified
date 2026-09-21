@@ -364,9 +364,8 @@
    Layout "service" (Card layout="service") — servicios verificados
    (ServiceCards): icono en cuadro + título + "destacado · descripción"
    + CTA .btn-primary-pill (kind "offer").
-   NOTA: las 3 cards del home (index.html) siguen usando el .service-card
-   legacy de components.css hasta que se decida a dónde llevan sus enlaces
-   (hoy href="#") — no borrar esas reglas todavía.
+   Usado por servicios.html, las escapadas de ciudad.js y las 3 cards del
+   home (data-services-grid="home", CTA "link" a una página interna).
    ═══════════════════════════════════════════════════════════ */
 
 .card--service {
@@ -573,4 +572,21 @@
 .card--photo-reveal:hover .card__photo {
     filter: grayscale(0%) brightness(0.85);
     transform: none;
+}
+
+/* CTA kind "link" — enlace de texto + chevron a una página interna
+   (antes .service-link en components.css). */
+.card-cta--link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    transition: gap 0.2s;
+}
+
+.card--service:hover .card-cta--link {
+    gap: 14px;
 }

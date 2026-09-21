@@ -9,7 +9,9 @@
 //
 //    media/avatar imageUrl (+ imageAlt) · monogram · badge
 //    body         title · meta (+ metaIcon) · date · price · description
-//    ctas         [{ kind, label, href?, onClick? }]  (o `cta` suelto)
+//    ctas         [{ kind, label, href? | to?, onClick? }]  (o `cta` suelto)
+//                 `href` = externo (http/https, pestaña nueva); `to` = interno
+//                 (mismo origen, misma pestaña)
 //    href / rel   (solo layout 'tile') la card ENTERA es el enlace
 //    icon / highlight  (solo layout 'service') icono Material Symbols y
 //                 texto en negrita que abre la descripción ("25€ · …")
@@ -67,9 +69,11 @@ const CTA_KINDS = {
     details: { icon: null },
     // Ver oferta / abrir cuenta: reutiliza el botón global .btn-primary-pill.
     offer: { icon: null, extraClass: 'btn-primary-pill' },
+    // Enlace de texto con chevron a una página INTERNA (prop `to`, misma pestaña).
+    link: { icon: 'chevron_right' },
 };
 
-function CardCta({ kind = 'info', label, href, onClick }) {
+function CardCta({ kind = 'info', label, href, to, onClick }) {
     const { icon, extraClass } = CTA_KINDS[kind] || CTA_KINDS.info;
     const className = `card-cta card-cta--${kind}${extraClass ? ' ' + extraClass : ''}`;
     const content = (
@@ -81,11 +85,24 @@ function CardCta({ kind = 'info', label, href, onClick }) {
             ) : null}
             <span>{label}</span>
             {icon && kind !== 'directions' ? (
-                <span className="material-symbols-outlined">{icon}</span>
+                <>
+                    {/* Espacio real entre etiqueta e icono: son items flex (sin
+                        efecto visual), pero el nombre accesible no sale pegado. */}{' '}
+                    <span className="material-symbols-outlined">{icon}</span>
+                </>
             ) : null}
         </>
     );
 
+    if (to) {
+        const safeTo = safeInternalHref(to);
+        if (!safeTo) return null;
+        return (
+            <a className={className} href={safeTo} onClick={onClick}>
+                {content}
+            </a>
+        );
+    }
     if (href) {
         const safeHref = window.sanitizeUrl(href);
         if (!safeHref) return null;
