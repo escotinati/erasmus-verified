@@ -227,59 +227,7 @@
                         recuerdos. Socios verificados para todo lo que necesites al llegar.
                     </p>
                 </div>
-                <div class="services-grid">
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <span class="material-symbols-outlined">home</span>
-                        </div>
-                        <h3 class="service-name" data-i18n="home.service_housing_title">
-                            Alojamiento verificado
-                        </h3>
-                        <p class="service-desc" data-i18n="home.service_housing_desc">
-                            Evita las estafas. Ofrecemos una lista curada de apartamentos y casas
-                            compartidas con contratos digitales y verificación de identidad.
-                        </p>
-                        <a href="#" class="service-link"
-                            ><span data-i18n="home.service_housing_cta">Explorar anuncios</span>
-                            <span class="material-symbols-outlined">chevron_right</span></a
-                        >
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <span class="material-symbols-outlined">shield</span>
-                        </div>
-                        <h3 class="service-name" data-i18n="home.service_insurance_title">
-                            Seguro de intercambio
-                        </h3>
-                        <p class="service-desc" data-i18n="home.service_insurance_desc">
-                            Seguro de salud y viaje integral diseñado para estudiantes
-                            internacionales. Totalmente compatible con los requisitos
-                            universitarios.
-                        </p>
-                        <a href="#" class="service-link"
-                            ><span data-i18n="home.service_insurance_cta"
-                                >Solicitar presupuesto</span
-                            >
-                            <span class="material-symbols-outlined">chevron_right</span></a
-                        >
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <span class="material-symbols-outlined">language</span>
-                        </div>
-                        <h3 class="service-name" data-i18n="home.service_sim_title">
-                            SIM local y banca
-                        </h3>
-                        <p class="service-desc" data-i18n="home.service_sim_desc">
-                            Consigue tu número europeo y cuenta bancaria antes de aterrizar. Sin
-                            papeleos, todo digital y sencillo.
-                        </p>
-                        <a href="#" class="service-link"
-                            ><span data-i18n="home.service_sim_cta">Pedir ahora</span>
-                            <span class="material-symbols-outlined">chevron_right</span></a
-                        >
-                    </div>
-                </div>
+                <div class="services-grid" data-services-grid="home" data-no-animate></div>
             </section>
 
             <!-- ── COMMUNITY CTA ─────────────────────────────────────── -->
@@ -349,6 +297,7 @@
         <!-- ── FOOTER (React, rama react/menu) — ver src/react/Footer.jsx ── -->
         <div id="footer-root"></div>
         <script type="module" src="/src/react/mount-footer.jsx"></script>
+        <script type="module" src="/src/react/mount-service-cards.jsx"></script>
         <script type="module" src="/src/react/mount-collab-grid.jsx"></script>
 
         <!-- ── APP BOTTOM NAV (React) — ver src/react/AppShell.jsx ── -->

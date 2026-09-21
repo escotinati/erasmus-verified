@@ -94,4 +94,41 @@ export const SERVICE_SETS = {
             ctaFallback: 'Puntos de venta',
         },
     ],
+    // Cards del home (index.html). `nameKey`: el título también se traduce (a
+    // diferencia de los servicios de servicios.html, cuyo nombre es de marca).
+    // `to`: enlace INTERNO. Sin `to` no hay CTA — la card de seguro no tiene
+    // destino todavía (antes era un href="#" muerto): añadir `to` + ctaKey/
+    // ctaFallback cuando exista página o proveedor.
+    home: [
+        {
+            icon: 'home',
+            nameKey: 'home.service_housing_title',
+            nameFallback: 'Alojamiento verificado',
+            descKey: 'home.service_housing_desc',
+            descFallback:
+                'Evita las estafas. Ofrecemos una lista curada de apartamentos y casas compartidas con contratos digitales y verificación de identidad.',
+            ctaKey: 'home.service_housing_cta',
+            ctaFallback: 'Explorar anuncios',
+            to: 'alojamiento.html',
+        },
+        {
+            icon: 'shield',
+            nameKey: 'home.service_insurance_title',
+            nameFallback: 'Seguro de intercambio',
+            descKey: 'home.service_insurance_desc',
+            descFallback:
+                'Seguro de salud y viaje integral diseñado para estudiantes internacionales. Totalmente compatible con los requisitos universitarios.',
+        },
+        {
+            icon: 'language',
+            nameKey: 'home.service_sim_title',
+            nameFallback: 'SIM local y banca',
+            descKey: 'home.service_sim_desc',
+            descFallback:
+                'Consigue tu número europeo y cuenta bancaria antes de aterrizar. Sin papeleos, todo digital y sencillo.',
+            ctaKey: 'home.service_sim_cta',
+            ctaFallback: 'Pedir ahora',
+            to: 'servicios.html',
+        },
+    ],
 };
