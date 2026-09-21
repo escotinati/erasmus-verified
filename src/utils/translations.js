@@ -17,6 +17,7 @@ window.I18n.translations = {
         nav: {
             services: 'Servicios',
             services_short: 'Serv.',
+            back_to_top: 'Volver arriba',
             accommodation: 'Alojamiento',
             trips: 'Viajes',
             parties: '🎉 Fiestas ↗',
@@ -319,6 +320,7 @@ window.I18n.translations = {
         nav: {
             services: 'Services',
             services_short: 'Serv.',
+            back_to_top: 'Back to top',
             accommodation: 'Accommodation',
             trips: 'Trips',
             parties: '🎉 Parties ↗',

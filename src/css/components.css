@@ -1250,3 +1250,53 @@ dialog.sheet.sheet--visible::backdrop {
         background: var(--surface-container-low);
     }
 }
+
+/* ── Botón "volver arriba" (BackToTop.jsx) ───────────────────── */
+.back-to-top {
+    position: fixed;
+    right: var(--space-4, 16px);
+    /* Móvil: por encima del bottom-nav; en escritorio (sin bottom-nav) se ajusta abajo */
+    bottom: calc(var(--nav-bottom-total) + 16px);
+    z-index: 490; /* justo por debajo del bottom-nav (500) */
+    width: var(--tap-min);
+    height: var(--tap-min);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--on-primary, #fff);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition:
+        opacity var(--duration-base, 200ms) var(--ease-out, ease-out),
+        transform var(--duration-base, 200ms) var(--ease-out, ease-out);
+}
+
+.back-to-top--visible {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+.back-to-top:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+}
+
+@media (min-width: 900px) {
+    .back-to-top {
+        bottom: 24px;
+        right: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .back-to-top {
+        transition: none;
+    }
+}

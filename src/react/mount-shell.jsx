@@ -6,8 +6,14 @@
 
 import { createRoot } from 'react-dom/client';
 import AppShell from './AppShell.jsx';
+import BackToTop from './BackToTop.jsx';
 
 const root = document.getElementById('shell-root');
 if (root) {
-    createRoot(root).render(<AppShell />);
+    createRoot(root).render(
+        <>
+            <AppShell />
+            <BackToTop />
+        </>,
+    );
 }
