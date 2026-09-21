@@ -92,7 +92,7 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
     // este mismo script clásico (map-helpers.js) — no vive en window,
     // así que un módulo ES no puede leerlo como identificador suelto;
     // esta traducción de dominio se queda aquí, igual que
-    // getPartnerCardProps()/getEventCardProps() hacen para SummaryCard.
+    // getPartnerCardProps()/getEventCardProps() hacen para Card.
     // Se calcula una sola vez: category/label/icon/color no cambian
     // durante la vida de este mountPartnersList(), solo qué categorías
     // están activas (state.activeCategories, ver más abajo).

@@ -8,7 +8,7 @@
 //  esta rama.
 //
 //  Presentacional puro (sin fetch ni estado propio, como
-//  PartnerCategoryList/SummaryCard): cityPartners.js decide
+//  PartnerCategoryList/Card): cityPartners.js decide
 //  collapsedCategories/focusCategory y vuelve a llamar a .render() en
 //  cada cambio — este componente solo pinta ese estado.
 //

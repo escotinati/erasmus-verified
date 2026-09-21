@@ -29,7 +29,7 @@
 }
 /* :not(:hover) evita que este reset de transform gane por orden de
    cascada al :hover propio del componente (mismo empate de
-   especificidad que .card-hoverable:hover o .city-card:hover) una vez
+   especificidad que el :hover de .card / .card--photo, ver card.css) una vez
    que la tarjeta ya se reveló. */
 .anim-fade-up.is-visible:not(:hover) {
     transform: translateY(0);
@@ -91,32 +91,6 @@
 }
 .anim-slam.is-visible:not(:hover) {
     transform: translateY(0) rotate(0) scale(1);
-}
-
-/* ── Hover en tarjetas ────────────────────────────────────────
-   Solo para componentes sin hover propio ya afinado (card).
-   .city-card/.city-item y .accordion-card ya tienen su propia
-   animación de hover (elevación o ensanchamiento) y no llevan esta
-   clase para evitar dos sistemas de hover compitiendo por
-   transform/box-shadow en la misma cascada. */
-
-.card-hoverable {
-    transition:
-        transform var(--anim-duration-fast) var(--anim-easing-standard),
-        box-shadow var(--anim-duration-fast) var(--anim-easing-standard);
-    will-change: transform;
-}
-.card-hoverable:hover {
-    transform: translateY(calc(var(--anim-translate-sm) * -0.6));
-    box-shadow: var(--anim-shadow-hover);
-}
-
-/* Glow exclusivo de theme-parties: además del shadow normal, un
-   anillo sutil en el magenta de marca. */
-.theme-parties .card-hoverable:hover {
-    box-shadow:
-        var(--anim-shadow-hover),
-        0 0 0 1px rgba(225, 20, 123, 0.15);
 }
 
 /* ── Animación de entrada de página (hero / header) ──────────

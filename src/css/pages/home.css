@@ -667,7 +667,7 @@
        shorthand, quien gane el empate sustituye la propiedad entera, no se
        fusiona con las demás. Sin este empujón de especificidad ganaba
        .anim-fade-up y flex-grow no se animaba (salto brusco sin transición).
-       Sin lift en hover (se quitó .card-hoverable del markup, index.js): la
+       Sin lift en hover (el acordeón no lleva hover de card): la
        card solo cambia de ancho, no se eleva. */
     .accordion-grid .accordion-card {
         /* flex-grow: misma curva que la web de ejemplo, duración recortada
@@ -690,7 +690,7 @@
        .anim-fade-up.is-visible:not(:hover) (animations.css) y la card
        "cae" al valor base de .anim-fade-up (translateY(var(--anim-translate-md)))
        durante el hover, en vez de quedarse fija — antes lo evitaba de rebote
-       el :hover de .card-hoverable, que ya no lleva esta card. */
+       el :hover genérico de card, que esta card no lleva. */
     .accordion-grid .accordion-card:hover {
         transform: translateY(0);
     }

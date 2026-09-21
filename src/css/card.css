@@ -332,6 +332,12 @@
     transform: translateY(-2px);
 }
 
+/* El anillo de foco global (:focus-visible en typography.css) es un box-shadow;
+   .card--tile { box-shadow: none } y :hover lo anularían — se restablece. */
+.card--tile:focus-visible {
+    box-shadow: var(--shadow-focus);
+}
+
 .card--tile .card__title {
     /* Mobile-first: valor móvil por defecto, revierte en --bp-md */
     font-size: 18px;
@@ -556,6 +562,10 @@
     transform: scale(1);
 }
 
+.card.card--photo:focus-visible {
+    box-shadow: var(--shadow-focus);
+}
+
 /* hover="reveal" (directorio ciudades-todas): foto en blanco y negro en
    reposo que pasa a color al hover — más propio de elegir entre muchas
    cards que el zoom+oscurecido de una sola protagonista. El color ya lo da
@@ -589,4 +599,18 @@
 
 .card--service:hover .card-cta--link {
     gap: 14px;
+}
+
+/* Área táctil ≥44px en los CTA de texto (info ≈22px, link ≈24px de alto): un
+   pseudo-elemento invisible amplía la zona pulsable sin cambiar el diseño. */
+.card-cta--info,
+.card-cta--link {
+    position: relative;
+}
+
+.card-cta--info::after,
+.card-cta--link::after {
+    content: '';
+    position: absolute;
+    inset: -12px -8px;
 }
