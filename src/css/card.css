@@ -302,3 +302,60 @@
     background: var(--primary-hover, var(--primary));
     border-color: var(--primary-hover, var(--primary));
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Layout "tile" (Card layout="tile") — colaboradores (CollabGrid)
+   Toda la card es un <a>: nombre + descripción centrados, sin CTA.
+   ═══════════════════════════════════════════════════════════ */
+
+.card--tile {
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    /* Mobile-first: valor móvil por defecto, revierte en --bp-md */
+    padding: 24px 16px;
+    overflow: visible;
+    background: var(--surface-container-low);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+    transition:
+        background 0.15s,
+        border-color 0.15s,
+        transform 0.15s;
+}
+
+.card--tile:hover {
+    background: var(--primary-fixed);
+    border-color: var(--primary);
+    box-shadow: none;
+    transform: translateY(-2px);
+}
+
+.card--tile .card__title {
+    /* Mobile-first: valor móvil por defecto, revierte en --bp-md */
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--on-surface-variant);
+    transition: color 0.15s;
+}
+
+.card--tile:hover .card__title {
+    color: var(--primary);
+}
+
+.card--tile .card__desc {
+    margin-top: 0;
+}
+
+@media (min-width: 900px) {
+    /* --bp-md */
+    .card--tile {
+        padding: 32px 20px;
+    }
+
+    .card--tile .card__title {
+        font-size: 22px;
+    }
+}

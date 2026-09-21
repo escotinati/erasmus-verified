@@ -10,12 +10,15 @@
 //    media/avatar imageUrl (+ imageAlt) · monogram · badge
 //    body         title · meta (+ metaIcon) · date · price · description
 //    ctas         [{ kind, label, href?, onClick? }]  (o `cta` suelto)
+//    href / rel   (solo layout 'tile') la card ENTERA es el enlace
 //
 //  LAYOUTS (prop `layout`):
 //    'stacked'  (defecto) imagen 4:3 arriba + cuerpo. Home.
 //    'compact'  avatar de 44px junto al título, con borde, sin imagen a
 //               sangre. Lista de partners de ciudad.html. `accent`
 //               (color CSS) tiñe el badge, el monograma y el hover.
+//    'tile'     nombre + descripción centrados; toda la card es un <a>
+//               (`href`, `rel`), sin CTA. Colaboradores (CollabGrid).
 //
 //  CTA_KINDS es el ÚNICO sitio donde se define qué es cada tipo de
 //  botón (icono). Su estilo vive en card.css (.card-cta--<kind>). Un
@@ -109,6 +112,8 @@ export default function Card({
     description,
     cta,
     ctas,
+    href,
+    rel,
     className,
 }) {
     const safeImageUrl = window.sanitizeUrl(imageUrl);
@@ -123,6 +128,27 @@ export default function Card({
     ) : null;
     const descEl = description ? <p className="card__desc">{description}</p> : null;
     const style = accent ? { '--cat-color': accent } : undefined;
+
+    if (layout === 'tile') {
+        const safeHref = window.sanitizeUrl(href);
+        // Sin URL válida no hay a dónde llevar: no se renderiza la card
+        // (mismo criterio que "ningún <a> muerto" del resto del proyecto).
+        if (!safeHref) return null;
+        return (
+            <a
+                className={`card card--tile ${className || ''}`.trim()}
+                href={safeHref}
+                target="_blank"
+                rel={rel || 'noopener noreferrer'}
+            >
+                <span className="card__title">{title}</span>
+                {/* Espacio real entre nombre y descripción: los dos son items
+                    flex (sin efecto visual), pero el nombre accesible del
+                    enlace y el texto copiado no salen pegados. */}{' '}
+                {description ? <span className="card__desc">{description}</span> : null}
+            </a>
+        );
+    }
 
     if (layout === 'compact') {
         return (
