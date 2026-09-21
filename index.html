@@ -201,52 +201,7 @@
                     </p>
                 </div>
 
-                <div class="collab-grid">
-                    <a
-                        href="https://www.uniplaces.com"
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        class="collab-card"
-                    >
-                        <span class="collab-name">Uniplaces</span>
-                        <span class="collab-desc" data-i18n="home.collab_uniplaces_desc"
-                            >Pisos para estudiantes en toda Europa</span
-                        >
-                    </a>
-                    <a
-                        href="https://www.spotahome.com"
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        class="collab-card"
-                    >
-                        <span class="collab-name">Spotahome</span>
-                        <span class="collab-desc" data-i18n="home.collab_spotahome_desc"
-                            >Alquiler sin visita presencial</span
-                        >
-                    </a>
-                    <a
-                        href="https://housinganywhere.com"
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        class="collab-card"
-                    >
-                        <span class="collab-name">HousingAnywhere</span>
-                        <span class="collab-desc" data-i18n="home.collab_housinganywhere_desc"
-                            >Alojamiento flexible para Erasmus</span
-                        >
-                    </a>
-                    <a
-                        href="https://badi.com"
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        class="collab-card"
-                    >
-                        <span class="collab-name">Badi</span>
-                        <span class="collab-desc" data-i18n="home.collab_badi_desc"
-                            >Comparte piso con estudiantes</span
-                        >
-                    </a>
-                </div>
+                <div class="collab-grid" data-collab-grid="housing"></div>
 
                 <div class="alojamiento-section-footer">
                     <a href="alojamiento.html" class="section-link">
@@ -394,6 +349,7 @@
         <!-- ── FOOTER (React, rama react/menu) — ver src/react/Footer.jsx ── -->
         <div id="footer-root"></div>
         <script type="module" src="/src/react/mount-footer.jsx"></script>
+        <script type="module" src="/src/react/mount-collab-grid.jsx"></script>
 
         <!-- ── APP BOTTOM NAV (React) — ver src/react/AppShell.jsx ── -->
         <div id="shell-root"></div>
