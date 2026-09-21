@@ -11,6 +11,8 @@
 //    body         title · meta (+ metaIcon) · date · price · description
 //    ctas         [{ kind, label, href?, onClick? }]  (o `cta` suelto)
 //    href / rel   (solo layout 'tile') la card ENTERA es el enlace
+//    icon / highlight  (solo layout 'service') icono Material Symbols y
+//                 texto en negrita que abre la descripción ("25€ · …")
 //
 //  LAYOUTS (prop `layout`):
 //    'stacked'  (defecto) imagen 4:3 arriba + cuerpo. Home.
@@ -19,6 +21,8 @@
 //               (color CSS) tiñe el badge, el monograma y el hover.
 //    'tile'     nombre + descripción centrados; toda la card es un <a>
 //               (`href`, `rel`), sin CTA. Colaboradores (CollabGrid).
+//    'service'  icono en cuadro + título + "destacado · descripción" +
+//               CTA. Servicios verificados (ServiceCards).
 //
 //  CTA_KINDS es el ÚNICO sitio donde se define qué es cada tipo de
 //  botón (icono). Su estilo vive en card.css (.card-cta--<kind>). Un
@@ -39,11 +43,13 @@ const CTA_KINDS = {
     directions: { icon: 'directions' },
     // Ver detalle: botón primario que abre el Sheet (sin href, con onClick).
     details: { icon: null },
+    // Ver oferta / abrir cuenta: reutiliza el botón global .btn-primary-pill.
+    offer: { icon: null, extraClass: 'btn-primary-pill' },
 };
 
 function CardCta({ kind = 'info', label, href, onClick }) {
-    const { icon } = CTA_KINDS[kind] || CTA_KINDS.info;
-    const className = `card-cta card-cta--${kind}`;
+    const { icon, extraClass } = CTA_KINDS[kind] || CTA_KINDS.info;
+    const className = `card-cta card-cta--${kind}${extraClass ? ' ' + extraClass : ''}`;
     const content = (
         <>
             {icon && kind === 'directions' ? (
@@ -103,6 +109,8 @@ export default function Card({
     imageUrl,
     imageAlt = '',
     monogram,
+    icon,
+    highlight,
     badge,
     title,
     meta,
@@ -128,6 +136,27 @@ export default function Card({
     ) : null;
     const descEl = description ? <p className="card__desc">{description}</p> : null;
     const style = accent ? { '--cat-color': accent } : undefined;
+
+    if (layout === 'service') {
+        return (
+            <div className={`card card--service ${className || ''}`.trim()}>
+                <div className="card__icon">
+                    <span className="material-symbols-outlined">{icon}</span>
+                </div>
+                <h3 className="card__title">{title}</h3>
+                <p className="card__desc">
+                    {highlight ? (
+                        <>
+                            <strong>{highlight}</strong>
+                            {' · '}
+                        </>
+                    ) : null}
+                    {description}
+                </p>
+                {footer}
+            </div>
+        );
+    }
 
     if (layout === 'tile') {
         const safeHref = window.sanitizeUrl(href);
