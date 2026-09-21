@@ -100,7 +100,6 @@
     color: var(--color-text);
 }
 
-[data-brand='parties'] .city-card,
 [data-brand='parties'] .card {
     background-color: var(--color-surface);
     border-color: var(--color-border);

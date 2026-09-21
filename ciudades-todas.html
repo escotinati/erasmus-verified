@@ -117,43 +117,9 @@
                 border-bottom: 1px solid var(--outline-variant);
             }
 
-            /* Las cards en sí (.city-card, foto + bandera + nombre + país)
-               son el mismo componente que usa ciudades.html — toda su
-               regla vive en styles.css (a.country-card, a.city-card), no
-               se redefine aquí salvo el hover de la imagen (abajo): en
-               vez del zoom+oscurecido de siempre, foto en blanco y negro
-               en reposo que pasa a color al hacer hover — más propio de
-               un directorio (elegir entre muchas) que del efecto original
-               (pensado para una sola card protagonista). Selector
-               scopeado a .city-items-grid para no tocar ciudades.html,
-               que sigue con el hover de siempre. */
-            .city-items-grid .card-img {
-                filter: grayscale(100%) brightness(0.85);
-                transition: filter var(--anim-duration-base) var(--anim-easing-standard);
-            }
-
-            .city-items-grid .city-card:hover .card-img {
-                filter: grayscale(0%) brightness(0.85);
-                transform: none;
-            }
-
-            /* .anim-fade-up.is-visible:not(:hover) (animations.css) resetea
-               transform a translateY(0) salvo en :hover, para no competir
-               con componentes que sí animan su propio transform al hover
-               (card-hoverable, accordion-card). .city-card no es uno de
-               esos casos — su hover vive solo en .card-img (arriba) — así
-               que sin esta regla la card "cae" de vuelta a
-               translateY(var(--anim-translate-md)) al pasar el ratón. */
-            .city-items-grid .city-card.anim-fade-up:hover {
-                transform: translateY(0);
-            }
-
-            /* .city-card:hover cambia border-color a --primary
-               (styles.css) — en este directorio el color ya lo da la foto
-               a color, así que el borde se mantiene sin cambios. */
-            .city-items-grid .city-card:hover {
-                border-color: var(--outline-variant);
-            }
+            /* Las cards en sí son <Card layout="photo" hover="reveal"> (card.css,
+               pintadas por CityCards.jsx) — foto en blanco y negro en reposo que
+               pasa a color al hover, propio de un directorio. */
 
             /* Solo el grid que las contiene es propio de esta página:
                auto-fill en vez de las 4 columnas fijas de ciudades.html,
@@ -282,6 +248,7 @@
         <!-- FOOTER (React, rama react/menu) — ver src/react/Footer.jsx -->
         <div id="footer-root"></div>
         <script type="module" src="/src/react/mount-footer.jsx"></script>
+        <script type="module" src="/src/react/mount-city-cards.jsx"></script>
 
         <!-- Mobile-nav overlay: ahora vive en src/react/Nav.jsx (rama react/menu) -->
 
@@ -334,7 +301,7 @@
                     itemsGrid.className = 'city-items-grid';
                     Skeleton.render(itemsGrid, 8, () => {
                         const card = document.createElement('a');
-                        card.className = 'city-card';
+                        card.className = 'card card--photo';
                         card.appendChild(Skeleton.block('skeleton--fill'));
                         return card;
                     });
@@ -373,10 +340,17 @@
                     return groups;
                 }
 
+                let cityRoots = [];
+
                 function renderGroups(cities) {
                     const section = document.getElementById('citiesSection');
                     const noResult = document.getElementById('noResults');
                     // Eliminar grupos anteriores
+                    // Los grupos se regeneran por completo en cada tecleo: primero se
+                    // desmontan los roots de React anteriores (root efímero, ver
+                    // mount-city-cards.jsx) y solo después se quitan sus contenedores.
+                    cityRoots.forEach((r) => r.unmount());
+                    cityRoots = [];
                     section.querySelectorAll('.letter-group').forEach((el) => el.remove());
 
                     if (!cities.length) {
@@ -403,28 +377,21 @@
                         div.className = 'letter-group';
                         div.innerHTML = `
         <div class="letter-heading anim-fade-in">${escapeHtml(letter)}</div>
-        <div class="city-items-grid">
-          ${group
-              .map((city) => {
-                  const delayCls = `anim-delay-${(globalIndex++ % 8) + 1}`;
-                  const safeImageUrl = sanitizeUrl(city.image_url);
-                  return `
-            <a class="city-card anim-fade-up ${delayCls}" href="${city.url}">
-              ${
-                  safeImageUrl
-                      ? `<img class="card-img" src="${safeImageUrl}" alt="${escapeHtml(city.name)}" loading="lazy"/>`
-                      : `<div class="card-img-placeholder"></div>`
-              }
-              <div class="card-overlay"></div>
-              <div class="card-body">
-                <div class="card-name">${escapeHtml(city.name)}</div>
-                <span class="card-meta">${escapeHtml(city.country)}</span>
-              </div>
-            </a>`;
-              })
-              .join('')}
-        </div>`;
+        <div class="city-items-grid"></div>`;
                         section.insertBefore(div, noResult);
+                        cityRoots.push(
+                            window.mountCityCards(
+                                div.querySelector('.city-items-grid'),
+                                group.map((city) => ({
+                                    name: city.name,
+                                    meta: city.country,
+                                    to: city.url,
+                                    imageUrl: city.image_url,
+                                    delay: (globalIndex++ % 8) + 1,
+                                })),
+                                { hover: 'reveal' }
+                            )
+                        );
                     }
 
                     // Los grupos se regeneran por completo en cada tecleo del

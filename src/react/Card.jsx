@@ -13,6 +13,8 @@
 //    href / rel   (solo layout 'tile') la card ENTERA es el enlace
 //    icon / highlight  (solo layout 'service') icono Material Symbols y
 //                 texto en negrita que abre la descripción ("25€ · …")
+//    to / arrow / hover  (solo layout 'photo') enlace INTERNO, flecha de
+//                 esquina y tipo de hover ('zoom' | 'reveal')
 //
 //  LAYOUTS (prop `layout`):
 //    'stacked'  (defecto) imagen 4:3 arriba + cuerpo. Home.
@@ -23,6 +25,9 @@
 //               (`href`, `rel`), sin CTA. Colaboradores (CollabGrid).
 //    'service'  icono en cuadro + título + "destacado · descripción" +
 //               CTA. Servicios verificados (ServiceCards).
+//    'photo'    foto a sangre 3:4 con degradado; título + `badge` (píldora
+//               verde) o `meta` (texto) abajo; toda la card es un <a>
+//               INTERNO (`to`, misma pestaña). Ciudades (CityCards).
 //
 //  CTA_KINDS es el ÚNICO sitio donde se define qué es cada tipo de
 //  botón (icono). Su estilo vive en card.css (.card-cta--<kind>). Un
@@ -33,6 +38,23 @@
 //  traducido; imageUrl/cta.href se sanean aquí con sanitizeUrl()
 //  (global, src/js/utils/sanitize.js) antes de usarlos en src/href.
 // ─────────────────────────────────────────────────────────────
+
+// Enlace INTERNO (misma pestaña): sanitizeUrl() solo acepta http(s)
+// absoluto, así que aquí se valida que `to` resuelva al mismo origen y con
+// http(s) — bloquea javascript:/data:/otros orígenes — y se devuelve tal
+// cual (relativo), para que el enlace funcione igual que el <a href> de siempre.
+function safeInternalHref(to) {
+    if (!to) return '';
+    try {
+        const u = new URL(to, window.location.href);
+        const ok =
+            (u.protocol === 'http:' || u.protocol === 'https:') &&
+            u.origin === window.location.origin;
+        return ok ? to : '';
+    } catch (e) {
+        return '';
+    }
+}
 
 const CTA_KINDS = {
     // Más información: enlace de texto, se revela en hover en punteros finos.
@@ -111,6 +133,9 @@ export default function Card({
     monogram,
     icon,
     highlight,
+    to,
+    arrow,
+    hover = 'zoom',
     badge,
     title,
     meta,
@@ -136,6 +161,44 @@ export default function Card({
     ) : null;
     const descEl = description ? <p className="card__desc">{description}</p> : null;
     const style = accent ? { '--cat-color': accent } : undefined;
+
+    if (layout === 'photo') {
+        const safeTo = safeInternalHref(to);
+        // Sin destino válido no hay a dónde llevar: no se renderiza la card.
+        if (!safeTo) return null;
+        return (
+            <a
+                className={`card card--photo card--photo-${hover} ${className || ''}`.trim()}
+                href={safeTo}
+            >
+                {safeImageUrl ? (
+                    <img className="card__photo" src={safeImageUrl} alt={imageAlt} loading="lazy" />
+                ) : (
+                    <div className="card-img-placeholder"></div>
+                )}
+                <div className="card__overlay"></div>
+                {arrow ? (
+                    <div className="card__arrow" aria-hidden="true">
+                        <svg
+                            width="13"
+                            height="13"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                        >
+                            <path d="M7 17L17 7M17 7H7M17 7v10" />
+                        </svg>
+                    </div>
+                ) : null}
+                <div className="card__caption">
+                    <div className="card__title">{title}</div>
+                    {badge ? <span className="card__badge">{badge}</span> : null}
+                    {meta ? <span className="card__meta">{meta}</span> : null}
+                </div>
+            </a>
+        );
+    }
 
     if (layout === 'service') {
         return (
