@@ -326,32 +326,32 @@ async function buildContextualSections(cityId, ciudad) {
     </div>`;
 
     if (travelPartners.length > 0) {
-        const cards = travelPartners
-            .map(
-                (p, i) => `
-        <div class="service-card anim-fade-up anim-delay-${(i % 8) + 1}">
-          <div class="service-icon"><span class="material-symbols-outlined">flight</span></div>
-          <h3 class="service-name">${escapeHtml(p.name)}</h3>
-          <p class="service-desc">${escapeHtml(I18n.tField(p.description))}</p>
-          ${
-              p.links.length > 0
-                  ? `<a href="${sanitizeUrl(p.links[0].url, '#')}" target="_blank" rel="noopener noreferrer" class="btn-primary-pill">${I18n.t('city.view_trip_cta')}</a>`
-                  : ''
-          }
-        </div>`
-            )
-            .join('');
-
+        // Las cards las pinta React (ServiceCards.jsx, mount-service-cards.jsx)
+        // sobre este contenedor, DESPUÉS de insertar el HTML — ver más abajo.
         html += `
     <div style="margin-top:32px">
       <span class="eyebrow eyebrow--primary">${I18n.t('nav.trips')}</span>
       <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px">${I18n.t('city.escapadas_prefix')} ${escapeHtml(ciudad)}</h2>
-      <div class="services-grid" style="margin-top:16px">${cards}</div>
+      <div class="services-grid" id="city-travel-grid" style="margin-top:16px"></div>
     </div>`;
     }
 
     const extra = document.getElementById('city-extra');
     if (extra) extra.innerHTML = html;
+
+    const travelGrid = document.getElementById('city-travel-grid');
+    if (travelGrid && window.mountServiceCards) {
+        window.mountServiceCards(
+            travelGrid,
+            travelPartners.map((p) => ({
+                icon: 'flight',
+                name: p.name,
+                description: I18n.tField(p.description),
+                ctaLabel: I18n.t('city.view_trip_cta'),
+                ctaHref: p.links.length > 0 ? p.links[0].url : undefined,
+            }))
+        );
+    }
 
     if (window.initScrollReveal) window.initScrollReveal();
 }
