@@ -24,6 +24,8 @@
 //  control para algo que no hace falta controlar).
 // ─────────────────────────────────────────────────────────────
 
+import Card from './Card.jsx';
+
 const CAP = 6;
 
 function initials(name) {
@@ -36,87 +38,49 @@ function initials(name) {
         .toUpperCase();
 }
 
-// Sanea partner.image_url con sanitizeUrl() (global, sanitize.js) antes
-// de usarla como src — mismo criterio que PartnerCategoryList.jsx. Sin
-// imagen válida, monograma con el color de la categoría en vez de
-// hueco/icono roto (mismo patrón que .partners-banner-item-logo, home).
+// La card en sí es Card.jsx (layout "compact"): aquí solo se traduce un
+// partner a sus slots. Card sanea imageUrl con sanitizeUrl() y, sin imagen
+// válida, pinta el monograma con el color de la categoría (mismo patrón
+// que .partners-banner-item-logo, home). distanceMeters solo existe si el
+// usuario dio permiso de ubicación (ver cityPartners.js,
+// getUserLocation()) — sin permiso/soporte, ningún partner lo trae y la
+// línea no se renderiza, nunca un "-- m" a medias. Sin coordenadas, no hay
+// a dónde llevar — el CTA "Cómo llegar" no se renderiza en vez de apuntar
+// a ningún sitio (mismo criterio que "ningún <a> muerto" del proyecto).
 function PartnerCard({ partner, group, onSelectPartner, onDirectionsClick }) {
-    const safeImageUrl = window.sanitizeUrl(partner.image_url);
     const hasCoords = partner.lat != null && partner.lng != null;
-    const directionsHref = hasCoords
-        ? `https://www.google.com/maps/dir/?api=1&destination=${partner.lat},${partner.lng}`
-        : null;
 
     return (
-        <article className="city-partners-card">
-            <div className="city-partners-card__top">
-                {safeImageUrl ? (
-                    <img
-                        className="city-partners-card__avatar"
-                        src={safeImageUrl}
-                        alt=""
-                        width="44"
-                        height="44"
-                    />
-                ) : (
-                    <div
-                        className="city-partners-card__avatar city-partners-card__avatar--monogram"
-                        style={{ '--cat-color': group.color }}
-                        aria-hidden="true"
-                    >
-                        {initials(partner.name)}
-                    </div>
-                )}
-                <div className="city-partners-card__heading">
-                    <div className="city-partners-card__name">{partner.name}</div>
-                    <span className="city-partners-card__cat" style={{ '--cat-color': group.color }}>
-                        {group.label}
-                    </span>
-                </div>
-            </div>
-
-            {/* distanceMeters solo existe si el usuario dio permiso de
-                ubicación (ver cityPartners.js, getUserLocation()) — sin
-                permiso/soporte, ningún partner lo trae y esta línea no
-                se renderiza, nunca un "-- m" a medias. */}
-            {partner.distanceMeters != null ? (
-                <span className="city-partners-card__distance">
-                    <span className="material-symbols-outlined" aria-hidden="true">
-                        near_me
-                    </span>
-                    {window.formatDistance(partner.distanceMeters)}
-                </span>
-            ) : null}
-
-            {partner.description ? <p className="city-partners-card__desc">{partner.description}</p> : null}
-
-            <div className="city-partners-card__actions">
-                {/* Sin coordenadas, no hay a dónde llevar — mismo criterio
-                    que "ningún <a> muerto" del resto del proyecto: el
-                    botón no se renderiza en vez de apuntar a ningún sitio. */}
-                {directionsHref ? (
-                    <a
-                        href={directionsHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="city-partners-btn"
-                        onClick={() => onDirectionsClick(partner)}
-                    >
-                        <span className="material-symbols-outlined" aria-hidden="true">
-                            directions
-                        </span>
-                        {I18n.t('map.directions')}
-                    </a>
-                ) : null}
-                <button
-                    type="button"
-                    className="city-partners-btn city-partners-btn--primary"
-                    onClick={(e) => onSelectPartner(partner.id, e.currentTarget)}
-                >
-                    {I18n.t('home.partners_cta_default')}
-                </button>
-            </div>
-        </article>
+        <Card
+            layout="compact"
+            accent={group.color}
+            imageUrl={partner.image_url}
+            monogram={initials(partner.name)}
+            title={partner.name}
+            badge={group.label}
+            meta={
+                partner.distanceMeters != null
+                    ? window.formatDistance(partner.distanceMeters)
+                    : undefined
+            }
+            metaIcon="near_me"
+            description={partner.description}
+            ctas={[
+                hasCoords
+                    ? {
+                          kind: 'directions',
+                          label: I18n.t('map.directions'),
+                          href: `https://www.google.com/maps/dir/?api=1&destination=${partner.lat},${partner.lng}`,
+                          onClick: () => onDirectionsClick(partner),
+                      }
+                    : null,
+                {
+                    kind: 'details',
+                    label: I18n.t('home.partners_cta_default'),
+                    onClick: (e) => onSelectPartner(partner.id, e.currentTarget),
+                },
+            ]}
+        />
     );
 }
 
@@ -133,13 +97,19 @@ export default function CityPartnerList({
     // Regla 4 (mapPartners.js): una sola categoría con partners → sin
     // control de plegar/desplegar, se muestra siempre entera.
     const singleCategory = groups.length === 1;
-    const visibleGroups = focusCategory ? groups.filter((g) => g.category === focusCategory) : groups;
+    const visibleGroups = focusCategory
+        ? groups.filter((g) => g.category === focusCategory)
+        : groups;
 
     return (
         <>
             {focusCategory ? (
                 <div className="city-partners-focus-bar">
-                    <button type="button" className="city-partners-focus-back" onClick={onExitFocus}>
+                    <button
+                        type="button"
+                        className="city-partners-focus-back"
+                        onClick={onExitFocus}
+                    >
                         <span className="material-symbols-outlined" aria-hidden="true">
                             arrow_back
                         </span>
@@ -150,7 +120,8 @@ export default function CityPartnerList({
 
             {visibleGroups.map((group) => {
                 const isFocused = group.category === focusCategory;
-                const collapsed = !singleCategory && !isFocused && collapsedCategories.has(group.category);
+                const collapsed =
+                    !singleCategory && !isFocused && collapsedCategories.has(group.category);
 
                 let visiblePartners;
                 if (collapsed) {
@@ -176,7 +147,9 @@ export default function CityPartnerList({
                                     <span className="material-symbols-outlined">{group.icon}</span>
                                 </span>
                                 <span className="city-partners-group__label">{group.label}</span>
-                                <span className="city-partners-group__count">{group.partners.length}</span>
+                                <span className="city-partners-group__count">
+                                    {group.partners.length}
+                                </span>
                             </h3>
                         ) : (
                             // <h3> envuelve al <button>, no lo sustituye —
@@ -193,9 +166,13 @@ export default function CityPartnerList({
                                     onClick={() => onToggleCollapse(group.category)}
                                 >
                                     <span className="city-partners-group__icon" aria-hidden="true">
-                                        <span className="material-symbols-outlined">{group.icon}</span>
+                                        <span className="material-symbols-outlined">
+                                            {group.icon}
+                                        </span>
                                     </span>
-                                    <span className="city-partners-group__label">{group.label}</span>
+                                    <span className="city-partners-group__label">
+                                        {group.label}
+                                    </span>
                                     <span className="city-partners-group__count">
                                         {group.partners.length}
                                     </span>
