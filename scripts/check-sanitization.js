@@ -157,6 +157,16 @@ const EXPLICIT_EXCEPTIONS = [
         contains: "container.style.height = endHeight + 'px';",
         reason: 'endHeight viene de container.scrollHeight (animateStepHeight(), misma función que startHeight arriba) — mismo motivo: medida numérica de layout, no dato externo.',
     },
+    {
+        file: 'src/js/login.js',
+        contains: 'window.location.href = href;',
+        reason: 'href viene de tab.href (initAuthSwitcherFade()) — la propiedad ya resuelta de un <a href="login.html"|"registro.html"> literal del propio HTML, no un dato de Supabase ni de la URL actual.',
+    },
+    {
+        file: 'src/js/registro.js',
+        contains: 'window.location.href = href;',
+        reason: 'href viene de tab.href (initAuthSwitcherFade()) — mismo motivo que la excepción de login.js: un <a href="login.html"|"registro.html"> literal del propio HTML.',
+    },
 ];
 
 function isExplicitlyExempted(relFile, lineText) {

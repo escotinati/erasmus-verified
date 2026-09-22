@@ -415,7 +415,40 @@ function initRegisterSteps() {
     });
 }
 
+// Duplicada a propósito de login.js — mismo criterio que
+// initPasswordToggle()/normalize(), sin ES Modules entre scripts
+// clásicos. Ver el comentario largo junto a la de login.js para el
+// porqué (animationend en vez de un setTimeout con la duración copiada
+// de la CSS, red de seguridad, por qué no view-transition-name).
+function initAuthSwitcherFade() {
+    const card = document.querySelector('.auth-card');
+    const tabs = document.querySelectorAll('.auth-switcher__tab');
+    if (!card || !tabs.length) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function (e) {
+            if (reduceMotion || tab.getAttribute('aria-current') === 'page') return;
+            e.preventDefault();
+
+            const href = tab.href;
+            let navigated = false;
+            function go() {
+                if (navigated) return;
+                navigated = true;
+                window.location.href = href;
+            }
+
+            card.addEventListener('animationend', go, { once: true });
+            setTimeout(go, 400);
+            card.classList.add('auth-card--leaving');
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
+    initAuthSwitcherFade();
+
     const form = document.getElementById('register-form');
     if (!form) return;
 

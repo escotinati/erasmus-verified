@@ -103,7 +103,48 @@ function initPasswordToggle(inputId, toggleId, iconId) {
     });
 }
 
+// Transición sencilla al cambiar de Iniciar sesión a Crear cuenta (o
+// viceversa): la tarjeta se desvanece (.auth-card--leaving, auth.css) y
+// SOLO ENTONCES navega de verdad — nunca el planteamiento anterior con
+// view-transition-name (morphing de la píldora/tarjeta entre las dos
+// páginas, descartado a petición). El pestañeo ya activo ("Iniciar
+// sesión" en login.html) no dispara nada, es a donde ya estás.
+// animationend, no un setTimeout con la duración copiada de la CSS: así
+// nunca puede desincronizarse si cambia el token --anim-duration-fast
+// (theme-dependiente, Verified/Parties). El setTimeout de más abajo es
+// solo una red de seguridad por si esa animación no llegara a disparar
+// el evento. Duplicada a propósito en registro.js — mismo criterio que
+// initPasswordToggle()/normalize(), sin ES Modules entre scripts
+// clásicos.
+function initAuthSwitcherFade() {
+    const card = document.querySelector('.auth-card');
+    const tabs = document.querySelectorAll('.auth-switcher__tab');
+    if (!card || !tabs.length) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function (e) {
+            if (reduceMotion || tab.getAttribute('aria-current') === 'page') return;
+            e.preventDefault();
+
+            const href = tab.href;
+            let navigated = false;
+            function go() {
+                if (navigated) return;
+                navigated = true;
+                window.location.href = href;
+            }
+
+            card.addEventListener('animationend', go, { once: true });
+            setTimeout(go, 400);
+            card.classList.add('auth-card--leaving');
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    initAuthSwitcherFade();
+
     const form = document.getElementById('login-form');
     if (!form) return;
 
