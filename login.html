@@ -70,14 +70,33 @@
                             <label for="login-password" data-i18n="auth.password_label"
                                 >Contraseña</label
                             >
-                            <input
-                                id="login-password"
-                                name="password"
-                                type="password"
-                                autocomplete="current-password"
-                                required
-                                aria-describedby="login-password-error"
-                            />
+                            <div class="auth-input-group auth-input-group--password">
+                                <input
+                                    id="login-password"
+                                    name="password"
+                                    type="password"
+                                    autocomplete="current-password"
+                                    required
+                                    aria-describedby="login-password-error"
+                                />
+                                <button
+                                    type="button"
+                                    id="login-password-toggle"
+                                    class="auth-password-toggle"
+                                >
+                                    <span
+                                        class="material-symbols-outlined"
+                                        id="login-password-toggle-icon"
+                                        aria-hidden="true"
+                                        >visibility</span
+                                    >
+                                </button>
+                            </div>
+                            <p class="auth-forgot">
+                                <a href="recuperar.html" data-i18n="auth.forgot_password_link"
+                                    >¿Olvidaste tu contraseña?</a
+                                >
+                            </p>
                         </div>
 
                         <button

@@ -79,9 +79,35 @@ function getEmailError(value) {
     return '';
 }
 
+// Alterna type="password"/"text" del campo + icono (visibility ↔
+// visibility_off, mismo par que usa admin.js con sus SVG propios) y el
+// aria-label del botón, vía I18n.t() (no data-i18n: el botón solo tiene
+// un icono como hijo, escribirle textContent lo borraría). Duplicado en
+// registro.js a propósito — sin ES Modules entre scripts clásicos, ver
+// normalize() en registro.js para el mismo criterio.
+function initPasswordToggle(inputId, toggleId, iconId) {
+    const input = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    const icon = document.getElementById(iconId);
+    if (!input || !toggle || !icon) return;
+
+    toggle.setAttribute('aria-label', I18n.t('auth.show_password'));
+    toggle.addEventListener('click', function () {
+        const willShow = input.type === 'password';
+        input.type = willShow ? 'text' : 'password';
+        icon.textContent = willShow ? 'visibility_off' : 'visibility';
+        toggle.setAttribute(
+            'aria-label',
+            I18n.t(willShow ? 'auth.hide_password' : 'auth.show_password')
+        );
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('login-form');
     if (!form) return;
+
+    initPasswordToggle('login-password', 'login-password-toggle', 'login-password-toggle-icon');
 
     const submitBtn = document.getElementById('login-submit');
     const emailInput = document.getElementById('login-email');

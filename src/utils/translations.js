@@ -313,7 +313,30 @@ window.I18n.translations = {
             error_password_short: 'La contraseña debe tener al menos 6 caracteres.',
             error_first_name_required: 'Introduce tu nombre.',
             error_city_required: 'Selecciona tu ciudad.',
+            error_password_mismatch: 'Las contraseñas no coinciden.',
             error_generic: 'Ha ocurrido un error. Inténtalo de nuevo.',
+
+            show_password: 'Mostrar contraseña',
+            hide_password: 'Ocultar contraseña',
+            forgot_password_link: '¿Olvidaste tu contraseña?',
+            back_to_login: 'Volver a iniciar sesión',
+
+            reset_eyebrow: 'RECUPERAR ACCESO',
+            reset_title: 'Recupera tu contraseña',
+            reset_subtitle:
+                'Te enviaremos un enlace a tu email para crear una nueva contraseña.',
+            reset_submit_cta: 'Enviar enlace',
+            reset_submitting: 'Enviando…',
+            reset_email_sent_title: 'Revisa tu correo',
+            reset_email_sent_body:
+                'Te hemos enviado un enlace para restablecer tu contraseña. Ábrelo desde este mismo dispositivo.',
+
+            new_password_title: 'Crea una nueva contraseña',
+            new_password_subtitle: 'Elige una contraseña nueva para tu cuenta.',
+            new_password_label: 'Nueva contraseña',
+            confirm_password_label: 'Confirma la contraseña',
+            reset_password_submit_cta: 'Guardar contraseña',
+            reset_password_submitting: 'Guardando…',
         },
     },
     en: {
@@ -613,7 +636,29 @@ window.I18n.translations = {
             error_password_short: 'Password must be at least 6 characters.',
             error_first_name_required: 'Enter your first name.',
             error_city_required: 'Select your city.',
+            error_password_mismatch: "Passwords don't match.",
             error_generic: 'Something went wrong. Please try again.',
+
+            show_password: 'Show password',
+            hide_password: 'Hide password',
+            forgot_password_link: 'Forgot your password?',
+            back_to_login: 'Back to login',
+
+            reset_eyebrow: 'RECOVER ACCESS',
+            reset_title: 'Reset your password',
+            reset_subtitle: "We'll send a link to your email to create a new password.",
+            reset_submit_cta: 'Send link',
+            reset_submitting: 'Sending…',
+            reset_email_sent_title: 'Check your email',
+            reset_email_sent_body:
+                "We've sent you a link to reset your password. Open it from this same device.",
+
+            new_password_title: 'Create a new password',
+            new_password_subtitle: 'Choose a new password for your account.',
+            new_password_label: 'New password',
+            confirm_password_label: 'Confirm password',
+            reset_password_submit_cta: 'Save password',
+            reset_password_submitting: 'Saving…',
         },
     },
 };

@@ -91,6 +91,26 @@ function getEmailError(value) {
     return '';
 }
 
+// Duplicado a propósito de login.js (mismo criterio que normalize() más
+// abajo: sin ES Modules entre scripts clásicos, ver Stack en CLAUDE.md).
+function initPasswordToggle(inputId, toggleId, iconId) {
+    const input = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    const icon = document.getElementById(iconId);
+    if (!input || !toggle || !icon) return;
+
+    toggle.setAttribute('aria-label', I18n.t('auth.show_password'));
+    toggle.addEventListener('click', function () {
+        const willShow = input.type === 'password';
+        input.type = willShow ? 'text' : 'password';
+        icon.textContent = willShow ? 'visibility_off' : 'visibility';
+        toggle.setAttribute(
+            'aria-label',
+            I18n.t(willShow ? 'auth.hide_password' : 'auth.show_password')
+        );
+    });
+}
+
 // Mismo criterio que normalize() en index.js (initAutocomplete) — quita
 // diacríticos para que "leon" encuentre "León". Duplicado a propósito
 // en vez de compartido: cada script de página es autocontenido, sin
@@ -247,6 +267,8 @@ function initCityAutocomplete(cities) {
 document.addEventListener('DOMContentLoaded', async function () {
     const form = document.getElementById('register-form');
     if (!form) return;
+
+    initPasswordToggle('reg-password', 'reg-password-toggle', 'reg-password-toggle-icon');
 
     const emailInput = document.getElementById('reg-email');
 
