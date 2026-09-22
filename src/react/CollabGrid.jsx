@@ -3,8 +3,8 @@
 //  la sección de alojamiento del home). Cada colaborador es un <Card
 //  layout="tile">: toda la card es el enlace, sin botón CTA.
 //
-//  Se monta directamente sobre el <div class="collab-grid"> (ver
-//  mount-collab-grid.jsx), así que las cards son hijas DIRECTAS del
+//  Se monta directamente sobre el <div class="card-grid card-grid--tile">
+//  (ver mount-collab-grid.jsx), así que las cards son hijas DIRECTAS del
 //  grid — sin wrapper (Fragment), mismo criterio que SummaryCardGrid.
 //
 //  El texto llega por t() (I18n) al renderizar, no por data-i18n +

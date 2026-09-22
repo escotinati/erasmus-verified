@@ -9,9 +9,8 @@ body.alojamiento-page {
         var(--background);
 }
 
-/* Grid de colaboradores — 4 cols desktop, 2 cols móvil */
-.collab-grid {
-    display: grid;
+/* Grid de colaboradores (Card layout="tile") — 4 cols desktop, 2 cols móvil */
+.card-grid--tile {
     /* Mobile-first: 2 columnas es el valor móvil por defecto, revierte
        a 4 columnas en --bp-md */
     grid-template-columns: repeat(2, 1fr);
@@ -51,7 +50,7 @@ body.alojamiento-page {
 
 @media (min-width: 900px) {
     /* --bp-md */
-    .collab-grid {
+    .card-grid--tile {
         grid-template-columns: repeat(4, 1fr);
         min-height: 129px; /* 1 fila en escritorio */
     }

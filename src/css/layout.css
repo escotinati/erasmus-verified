@@ -1007,8 +1007,7 @@ header.topbar {
     padding: 0 var(--margin-mobile) 80px;
 }
 
-.cities-grid {
-    display: grid;
+.card-grid--photo {
     /* Mobile-first: 2 columnas/gap:10px es el valor móvil por
        defecto, pasa a 3 col en --bp-sm (gap vuelve a 14px) y a 4 col
        en --bp-md. */
@@ -1017,13 +1016,13 @@ header.topbar {
     padding: 0 var(--margin-mobile) 80px;
 }
 
-.cities-grid.cols-3 {
+.card-grid--photo.cols-3 {
     /* Mobile-first: forzado a 2 columnas por debajo de --bp-sm (no
        caben 3 con comodidad), revierte a 3 en --bp-sm */
     grid-template-columns: repeat(2, 1fr);
 }
 
-.cities-grid.cols-2 {
+.card-grid--photo.cols-2 {
     grid-template-columns: repeat(2, 1fr);
 }
 

@@ -72,7 +72,7 @@
     transition-delay: 480ms;
 }
 
-/* ── Entrada "slam" (partner-grid, home rediseñada) ──────────
+/* ── Entrada "slam" (card-grid--stacked, home rediseñada) ──────────
    translateY + rotate leve + overshoot vía cubic-bezier con
    back-out propio (no un token --anim-easing-*, es un efecto
    deliberadamente más marcado que el resto de entradas de la

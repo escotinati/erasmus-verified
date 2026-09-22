@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────
 //  mount-collab-grid.jsx — monta <CollabGrid /> en cada
-//  <div class="collab-grid" data-collab-grid="housing|trips"
+//  <div class="card-grid card-grid--tile" data-collab-grid="housing|trips"
 //  [data-animate]>. Auto-monta (como mount-footer.jsx): estas cards no
 //  se repintan desde fuera. Un root por grid (una página puede tener
 //  más de uno).

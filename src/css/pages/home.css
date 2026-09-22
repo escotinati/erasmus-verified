@@ -380,19 +380,18 @@
     padding-right: 0;
 }
 
-.partner-grid {
+.card-grid--stacked {
     margin: 40px 0 0;
-    display: grid;
     /* Mobile-first: 1 columna es el valor por defecto (móvil); pasa a
        2 en --bp-sm y a 3 en --bp-md, ver los @media más abajo. */
     grid-template-columns: 1fr;
     gap: 24px;
 }
 
-/* La regla de clase de arriba (display:grid) empataría en especificidad
+/* La regla base (.card-grid, display:grid) empataría en especificidad
    con el [hidden] del stylesheet del navegador y ganaría por venir de
    una hoja de autor — hay que ocultarlo explícitamente. */
-.partner-grid[hidden] {
+.card-grid--stacked[hidden] {
     display: none;
 }
 
@@ -409,14 +408,14 @@
 
 @media (min-width: 600px) {
     /* --bp-sm */
-    .partner-grid {
+    .card-grid--stacked {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 900px) {
     /* --bp-md */
-    .partner-grid {
+    .card-grid--stacked {
         grid-template-columns: repeat(3, 1fr);
     }
     .home-stats {
@@ -449,11 +448,11 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
     }
-    .cities-grid {
+    .card-grid--photo {
         grid-template-columns: repeat(3, 1fr);
         gap: 14px;
     }
-    .cities-grid.cols-3 {
+    .card-grid--photo.cols-3 {
         grid-template-columns: repeat(3, 1fr);
     }
     .hero {
@@ -1017,7 +1016,7 @@
     min-width: 82%;
 }
 
-/* Mismo grid que .partner-grid (2 → 3 columnas a partir de 900px, mismo
+/* Mismo grid que .card-grid--stacked (2 → 3 columnas a partir de 900px, mismo
    gap de 24px), para que las cards de eventos midan lo mismo que las
    de partners en cada ancho. Por debajo de 768px sigue apilado en
    columna, igual que el resto de la página cambia a móvil en ese
@@ -1085,7 +1084,7 @@
     padding-bottom: var(--space-16);
 }
 
-.alojamiento-section .collab-grid {
+.alojamiento-section .card-grid--tile {
     margin-top: 32px;
 }
 
@@ -1101,8 +1100,7 @@
     padding-bottom: var(--space-16);
 }
 
-.services-grid {
-    display: grid;
+.card-grid--service {
     /* Mobile-first: 1 columna es el valor móvil por defecto, revierte
        a 3 en --bp-md. gap:20px hasta --bp-lg, luego 32px. */
     grid-template-columns: 1fr;

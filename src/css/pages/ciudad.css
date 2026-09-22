@@ -55,7 +55,7 @@ main.city-main {
 
 /* .search-bar (display:flex, components.css) empata en especificidad
    con el [hidden] del stylesheet del navegador y gana por venir de una
-   hoja de autor — mismo caso ya resuelto en .partner-grid[hidden]
+   hoja de autor — mismo caso ya resuelto en .card-grid--stacked[hidden]
    (pages/home.css). Sin esto, el atributo `hidden` de partida en
    ciudad.html no ocultaba nada: el buscador se veía aunque la ciudad
    no tuviera partners (initCitySearch(), ciudad.js, nunca llegaba a

@@ -6,7 +6,7 @@
 //  nightsSection.js).
 //
 //  Sin wrapper propio (Fragment): las cards deben quedar como hijas
-//  DIRECTAS del contenedor real (.partner-grid / .events-scroll),
+//  DIRECTAS del contenedor real (.card-grid--stacked / .events-scroll),
 //  que las trata como flex/grid items — un <div> intermedio aquí
 //  rompería ese layout.
 //

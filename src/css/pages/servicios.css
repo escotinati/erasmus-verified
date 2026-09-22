@@ -13,7 +13,7 @@ body.servicios-page {
     margin-top: 64px;
 }
 
-.services-grid--2col {
+.card-grid--service-2col {
     /* Mobile-first: 1 columna es el valor móvil por defecto, revierte
        a 2 columnas en --bp-md */
     grid-template-columns: 1fr;
@@ -21,7 +21,7 @@ body.servicios-page {
 
 @media (min-width: 900px) {
     /* --bp-md */
-    .services-grid--2col {
+    .card-grid--service-2col {
         grid-template-columns: repeat(2, 1fr);
     }
 }

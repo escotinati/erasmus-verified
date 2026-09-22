@@ -332,7 +332,7 @@ async function buildContextualSections(cityId, ciudad) {
     <div style="margin-top:32px">
       <span class="eyebrow eyebrow--primary">${I18n.t('nav.trips')}</span>
       <h2 class="section-title" style="font-size:1.1rem;margin-bottom:8px">${I18n.t('city.escapadas_prefix')} ${escapeHtml(ciudad)}</h2>
-      <div class="services-grid" id="city-travel-grid" style="margin-top:16px"></div>
+      <div class="card-grid card-grid--service" id="city-travel-grid" style="margin-top:16px"></div>
     </div>`;
     }
 
