@@ -136,6 +136,7 @@ async function buildSearchIndex() {
             return {
                 type: 'event',
                 id: event.id,
+                partnerId: event.partner?.id,
                 name: event.title,
                 sub: [event.partner?.name, event.city?.name].filter(Boolean).join(' · '),
                 iconType: 'material',
@@ -178,16 +179,27 @@ async function initAutocomplete(index) {
     // mejor coincidencia también abre en pestaña nueva en vez de
     // sacar al usuario del sitio con window.location.href.
     function navigateToResult(item, query) {
-        trackEvent('search_result_click', {
+        const tracked = trackEvent('search_result_click', {
             resultType: item.type,
             resultId: item.id,
             resultName: item.name,
             query,
+            // Solo partner y evento tienen partner al que atribuir el clic
+            // (cta_clicks.partner_id es NOT NULL): una ciudad se queda en consola.
+            partnerId: item.type === 'partner' ? item.id : item.partnerId,
         });
         if (item.type === 'event') {
+            // Pestaña nueva, y síncrono: window.open() tras un await lo bloquearía
+            // el bloqueador de pop-ups (ya no cuenta como gesto del usuario).
             window.open(item.url, '_blank', 'noopener,noreferrer');
         } else {
-            window.location.href = item.url;
+            // Misma pestaña: el navegador cancela los fetch en vuelo al descargar
+            // la página, así que se espera (máx. 400 ms) a que el INSERT salga. Si
+            // el evento no se persiste (ciudad), `tracked` ya está resuelto y no
+            // hay espera.
+            Promise.race([tracked, new Promise((resolve) => setTimeout(resolve, 400))]).then(() => {
+                window.location.href = item.url;
+            });
         }
     }
 

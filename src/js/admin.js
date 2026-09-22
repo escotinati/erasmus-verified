@@ -1365,7 +1365,7 @@ async function loadClicksReport() {
     const since = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
     const { data, error } = await window.supabaseClient
         .from('cta_clicks')
-        .select('partner_id, partners(name)')
+        .select('partner_id, link_type, partners(name)')
         .gte('created_at', since);
 
     if (error) {
@@ -1380,22 +1380,38 @@ async function loadClicksReport() {
         return;
     }
 
-    const counts = {};
+    // link_type mezcla dos cosas: el nombre del evento de tracking (los cuatro de
+    // CLICK_TYPE_LABELS) y, en los clics de enlaces del Sheet, el tipo del propio
+    // enlace (WEBSITE, TICKETS…) — todo lo que no está en el mapa es "enlaces".
+    const CLICK_TYPE_LABELS = {
+        partner_directions_click: 'cómo llegar',
+        partner_card_click: 'cards del home',
+        event_ticket_click: 'entradas',
+        search_result_click: 'búsqueda',
+    };
+    const byPartner = {};
     for (const row of data) {
         const name = row.partners?.name || String(row.partner_id);
-        counts[name] = (counts[name] || 0) + 1;
+        const entry = (byPartner[name] = byPartner[name] || { total: 0, types: {} });
+        const label = CLICK_TYPE_LABELS[row.link_type] || 'enlaces';
+        entry.total += 1;
+        entry.types[label] = (entry.types[label] || 0) + 1;
     }
 
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const sorted = Object.entries(byPartner).sort((a, b) => b[1].total - a[1].total);
     const rows = sorted
-        .map(
-            ([name, count]) => `
+        .map(([name, { total, types }]) => {
+            const breakdown = Object.entries(types)
+                .sort((a, b) => b[1] - a[1])
+                .map(([label, n]) => `${label}: ${n}`)
+                .join(' · ');
+            return `
     <div class="admin-metric-card">
-      <div class="admin-metric-card__count">${count}</div>
+      <div class="admin-metric-card__count">${total}</div>
       <div class="admin-metric-card__name">${escapeHtml(name)}</div>
-      <div class="admin-metric-card__label">clics</div>
-    </div>`
-        )
+      <div class="admin-metric-card__label">clics · ${escapeHtml(breakdown)}</div>
+    </div>`;
+        })
         .join('');
 
     document.getElementById('clicks-report').innerHTML = rows;
