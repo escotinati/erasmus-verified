@@ -37,6 +37,16 @@
 //  vive aparte, en el input oculto reg-city-id — es ESE valor el que
 //  lee el submit, nunca el texto visible de reg-city.
 //
+//  A petición: el formulario se divide en 3 pasos dentro de la misma
+//  tarjeta (email+contraseña → nombre → ciudad+intereses), pensando en
+//  que habrá más campos en el futuro — ver goToStep()/initRegisterSteps()
+//  más abajo. Cada paso valida solo sus propios campos antes de dejar
+//  avanzar (mismo criterio setFieldError()/fieldChecks que el submit
+//  final); FIELD_STEP es el mapa inverso para el caso raro en que el
+//  submit final (defensa en profundidad) encuentre inválido un campo de
+//  un paso anterior — entonces vuelve a ese paso antes de enfocarlo, en
+//  vez de dejar un error puesto en un campo que no se ve.
+//
 //  Depende de: fetchActiveCities() (citiesService.js), signUp()
 //  (authService.js), window.I18n (i18n.js/translations.js).
 // ─────────────────────────────────────────────────────────────
@@ -264,11 +274,153 @@ function initCityAutocomplete(cities) {
     });
 }
 
+const FIELD_STEP = {
+    'reg-email': 1,
+    'reg-password': 1,
+    'reg-confirm-password': 1,
+    'reg-first-name': 2,
+    'reg-city': 3,
+};
+
+let currentStep = 1;
+
+function getStepEl(n) {
+    return document.getElementById(`register-step-${n}`);
+}
+
+// Anima la altura real del <form> entre pasos de contenido muy distinto
+// (paso 1 más corto que paso 3), en vez de un salto brusco o una altura
+// aproximada fija: mide antes de mutate() (oculta el paso viejo, muestra
+// el nuevo), fija esa altura de partida, fuerza el reflow y anima hasta
+// la altura real del paso nuevo (scrollHeight) — el mismo patrón FLIP de
+// toda la vida, sin ResizeObserver porque el cambio lo dispara siempre
+// un clic, nunca un resize externo. Con prefers-reduced-motion, aplica
+// el cambio sin animar la altura (el <form> vuelve a su overflow:hidden
+// normal en el siguiente paint, sin dejar ningún estilo inline colgado).
+function animateStepHeight(container, mutate) {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const startHeight = container.getBoundingClientRect().height;
+    mutate();
+    if (prefersReducedMotion) return;
+
+    const endHeight = container.scrollHeight;
+    container.style.transition = 'none';
+    container.style.height = startHeight + 'px';
+    void container.offsetHeight; // fuerza el reflow antes de animar
+    container.style.transition = 'height 450ms cubic-bezier(.65, 0, .35, 1)';
+    container.style.height = endHeight + 'px';
+    container.addEventListener('transitionend', function handler(e) {
+        if (e.propertyName !== 'height') return;
+        container.style.height = '';
+        container.style.transition = '';
+        container.removeEventListener('transitionend', handler);
+    });
+}
+
+function updateStepDots(step) {
+    [1, 2, 3].forEach((n) => {
+        document.getElementById(`step-dot-${n}`)?.classList.toggle('is-active', n <= step);
+    });
+    [1, 2].forEach((n) => {
+        document.getElementById(`step-line-${n}`)?.classList.toggle('is-active', step >= n + 1);
+    });
+}
+
+// direction: 'fwd' (avanzar) entra deslizándose desde la derecha, 'back'
+// desde la izquierda — mismo criterio que la píldora del selector
+// Iniciar sesión/Crear cuenta (auth.css): la dirección del contenido
+// siempre coincide con la del control que la dispara.
+function goToStep(n, direction) {
+    const form = document.getElementById('register-form');
+    const fromEl = getStepEl(currentStep);
+    const toEl = getStepEl(n);
+    const enterClass = direction === 'back' ? 'auth-step--enter-back' : 'auth-step--enter-fwd';
+
+    animateStepHeight(form, () => {
+        fromEl.hidden = true;
+        toEl.hidden = false;
+        toEl.classList.remove('auth-step--enter-fwd', 'auth-step--enter-back');
+        void toEl.offsetWidth; // por si la clase ya estuviera, para que la animación se repita
+        toEl.classList.add(enterClass);
+    });
+
+    currentStep = n;
+    updateStepDots(n);
+
+    toEl.querySelector('input:not([type="hidden"]), textarea')?.focus();
+
+    // El anuncio para lectores de pantalla reutiliza el propio título
+    // del paso (ya traducido vía data-i18n) — nunca un texto duplicado
+    // en JS que pudiera desincronizarse del que se ve en pantalla.
+    const announcer = document.getElementById('register-step-announcer');
+    const heading = toEl.querySelector('.auth-card__title');
+    if (announcer && heading) announcer.textContent = heading.textContent;
+}
+
+function initRegisterSteps() {
+    document.getElementById('register-step1-next').addEventListener('click', function () {
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('reg-confirm-password').value;
+        const emailError = getEmailError(email);
+        const checks = [
+            { id: 'reg-email', valid: !emailError, message: emailError },
+            {
+                id: 'reg-password',
+                valid: password.length >= 6,
+                message: !password
+                    ? I18n.t('auth.error_password_required')
+                    : I18n.t('auth.error_password_short'),
+            },
+            {
+                id: 'reg-confirm-password',
+                valid: Boolean(confirmPassword) && confirmPassword === password,
+                message: !confirmPassword
+                    ? I18n.t('auth.error_password_required')
+                    : I18n.t('auth.error_password_mismatch'),
+            },
+        ];
+        checks.forEach(({ id, valid, message }) => setFieldError(id, valid ? '' : message));
+        const firstInvalid = checks.find((c) => !c.valid);
+        if (firstInvalid) {
+            document.getElementById(firstInvalid.id)?.focus();
+            return;
+        }
+        goToStep(2, 'fwd');
+    });
+
+    document.getElementById('register-step2-next').addEventListener('click', function () {
+        const firstName = document.getElementById('reg-first-name').value.trim();
+        const checks = [
+            {
+                id: 'reg-first-name',
+                valid: Boolean(firstName),
+                message: I18n.t('auth.error_first_name_required'),
+            },
+        ];
+        checks.forEach(({ id, valid, message }) => setFieldError(id, valid ? '' : message));
+        const firstInvalid = checks.find((c) => !c.valid);
+        if (firstInvalid) {
+            document.getElementById(firstInvalid.id)?.focus();
+            return;
+        }
+        goToStep(3, 'fwd');
+    });
+
+    document.getElementById('register-step2-back').addEventListener('click', function () {
+        goToStep(1, 'back');
+    });
+    document.getElementById('register-step3-back').addEventListener('click', function () {
+        goToStep(2, 'back');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
     const form = document.getElementById('register-form');
     if (!form) return;
 
     initPasswordToggle('reg-password', 'reg-password-toggle', 'reg-password-toggle-icon');
+    initRegisterSteps();
 
     const emailInput = document.getElementById('reg-email');
 
@@ -294,6 +446,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const submitBtn = document.getElementById('register-submit');
     const successBox = document.getElementById('register-success');
+    const step3El = getStepEl(3);
+    const step3Actions = step3El.querySelector('.auth-step-actions');
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -349,10 +503,19 @@ document.addEventListener('DOMContentLoaded', async function () {
         ];
 
         fieldChecks.forEach(({ id, valid, message }) => setFieldError(id, valid ? '' : message));
-        renderAuthError(form, 'register-form-error', '', submitBtn);
+        renderAuthError(step3El, 'register-form-error', '', step3Actions);
 
+        // Defensa en profundidad: en el flujo normal es imposible llegar
+        // aquí con un campo de un paso anterior inválido (cada "Continuar"
+        // ya lo valida antes de dejar avanzar), pero si pasara, volver a
+        // ese paso antes de enfocar — dejar el error solo puesto en un
+        // campo oculto, sin más indicación, sería un callejón sin salida.
         const firstInvalid = fieldChecks.find((f) => !f.valid);
         if (firstInvalid) {
+            const targetStep = FIELD_STEP[firstInvalid.id] || currentStep;
+            if (targetStep !== currentStep) {
+                goToStep(targetStep, targetStep < currentStep ? 'back' : 'fwd');
+            }
             document.getElementById(firstInvalid.id)?.focus();
             return;
         }
@@ -380,10 +543,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             // partida sin importar el idioma activo.
             submitBtn.textContent = I18n.t('auth.register_submit_cta');
             renderAuthError(
-                form,
+                step3El,
                 'register-form-error',
                 error.message || I18n.t('auth.error_generic'),
-                submitBtn
+                step3Actions
             );
             return;
         }

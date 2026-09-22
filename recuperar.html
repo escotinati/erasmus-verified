@@ -34,7 +34,7 @@
         <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
 
         <main style="flex: 1">
-            <div class="section auth-section auth-section--login">
+            <div class="section auth-section auth-section--card">
                 <!-- ── Estado 1: pedir el enlace de recuperación por email ── -->
                 <div id="recover-request">
                     <span
@@ -42,17 +42,25 @@
                         data-i18n="auth.reset_eyebrow"
                         >RECUPERAR ACCESO</span
                     >
-                    <h1 class="section-title auth-section__title anim-page-enter" data-i18n="auth.reset_title">
+                    <h1
+                        class="section-title auth-section__title anim-page-enter"
+                        data-i18n="auth.reset_title"
+                    >
                         Recupera tu contraseña
                     </h1>
-                    <p class="section-sub auth-section__sub anim-page-enter" data-i18n="auth.reset_subtitle">
+                    <p
+                        class="section-sub auth-section__sub anim-page-enter"
+                        data-i18n="auth.reset_subtitle"
+                    >
                         Te enviaremos un enlace a tu email para crear una nueva contraseña.
                     </p>
 
-                    <div class="auth-card auth-card--login anim-fade-up anim-delay-1">
+                    <div class="auth-card auth-card--glass anim-fade-up anim-delay-1">
                         <form id="recover-request-form" class="auth-form" novalidate>
                             <div class="auth-field">
-                                <label for="recover-email" data-i18n="auth.email_label">Email</label>
+                                <label for="recover-email" data-i18n="auth.email_label"
+                                    >Email</label
+                                >
                                 <input
                                     id="recover-email"
                                     name="email"
@@ -83,7 +91,9 @@
                         >
                             <span class="info-icon material-symbols-outlined">mark_email_read</span>
                             <p class="info-text">
-                                <strong data-i18n="auth.reset_email_sent_title">Revisa tu correo</strong>
+                                <strong data-i18n="auth.reset_email_sent_title"
+                                    >Revisa tu correo</strong
+                                >
                                 <span data-i18n="auth.reset_email_sent_body"
                                     >Te hemos enviado un enlace para restablecer tu contraseña.
                                     Ábrelo desde este mismo dispositivo.</span
@@ -103,17 +113,25 @@
                      recuperación en el hash de la URL (#...&type=recovery) —
                      ver recuperar.js. Se muestra en vez del estado 1. ── -->
                 <div id="recover-reset" hidden>
-                    <h1 class="section-title auth-section__title anim-page-enter" data-i18n="auth.new_password_title">
+                    <h1
+                        class="section-title auth-section__title anim-page-enter"
+                        data-i18n="auth.new_password_title"
+                    >
                         Crea una nueva contraseña
                     </h1>
-                    <p class="section-sub auth-section__sub anim-page-enter" data-i18n="auth.new_password_subtitle">
+                    <p
+                        class="section-sub auth-section__sub anim-page-enter"
+                        data-i18n="auth.new_password_subtitle"
+                    >
                         Elige una contraseña nueva para tu cuenta.
                     </p>
 
-                    <div class="auth-card auth-card--login anim-fade-up anim-delay-1">
+                    <div class="auth-card auth-card--glass anim-fade-up anim-delay-1">
                         <form id="recover-reset-form" class="auth-form" novalidate>
                             <div class="auth-field">
-                                <label for="recover-new-password" data-i18n="auth.new_password_label"
+                                <label
+                                    for="recover-new-password"
+                                    data-i18n="auth.new_password_label"
                                     >Nueva contraseña</label
                                 >
                                 <div class="auth-input-group auth-input-group--password">

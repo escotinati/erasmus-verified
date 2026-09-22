@@ -268,11 +268,15 @@ window.I18n.translations = {
         auth: {
             logout_cta: 'Cerrar sesión',
 
-            register_eyebrow: 'Únete a la comunidad',
             register_title: 'Crea tu cuenta',
-            register_subtitle:
-                'Regístrate para guardar tus preferencias y sacarle más partido a tu Erasmus.',
-            login_title: 'Inicia sesión',
+            register_step1_sub: 'Paso 1 de 3 · Email y contraseña',
+            register_step2_title: '¿Cómo te llamas?',
+            register_step2_sub: 'Paso 2 de 3 · Tu nombre',
+            register_step3_title: 'Un último paso',
+            register_step3_sub: 'Paso 3 de 3 · Tu ciudad e intereses',
+            continue_cta: 'Continuar',
+            back_cta: 'Atrás',
+            login_title: 'Bienvenido de nuevo',
             login_subtitle: 'Accede con tu email y contraseña para continuar.',
 
             email_label: 'Email',
@@ -298,11 +302,6 @@ window.I18n.translations = {
             register_submitting: 'Creando cuenta…',
             login_submitting: 'Entrando…',
 
-            already_have_account: '¿Ya tienes cuenta?',
-            no_account_yet: '¿Todavía no tienes cuenta?',
-            go_to_login: 'Inicia sesión',
-            go_to_register: 'Regístrate',
-
             register_success_title: 'Revisa tu correo',
             register_success_body:
                 'Te hemos enviado un enlace de confirmación a tu email. Confírmalo para poder iniciar sesión.',
@@ -323,8 +322,7 @@ window.I18n.translations = {
 
             reset_eyebrow: 'RECUPERAR ACCESO',
             reset_title: 'Recupera tu contraseña',
-            reset_subtitle:
-                'Te enviaremos un enlace a tu email para crear una nueva contraseña.',
+            reset_subtitle: 'Te enviaremos un enlace a tu email para crear una nueva contraseña.',
             reset_submit_cta: 'Enviar enlace',
             reset_submitting: 'Enviando…',
             reset_email_sent_title: 'Revisa tu correo',
@@ -592,10 +590,15 @@ window.I18n.translations = {
         auth: {
             logout_cta: 'Log out',
 
-            register_eyebrow: 'Join the community',
             register_title: 'Create your account',
-            register_subtitle: 'Sign up to save your preferences and get more out of your Erasmus.',
-            login_title: 'Log in',
+            register_step1_sub: 'Step 1 of 3 · Email and password',
+            register_step2_title: "What's your name?",
+            register_step2_sub: 'Step 2 of 3 · Your name',
+            register_step3_title: 'One last step',
+            register_step3_sub: 'Step 3 of 3 · Your city and interests',
+            continue_cta: 'Continue',
+            back_cta: 'Back',
+            login_title: 'Welcome back',
             login_subtitle: 'Enter your email and password to continue.',
 
             email_label: 'Email',
@@ -620,11 +623,6 @@ window.I18n.translations = {
             login_submit_cta: 'Log in',
             register_submitting: 'Creating account…',
             login_submitting: 'Logging in…',
-
-            already_have_account: 'Already have an account?',
-            no_account_yet: "Don't have an account yet?",
-            go_to_login: 'Log in',
-            go_to_register: 'Sign up',
 
             register_success_title: 'Check your email',
             register_success_body:

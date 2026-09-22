@@ -21,191 +21,305 @@
         <script src="/src/js/experience.js"></script>
     </head>
 
-    <body class="auth-page">
+    <body class="auth-page auth-page--register">
+        <!-- Mismo fondo aurora que login.html (auth-page--register hace que
+             el blob magenta gane presencia — ver la nota junto a esas
+             reglas en auth.css). No estaba antes en registro.html: el
+             layout previo (ancho, alineado a la izquierda) no lo usaba. -->
+        <div class="auth-bg" aria-hidden="true">
+            <div class="auth-bg-glow auth-bg-glow--1"></div>
+            <div class="auth-bg-glow auth-bg-glow--2"></div>
+        </div>
+
         <!-- ── TOP NAV (React, rama react/menu) — ver src/react/TopbarNav.jsx ── -->
         <div id="nav-root"></div>
         <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
 
         <main style="flex: 1">
-            <div class="section auth-section">
-                <span
-                    class="eyebrow eyebrow--primary anim-page-enter"
-                    data-i18n="auth.register_eyebrow"
-                    >ÚNETE A LA COMUNIDAD</span
-                >
-                <h1 class="section-title anim-page-enter" data-i18n="auth.register_title">
-                    Crea tu cuenta
-                </h1>
-                <p class="section-sub anim-page-enter" data-i18n="auth.register_subtitle">
-                    Regístrate para guardar tus preferencias y sacarle más partido a tu Erasmus.
-                </p>
+            <div class="section auth-section auth-section--card">
+                <div class="auth-card auth-card--glass anim-fade-up anim-delay-1">
+                    <!-- Mismo selector que login.html, con la píldora ya del
+                         lado de "Crear cuenta" (auth-switcher--register) —
+                         ver el comentario largo en login.html sobre las View
+                         Transitions que animan el paso entre las dos páginas. -->
+                    <nav
+                        class="auth-switcher auth-switcher--register"
+                        aria-label="Iniciar sesión o crear cuenta"
+                    >
+                        <span class="auth-switcher__pill" aria-hidden="true"></span>
+                        <a
+                            href="login.html"
+                            class="auth-switcher__tab"
+                            data-i18n="auth.login_submit_cta"
+                            >Iniciar sesión</a
+                        >
+                        <a
+                            href="registro.html"
+                            class="auth-switcher__tab"
+                            aria-current="page"
+                            data-i18n="auth.register_submit_cta"
+                            >Crear cuenta</a
+                        >
+                    </nav>
 
-                <div class="auth-card anim-fade-up anim-delay-1">
+                    <!-- Puntos de progreso — solo decorativos (aria-hidden): el
+                         anuncio real del paso para lectores de pantalla lo hace
+                         #register-step-announcer (registro.js), leyendo el
+                         título del paso que se acaba de mostrar. -->
+                    <div class="auth-step-dots" aria-hidden="true">
+                        <span class="auth-step-dot is-active" id="step-dot-1">1</span>
+                        <span class="auth-step-line" id="step-line-1"></span>
+                        <span class="auth-step-dot" id="step-dot-2">2</span>
+                        <span class="auth-step-line" id="step-line-2"></span>
+                        <span class="auth-step-dot" id="step-dot-3">3</span>
+                    </div>
+                    <p
+                        class="auth-step-announcer"
+                        id="register-step-announcer"
+                        aria-live="polite"
+                    ></p>
+
                     <form id="register-form" class="auth-form" novalidate>
-                        <div class="auth-field">
-                            <label for="reg-email" data-i18n="auth.email_label">Email</label>
-                            <input
-                                id="reg-email"
-                                name="email"
-                                type="email"
-                                autocomplete="email"
-                                required
-                                aria-describedby="reg-email-error"
-                                data-i18n="auth.email_placeholder"
-                                placeholder="tucorreo@ejemplo.com"
-                            />
-                        </div>
+                        <!-- ── Paso 1 de 3 — email y contraseña ── -->
+                        <div class="auth-step" id="register-step-1" data-step="1">
+                            <div class="auth-card__head">
+                                <h1 class="auth-card__title" data-i18n="auth.register_title">
+                                    Crea tu cuenta
+                                </h1>
+                                <p class="auth-card__sub" data-i18n="auth.register_step1_sub">
+                                    Paso 1 de 3 · Email y contraseña
+                                </p>
+                            </div>
 
-                        <div class="auth-field">
-                            <label for="reg-password" data-i18n="auth.password_label"
-                                >Contraseña</label
-                            >
-                            <div class="auth-input-group auth-input-group--password">
+                            <div class="auth-field">
+                                <label for="reg-email" data-i18n="auth.email_label">Email</label>
                                 <input
-                                    id="reg-password"
-                                    name="password"
+                                    id="reg-email"
+                                    name="email"
+                                    type="email"
+                                    autocomplete="email"
+                                    required
+                                    aria-describedby="reg-email-error"
+                                    data-i18n="auth.email_placeholder"
+                                    placeholder="tucorreo@ejemplo.com"
+                                />
+                            </div>
+
+                            <div class="auth-field">
+                                <label for="reg-password" data-i18n="auth.password_label"
+                                    >Contraseña</label
+                                >
+                                <div class="auth-input-group auth-input-group--password">
+                                    <input
+                                        id="reg-password"
+                                        name="password"
+                                        type="password"
+                                        autocomplete="new-password"
+                                        minlength="6"
+                                        required
+                                        aria-describedby="reg-password-hint reg-password-error"
+                                    />
+                                    <button
+                                        type="button"
+                                        id="reg-password-toggle"
+                                        class="auth-password-toggle"
+                                    >
+                                        <span
+                                            class="material-symbols-outlined"
+                                            id="reg-password-toggle-icon"
+                                            aria-hidden="true"
+                                            >visibility</span
+                                        >
+                                    </button>
+                                </div>
+                                <p
+                                    class="auth-hint"
+                                    id="reg-password-hint"
+                                    data-i18n="auth.password_hint"
+                                >
+                                    Mínimo 6 caracteres.
+                                </p>
+                            </div>
+
+                            <div class="auth-field">
+                                <label
+                                    for="reg-confirm-password"
+                                    data-i18n="auth.confirm_password_label"
+                                    >Confirma la contraseña</label
+                                >
+                                <input
+                                    id="reg-confirm-password"
+                                    name="confirmPassword"
                                     type="password"
                                     autocomplete="new-password"
-                                    minlength="6"
                                     required
-                                    aria-describedby="reg-password-hint reg-password-error"
+                                    aria-describedby="reg-confirm-password-error"
                                 />
+                            </div>
+
+                            <div class="auth-step-actions">
                                 <button
                                     type="button"
-                                    id="reg-password-toggle"
-                                    class="auth-password-toggle"
+                                    class="btn-primary-pill"
+                                    id="register-step1-next"
+                                    data-i18n="auth.continue_cta"
                                 >
-                                    <span
-                                        class="material-symbols-outlined"
-                                        id="reg-password-toggle-icon"
-                                        aria-hidden="true"
-                                        >visibility</span
-                                    >
+                                    Continuar
                                 </button>
                             </div>
-                            <p
-                                class="auth-hint"
-                                id="reg-password-hint"
-                                data-i18n="auth.password_hint"
-                            >
-                                Mínimo 6 caracteres.
-                            </p>
                         </div>
 
-                        <div class="auth-field">
-                            <label
-                                for="reg-confirm-password"
-                                data-i18n="auth.confirm_password_label"
-                                >Confirma la contraseña</label
-                            >
-                            <input
-                                id="reg-confirm-password"
-                                name="confirmPassword"
-                                type="password"
-                                autocomplete="new-password"
-                                required
-                                aria-describedby="reg-confirm-password-error"
-                            />
-                        </div>
-
-                        <div class="auth-field">
-                            <label for="reg-first-name" data-i18n="auth.first_name_label"
-                                >Nombre</label
-                            >
-                            <input
-                                id="reg-first-name"
-                                name="firstName"
-                                type="text"
-                                autocomplete="given-name"
-                                required
-                                aria-describedby="reg-first-name-error"
-                                data-i18n="auth.first_name_placeholder"
-                                placeholder="Tu nombre"
-                            />
-                        </div>
-
-                        <div class="auth-field">
-                            <label for="reg-last-name" data-i18n="auth.last_name_label"
-                                >Apellidos</label
-                            >
-                            <input
-                                id="reg-last-name"
-                                name="lastName"
-                                type="text"
-                                autocomplete="family-name"
-                                data-i18n="auth.last_name_placeholder"
-                                placeholder="Opcional"
-                            />
-                        </div>
-
-                        <div class="auth-field">
-                            <label for="reg-city" data-i18n="auth.city_label">Ciudad</label>
-                            <div class="auth-input-group">
-                                <!-- Autocompletable: texto libre + dropdown (mismo patrón que
-                                     #citySearch en index.js — .search-dropdown/.search-dropdown-item/
-                                     .sdi-* ya son clases globales de components.css, sin CSS nuevo).
-                                     El id real de la ciudad seleccionada vive en el input oculto de
-                                     abajo (reg-city-id) — este campo de texto es solo lo que ve/
-                                     teclea el usuario, nunca lo que se manda a signUp(). -->
-                                <input
-                                    id="reg-city"
-                                    type="text"
-                                    autocomplete="off"
-                                    required
-                                    aria-describedby="reg-city-error"
-                                    data-i18n="auth.city_placeholder"
-                                    placeholder="Escribe tu ciudad..."
-                                />
-                                <div
-                                    class="search-dropdown"
-                                    id="reg-city-dropdown"
-                                    role="listbox"
-                                ></div>
+                        <!-- ── Paso 2 de 3 — nombre ── -->
+                        <div class="auth-step" id="register-step-2" data-step="2" hidden>
+                            <div class="auth-card__head">
+                                <h1 class="auth-card__title" data-i18n="auth.register_step2_title">
+                                    ¿Cómo te llamas?
+                                </h1>
+                                <p class="auth-card__sub" data-i18n="auth.register_step2_sub">
+                                    Paso 2 de 3 · Tu nombre
+                                </p>
                             </div>
-                            <input type="hidden" id="reg-city-id" name="cityId" />
+
+                            <div class="auth-field">
+                                <label for="reg-first-name" data-i18n="auth.first_name_label"
+                                    >Nombre</label
+                                >
+                                <input
+                                    id="reg-first-name"
+                                    name="firstName"
+                                    type="text"
+                                    autocomplete="given-name"
+                                    required
+                                    aria-describedby="reg-first-name-error"
+                                    data-i18n="auth.first_name_placeholder"
+                                    placeholder="Tu nombre"
+                                />
+                            </div>
+
+                            <div class="auth-field">
+                                <label for="reg-last-name" data-i18n="auth.last_name_label"
+                                    >Apellidos</label
+                                >
+                                <input
+                                    id="reg-last-name"
+                                    name="lastName"
+                                    type="text"
+                                    autocomplete="family-name"
+                                    data-i18n="auth.last_name_placeholder"
+                                    placeholder="Opcional"
+                                />
+                            </div>
+
+                            <div class="auth-step-actions">
+                                <button
+                                    type="button"
+                                    class="auth-btn-ghost"
+                                    id="register-step2-back"
+                                    data-i18n="auth.back_cta"
+                                >
+                                    Atrás
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn-primary-pill"
+                                    id="register-step2-next"
+                                    data-i18n="auth.continue_cta"
+                                >
+                                    Continuar
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="auth-field">
-                            <label for="reg-university" data-i18n="auth.university_label"
-                                >Universidad de origen</label
-                            >
-                            <input
-                                id="reg-university"
-                                name="university"
-                                type="text"
-                                autocomplete="organization"
-                                data-i18n="auth.university_placeholder"
-                                placeholder="Opcional"
-                            />
+                        <!-- ── Paso 3 de 3 — ciudad, universidad e intereses ── -->
+                        <div class="auth-step" id="register-step-3" data-step="3" hidden>
+                            <div class="auth-card__head">
+                                <h1 class="auth-card__title" data-i18n="auth.register_step3_title">
+                                    Un último paso
+                                </h1>
+                                <p class="auth-card__sub" data-i18n="auth.register_step3_sub">
+                                    Paso 3 de 3 · Tu ciudad e intereses
+                                </p>
+                            </div>
+
+                            <div class="auth-field">
+                                <label for="reg-city" data-i18n="auth.city_label">Ciudad</label>
+                                <div class="auth-input-group">
+                                    <!-- Autocompletable: texto libre + dropdown (mismo patrón que
+                                         #citySearch en index.js — .search-dropdown/.search-dropdown-item/
+                                         .sdi-* ya son clases globales de components.css, sin CSS nuevo).
+                                         El id real de la ciudad seleccionada vive en el input oculto de
+                                         abajo (reg-city-id) — este campo de texto es solo lo que ve/
+                                         teclea el usuario, nunca lo que se manda a signUp(). -->
+                                    <input
+                                        id="reg-city"
+                                        type="text"
+                                        autocomplete="off"
+                                        required
+                                        aria-describedby="reg-city-error"
+                                        data-i18n="auth.city_placeholder"
+                                        placeholder="Escribe tu ciudad..."
+                                    />
+                                    <div
+                                        class="search-dropdown"
+                                        id="reg-city-dropdown"
+                                        role="listbox"
+                                    ></div>
+                                </div>
+                                <input type="hidden" id="reg-city-id" name="cityId" />
+                            </div>
+
+                            <div class="auth-field">
+                                <label for="reg-university" data-i18n="auth.university_label"
+                                    >Universidad de origen</label
+                                >
+                                <input
+                                    id="reg-university"
+                                    name="university"
+                                    type="text"
+                                    autocomplete="organization"
+                                    data-i18n="auth.university_placeholder"
+                                    placeholder="Opcional"
+                                />
+                            </div>
+
+                            <fieldset class="auth-field auth-field--interests">
+                                <legend data-i18n="auth.interests_label">Intereses</legend>
+                                <p class="auth-hint" data-i18n="auth.interests_hint">
+                                    Opcional — nos ayuda a mostrarte contenido relevante.
+                                </p>
+                                <label class="auth-checkbox">
+                                    <input type="checkbox" name="interests" value="nightlife" />
+                                    <span data-i18n="auth.interest_nightlife">Fiestas</span>
+                                </label>
+                                <label class="auth-checkbox">
+                                    <input type="checkbox" name="interests" value="housing" />
+                                    <span data-i18n="auth.interest_housing">Alojamiento</span>
+                                </label>
+                                <label class="auth-checkbox">
+                                    <input type="checkbox" name="interests" value="travel" />
+                                    <span data-i18n="auth.interest_travel">Viajes</span>
+                                </label>
+                            </fieldset>
+
+                            <div class="auth-step-actions">
+                                <button
+                                    type="button"
+                                    class="auth-btn-ghost"
+                                    id="register-step3-back"
+                                    data-i18n="auth.back_cta"
+                                >
+                                    Atrás
+                                </button>
+                                <button
+                                    type="submit"
+                                    class="btn-primary-pill"
+                                    id="register-submit"
+                                    data-i18n="auth.register_submit_cta"
+                                >
+                                    Crear cuenta
+                                </button>
+                            </div>
                         </div>
-
-                        <fieldset class="auth-field auth-field--interests">
-                            <legend data-i18n="auth.interests_label">Intereses</legend>
-                            <p class="auth-hint" data-i18n="auth.interests_hint">
-                                Opcional — nos ayuda a mostrarte contenido relevante.
-                            </p>
-                            <label class="auth-checkbox">
-                                <input type="checkbox" name="interests" value="nightlife" />
-                                <span data-i18n="auth.interest_nightlife">Fiestas</span>
-                            </label>
-                            <label class="auth-checkbox">
-                                <input type="checkbox" name="interests" value="housing" />
-                                <span data-i18n="auth.interest_housing">Alojamiento</span>
-                            </label>
-                            <label class="auth-checkbox">
-                                <input type="checkbox" name="interests" value="travel" />
-                                <span data-i18n="auth.interest_travel">Viajes</span>
-                            </label>
-                        </fieldset>
-
-                        <button
-                            type="submit"
-                            class="btn-primary-pill"
-                            id="register-submit"
-                            data-i18n="auth.register_submit_cta"
-                        >
-                            Crear cuenta
-                        </button>
                     </form>
 
                     <div
@@ -225,11 +339,6 @@
                             >
                         </p>
                     </div>
-
-                    <p class="auth-switch">
-                        <span data-i18n="auth.already_have_account">¿Ya tienes cuenta?</span>
-                        <a href="login.html" data-i18n="auth.go_to_login">Inicia sesión</a>
-                    </p>
                 </div>
             </div>
         </main>
