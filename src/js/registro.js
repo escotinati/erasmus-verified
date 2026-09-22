@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────
 //  REGISTRO.JS — Erasmus Verified
 //
-//  Formulario de registro: email + contraseña (mínimo 6 caracteres) +
-//  nombre obligatorio + ciudad obligatoria + apellidos/universidad/
-//  intereses opcionales. El perfil
+//  Formulario de registro: email + contraseña (mínimo 6 caracteres, con
+//  su confirmación, reg-confirm-password) + nombre obligatorio + ciudad
+//  obligatoria + apellidos/universidad/intereses opcionales. El perfil
 //  (public.profiles) NO se inserta desde aquí — lo crea el trigger
 //  handle_new_user (ya aplicado en Supabase) al leer las claves que
 //  signUp() manda en options.data (ver authService.js); este archivo
@@ -300,6 +300,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const email = emailInput.value.trim();
         const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('reg-confirm-password').value;
         const firstName = document.getElementById('reg-first-name').value.trim();
         const lastName = document.getElementById('reg-last-name').value.trim();
         const cityId = document.getElementById('reg-city-id').value;
@@ -311,9 +312,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Única fuente de verdad para qué campo falla y por qué — el
         // ORDEN de este array coincide con el orden real de los campos
-        // en el HTML (reg-email, reg-password, reg-city): firstInvalid
-        // de abajo asume que recorrerlo de arriba a abajo equivale a
-        // recorrer el formulario de arriba a abajo.
+        // en el HTML (reg-email, reg-password, reg-confirm-password,
+        // reg-city): firstInvalid de abajo asume que recorrerlo de
+        // arriba a abajo equivale a recorrer el formulario de arriba a
+        // abajo.
         const fieldChecks = [
             {
                 id: 'reg-email',
@@ -326,6 +328,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                 message: !password
                     ? I18n.t('auth.error_password_required')
                     : I18n.t('auth.error_password_short'),
+            },
+            {
+                id: 'reg-confirm-password',
+                valid: Boolean(confirmPassword) && confirmPassword === password,
+                message: !confirmPassword
+                    ? I18n.t('auth.error_password_required')
+                    : I18n.t('auth.error_password_mismatch'),
             },
             {
                 id: 'reg-first-name',
