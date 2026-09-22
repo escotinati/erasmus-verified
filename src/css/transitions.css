@@ -46,38 +46,16 @@ header.topbar,
     view-transition-name: app-bottom-nav;
 }
 
-/* Mismo mecanismo aplicado al selector Iniciar sesión/Crear cuenta
-   (login.html/registro.html, ver auth.css): .auth-card, .auth-switcher
-   y .auth-switcher__pill comparten nombre en las dos páginas, así que
-   el navegador anima la píldora deslizándose y la tarjeta cambiando de
-   alto al navegar entre ellas, en vez de recargar de golpe — sin JS ni
-   SPA, solo dos documentos con los mismos view-transition-name. Los dos
-   blobs del fondo (auth-bg-glow--1/--2) también los comparten, para que
-   el cambio de opacidad entre "modo login" y "modo registro" (auth.css)
-   se interpole de forma nativa en vez de saltar. recuperar.html usa las
-   mismas clases .auth-card/.auth-bg-glow--*, así que también entra en
-   esta transición al llegar desde login.html (bonus, no el objetivo
-   principal) — no tiene .auth-switcher, así que esa pareja simplemente
-   no se empareja en ese caso, sin error. */
-.auth-card {
-    view-transition-name: auth-card;
-}
-
-.auth-switcher {
-    view-transition-name: auth-switcher;
-}
-
-.auth-switcher__pill {
-    view-transition-name: auth-switcher-pill;
-}
-
-.auth-bg-glow--1 {
-    view-transition-name: auth-glow-1;
-}
-
-.auth-bg-glow--2 {
-    view-transition-name: auth-glow-2;
-}
+/* Probado y descartado a propósito: .auth-card/.auth-switcher/
+   .auth-switcher__pill/.auth-bg-glow--1/--2 (login.html/registro.html,
+   ver auth.css) llegaron a compartir view-transition-name entre las dos
+   páginas, para que la píldora del selector se deslizara y la tarjeta
+   cambiara de alto al navegar entre login y registro en vez de recargar
+   de golpe. Se quitó a petición explícita ("no me convence") — esa
+   navegación se comporta ahora igual que cualquier otra del sitio (el
+   cross-fade por defecto de navigation:auto de arriba, sin nombres
+   propios). Si se retoma en el futuro, el planteamiento (y por qué se
+   abandonó) queda documentado en el historial de CLAUDE.md, no aquí. */
 
 /* Complemento de esta sección, no CSS: src/js/utils/speculationRules.js
    precarga (prefetch, no prerender) las rutas del bottom-nav para que
