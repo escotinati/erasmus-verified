@@ -1084,7 +1084,7 @@
     padding-bottom: var(--space-16);
 }
 
-.alojamiento-section .card-grid--tile {
+.alojamiento-section .card-grid--stacked {
     margin-top: 32px;
 }
 

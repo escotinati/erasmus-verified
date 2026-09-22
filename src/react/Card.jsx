@@ -9,9 +9,11 @@
 //
 //    media/avatar imageUrl (+ imageAlt) · monogram · badge
 //    body         title · meta (+ metaIcon) · date · price · description
-//    ctas         [{ kind, label, href? | to?, onClick? }]  (o `cta` suelto)
+//    ctas         [{ kind, label, href? | to?, onClick?, rel? }]  (o `cta` suelto)
 //                 `href` = externo (http/https, pestaña nueva); `to` = interno
-//                 (mismo origen, misma pestaña)
+//                 (mismo origen, misma pestaña); `rel` (solo con `href`)
+//                 sobreescribe el `rel="noopener noreferrer"` por defecto —
+//                 p. ej. `"noopener noreferrer sponsored"` en enlaces de afiliado.
 //    href / rel   (solo layout 'tile') la card ENTERA es el enlace
 //    icon / highlight  (solo layout 'service') icono Material Symbols y
 //                 texto en negrita que abre la descripción ("25€ · …")
@@ -24,7 +26,9 @@
 //               sangre. Lista de partners de ciudad.html. `accent`
 //               (color CSS) tiñe el badge, el monograma y el hover.
 //    'tile'     nombre + descripción centrados; toda la card es un <a>
-//               (`href`, `rel`), sin CTA. Colaboradores (CollabGrid).
+//               (`href`, `rel`), sin CTA. Sin consumidor activo desde que
+//               CollabGrid.jsx pasó a `layout` por defecto (stacked) — se
+//               mantiene por si vuelve a hacer falta un enlace-tarjeta.
 //    'service'  icono en cuadro + título + "destacado · descripción" +
 //               CTA. Servicios verificados (ServiceCards).
 //    'photo'    foto a sangre 3:4 con degradado; título + `badge` (píldora
@@ -73,7 +77,7 @@ const CTA_KINDS = {
     link: { icon: 'chevron_right' },
 };
 
-function CardCta({ kind = 'info', label, href, to, onClick }) {
+function CardCta({ kind = 'info', label, href, to, onClick, rel }) {
     const { icon, extraClass } = CTA_KINDS[kind] || CTA_KINDS.info;
     const className = `card-cta card-cta--${kind}${extraClass ? ' ' + extraClass : ''}`;
     const content = (
@@ -111,7 +115,7 @@ function CardCta({ kind = 'info', label, href, to, onClick }) {
                 className={className}
                 href={safeHref}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel={rel || 'noopener noreferrer'}
                 onClick={onClick}
             >
                 {content}
