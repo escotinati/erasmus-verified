@@ -37,7 +37,7 @@
    (no forma parte del selector login/registro), de ahí que
    .auth-section__title/__sub sigan centrados aquí. */
 .auth-section--card {
-    max-width: 480px;
+    max-width: 580px;
     text-align: center;
 }
 
@@ -145,7 +145,7 @@
    encima. El fallback sin color-mix() (navegadores sin soporte) deja un
    fondo sólido normal, sin cristal pero perfectamente legible. */
 .auth-card--glass {
-    max-width: 460px;
+    max-width: 560px;
     margin-left: auto;
     margin-right: auto;
     text-align: left;
