@@ -11,6 +11,20 @@
     max-width: 640px;
 }
 
+/* Centra la tarjeta verticalmente en el hueco real entre el header y el
+   footer (main ya es flex:1 dentro del <body> flex-column — ver
+   base.css), en vez de dejarla pegada arriba con todo el sobrante
+   como aire suelto debajo antes del footer. Con esto, el padding-block
+   simétrico de .section (arriba) hace lo que promete: el mismo "aire"
+   arriba y abajo de la tarjeta, no una diferencia que crecía con la
+   altura de la pantalla. Solo en páginas de auth — el resto de
+   secciones de la web sigue en flujo normal, top-aligned. */
+.auth-page main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 /* ═══ Living Card — contenedor centrado compartido por login,
    registro y recuperar ═══
    Antes existía solo como .auth-section--login (login.html) y
@@ -446,7 +460,6 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
-    margin-top: var(--space-8);
     box-shadow: var(--shadow-sm);
 }
 
