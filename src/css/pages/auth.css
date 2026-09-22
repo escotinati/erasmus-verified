@@ -264,41 +264,6 @@
     box-shadow: var(--shadow-focus);
 }
 
-/* Transición simple entre login.html/registro.html al pulsar el
-   selector (login.js/registro.js, initAuthSwitcherFade()): la tarjeta
-   que se oculta se desvanece (opacity, sin mover ni cambiar de tamaño —
-   nada que morfear entre las dos páginas, a propósito, tras descartar
-   el planteamiento anterior con view-transition-name) y solo entonces
-   navega de verdad; la tarjeta de la página de destino ya entra con
-   fade propio (.anim-fade-up, presente en el HTML de las dos páginas).
-   var(--anim-duration-fast): el mismo token que ya usa el resto de
-   microinteracciones del tema activo (Verified/Parties). Con
-   prefers-reduced-motion, initAuthSwitcherFade() ni añade esta clase ni
-   retrasa la navegación — el enlace se comporta como uno normal.
-
-   .auth-card.auth-card--leaving (dos clases, no .auth-card--leaving a
-   secas): .auth-card YA lleva .anim-fade-up con su propio `animation`
-   (animations.css, cargado DESPUÉS de este archivo) — a igual
-   especificidad de una sola clase, esa regla ganaría por orden de
-   cascada y esta animación de salida nunca llegaría a reproducirse.
-   Mismo tipo de conflicto que ya resuelve `.auth-page .anim-fade-up`
-   más abajo, aquí con doble clase en vez de un ancestro. */
-.auth-card.auth-card--leaving {
-    animation: auth-card-leave var(--anim-duration-fast) var(--anim-easing-standard) forwards;
-}
-
-@keyframes auth-card-leave {
-    to {
-        opacity: 0;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .auth-card.auth-card--leaving {
-        animation: none;
-    }
-}
-
 /* ═══ Registro en 3 pasos ═══
    .auth-form (más abajo) suma aquí `overflow:hidden` — hace de
    contenedor para el paso visible: animateStepHeight() (registro.js)
