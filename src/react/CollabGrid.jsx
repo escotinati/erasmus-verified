@@ -1,10 +1,15 @@
 // ─────────────────────────────────────────────────────────────
 //  CollabGrid.jsx — cuadrícula de colaboradores (alojamiento, viajes y
-//  la sección de alojamiento del home). Cada colaborador es un <Card
-//  layout="tile">: toda la card es el enlace, sin botón CTA.
+//  la sección de alojamiento del home). Cada colaborador es un <Card>
+//  con el layout por defecto (stacked, el mismo que partners/eventos):
+//  imagen (placeholder, no hay logo en collabData.js) + título +
+//  descripción + un único CTA `offer` (reutiliza `.btn-primary-pill`,
+//  mismo estilo que las ofertas de ServiceCards). `rel: '... sponsored'`
+//  en el cta mantiene la marca de enlace de afiliado que llevaba el
+//  `<a>` cuando la card entera era el enlace (layout="tile").
 //
-//  Se monta directamente sobre el <div class="collab-grid"> (ver
-//  mount-collab-grid.jsx), así que las cards son hijas DIRECTAS del
+//  Se monta directamente sobre el <div class="card-grid card-grid--stacked">
+//  (ver mount-collab-grid.jsx), así que las cards son hijas DIRECTAS del
 //  grid — sin wrapper (Fragment), mismo criterio que SummaryCardGrid.
 //
 //  El texto llega por t() (I18n) al renderizar, no por data-i18n +
@@ -31,11 +36,14 @@ export default function CollabGrid({ set, animate }) {
             {items.map((item, index) => (
                 <Card
                     key={item.name}
-                    layout="tile"
-                    href={item.href}
-                    rel="noopener noreferrer sponsored"
                     title={item.name}
                     description={t(item.descKey, item.fallback)}
+                    cta={{
+                        kind: 'offer',
+                        label: t('services.view_offer_cta', 'Ver oferta'),
+                        href: item.href,
+                        rel: 'noopener noreferrer sponsored',
+                    }}
                     className={animate ? `anim-fade-up anim-delay-${index + 1}` : undefined}
                 />
             ))}

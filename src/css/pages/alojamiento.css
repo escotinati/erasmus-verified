@@ -9,18 +9,9 @@ body.alojamiento-page {
         var(--background);
 }
 
-/* Grid de colaboradores — 4 cols desktop, 2 cols móvil */
-.collab-grid {
-    display: grid;
-    /* Mobile-first: 2 columnas es el valor móvil por defecto, revierte
-       a 4 columnas en --bp-md */
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-top: 40px;
-    /* Las cards las pinta React (CollabGrid.jsx): reserva el alto de 2 filas
-       (móvil, 2 cols) para que la página no salte al llegar el JS. */
-    min-height: 268px;
-}
+/* El grid de colaboradores reutiliza .card-grid--stacked (card.css/home.css)
+   desde que CollabGrid.jsx pasó al layout por defecto — mismas columnas
+   que el grid de partners del home. */
 
 /* Bloque de contacto (¿eres empresa de alojamiento?) */
 .collab-contact {
@@ -51,11 +42,6 @@ body.alojamiento-page {
 
 @media (min-width: 900px) {
     /* --bp-md */
-    .collab-grid {
-        grid-template-columns: repeat(4, 1fr);
-        min-height: 129px; /* 1 fila en escritorio */
-    }
-
     .collab-contact {
         padding: 40px;
     }

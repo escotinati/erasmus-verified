@@ -8,7 +8,7 @@
     .countries-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    .cities-grid {
+    .card-grid--photo {
         grid-template-columns: repeat(4, 1fr);
     }
 }
@@ -31,7 +31,7 @@
         align-items: flex-end;
         margin-bottom: 64px;
     }
-    .services-grid {
+    .card-grid--service {
         grid-template-columns: repeat(3, 1fr);
     }
     .cta-card {
@@ -67,7 +67,7 @@
 @media (min-width: 1200px) {
     /* --bp-lg — este bloque debe ir SIEMPRE después de cualquier
        @media (min-width: 900px) que toque los mismos selectores
-       (.cta-card, .services-grid): a igual especificidad, en un
+       (.cta-card, .card-grid--service): a igual especificidad, en un
        empate de condiciones activas (ej. a 1250px) gana el que esté
        más abajo en el archivo, no el de mayor min-width. */
     .section,
@@ -78,11 +78,11 @@
     .section-header,
     .hero-stats,
     .countries-grid,
-    .cities-grid {
+    .card-grid--photo {
         padding-left: var(--margin-desktop);
         padding-right: var(--margin-desktop);
     }
-    .services-grid {
+    .card-grid--service {
         gap: 32px;
     }
     .cta-card {

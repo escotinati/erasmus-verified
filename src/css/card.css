@@ -32,6 +32,15 @@
     }
 }
 
+/* ── Grids de la familia ───────────────────────────────────────
+   Todo contenedor que agrupa Card comparte esta base; el modificador
+   identifica el layout de las cards que contiene (mismo criterio que
+   .card--<layout>). grid-template-columns/gap/breakpoints, propios de
+   cada contexto, siguen viviendo en el CSS de su página. */
+.card-grid {
+    display: grid;
+}
+
 /* ── Media ─────────────────────────────────────────────────── */
 
 .card__media {
