@@ -188,10 +188,6 @@ button,
 
 /* ── Utilities ──────────────────────────────────────────────── */
 
-.text-center {
-    text-align: center;
-}
-
 .material-symbols-outlined {
     font-variation-settings:
         'FILL' 0,
@@ -257,11 +253,6 @@ button,
     line-height: 1.6;
     margin-top: 16px;
     max-width: 560px;
-}
-
-.section-sub--centered {
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .section-link {
