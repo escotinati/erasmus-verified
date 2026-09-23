@@ -1100,6 +1100,14 @@
     padding-bottom: var(--space-16);
 }
 
+.card-grid--service {
+    /* Mobile-first: 1 columna es el valor móvil por defecto, revierte
+       a 3 en --bp-md. gap:20px hasta --bp-lg, luego 32px. */
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 64px;
+}
+
 /* ── 4.4 CTA section ────────────────────────────────────────── */
 
 .cta-section {

@@ -15,18 +15,13 @@
 //                 sobreescribe el `rel="noopener noreferrer"` por defecto —
 //                 p. ej. `"noopener noreferrer sponsored"` en enlaces de afiliado.
 //    href / rel   (solo layout 'tile') la card ENTERA es el enlace
-//    icon         (solo layout 'stacked', sin imageUrl) icono Material Symbols
-//                 centrado en el hueco de imagen — servicios verificados, que
-//                 no tienen foto real (ver ServiceCards).
+//    icon / highlight  (solo layout 'service') icono Material Symbols y
+//                 texto en negrita que abre la descripción ("25€ · …")
 //    to / arrow / hover  (solo layout 'photo') enlace INTERNO, flecha de
 //                 esquina y tipo de hover ('zoom' | 'reveal')
 //
 //  LAYOUTS (prop `layout`):
-//    'stacked'  (defecto) imagen 4:3 arriba + cuerpo — o, sin imageUrl,
-//               `icon` centrado sobre el mismo fondo que el placeholder
-//               genérico (servicios verificados) o el placeholder liso
-//               (partners/eventos/colaboradores sin foto). Home,
-//               servicios.html, escapadas de ciudad.js.
+//    'stacked'  (defecto) imagen 4:3 arriba + cuerpo. Home.
 //    'compact'  avatar de 44px junto al título, con borde, sin imagen a
 //               sangre. Lista de partners de ciudad.html. `accent`
 //               (color CSS) tiñe el badge, el monograma y el hover.
@@ -34,6 +29,8 @@
 //               (`href`, `rel`), sin CTA. Sin consumidor activo desde que
 //               CollabGrid.jsx pasó a `layout` por defecto (stacked) — se
 //               mantiene por si vuelve a hacer falta un enlace-tarjeta.
+//    'service'  icono en cuadro + título + "destacado · descripción" +
+//               CTA. Servicios verificados (ServiceCards).
 //    'photo'    foto a sangre 3:4 con degradado; título + `badge` (píldora
 //               verde) o `meta` (texto) abajo; toda la card es un <a>
 //               INTERNO (`to`, misma pestaña). Ciudades (CityCards).
@@ -156,6 +153,7 @@ export default function Card({
     imageAlt = '',
     monogram,
     icon,
+    highlight,
     to,
     arrow,
     hover = 'zoom',
@@ -223,6 +221,27 @@ export default function Card({
         );
     }
 
+    if (layout === 'service') {
+        return (
+            <div className={`card card--service ${className || ''}`.trim()}>
+                <div className="card__icon">
+                    <span className="material-symbols-outlined">{icon}</span>
+                </div>
+                <h3 className="card__title">{title}</h3>
+                <p className="card__desc">
+                    {highlight ? (
+                        <>
+                            <strong>{highlight}</strong>
+                            {' · '}
+                        </>
+                    ) : null}
+                    {description}
+                </p>
+                {footer}
+            </div>
+        );
+    }
+
     if (layout === 'tile') {
         const safeHref = window.sanitizeUrl(href);
         // Sin URL válida no hay a dónde llevar: no se renderiza la card
@@ -278,10 +297,6 @@ export default function Card({
             <div className="card__media">
                 {safeImageUrl ? (
                     <img src={safeImageUrl} alt={imageAlt} loading="lazy" />
-                ) : icon ? (
-                    <div className="card__media-icon" aria-hidden="true">
-                        <span className="material-symbols-outlined">{icon}</span>
-                    </div>
                 ) : (
                     <div className="card-img-placeholder"></div>
                 )}
