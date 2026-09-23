@@ -530,7 +530,7 @@ Además hay dos _skills_ invocables con `/`: `/add-city` y `/add-partner` (guía
 
 Notas puntuales en `docs/` — son fotos de un momento, no documentación viva; ante una duda, manda el código y este archivo:
 
-- `docs/page-boilerplate.md` — censo de qué `<link>`/`<script>` carga cada página pública y por qué. Útil como lista de comprobación al crear una página (dice "8 páginas"; hoy son 10).
+- `docs/page-boilerplate.md` — censo de qué `<link>`/`<script>` carga cada página pública y por qué. Útil como lista de comprobación al crear una página (dice "8 páginas"; hoy son 11 — no cubre `login.html`/`registro.html`/`recuperar.html`, creadas después).
 - `docs/design-tokens-link-fix.md` — el bug de 4 páginas que no cargaban `tokens.css`/`typography.css` (las variables se descartaban en silencio).
 - `docs/mobile-audit.md` — auditoría de los `@media` previa a los breakpoints 600/900/1200. Nombra clases que ya no existen (`.event-card`, `.collab-card`…): es histórica.
 - `docs/tech-debt.md` — **categorías de partner en dos listas** que deben coincidir a mano: el `<select id="f-category">` del admin y `CATEGORY_META`. Hoy el admin ofrece 5 (`nightlife`, `housing`, `services`, `community`, `travel`) y `CATEGORY_META` tiene 20, así que 15 categorías solo se pueden asignar tocando la base de datos. (El documento dice que `CATEGORY_META` está en `map-helpers.js`: ahora está en `categoryMeta.js`.)
