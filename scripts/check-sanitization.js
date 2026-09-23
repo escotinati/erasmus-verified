@@ -147,6 +147,16 @@ const EXPLICIT_EXCEPTIONS = [
         contains: 'heroBg.style.backgroundImage = `url(${JSON.stringify(safeImageUrl)})`;',
         reason: 'safeImageUrl ya pasó por sanitizeUrl() (línea de arriba); JSON.stringify() aquí resuelve el escapado de comillas específico de un valor dentro de url(...) en CSS — ver el comentario del propio archivo. No se generaliza JSON.stringify(...) como wrapper seguro en las reglas globales porque NO escapa < > & (no serviría para innerHTML de texto, solo para este contexto de cadena CSS/JS).',
     },
+    {
+        file: 'src/js/registro.js',
+        contains: "container.style.height = startHeight + 'px';",
+        reason: 'startHeight viene de container.getBoundingClientRect().height (animateStepHeight()) — una medida numérica de layout, nunca un dato de Supabase ni de usuario; no hay nada que escapar.',
+    },
+    {
+        file: 'src/js/registro.js',
+        contains: "container.style.height = endHeight + 'px';",
+        reason: 'endHeight viene de container.scrollHeight (animateStepHeight(), misma función que startHeight arriba) — mismo motivo: medida numérica de layout, no dato externo.',
+    },
 ];
 
 function isExplicitlyExempted(relFile, lineText) {

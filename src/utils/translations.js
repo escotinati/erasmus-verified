@@ -268,11 +268,15 @@ window.I18n.translations = {
         auth: {
             logout_cta: 'Cerrar sesión',
 
-            register_eyebrow: 'Únete a la comunidad',
             register_title: 'Crea tu cuenta',
-            register_subtitle:
-                'Regístrate para guardar tus preferencias y sacarle más partido a tu Erasmus.',
-            login_title: 'Inicia sesión',
+            register_step1_sub: 'Paso 1 de 3 · Email y contraseña',
+            register_step2_title: '¿Cómo te llamas?',
+            register_step2_sub: 'Paso 2 de 3 · Tu nombre',
+            register_step3_title: 'Un último paso',
+            register_step3_sub: 'Paso 3 de 3 · Tu ciudad e intereses',
+            continue_cta: 'Continuar',
+            back_cta: 'Atrás',
+            login_title: 'Bienvenido de nuevo',
             login_subtitle: 'Accede con tu email y contraseña para continuar.',
 
             email_label: 'Email',
@@ -298,11 +302,6 @@ window.I18n.translations = {
             register_submitting: 'Creando cuenta…',
             login_submitting: 'Entrando…',
 
-            already_have_account: '¿Ya tienes cuenta?',
-            no_account_yet: '¿Todavía no tienes cuenta?',
-            go_to_login: 'Inicia sesión',
-            go_to_register: 'Regístrate',
-
             register_success_title: 'Revisa tu correo',
             register_success_body:
                 'Te hemos enviado un enlace de confirmación a tu email. Confírmalo para poder iniciar sesión.',
@@ -313,7 +312,29 @@ window.I18n.translations = {
             error_password_short: 'La contraseña debe tener al menos 6 caracteres.',
             error_first_name_required: 'Introduce tu nombre.',
             error_city_required: 'Selecciona tu ciudad.',
+            error_password_mismatch: 'Las contraseñas no coinciden.',
             error_generic: 'Ha ocurrido un error. Inténtalo de nuevo.',
+
+            show_password: 'Mostrar contraseña',
+            hide_password: 'Ocultar contraseña',
+            forgot_password_link: '¿Olvidaste tu contraseña?',
+            back_to_login: 'Volver a iniciar sesión',
+
+            reset_eyebrow: 'RECUPERAR ACCESO',
+            reset_title: 'Recupera tu contraseña',
+            reset_subtitle: 'Te enviaremos un enlace a tu email para crear una nueva contraseña.',
+            reset_submit_cta: 'Enviar enlace',
+            reset_submitting: 'Enviando…',
+            reset_email_sent_title: 'Revisa tu correo',
+            reset_email_sent_body:
+                'Te hemos enviado un enlace para restablecer tu contraseña. Ábrelo desde este mismo dispositivo.',
+
+            new_password_title: 'Crea una nueva contraseña',
+            new_password_subtitle: 'Elige una contraseña nueva para tu cuenta.',
+            new_password_label: 'Nueva contraseña',
+            confirm_password_label: 'Confirma la contraseña',
+            reset_password_submit_cta: 'Guardar contraseña',
+            reset_password_submitting: 'Guardando…',
         },
     },
     en: {
@@ -569,10 +590,15 @@ window.I18n.translations = {
         auth: {
             logout_cta: 'Log out',
 
-            register_eyebrow: 'Join the community',
             register_title: 'Create your account',
-            register_subtitle: 'Sign up to save your preferences and get more out of your Erasmus.',
-            login_title: 'Log in',
+            register_step1_sub: 'Step 1 of 3 · Email and password',
+            register_step2_title: "What's your name?",
+            register_step2_sub: 'Step 2 of 3 · Your name',
+            register_step3_title: 'One last step',
+            register_step3_sub: 'Step 3 of 3 · Your city and interests',
+            continue_cta: 'Continue',
+            back_cta: 'Back',
+            login_title: 'Welcome back',
             login_subtitle: 'Enter your email and password to continue.',
 
             email_label: 'Email',
@@ -598,11 +624,6 @@ window.I18n.translations = {
             register_submitting: 'Creating account…',
             login_submitting: 'Logging in…',
 
-            already_have_account: 'Already have an account?',
-            no_account_yet: "Don't have an account yet?",
-            go_to_login: 'Log in',
-            go_to_register: 'Sign up',
-
             register_success_title: 'Check your email',
             register_success_body:
                 "We've sent you a confirmation link. Confirm it to be able to log in.",
@@ -613,7 +634,29 @@ window.I18n.translations = {
             error_password_short: 'Password must be at least 6 characters.',
             error_first_name_required: 'Enter your first name.',
             error_city_required: 'Select your city.',
+            error_password_mismatch: "Passwords don't match.",
             error_generic: 'Something went wrong. Please try again.',
+
+            show_password: 'Show password',
+            hide_password: 'Hide password',
+            forgot_password_link: 'Forgot your password?',
+            back_to_login: 'Back to login',
+
+            reset_eyebrow: 'RECOVER ACCESS',
+            reset_title: 'Reset your password',
+            reset_subtitle: "We'll send a link to your email to create a new password.",
+            reset_submit_cta: 'Send link',
+            reset_submitting: 'Sending…',
+            reset_email_sent_title: 'Check your email',
+            reset_email_sent_body:
+                "We've sent you a link to reset your password. Open it from this same device.",
+
+            new_password_title: 'Create a new password',
+            new_password_subtitle: 'Choose a new password for your account.',
+            new_password_label: 'New password',
+            confirm_password_label: 'Confirm password',
+            reset_password_submit_cta: 'Save password',
+            reset_password_submitting: 'Saving…',
         },
     },
 };

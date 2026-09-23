@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Iniciar sesión — Erasmus Verified</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
             rel="stylesheet"
@@ -21,11 +22,14 @@
         <script src="/src/js/experience.js"></script>
     </head>
 
-    <body class="auth-page">
+    <body class="auth-page auth-page--login">
         <!-- Fondo degradado a pantalla completa (fixed, detrás de todo el
              contenido) — ver .auth-bg en auth.css. Fuera de <main> a
              propósito: cubre todo el viewport (nav + footer incluidos),
-             no solo el ancho de .auth-section. -->
+             no solo el ancho de .auth-section. auth-page--login (junto al
+             equivalente auth-page--register de registro.html) es lo que
+             hace que el blob índigo gane presencia sobre el magenta —
+             ver la nota junto a esas reglas en auth.css. -->
         <div class="auth-bg" aria-hidden="true">
             <div class="auth-bg-glow auth-bg-glow--1"></div>
             <div class="auth-bg-glow auth-bg-glow--2"></div>
@@ -36,21 +40,44 @@
         <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
 
         <main style="flex: 1">
-            <div class="section auth-section auth-section--login">
-                <h1
-                    class="section-title auth-section__title anim-page-enter"
-                    data-i18n="auth.login_title"
-                >
-                    Inicia sesión
-                </h1>
-                <p
-                    class="section-sub auth-section__sub anim-page-enter"
-                    data-i18n="auth.login_subtitle"
-                >
-                    Accede con tu email y contraseña para continuar.
-                </p>
+            <div class="section auth-section auth-section--card">
+                <div class="auth-card auth-card--glass anim-fade-up anim-delay-1">
+                    <!-- Selector Iniciar sesión / Crear cuenta — sustituye al
+                         antiguo enlace "¿No tienes cuenta? Regístrate": son dos
+                         <a> reales (navegación normal a registro.html), no un
+                         toggle de JS. El "salto" entre esta tarjeta y la de
+                         registro.html se resuelve con las View Transitions ya
+                         activadas en el sitio (transitions.css) — ambas páginas
+                         comparten los mismos view-transition-name en la píldora,
+                         la tarjeta y el fondo, así que el navegador anima la
+                         píldora deslizándose y la tarjeta cambiando de alto en
+                         vez de recargar de golpe. -->
+                    <nav class="auth-switcher" aria-label="Iniciar sesión o crear cuenta">
+                        <span class="auth-switcher__pill" aria-hidden="true"></span>
+                        <a
+                            href="login.html"
+                            class="auth-switcher__tab"
+                            aria-current="page"
+                            data-i18n="auth.login_submit_cta"
+                            >Iniciar sesión</a
+                        >
+                        <a
+                            href="registro.html"
+                            class="auth-switcher__tab"
+                            data-i18n="auth.register_submit_cta"
+                            >Crear cuenta</a
+                        >
+                    </nav>
 
-                <div class="auth-card auth-card--login anim-fade-up anim-delay-1">
+                    <div class="auth-card__head">
+                        <h1 class="auth-card__title anim-page-enter" data-i18n="auth.login_title">
+                            Bienvenido de nuevo
+                        </h1>
+                        <p class="auth-card__sub anim-page-enter" data-i18n="auth.login_subtitle">
+                            Accede con tu email y contraseña para continuar.
+                        </p>
+                    </div>
+
                     <form id="login-form" class="auth-form" novalidate>
                         <div class="auth-field">
                             <label for="login-email" data-i18n="auth.email_label">Email</label>
@@ -70,14 +97,33 @@
                             <label for="login-password" data-i18n="auth.password_label"
                                 >Contraseña</label
                             >
-                            <input
-                                id="login-password"
-                                name="password"
-                                type="password"
-                                autocomplete="current-password"
-                                required
-                                aria-describedby="login-password-error"
-                            />
+                            <div class="auth-input-group auth-input-group--password">
+                                <input
+                                    id="login-password"
+                                    name="password"
+                                    type="password"
+                                    autocomplete="current-password"
+                                    required
+                                    aria-describedby="login-password-error"
+                                />
+                                <button
+                                    type="button"
+                                    id="login-password-toggle"
+                                    class="auth-password-toggle"
+                                >
+                                    <span
+                                        class="material-symbols-outlined"
+                                        id="login-password-toggle-icon"
+                                        aria-hidden="true"
+                                        >visibility</span
+                                    >
+                                </button>
+                            </div>
+                            <p class="auth-forgot">
+                                <a href="recuperar.html" data-i18n="auth.forgot_password_link"
+                                    >¿Olvidaste tu contraseña?</a
+                                >
+                            </p>
                         </div>
 
                         <button
@@ -89,11 +135,6 @@
                             Iniciar sesión
                         </button>
                     </form>
-
-                    <p class="auth-switch">
-                        <span data-i18n="auth.no_account_yet">¿Todavía no tienes cuenta?</span>
-                        <a href="registro.html" data-i18n="auth.go_to_register">Regístrate</a>
-                    </p>
                 </div>
             </div>
         </main>

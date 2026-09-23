@@ -52,6 +52,27 @@ async function signOut() {
     return window.supabaseClient.auth.signOut();
 }
 
+// Dispara el email de recuperación de Supabase Auth. redirectTo tiene que
+// estar en la lista de "Redirect URLs" del proyecto (Authentication → URL
+// Configuration) — mismo tipo de requisito de configuración que "Allow new
+// users to sign up" para signUp() (ver CLAUDE.md); sin eso, Supabase
+// redirige a la Site URL por defecto en vez de a recuperar.html y el
+// enlace del email no lleva a ningún sitio útil.
+async function resetPasswordForEmail(email) {
+    return window.supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/recuperar.html',
+    });
+}
+
+// Solo funciona con la sesión temporal que crea Supabase al abrir el
+// enlace de recuperación (evento PASSWORD_RECOVERY) — sin esa sesión,
+// devuelve un error de "Auth session missing" que recuperar.js muestra
+// tal cual, mismo criterio que el resto de errores de Supabase en este
+// archivo.
+async function updatePassword(password) {
+    return window.supabaseClient.auth.updateUser({ password });
+}
+
 // A diferencia de signUp/signIn/signOut, aquí sí se simplifica el
 // resultado (igual que fetchActiveCities() en citiesService.js): quien
 // llama solo necesita saber "hay sesión o no", nunca el objeto error.

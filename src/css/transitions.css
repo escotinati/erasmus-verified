@@ -46,6 +46,17 @@ header.topbar,
     view-transition-name: app-bottom-nav;
 }
 
+/* Probado y descartado a propósito: .auth-card/.auth-switcher/
+   .auth-switcher__pill/.auth-bg-glow--1/--2 (login.html/registro.html,
+   ver auth.css) llegaron a compartir view-transition-name entre las dos
+   páginas, para que la píldora del selector se deslizara y la tarjeta
+   cambiara de alto al navegar entre login y registro en vez de recargar
+   de golpe. Se quitó a petición explícita ("no me convence") — esa
+   navegación se comporta ahora igual que cualquier otra del sitio (el
+   cross-fade por defecto de navigation:auto de arriba, sin nombres
+   propios). Si se retoma en el futuro, el planteamiento (y por qué se
+   abandonó) queda documentado en el historial de CLAUDE.md, no aquí. */
+
 /* Complemento de esta sección, no CSS: src/js/utils/speculationRules.js
    precarga (prefetch, no prerender) las rutas del bottom-nav para que
    la transición de arriba no se note lenta en 3G. No busques un
