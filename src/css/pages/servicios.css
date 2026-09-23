@@ -9,6 +9,21 @@ body.servicios-page {
         var(--background);
 }
 
+.servicios-hero {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.servicios-hero .section-title {
+    font-size: clamp(32px, 5vw, 48px);
+}
+
+.servicios-hero .section-sub {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .servicios-category {
     margin-top: 64px;
 }
@@ -25,4 +40,3 @@ body.servicios-page {
         grid-template-columns: repeat(2, 1fr);
     }
 }
-
