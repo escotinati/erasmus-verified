@@ -23,8 +23,16 @@
         transform var(--anim-duration-fast) var(--anim-easing-standard);
 }
 
+/* color explícito: sin esto, la regla global "a:hover" (typography.css)
+   gana por especificidad sobre el "color" base de .btn-primary-pill (esta
+   última no lleva :hover en su selector) y el texto de cualquier
+   .btn-primary-pill que sea un <a> (CTA "offer" de Card.jsx, el CTA de
+   contacto de alojamiento.html/viajes.html, "Explorar ciudades" del home,
+   "Unirse al grupo" de WhatsApp...) se queda del mismo color que el fondo
+   al pasar el ratón — texto invisible. */
 .btn-primary-pill:hover {
     background-color: var(--color-primary-hover);
+    color: var(--on-primary);
     opacity: 0.88;
     transform: translateY(-2px);
 }
