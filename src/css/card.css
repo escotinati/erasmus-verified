@@ -392,13 +392,18 @@
     box-shadow: none;
     transition:
         border-color 0.2s,
-        box-shadow 0.2s;
+        box-shadow 0.2s,
+        transform var(--anim-duration-fast) var(--anim-easing-standard);
 }
 
+/* Sin "transform: none": el levantamiento en hover (.card:hover,
+   card.css) es el mismo en toda la familia, incluida esta card — antes
+   se cancelaba aquí a propósito, dejando el CTA "offer" (.btn-primary-pill)
+   como único elemento con feedback de hover, distinto del resto de cards
+   de la web (index.html incluido). */
 .card--service:hover {
     border-color: var(--primary);
     box-shadow: 0 8px 32px rgba(70, 72, 212, 0.1);
-    transform: none;
 }
 
 .card__icon {
