@@ -5,18 +5,14 @@
 //  confundir con alojamientos.html/viajes.html (listado de TODOS),
 //  ver la nota de nomenclatura en CLAUDE.md.
 //
-//  El elemento que distingue cada ficha es `linkType`:
-//    'externo' — el colaborador tiene su propia web (Uniplaces,
-//                FlixBus...); el CTA principal es "Ver oferta" y abre
-//                esa web en pestaña nueva, igual que el resto de CTAs
-//                externos del proyecto (Card.jsx, CollabGrid.jsx).
-//    'interno' — la reserva la gestiona Erasmus Verified directamente;
-//                el CTA principal es "Solicitar información", SIN
-//                destino funcional todavía (pendiente de decidir con
-//                Álvaro qué pasa al pulsarlo — formulario, WhatsApp...
-//                de momento es solo visual, ver CLAUDE.md).
-//  Ambos casos comparten el resto de la estructura: galería, badge de
-//  verificado, meta, descripción, características y "más similares".
+//  TODA ficha está gestionada directamente por Erasmus Verified — sin
+//  distinción de terceros (decisión explícita de Álvaro: se retiró el
+//  `linkType` 'interno'/'externo' que existía antes, junto con la
+//  sección "Plataformas colaboradoras"/CollabGrid.jsx de
+//  alojamientos.html/viajes.html). El CTA principal es siempre
+//  "Solicitar información", SIN destino funcional todavía (pendiente de
+//  decidir con Álvaro qué pasa al pulsarlo — formulario, WhatsApp... de
+//  momento es solo visual, ver CLAUDE.md).
 //
 //  Datos: `LISTINGS` (listingsData.js) es un array de ejemplo en
 //  memoria — sustituye a una tabla de Supabase que todavía no existe
@@ -102,7 +98,6 @@ export default function ListingDetail({ kind }) {
         );
     }
 
-    const isExterno = listing.linkType === 'externo';
     const related = items.filter((item) => item.id !== listing.id).slice(0, 3);
     const breadcrumbLabel = t(
         kind === 'alojamiento' ? 'nav.accommodation' : 'nav.trips',
@@ -116,16 +111,12 @@ export default function ListingDetail({ kind }) {
         `listing.related_${kind}`,
         kind === 'alojamiento' ? 'Más alojamientos similares' : 'Más viajes similares'
     );
-    const metaSourceLabel = isExterno
-        ? `${t('listing.via_prefix', 'Vía')} ${listing.source}`
-        : `${t('listing.organized_by_prefix', 'Organizado por')} ${listing.source}`;
-    const priceCaption = isExterno
-        ? `${t('listing.opens_on_prefix', 'Se abre en la web de')} ${listing.source}`
-        : t('listing.managed_by_verified', 'Gestionado directamente por Erasmus Verified');
-    // Sanea igual que Card.jsx (CardCta): mismo hábito, útil desde ya
-    // aunque hoy sea un array en memoria, para no tener que acordarse
-    // el día que ctaHref venga de Supabase/admin de verdad.
-    const safeCtaHref = isExterno ? window.sanitizeUrl(listing.ctaHref) : null;
+    // "Erasmus Verified" no se traduce (nombre de marca), solo el prefijo.
+    const metaSourceLabel = `${t('listing.organized_by_prefix', 'Organizado por')} Erasmus Verified`;
+    const priceCaption = t(
+        'listing.managed_by_verified',
+        'Gestionado directamente por Erasmus Verified'
+    );
     // Al menos 1 aunque el dato viniera vacío/negativo — la galería
     // siempre tiene algo que mostrar. Con 2 fotos no hay "+N" (no
     // queda ninguna más por ver); con 1 no hay ni miniatura.
@@ -181,21 +172,12 @@ export default function ListingDetail({ kind }) {
                             </span>
                             {t('listing.verified_badge', 'Verificado por Erasmus')}
                         </span>
-                        {isExterno ? (
-                            <span className="listing-badge listing-badge--external">
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    open_in_new
-                                </span>
-                                {t('listing.external_badge', 'Enlace externo')}
+                        <span className="listing-badge listing-badge--direct">
+                            <span className="material-symbols-outlined" aria-hidden="true">
+                                handshake
                             </span>
-                        ) : (
-                            <span className="listing-badge listing-badge--direct">
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    handshake
-                                </span>
-                                {t('listing.direct_badge', 'Reserva directa')}
-                            </span>
-                        )}
+                            {t('listing.direct_badge', 'Reserva directa')}
+                        </span>
                     </div>
 
                     <h1 className="listing-title">{listing.title}</h1>
@@ -233,28 +215,12 @@ export default function ListingDetail({ kind }) {
                     </div>
                     <p className="listing-price-caption">{priceCaption}</p>
 
-                    {isExterno ? (
-                        <a
-                            className="btn-primary-pill listing-cta-primary"
-                            href={safeCtaHref || undefined}
-                            target="_blank"
-                            rel="noopener noreferrer sponsored"
-                        >
-                            {t('services.view_offer_cta', 'Ver oferta')}
-                            <span className="material-symbols-outlined" aria-hidden="true">
-                                arrow_forward
-                            </span>
-                        </a>
-                    ) : (
-                        <>
-                            <button type="button" className="btn-primary-pill listing-cta-primary">
-                                {t('listing.request_info_cta', 'Solicitar información')}
-                            </button>
-                            <button type="button" className="listing-cta-secondary">
-                                {t('listing.view_availability_cta', 'Ver disponibilidad')}
-                            </button>
-                        </>
-                    )}
+                    <button type="button" className="btn-primary-pill listing-cta-primary">
+                        {t('listing.request_info_cta', 'Solicitar información')}
+                    </button>
+                    <button type="button" className="listing-cta-secondary">
+                        {t('listing.view_availability_cta', 'Ver disponibilidad')}
+                    </button>
 
                     <div className="listing-trust">
                         <div className="listing-trust-item">

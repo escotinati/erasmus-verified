@@ -36,67 +36,27 @@
                         Muévete por Europa
                     </h1>
                     <p class="section-sub anim-page-enter" data-i18n="trips.subtitle">
-                        Colaboramos con las mejores plataformas de transporte para que te muevas por
-                        Europa sin complicaciones ni sorpresas.
+                        Viajes y excursiones organizados directamente por nuestro equipo para que
+                        te muevas por Europa sin complicaciones ni sorpresas.
                     </p>
                 </div>
 
                 <!-- Fichas individuales (viaje.html?id=ID) — ver
-                     ListingDetail.jsx/FeaturedListings.jsx. Va PRIMERO a
-                     propósito: es un viaje/excursión gestionado por
-                     nosotros, no una empresa grande — el camino principal
-                     de la página. Sin clase "events-scroll" en este div:
+                     ListingDetail.jsx/FeaturedListings.jsx. Única
+                     sección de la página: ya no hay "Plataformas
+                     colaboradoras" (CollabGrid.jsx) — todo viaje está
+                     organizado directamente por Erasmus Verified, sin
+                     terceros. Sin clase "events-scroll" en este div:
                      FeaturedListings.jsx pinta esa rejilla DENTRO de su
                      propio render (comparte estado con la barra de
                      filtro, ver el componente). -->
                 <div data-featured-listings="viaje" data-animate></div>
-
-                <!-- Colaboradores externos (FlixBus, BlaBlaCar...) — ver
-                     CollabGrid.jsx. Va SEGUNDO a propósito, después de las
-                     fichas propias. Distinto de la sección de arriba:
-                     estas cards saltan a la web externa del colaborador
-                     (CTA "external", badge "Enlace externo"), nunca a una
-                     página propia. -->
-                <div class="nights-header" style="margin-top: 64px">
-                    <span class="eyebrow eyebrow--primary" data-i18n="listing.collabs_eyebrow"
-                        >PLATAFORMAS COLABORADORAS</span
-                    >
-                    <h2
-                        class="section-title"
-                        style="font-size: 1.4rem"
-                        data-i18n="listing.collabs_title_viaje"
-                    >
-                        Más plataformas de transporte
-                    </h2>
-                    <p class="section-sub" data-i18n="listing.collabs_subtitle">
-                        Empresas verificadas que te redirigen a su propia web.
-                    </p>
-                </div>
-
-                <div class="events-scroll" data-collab-grid="trips" data-animate></div>
-
-                <div class="collab-contact anim-fade-up">
-                    <span class="eyebrow eyebrow--primary" data-i18n="trips.company_eyebrow"
-                        >¿ERES UNA EMPRESA DE TRANSPORTE?</span
-                    >
-                    <h3 data-i18n="common.collaborate_with_us">Colabora con nosotros</h3>
-                    <p data-i18n="trips.collab_body">
-                        Si ofreces transporte o viajes para estudiantes Erasmus, queremos conocerte.
-                    </p>
-                    <a
-                        href="mailto:hola@erasmusverified.com"
-                        class="btn-primary-pill"
-                        data-i18n="common.contact_cta"
-                        >Contactar</a
-                    >
-                </div>
             </section>
         </main>
 
         <!-- FOOTER (React, rama react/menu) — ver src/react/Footer.jsx -->
         <div id="footer-root"></div>
         <script type="module" src="/src/react/mount-footer.jsx"></script>
-        <script type="module" src="/src/react/mount-collab-grid.jsx"></script>
         <script type="module" src="/src/react/mount-featured-listings.jsx"></script>
 
         <!-- Mobile-nav overlay: ahora vive en src/react/TopbarNav.jsx (rama react/menu) -->

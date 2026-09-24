@@ -75,12 +75,6 @@ const CTA_KINDS = {
     offer: { icon: null, extraClass: 'btn-primary-pill' },
     // Enlace de texto con chevron a una página INTERNA (prop `to`, misma pestaña).
     link: { icon: 'chevron_right' },
-    // Redirección a un sitio EXTERNO (colaborador/afiliado): reutiliza
-    // el botón global .btn-outline-pill — misma familia/talla que
-    // .btn-primary-pill ("offer"), solo cambia relleno por contorno,
-    // a propósito menos protagonista — la propia jerarquía visual ya
-    // dice "esto te saca de la web".
-    external: { icon: 'open_in_new', extraClass: 'btn-outline-pill' },
 };
 
 function CardCta({ kind = 'info', label, href, to, onClick, rel }) {

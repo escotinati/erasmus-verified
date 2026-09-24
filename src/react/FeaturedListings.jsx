@@ -2,23 +2,20 @@
 //  FeaturedListings.jsx — cards de alojamientos.html/viajes.html
 //  (el listado de TODOS) que enlazan a la ficha individual de UNO en
 //  concreto (alojamiento.html/viaje.html?id=ID — ver ListingDetail.jsx).
+//  Es la ÚNICA sección de esas dos páginas: ya no hay "Plataformas
+//  colaboradoras" (CollabGrid.jsx) — se retiró junto con la distinción
+//  interno/externo, decisión explícita de Álvaro: todo alojamiento y
+//  todo viaje está gestionado directamente por Erasmus Verified, sin
+//  terceros.
 //
-//  Distinto de CollabGrid.jsx: esas cards saltan directamente a la web
-//  externa del colaborador (Uniplaces, FlixBus...), CTA "external"; estas
-//  se quedan dentro de la web, CTA "offer" (botón relleno, mismo peso
-//  visual que "Ver oferta" — a propósito: esta sección va PRIMERO en la
-//  página y es el camino principal, ver alojamientos.html/viajes.html).
-//
-//  Filtros: todo en memoria, sin red (LISTINGS[kind] tiene 4 entradas
+//  Filtros: todo en memoria, sin red (LISTINGS[kind] tiene 10 entradas
 //  hoy) — texto libre (normalize() quita acentos/mayúsculas, mismo
 //  criterio que el filtro de ciudades-todas.html, sobre título +
-//  ubicación + quién publica + descripción: "todos los campos" que tiene
-//  una ficha, no solo el título) + tipo (`linkType`: interno/externo,
-//  mismo campo que decide el CTA en ListingDetail.jsx) + orden por
-//  precio (asc/desc, parseado de `item.price` con priceValue()). El
-//  root incluye la barra de filtros Y la rejilla en el mismo árbol de
-//  React (a diferencia de CollabGrid.jsx, que solo pinta cards) porque
-//  comparten estado — ver mount-featured-listings.jsx.
+//  ubicación + descripción: "todos los campos" que tiene una ficha, no
+//  solo el título) + orden por precio (asc/desc, parseado de
+//  `item.price` con priceValue()). El root incluye la barra de filtros
+//  Y la rejilla en el mismo árbol de React porque comparten estado —
+//  ver mount-featured-listings.jsx.
 // ─────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from 'react';
@@ -41,40 +38,32 @@ function priceValue(item) {
 export default function FeaturedListings({ kind, animate = true }) {
     const items = LISTINGS[kind] || [];
     const [query, setQuery] = useState('');
-    const [typeFilter, setTypeFilter] = useState('');
     const [sortOrder, setSortOrder] = useState('');
     const nq = normalize(query);
     // Busca en TODOS los campos de texto relevantes de la ficha (título,
-    // ubicación, quién la publica y la descripción) — no solo el título:
-    // el placeholder promete "nombre o zona"/"destino", y "Barcelona" no
-    // aparece en el título de "Estudio en Gràcia" pero sí en su location
-    // ("Gràcia, Barcelona"); "Uniplaces" no aparece en ningún título pero
-    // sí en su `source`. Cada kind ya trae los mismos campos en sus datos
+    // ubicación y descripción) — no solo el título: el placeholder
+    // promete "nombre o zona"/"destino", y "Barcelona" no aparece en el
+    // título de "Estudio en Gràcia" pero sí en su location ("Gràcia,
+    // Barcelona"). Cada kind ya trae los mismos campos en sus datos
     // (listingsData.js), así que este mismo filtro es "consecuente" con
     // lo que se está mirando sin necesitar lógica distinta por kind.
     const searched = nq
         ? items.filter((item) =>
-              normalize(
-                  `${item.title} ${item.location} ${item.source} ${item.description}`
-              ).includes(nq)
+              normalize(`${item.title} ${item.location} ${item.description}`).includes(nq)
           )
         : items;
-    // Tipo de ficha: 'interno' (gestionado por Erasmus Verified/particular,
-    // sin CTA externo todavía) vs 'externo' (redirige a la web de quien la
-    // publica) — mismo campo `linkType` que decide el CTA en ListingDetail.jsx.
-    const byType = typeFilter ? searched.filter((item) => item.linkType === typeFilter) : searched;
     // Ordenar por precio es opcional (select con "Más relevantes" por
     // defecto = orden original de listingsData.js); .slice() antes de
     // .sort() porque Array.prototype.sort muta el array in-place.
     const filtered = sortOrder
-        ? byType
+        ? searched
               .slice()
               .sort((a, b) =>
                   sortOrder === 'asc'
                       ? priceValue(a) - priceValue(b)
                       : priceValue(b) - priceValue(a)
               )
-        : byType;
+        : searched;
 
     // Mismo motivo que SummaryCardGrid.jsx: el reveal se engancha
     // DESPUÉS del commit real de React, dentro del propio componente.
@@ -91,7 +80,6 @@ export default function FeaturedListings({ kind, animate = true }) {
         kind === 'alojamiento' ? 'Busca por nombre o zona…' : 'Busca por destino…'
     );
 
-    const typeLabel = t('listing.filter_type_label', 'Filtrar por tipo');
     const sortLabel = t('listing.filter_sort_label', 'Ordenar por precio');
 
     return (
@@ -123,21 +111,6 @@ export default function FeaturedListings({ kind, animate = true }) {
                             </button>
                         ) : null}
                     </div>
-
-                    <select
-                        className="featured-filter-select"
-                        value={typeFilter}
-                        onChange={(e) => setTypeFilter(e.target.value)}
-                        aria-label={typeLabel}
-                    >
-                        <option value="">{t('listing.filter_type_all', 'Todos los tipos')}</option>
-                        <option value="interno">
-                            {t('listing.filter_type_internal', 'Gestionado por Erasmus Verified')}
-                        </option>
-                        <option value="externo">
-                            {t('listing.filter_type_external', 'Enlace externo')}
-                        </option>
-                    </select>
 
                     <select
                         className="featured-filter-select"

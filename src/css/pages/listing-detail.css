@@ -173,11 +173,6 @@ body.listing-detail-page {
     color: var(--color-success, #10b981);
 }
 
-.listing-badge--external {
-    border: 1px solid var(--outline-variant);
-    color: var(--on-surface-variant);
-}
-
 .listing-badge--direct {
     background: var(--primary-fixed);
     color: var(--primary);
