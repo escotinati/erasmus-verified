@@ -9,9 +9,13 @@ body.alojamiento-page {
         var(--background);
 }
 
-/* El grid de colaboradores reutiliza .card-grid--stacked (card.css/home.css)
-   desde que CollabGrid.jsx pasó al layout por defecto — mismas columnas
-   que el grid de partners del home. */
+/* El grid de colaboradores reutiliza .events-scroll (pages/home.css):
+   carrusel horizontal con snap en móvil, rejilla desde --bp-md — mismo
+   contenedor que "Trending nights" del home, a petición explícita para
+   igualar el comportamiento de las cards de Vida Nocturna. También pasa
+   data-cta-kind="tickets" (ver CollabGrid.jsx) para el CTA con flecha.
+   viajes.html y la sección de alojamiento del home siguen con
+   .card-grid--stacked (card.css/home.css) y CTA "offer" sin flecha. */
 
 /* Bloque de contacto (¿eres empresa de alojamiento?) */
 .collab-contact {
