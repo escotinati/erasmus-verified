@@ -79,6 +79,53 @@ a.btn-primary-pill {
     transform: translateY(0);
 }
 
+/* Tercera variante de la misma familia de botones pill — mismo
+   box-model/tipografía EXACTOS que .btn-primary-pill/.btn-ghost-pill
+   (12px 24px, 14px/600, letter-spacing 0.02em): solo cambia el color,
+   nunca el tamaño. .btn-ghost-pill está pensado para el hero oscuro
+   (borde blanco translúcido); este es su equivalente para fondo claro
+   (tarjetas, listados) — botón secundario/outline, p. ej. el CTA
+   "external" de Card.jsx (colaboradores que redirigen fuera, ver
+   CTA_KINDS): mismo peso visual que el resto de la app, la diferencia
+   con "offer" es solo relleno vs. contorno, no la talla. */
+.btn-outline-pill {
+    background: transparent;
+    color: var(--on-surface);
+    border: 1px solid var(--outline-variant);
+    padding: 12px 24px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition:
+        border-color var(--duration-base) var(--ease-out),
+        background-color var(--duration-base) var(--ease-out),
+        transform var(--anim-duration-fast) var(--anim-easing-standard);
+}
+
+.btn-outline-pill:hover {
+    border-color: var(--primary);
+    background: var(--primary-fixed);
+    transform: translateY(-2px);
+}
+
+.btn-outline-pill:active {
+    transform: translateY(0) scale(0.96);
+}
+
+.btn-outline-pill:focus-visible {
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+a.btn-outline-pill {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
 .icon-btn {
     background: none;
     border: none;

@@ -30,7 +30,17 @@ export default function FeaturedListings({ kind, animate = true }) {
     const items = LISTINGS[kind] || [];
     const [query, setQuery] = useState('');
     const nq = normalize(query);
-    const filtered = nq ? items.filter((item) => normalize(item.title).includes(nq)) : items;
+    // Busca en título Y ubicación (zona en alojamiento, punto de salida/
+    // destino en viaje) — el placeholder promete "nombre o zona"/"destino",
+    // así que solo mirar el título se queda corto: "Barcelona" no
+    // aparece en el título de "Estudio en Gràcia", pero sí en su
+    // location ("Gràcia, Barcelona"). Cada kind ya trae el campo
+    // adecuado en sus propios datos (listingsData.js), así que este
+    // mismo filtro es "consecuente" con lo que se está mirando sin
+    // necesitar lógica distinta por kind.
+    const filtered = nq
+        ? items.filter((item) => normalize(`${item.title} ${item.location}`).includes(nq))
+        : items;
 
     // Mismo motivo que SummaryCardGrid.jsx: el reveal se engancha
     // DESPUÉS del commit real de React, dentro del propio componente.

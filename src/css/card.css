@@ -632,41 +632,17 @@
 /* ═══════════════════════════════════════════════════════════
    CTA "external" y .card--external — colaboradores/afiliados que
    abren la web de OTRA empresa (Uniplaces, FlixBus...), a distinguir
-   de una card que lleva a una ficha propia (CTA "offer"/"link").
-   Botón secundario con borde a propósito, nunca tan protagonista como
-   .btn-primary-pill: la propia jerarquía visual ya dice "esto te saca
-   de la web". Ver CollabGrid.jsx.
+   de una card que lleva a una ficha propia (CTA "offer"/"link"). El
+   botón en sí es .btn-outline-pill (components.css) — misma familia y
+   talla EXACTA que .btn-primary-pill ("offer"), solo contorno en vez
+   de relleno; aquí solo el tamaño del icono, específico de esta card.
+   Ver CollabGrid.jsx.
    ═══════════════════════════════════════════════════════════ */
 
 .card--external {
     background: var(--surface-container-low);
 }
 
-.card-cta--external {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: var(--tap-min);
-    padding: 9px 18px;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--outline-variant);
-    background: var(--surface);
-    color: var(--on-surface);
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    cursor: pointer;
-    transition:
-        border-color var(--duration-fast) var(--ease-out),
-        background var(--duration-fast) var(--ease-out);
-}
-
 .card-cta--external .material-symbols-outlined {
     font-size: 16px;
-}
-
-.card-cta--external:hover {
-    border-color: var(--primary);
-    background: var(--primary-fixed);
 }
