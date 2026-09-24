@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Navbar scroll shadow para el patrón header.topbar / .hero-legacy .topbar
-    // (ciudad.html, mapa.html, servicios.html, viajes.html, alojamiento.html,
+    // (ciudad.html, mapa.html, servicios.html, viajes.html, alojamientos.html,
     // ciudades.html): ahora vive dentro de TopbarNav.jsx (rama react/menu),
     // igual que en Nav.jsx para el patrón .topnav — un querySelector aquí en
     // DOMContentLoaded podía disparar antes de que React montara el nodo
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // (el footer es React — ver Footer.jsx, que ya filtra Alojamiento/
     // Viajes según la experiencia y se marca con [data-react-footer]
     // para que esto no lo toque dos veces ni corra antes de que exista)
-    ['servicios.html', 'alojamiento.html', 'viajes.html'].forEach(function (page) {
+    ['servicios.html', 'alojamientos.html', 'viajes.html'].forEach(function (page) {
         document.querySelectorAll('a[href="' + page + '"]').forEach(function (a) {
             if (a.closest('[data-react-footer]')) return;
             a.style.display = 'none';

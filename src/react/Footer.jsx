@@ -23,7 +23,7 @@ import { isPartiesExperience, t } from './navShared.jsx';
 const PLATFORM_LINKS = [
     { href: 'ciudades-todas.html', i18n: 'footer.destinations', label: 'Destinos' },
     {
-        href: 'alojamiento.html',
+        href: 'alojamientos.html',
         i18n: 'nav.accommodation',
         label: 'Alojamiento',
         flag: 'showAlojamiento',

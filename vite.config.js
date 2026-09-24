@@ -42,7 +42,7 @@ export default defineConfig(({ mode }) => {
                     ciudades: resolve(__dirname, 'ciudades.html'),
                     ciudadesTodas: resolve(__dirname, 'ciudades-todas.html'),
                     mapa: resolve(__dirname, 'mapa.html'),
-                    alojamiento: resolve(__dirname, 'alojamiento.html'),
+                    alojamientos: resolve(__dirname, 'alojamientos.html'),
                     servicios: resolve(__dirname, 'servicios.html'),
                     viajes: resolve(__dirname, 'viajes.html'),
                     registro: resolve(__dirname, 'registro.html'),
