@@ -43,67 +43,27 @@
                         Encuentra tu hogar Erasmus
                     </h1>
                     <p class="section-sub anim-page-enter" data-i18n="accommodation.subtitle">
-                        Colaboramos con las mejores plataformas de alojamiento para estudiantes en
-                        Europa. Reserva con confianza.
+                        Alojamiento verificado y gestionado directamente por nuestro equipo, en
+                        toda Europa. Reserva con confianza.
                     </p>
                 </div>
-
-                <div
-                    class="events-scroll"
-                    data-collab-grid="housing"
-                    data-cta-kind="tickets"
-                    data-animate
-                ></div>
 
                 <!-- Fichas individuales (alojamiento.html?id=ID) — ver
-                     ListingDetail.jsx/FeaturedListings.jsx. Distinto del
-                     grid de arriba: esas cards saltan a la web externa
-                     del colaborador, estas se quedan dentro de la web. -->
-                <div class="nights-header" style="margin-top: 64px">
-                    <span class="eyebrow eyebrow--primary" data-i18n="listing.featured_eyebrow"
-                        >FICHA DETALLADA</span
-                    >
-                    <h2
-                        class="section-title"
-                        style="font-size: 1.4rem"
-                        data-i18n="listing.featured_title_alojamiento"
-                    >
-                        Alojamientos con toda la información
-                    </h2>
-                    <p class="section-sub" data-i18n="listing.featured_subtitle">
-                        Fotos, características y precio antes de decidir.
-                    </p>
-                </div>
-
-                <div
-                    class="events-scroll"
-                    data-featured-listings="alojamiento"
-                    data-animate
-                ></div>
-
-                <div class="collab-contact anim-fade-up">
-                    <span class="eyebrow eyebrow--primary" data-i18n="accommodation.company_eyebrow"
-                        >¿ERES UNA EMPRESA DE ALOJAMIENTO?</span
-                    >
-                    <h3 data-i18n="common.collaborate_with_us">Colabora con nosotros</h3>
-                    <p data-i18n="accommodation.collab_body">
-                        Si tienes alojamiento verificado para estudiantes Erasmus, queremos
-                        conocerte.
-                    </p>
-                    <a
-                        href="mailto:hola@erasmusverified.com"
-                        class="btn-primary-pill"
-                        data-i18n="common.contact_cta"
-                        >Contactar</a
-                    >
-                </div>
+                     ListingDetail.jsx/FeaturedListings.jsx. Única
+                     sección de la página: ya no hay "Plataformas
+                     colaboradoras" (CollabGrid.jsx) — todo alojamiento
+                     está gestionado directamente por Erasmus Verified,
+                     sin terceros. Sin clase "events-scroll" en este div:
+                     FeaturedListings.jsx pinta esa rejilla DENTRO de su
+                     propio render (comparte estado con la barra de
+                     filtro, ver el componente). -->
+                <div data-featured-listings="alojamiento" data-animate></div>
             </section>
         </main>
 
         <!-- FOOTER (React, rama react/menu) — ver src/react/Footer.jsx -->
         <div id="footer-root"></div>
         <script type="module" src="/src/react/mount-footer.jsx"></script>
-        <script type="module" src="/src/react/mount-collab-grid.jsx"></script>
         <script type="module" src="/src/react/mount-featured-listings.jsx"></script>
 
         <!-- Mobile-nav overlay: ahora vive en src/react/TopbarNav.jsx (rama react/menu) -->

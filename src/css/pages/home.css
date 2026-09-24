@@ -1041,12 +1041,11 @@
 }
 
 /* ── Experiencia Parties: secciones ocultas ────────────────────
-   Erasmus Parties solo trabaja la categoría nightlife — alojamiento
-   y servicios pertenecen a la experiencia Verified. Se oculta por
-   CSS (no JS) porque .theme-parties ya se aplica de forma síncrona
-   en <html> antes de que el body se pinte (ver experience.js) — así
-   no hay parpadeo de la sección visible un instante antes de ocultarse. */
-.theme-parties .alojamiento-section,
+   Erasmus Parties solo trabaja la categoría nightlife — servicios
+   pertenece a la experiencia Verified. Se oculta por CSS (no JS)
+   porque .theme-parties ya se aplica de forma síncrona en <html> antes
+   de que el body se pinte (ver experience.js) — así no hay parpadeo de
+   la sección visible un instante antes de ocultarse. */
 .theme-parties .services-section {
     display: none;
 }
@@ -1075,22 +1074,6 @@
         grid-column: span 2;
         order: -1;
     }
-}
-
-/* ── 4.3 Alojamiento section ────────────────────────────────── */
-
-.alojamiento-section {
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-16);
-}
-
-.alojamiento-section .card-grid--stacked {
-    margin-top: 32px;
-}
-
-.alojamiento-section-footer {
-    margin-top: 32px;
-    text-align: center;
 }
 
 /* ── 4.4 Services section ───────────────────────────────────── */
