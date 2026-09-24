@@ -156,9 +156,6 @@ export default function FeaturedListings({ kind, animate = true }) {
                         </option>
                     </select>
                 </div>
-                <span className="featured-filter-count" aria-live="polite">
-                    {filtered.length} / {items.length}
-                </span>
             </div>
 
             {filtered.length > 0 ? (

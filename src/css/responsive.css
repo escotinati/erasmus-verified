@@ -78,7 +78,8 @@
     .section-header,
     .hero-stats,
     .countries-grid,
-    .card-grid--photo {
+    .card-grid--photo,
+    .featured-filter {
         padding-left: var(--margin-desktop);
         padding-right: var(--margin-desktop);
     }

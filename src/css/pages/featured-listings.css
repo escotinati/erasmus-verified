@@ -8,17 +8,23 @@
    aquí habría salido más caro que un input nuevo.
    ─────────────────────────────────────────────────────── */
 
+/* max-width/margin/padding calcados de .nights-header/.events-scroll
+   (home.css) — mismo contenedor "manual" que ellas, porque .featured-filter
+   es hijo directo de .nights-section (sin la clase .section, que ya
+   centraría y daría el padding por sí sola). Sin esto, la barra de
+   filtros ocupa el 100% de .nights-section (borde a borde) mientras el
+   título y las cards de debajo sí respetan el contenedor — la propia
+   página se ve entonces con dos anchos distintos apilados. */
 .featured-filter {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
+    max-width: var(--container-max);
+    margin: 0 auto 24px;
+    padding: 0 var(--margin-mobile);
 }
 
 .featured-filter-row {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
@@ -119,13 +125,6 @@
 .featured-filter-clear:hover {
     background: var(--surface-container);
     color: var(--on-surface);
-}
-
-.featured-filter-count {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--on-surface-variant);
-    white-space: nowrap;
 }
 
 .featured-filter-empty {
