@@ -48,6 +48,28 @@
                     data-animate
                 ></div>
 
+                <!-- Fichas individuales (viaje.html?id=ID) — ver
+                     ListingDetail.jsx/FeaturedListings.jsx. Distinto del
+                     grid de arriba: esas cards saltan a la web externa
+                     del colaborador, estas se quedan dentro de la web. -->
+                <div class="nights-header" style="margin-top: 64px">
+                    <span class="eyebrow eyebrow--primary" data-i18n="listing.featured_eyebrow"
+                        >FICHA DETALLADA</span
+                    >
+                    <h2
+                        class="section-title"
+                        style="font-size: 1.4rem"
+                        data-i18n="listing.featured_title_viaje"
+                    >
+                        Viajes con toda la información
+                    </h2>
+                    <p class="section-sub" data-i18n="listing.featured_subtitle">
+                        Fotos, características y precio antes de decidir.
+                    </p>
+                </div>
+
+                <div class="events-scroll" data-featured-listings="viaje" data-animate></div>
+
                 <div class="collab-contact anim-fade-up">
                     <span class="eyebrow eyebrow--primary" data-i18n="trips.company_eyebrow"
                         >¿ERES UNA EMPRESA DE TRANSPORTE?</span
@@ -70,6 +92,7 @@
         <div id="footer-root"></div>
         <script type="module" src="/src/react/mount-footer.jsx"></script>
         <script type="module" src="/src/react/mount-collab-grid.jsx"></script>
+        <script type="module" src="/src/react/mount-featured-listings.jsx"></script>
 
         <!-- Mobile-nav overlay: ahora vive en src/react/TopbarNav.jsx (rama react/menu) -->
 

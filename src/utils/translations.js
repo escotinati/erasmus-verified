@@ -241,6 +241,11 @@ window.I18n.translations = {
             gallery_open: 'Abrir galería de fotos',
             gallery_prev: 'Foto anterior',
             gallery_next: 'Foto siguiente',
+            view_listing_cta: 'Ver ficha',
+            featured_eyebrow: 'Ficha detallada',
+            featured_subtitle: 'Fotos, características y precio antes de decidir.',
+            featured_title_alojamiento: 'Alojamientos con toda la información',
+            featured_title_viaje: 'Viajes con toda la información',
         },
         services: {
             eyebrow: 'Servicios verificados',
@@ -588,6 +593,11 @@ window.I18n.translations = {
             gallery_open: 'Open photo gallery',
             gallery_prev: 'Previous photo',
             gallery_next: 'Next photo',
+            view_listing_cta: 'View listing',
+            featured_eyebrow: 'Detailed listing',
+            featured_subtitle: 'Photos, features and price before you decide.',
+            featured_title_alojamiento: 'Accommodation with full details',
+            featured_title_viaje: 'Trips with full details',
         },
         services: {
             eyebrow: 'Verified services',
