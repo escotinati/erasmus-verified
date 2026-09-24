@@ -41,34 +41,39 @@
                     </p>
                 </div>
 
-                <div
-                    class="events-scroll"
-                    data-collab-grid="trips"
-                    data-cta-kind="tickets"
-                    data-animate
-                ></div>
-
                 <!-- Fichas individuales (viaje.html?id=ID) — ver
-                     ListingDetail.jsx/FeaturedListings.jsx. Distinto del
-                     grid de arriba: esas cards saltan a la web externa
-                     del colaborador, estas se quedan dentro de la web. -->
+                     ListingDetail.jsx/FeaturedListings.jsx. Va PRIMERO a
+                     propósito: es un viaje/excursión gestionado por
+                     nosotros, no una empresa grande — el camino principal
+                     de la página. Sin clase "events-scroll" en este div:
+                     FeaturedListings.jsx pinta esa rejilla DENTRO de su
+                     propio render (comparte estado con la barra de
+                     filtro, ver el componente). -->
+                <div data-featured-listings="viaje" data-animate></div>
+
+                <!-- Colaboradores externos (FlixBus, BlaBlaCar...) — ver
+                     CollabGrid.jsx. Va SEGUNDO a propósito, después de las
+                     fichas propias. Distinto de la sección de arriba:
+                     estas cards saltan a la web externa del colaborador
+                     (CTA "external", badge "Enlace externo"), nunca a una
+                     página propia. -->
                 <div class="nights-header" style="margin-top: 64px">
-                    <span class="eyebrow eyebrow--primary" data-i18n="listing.featured_eyebrow"
-                        >FICHA DETALLADA</span
+                    <span class="eyebrow eyebrow--primary" data-i18n="listing.collabs_eyebrow"
+                        >PLATAFORMAS COLABORADORAS</span
                     >
                     <h2
                         class="section-title"
                         style="font-size: 1.4rem"
-                        data-i18n="listing.featured_title_viaje"
+                        data-i18n="listing.collabs_title_viaje"
                     >
-                        Viajes con toda la información
+                        Más plataformas de transporte
                     </h2>
-                    <p class="section-sub" data-i18n="listing.featured_subtitle">
-                        Fotos, características y precio antes de decidir.
+                    <p class="section-sub" data-i18n="listing.collabs_subtitle">
+                        Empresas verificadas que te redirigen a su propia web.
                     </p>
                 </div>
 
-                <div class="events-scroll" data-featured-listings="viaje" data-animate></div>
+                <div class="events-scroll" data-collab-grid="trips" data-animate></div>
 
                 <div class="collab-contact anim-fade-up">
                     <span class="eyebrow eyebrow--primary" data-i18n="trips.company_eyebrow"

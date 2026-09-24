@@ -3,17 +3,20 @@
 //  la sección de alojamiento del home). Cada colaborador es un <Card>
 //  con el layout por defecto (stacked, el mismo que partners/eventos):
 //  imagen (placeholder, no hay logo en collabData.js) + título +
-//  descripción + un único CTA (reutiliza `.btn-primary-pill`, mismo
-//  estilo que las ofertas de ServiceCards, salvo en alojamiento.html —
-//  ver `ctaKind`). `rel: '... sponsored'` en el cta mantiene la marca de
-//  enlace de afiliado que llevaba el `<a>` cuando la card entera era el
-//  enlace (layout="tile").
+//  descripción + un único CTA. `rel: '... sponsored'` en el cta
+//  mantiene la marca de enlace de afiliado que llevaba el `<a>` cuando
+//  la card entera era el enlace (layout="tile").
 //
-//  `ctaKind` (por defecto 'offer'): alojamiento.html pasa 'tickets'
-//  (data-cta-kind="tickets" en mount-collab-grid.jsx) para que el CTA
-//  tenga el mismo botón con flecha que las cards de "Vida nocturna" del
-//  home — a petición explícita, sin tocar viajes.html ni la sección de
-//  alojamiento del propio home, que mantienen 'offer'.
+//  CTA "external" (a propósito, siempre — estos colaboradores SIEMPRE
+//  saltan a la web de otra empresa, nunca a una página propia): botón
+//  secundario con borde e icono open_in_new, más discreto que
+//  .btn-primary-pill — igual que el badge "Enlace externo" y el fondo
+//  ligeramente teñido (.card--external), es una distinción visual
+//  deliberada frente a las cards de ficha propia (FeaturedListings.jsx,
+//  CTA "offer"), a petición explícita de Álvaro. Antes existía un
+//  `ctaKind` configurable por página (alojamiento.html pedía 'tickets')
+//  — se retiró: da igual la página, un colaborador externo siempre es
+//  "external".
 //
 //  Se monta directamente sobre el contenedor del grid (ver
 //  mount-collab-grid.jsx), así que las cards son hijas DIRECTAS de ese
@@ -29,7 +32,7 @@ import Card from './Card.jsx';
 import { COLLAB_SETS } from './collabData.js';
 import { t } from './navShared.jsx';
 
-export default function CollabGrid({ set, animate, ctaKind = 'offer' }) {
+export default function CollabGrid({ set, animate }) {
     const items = COLLAB_SETS[set] || [];
 
     // Mismo motivo que SummaryCardGrid.jsx: el reveal se engancha DESPUÉS
@@ -45,13 +48,14 @@ export default function CollabGrid({ set, animate, ctaKind = 'offer' }) {
                     key={item.name}
                     title={item.name}
                     description={t(item.descKey, item.fallback)}
+                    badge={t('listing.external_badge', 'Enlace externo')}
                     cta={{
-                        kind: ctaKind,
+                        kind: 'external',
                         label: t('services.view_offer_cta', 'Ver oferta'),
                         href: item.href,
                         rel: 'noopener noreferrer sponsored',
                     }}
-                    className={animate ? `anim-fade-up anim-delay-${index + 1}` : undefined}
+                    className={`card--external${animate ? ` anim-fade-up anim-delay-${index + 1}` : ''}`}
                 />
             ))}
         </>

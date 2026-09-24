@@ -1,0 +1,99 @@
+/* ═══════════════════════════════════════════════════════════
+   13. FeaturedListings.jsx — filtro de texto de las fichas
+   individuales en alojamientos.html/viajes.html (el listado de
+   TODOS). Autónomo a propósito, sin reutilizar .search-bar
+   (components.css): esa clase está pensada para el hero de
+   index.html/ciudades-todas.html (glassmorphism sobre foto + hueco
+   reservado para .search-bar-btn flotante) — pelear esos supuestos
+   aquí habría salido más caro que un input nuevo.
+   ─────────────────────────────────────────────────────── */
+
+.featured-filter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.featured-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 220px;
+    max-width: 380px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-full);
+    transition:
+        border-color var(--duration-fast, 0.2s) var(--ease-out, ease),
+        box-shadow var(--duration-fast, 0.2s) var(--ease-out, ease);
+}
+
+.featured-filter-bar:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-fixed);
+}
+
+.featured-filter-bar .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--on-surface-variant);
+}
+
+.featured-filter-bar input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--on-surface);
+}
+
+.featured-filter-bar input::placeholder {
+    color: var(--outline);
+}
+
+.featured-filter-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-full);
+    color: var(--on-surface-variant);
+    cursor: pointer;
+}
+
+.featured-filter-clear:hover {
+    background: var(--surface-container);
+    color: var(--on-surface);
+}
+
+.featured-filter-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    white-space: nowrap;
+}
+
+.featured-filter-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--on-surface-variant);
+}
+
+.featured-filter-empty .material-symbols-outlined {
+    font-size: 32px;
+}

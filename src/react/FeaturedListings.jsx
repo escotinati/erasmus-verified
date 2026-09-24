@@ -4,50 +4,107 @@
 //  concreto (alojamiento.html/viaje.html?id=ID — ver ListingDetail.jsx).
 //
 //  Distinto de CollabGrid.jsx: esas cards saltan directamente a la web
-//  externa del colaborador (Uniplaces, FlixBus...); estas se quedan
-//  dentro de la web y llevan a la ficha propia — el punto de entrada
-//  que le faltaba a la ficha individual (hasta ahora solo se llegaba
-//  tecleando la URL a mano o desde "más similares" de otra ficha).
+//  externa del colaborador (Uniplaces, FlixBus...), CTA "external"; estas
+//  se quedan dentro de la web, CTA "offer" (botón relleno, mismo peso
+//  visual que "Ver oferta" — a propósito: esta sección va PRIMERO en la
+//  página y es el camino principal, ver alojamientos.html/viajes.html).
 //
-//  Reutiliza LISTINGS de listingsData.js (mismo array de ejemplo que
-//  ListingDetail.jsx — ver el comentario de cabecera de ese archivo
-//  sobre por qué es provisional) y el layout por defecto de Card.jsx
-//  (`stacked`, el mismo que partners/eventos del home) con CTA `link`
-//  (texto + chevron, `to` interno) en vez de `offer`/`tickets`
-//  (`href` externo) — la propia CTA ya deja claro que el destino es
-//  interno.
+//  Filtro de texto: en memoria, sin red (LISTINGS[kind] tiene 4
+//  entradas hoy) — normalize() quita acentos/mayúsculas, mismo criterio
+//  que el filtro de ciudades-todas.html. El root incluye la barra de
+//  filtro Y la rejilla en el mismo árbol de React (a diferencia de
+//  CollabGrid.jsx, que solo pinta cards) porque ambas comparten el
+//  estado `query` — ver mount-featured-listings.jsx.
 // ─────────────────────────────────────────────────────────────
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Card from './Card.jsx';
 import { LISTINGS } from './listingsData.js';
 import { t } from './navShared.jsx';
 
-export default function FeaturedListings({ kind }) {
+function normalize(str) {
+    return (str || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+export default function FeaturedListings({ kind, animate = true }) {
     const items = LISTINGS[kind] || [];
+    const [query, setQuery] = useState('');
+    const nq = normalize(query);
+    const filtered = nq ? items.filter((item) => normalize(item.title).includes(nq)) : items;
 
     // Mismo motivo que SummaryCardGrid.jsx: el reveal se engancha
     // DESPUÉS del commit real de React, dentro del propio componente.
+    // También debe repetirse en cada filtrado: las cards que reaparecen
+    // tras borrar una letra ya tenían la clase anim-fade-up puesta pero
+    // el observer nunca las vio entrar (estaban desmontadas), así que
+    // sin esto se quedarían en opacity:0 para siempre.
     useEffect(() => {
-        if (window.initScrollReveal) window.initScrollReveal();
+        if (animate && window.initScrollReveal) window.initScrollReveal();
     });
+
+    const placeholder = t(
+        `listing.search_placeholder_${kind}`,
+        kind === 'alojamiento' ? 'Busca por nombre o zona…' : 'Busca por destino…'
+    );
 
     return (
         <>
-            {items.map((item, index) => (
-                <Card
-                    key={item.id}
-                    title={item.title}
-                    price={`${item.price} ${item.priceUnit}`}
-                    description={item.description}
-                    cta={{
-                        kind: 'link',
-                        label: t('listing.view_listing_cta', 'Ver ficha'),
-                        to: `${kind}.html?id=${item.id}`,
-                    }}
-                    className={`anim-fade-up anim-delay-${index + 1}`}
-                />
-            ))}
+            <div className="featured-filter">
+                <div className="featured-filter-bar">
+                    <span className="material-symbols-outlined" aria-hidden="true">
+                        search
+                    </span>
+                    <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder={placeholder}
+                        aria-label={placeholder}
+                        autoComplete="off"
+                    />
+                    {query ? (
+                        <button
+                            type="button"
+                            className="featured-filter-clear"
+                            onClick={() => setQuery('')}
+                            aria-label={t('common.close', 'Cerrar')}
+                        >
+                            <span className="material-symbols-outlined" aria-hidden="true">
+                                close
+                            </span>
+                        </button>
+                    ) : null}
+                </div>
+                <span className="featured-filter-count" aria-live="polite">
+                    {filtered.length} / {items.length}
+                </span>
+            </div>
+
+            {filtered.length > 0 ? (
+                <div className="events-scroll">
+                    {filtered.map((item, index) => (
+                        <Card
+                            key={item.id}
+                            title={item.title}
+                            price={`${item.price} ${item.priceUnit}`}
+                            description={item.description}
+                            cta={{
+                                kind: 'offer',
+                                label: t('listing.view_listing_cta', 'Ver ficha'),
+                                to: `${kind}.html?id=${item.id}`,
+                            }}
+                            className={animate ? `anim-fade-up anim-delay-${index + 1}` : undefined}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="featured-filter-empty">
+                    <span className="material-symbols-outlined" aria-hidden="true">
+                        search_off
+                    </span>
+                    <p>{t('listing.filter_no_results', 'No hay resultados para tu búsqueda.')}</p>
+                </div>
+            )}
         </>
     );
 }
