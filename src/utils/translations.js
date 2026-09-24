@@ -238,6 +238,9 @@ window.I18n.translations = {
             not_found_body: 'Puede que el enlace esté roto o que ya no esté disponible.',
             back_to_alojamientos: 'Ver todos los alojamientos',
             back_to_viajes: 'Ver todos los viajes',
+            gallery_open: 'Abrir galería de fotos',
+            gallery_prev: 'Foto anterior',
+            gallery_next: 'Foto siguiente',
         },
         services: {
             eyebrow: 'Servicios verificados',
@@ -582,6 +585,9 @@ window.I18n.translations = {
             not_found_body: 'The link may be broken or no longer available.',
             back_to_alojamientos: 'View all accommodation',
             back_to_viajes: 'View all trips',
+            gallery_open: 'Open photo gallery',
+            gallery_prev: 'Previous photo',
+            gallery_next: 'Next photo',
         },
         services: {
             eyebrow: 'Verified services',

@@ -14,9 +14,14 @@
 //
 //  Forma de cada entrada: { id, title, linkType: 'externo'|'interno',
 //  source, ctaHref? (solo si linkType es 'externo'), location, price,
-//  priceUnit, description, features: [{ icon, label }] }.
+//  priceUnit, description, features: [{ icon, label }], photoCount }.
 //  `linkType: 'interno'` no lleva ctaHref — su CTA todavía no tiene
 //  destino funcional (pendiente de decidir, ver CLAUDE.md).
+//  `photoCount`: cuántas fotos "tendría" esta ficha — hoy todas son el
+//  mismo placeholder liso (sin URLs reales todavía, ver el propio
+//  comentario de arriba), pero el número real ya alimenta la galería
+//  y el lightbox (ListingGalleryLightbox.jsx) para que ese flujo esté
+//  listo en cuanto haya fotos de verdad.
 // ─────────────────────────────────────────────────────────────
 
 export const LISTINGS = {
@@ -38,6 +43,7 @@ export const LISTINGS = {
                 { icon: 'payments', label: 'Gastos incluidos' },
                 { icon: 'school', label: '12 min a la universidad' },
             ],
+            photoCount: 9,
         },
         {
             id: 2,
@@ -55,6 +61,7 @@ export const LISTINGS = {
                 { icon: 'security', label: 'Fianza reducida' },
                 { icon: 'support_agent', label: 'Soporte 24/7' },
             ],
+            photoCount: 6,
         },
         {
             id: 3,
@@ -73,6 +80,7 @@ export const LISTINGS = {
                 { icon: 'local_laundry_service', label: 'Lavadora' },
                 { icon: 'balcony', label: 'Balcón' },
             ],
+            photoCount: 7,
         },
         {
             id: 4,
@@ -91,6 +99,7 @@ export const LISTINGS = {
                 { icon: 'groups', label: 'Piso internacional' },
                 { icon: 'payments', label: 'Gastos incluidos' },
             ],
+            photoCount: 11,
         },
     ],
     viaje: [
@@ -111,6 +120,7 @@ export const LISTINGS = {
                 { icon: 'event_seat', label: 'Asiento reservado' },
                 { icon: 'wifi', label: 'WiFi a bordo' },
             ],
+            photoCount: 5,
         },
         {
             id: 2,
@@ -128,6 +138,7 @@ export const LISTINGS = {
                 { icon: 'groups', label: 'Grupo reducido' },
                 { icon: 'support_agent', label: 'Guía en español/inglés' },
             ],
+            photoCount: 8,
         },
         {
             id: 3,
@@ -146,6 +157,7 @@ export const LISTINGS = {
                 { icon: 'chat', label: 'Conductor verificado' },
                 { icon: 'eco', label: 'Menos emisiones' },
             ],
+            photoCount: 4,
         },
         {
             id: 4,
@@ -164,6 +176,7 @@ export const LISTINGS = {
                 { icon: 'confirmation_number', label: 'Billete digital' },
                 { icon: 'wifi', label: 'WiFi a bordo' },
             ],
+            photoCount: 6,
         },
     ],
 };

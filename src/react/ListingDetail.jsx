@@ -34,9 +34,10 @@
 //  lo resuelva antes.
 // ─────────────────────────────────────────────────────────────
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { LISTINGS } from './listingsData.js';
 import { t } from './navShared.jsx';
+import ListingGalleryLightbox from './ListingGalleryLightbox.jsx';
 
 function getIdFromUrl() {
     const raw = new URLSearchParams(window.location.search).get('id');
@@ -54,6 +55,11 @@ export default function ListingDetail({ kind }) {
     // ficha que buscaba — se cae al estado "no encontrado" de abajo.
     const listing =
         activeId === null ? items[0] || null : items.find((item) => item.id === activeId) || null;
+    // null = cerrado; el índice de la foto activa mientras está abierto.
+    // No hace falta resetearlo al cambiar de ficha: cada ?id= distinto
+    // es una navegación de página completa (sin router), así que este
+    // componente se vuelve a montar desde cero.
+    const [lightboxIndex, setLightboxIndex] = useState(null);
 
     // Mismo motivo que SummaryCardGrid.jsx: el reveal se engancha
     // DESPUÉS del commit real de React, dentro del propio componente.
@@ -120,6 +126,12 @@ export default function ListingDetail({ kind }) {
     // aunque hoy sea un array en memoria, para no tener que acordarse
     // el día que ctaHref venga de Supabase/admin de verdad.
     const safeCtaHref = isExterno ? window.sanitizeUrl(listing.ctaHref) : null;
+    // Al menos 1 aunque el dato viniera vacío/negativo — la galería
+    // siempre tiene algo que mostrar. Con 2 fotos no hay "+N" (no
+    // queda ninguna más por ver); con 1 no hay ni miniatura.
+    const photoCount = Math.max(listing.photoCount || 1, 1);
+    const morePhotosCount = Math.max(photoCount - 2, 0);
+    const galleryLabel = t('listing.gallery_open', 'Abrir galería de fotos');
 
     return (
         <div className="listing-detail">
@@ -132,13 +144,32 @@ export default function ListingDetail({ kind }) {
             </div>
 
             <div className="listing-gallery anim-fade-up">
-                <div className="listing-gallery-main"></div>
-                <div className="listing-gallery-side">
-                    <div className="listing-gallery-thumb"></div>
-                    <div className="listing-gallery-thumb listing-gallery-thumb--more">
-                        <span>+8</span>
+                <button
+                    type="button"
+                    className="listing-gallery-main"
+                    onClick={() => setLightboxIndex(0)}
+                    aria-label={galleryLabel}
+                ></button>
+                {photoCount > 1 ? (
+                    <div className="listing-gallery-side">
+                        <button
+                            type="button"
+                            className="listing-gallery-thumb"
+                            onClick={() => setLightboxIndex(1)}
+                            aria-label={galleryLabel}
+                        ></button>
+                        {morePhotosCount > 0 ? (
+                            <button
+                                type="button"
+                                className="listing-gallery-thumb listing-gallery-thumb--more"
+                                onClick={() => setLightboxIndex(2)}
+                                aria-label={galleryLabel}
+                            >
+                                <span>+{morePhotosCount}</span>
+                            </button>
+                        ) : null}
                     </div>
-                </div>
+                ) : null}
             </div>
 
             <div className="listing-layout">
@@ -265,6 +296,15 @@ export default function ListingDetail({ kind }) {
                         ))}
                     </div>
                 </div>
+            ) : null}
+
+            {lightboxIndex !== null ? (
+                <ListingGalleryLightbox
+                    photoCount={photoCount}
+                    activeIndex={lightboxIndex}
+                    onNavigate={setLightboxIndex}
+                    onClose={() => setLightboxIndex(null)}
+                />
             ) : null}
         </div>
     );
