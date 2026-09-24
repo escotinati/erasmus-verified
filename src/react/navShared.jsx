@@ -25,7 +25,7 @@ import { useEffect, useRef, useState } from 'react';
 export const NAV_LINKS = [
     { href: 'servicios.html', i18n: 'nav.services', label: 'Servicios', flag: 'showServices' },
     {
-        href: 'alojamiento.html',
+        href: 'alojamientos.html',
         i18n: 'nav.accommodation',
         label: 'Alojamiento',
         flag: 'showAlojamiento',

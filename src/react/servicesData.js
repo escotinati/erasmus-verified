@@ -109,7 +109,7 @@ export const SERVICE_SETS = {
                 'Evita las estafas. Ofrecemos una lista curada de apartamentos y casas compartidas con contratos digitales y verificación de identidad.',
             ctaKey: 'home.service_housing_cta',
             ctaFallback: 'Explorar anuncios',
-            to: 'alojamiento.html',
+            to: 'alojamientos.html',
         },
         {
             icon: 'shield',

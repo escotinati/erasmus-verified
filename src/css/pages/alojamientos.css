@@ -1,8 +1,11 @@
 /* ═══════════════════════════════════════════════════════════
-   10. ALOJAMIENTO.HTML
+   10. ALOJAMIENTOS.HTML — listado de TODOS los alojamientos
+   (no confundir con la futura alojamiento.html, ficha de UNO
+   en concreto — ver CLAUDE.md, "Alojamientos/Viajes vs.
+   alojamiento/viaje")
    ─────────────────────────────────────────────────────── */
 
-body.alojamiento-page {
+body.alojamientos-page {
     background:
         radial-gradient(circle at top right, rgba(70, 72, 212, 0.1), transparent 50%),
         radial-gradient(circle at bottom left, rgba(169, 51, 73, 0.05), transparent 50%),

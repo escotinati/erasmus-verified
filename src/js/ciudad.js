@@ -321,7 +321,7 @@ async function buildContextualSections(cityId, ciudad) {
           <strong>${I18n.t('city.find_housing_prefix')} ${escapeHtml(ciudad)}</strong><br>
           ${I18n.t('city.find_housing_body')}
         </p>
-        <a href="alojamiento.html" class="btn-primary-pill" style="display:inline-flex">${I18n.t('city.view_collaborators_cta')}</a>
+        <a href="alojamientos.html" class="btn-primary-pill" style="display:inline-flex">${I18n.t('city.view_collaborators_cta')}</a>
       </div>
     </div>`;
 

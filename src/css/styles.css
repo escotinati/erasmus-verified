@@ -24,7 +24,8 @@
 @import './pages/ciudad.css';
 @import './pages/mapa.css';
 @import './pages/servicios.css';
-@import './pages/alojamiento.css';
+@import './pages/alojamientos.css';
+@import './pages/listing-detail.css';
 @import './pages/auth.css';
 @import './responsive.css';
 @import './transitions.css';

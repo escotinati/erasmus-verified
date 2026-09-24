@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Viajes — Erasmus Verified</title>
+        <title>Alojamiento — Erasmus Verified</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
             href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
@@ -19,9 +19,14 @@
         <link rel="stylesheet" href="/src/css/styles.css" />
         <link rel="stylesheet" href="/src/css/animations.css" />
         <script src="/src/js/experience.js"></script>
+        <script>
+            if (window.ERASMUS_EXPERIENCE.theme === 'theme-parties') {
+                window.location.replace('index.html');
+            }
+        </script>
     </head>
 
-    <body class="viajes-page">
+    <body class="alojamientos-page">
         <!-- ── TOP NAV (React, rama react/menu) — ver src/react/TopbarNav.jsx ── -->
         <div id="nav-root"></div>
         <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
@@ -29,26 +34,28 @@
         <main style="flex: 1">
             <section class="nights-section">
                 <div class="nights-header">
-                    <span class="eyebrow eyebrow--primary anim-page-enter" data-i18n="trips.eyebrow"
-                        >VIAJES ERASMUS</span
+                    <span
+                        class="eyebrow eyebrow--primary anim-page-enter"
+                        data-i18n="accommodation.eyebrow"
+                        >ALOJAMIENTO VERIFICADO</span
                     >
-                    <h1 class="section-title anim-page-enter" data-i18n="trips.title">
-                        Muévete por Europa
+                    <h1 class="section-title anim-page-enter" data-i18n="accommodation.title">
+                        Encuentra tu hogar Erasmus
                     </h1>
-                    <p class="section-sub anim-page-enter" data-i18n="trips.subtitle">
-                        Colaboramos con las mejores plataformas de transporte para que te muevas por
-                        Europa sin complicaciones ni sorpresas.
+                    <p class="section-sub anim-page-enter" data-i18n="accommodation.subtitle">
+                        Colaboramos con las mejores plataformas de alojamiento para estudiantes en
+                        Europa. Reserva con confianza.
                     </p>
                 </div>
 
                 <div
                     class="events-scroll"
-                    data-collab-grid="trips"
+                    data-collab-grid="housing"
                     data-cta-kind="tickets"
                     data-animate
                 ></div>
 
-                <!-- Fichas individuales (viaje.html?id=ID) — ver
+                <!-- Fichas individuales (alojamiento.html?id=ID) — ver
                      ListingDetail.jsx/FeaturedListings.jsx. Distinto del
                      grid de arriba: esas cards saltan a la web externa
                      del colaborador, estas se quedan dentro de la web. -->
@@ -59,24 +66,29 @@
                     <h2
                         class="section-title"
                         style="font-size: 1.4rem"
-                        data-i18n="listing.featured_title_viaje"
+                        data-i18n="listing.featured_title_alojamiento"
                     >
-                        Viajes con toda la información
+                        Alojamientos con toda la información
                     </h2>
                     <p class="section-sub" data-i18n="listing.featured_subtitle">
                         Fotos, características y precio antes de decidir.
                     </p>
                 </div>
 
-                <div class="events-scroll" data-featured-listings="viaje" data-animate></div>
+                <div
+                    class="events-scroll"
+                    data-featured-listings="alojamiento"
+                    data-animate
+                ></div>
 
                 <div class="collab-contact anim-fade-up">
-                    <span class="eyebrow eyebrow--primary" data-i18n="trips.company_eyebrow"
-                        >¿ERES UNA EMPRESA DE TRANSPORTE?</span
+                    <span class="eyebrow eyebrow--primary" data-i18n="accommodation.company_eyebrow"
+                        >¿ERES UNA EMPRESA DE ALOJAMIENTO?</span
                     >
                     <h3 data-i18n="common.collaborate_with_us">Colabora con nosotros</h3>
-                    <p data-i18n="trips.collab_body">
-                        Si ofreces transporte o viajes para estudiantes Erasmus, queremos conocerte.
+                    <p data-i18n="accommodation.collab_body">
+                        Si tienes alojamiento verificado para estudiantes Erasmus, queremos
+                        conocerte.
                     </p>
                     <a
                         href="mailto:hola@erasmusverified.com"
