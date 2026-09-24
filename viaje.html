@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Viaje — Erasmus Verified</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Design System tokens -->
+        <link rel="stylesheet" href="/src/styles/tokens.css" />
+        <link rel="stylesheet" href="/src/styles/typography.css" />
+        <link rel="stylesheet" href="/src/css/styles.css" />
+        <link rel="stylesheet" href="/src/css/animations.css" />
+        <script src="/src/js/experience.js"></script>
+        <script>
+            if (window.ERASMUS_EXPERIENCE.theme === 'theme-parties') {
+                window.location.replace('index.html');
+            }
+        </script>
+    </head>
+
+    <body class="listing-detail-page">
+        <!-- ── TOP NAV (React, rama react/menu) — ver src/react/TopbarNav.jsx ── -->
+        <div id="nav-root"></div>
+        <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
+
+        <main style="flex: 1">
+            <!-- Ficha individual de UN viaje en concreto — ver
+                 ListingDetail.jsx. No confundir con viajes.html
+                 (el listado de TODOS), ver nota de nomenclatura en CLAUDE.md.
+                 El id activo viene de ?id= en la URL. -->
+            <div id="listing-detail-root" data-listing-kind="viaje"></div>
+            <script type="module" src="/src/react/mount-listing-detail.jsx"></script>
+        </main>
+
+        <!-- FOOTER (React, rama react/menu) — ver src/react/Footer.jsx -->
+        <div id="footer-root"></div>
+        <script type="module" src="/src/react/mount-footer.jsx"></script>
+
+        <!-- Mobile-nav overlay: ahora vive en src/react/TopbarNav.jsx (rama react/menu) -->
+
+        <!-- ── APP BOTTOM NAV (React) — ver src/react/AppShell.jsx ── -->
+        <div id="shell-root"></div>
+        <script type="module" src="/src/react/mount-shell.jsx"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+        <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
+        <script src="/src/js/utils/speculationRules.js"></script>
+        <script src="/src/js/utils/sanitize.js"></script>
+        <script src="/src/js/services/authService.js"></script>
+        <script src="/src/js/utils/animations.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+            });
+        </script>
+    </body>
+</html>
