@@ -510,15 +510,20 @@
    mismo corte que el accordion en fila) y solo con movimiento real.
    .cities-scroll-stage da scroll "extra" (200vh); mientras se
    recorre, .cities-pin se queda fijo en pantalla (sticky) y ese
-   scroll — no un timeline propio — controla la animación vía una
-   única custom property (--cities-progress, la escribe
-   initCitiesScrollEffect en index.js sobre .cities-scroll-stage y
-   hereda a sus hijos). Solo transform/opacity: nunca se anima layout,
-   todo va por compositor. En móvil y con prefers-reduced-motion no se
-   define stage/pin como sticky — la sección es el .section-head +
-   .accordion-grid de siempre, estáticos. */
+   scroll — no un timeline propio — controla la animación vía dos
+   custom properties (--cities-progress y --cities-title-peak, las
+   escribe initCitiesScrollEffect en index.js sobre .cities-scroll-stage
+   y heredan a sus hijos). Solo transform/opacity: nunca se anima
+   layout, todo va por compositor. En móvil y con
+   prefers-reduced-motion no se define stage/pin como sticky — la
+   sección es el .section-head + .accordion-grid de siempre, estáticos.
+   --cities-title-peak: 1 de fallback (sin escalado, siempre seguro)
+   por si JS no ha corrido todavía en el primer pintado — index.js lo
+   sobreescribe con el valor real en cuanto puede medir el ancho real
+   del título. */
 .cities-scroll-stage {
     --cities-progress: 0;
+    --cities-title-peak: 1;
 }
 
 @media (min-width: 1000px) {
@@ -545,21 +550,29 @@
     /* El título arranca más grande y se encoge a su tamaño real
        (scale(1) = la posición/tamaño natural del layout, sin offset
        ninguno, cualquiera que sea el pico) — "queda como está" de
-       verdad, no una aproximación. El pico es RESPONSIVE, no un
-       número fijo: es una frase larga (no una palabra suelta como en
-       las páginas de producto de Apple) y a 1000px (el límite
-       estrecho de este breakpoint) el margen hasta desbordar el
-       contenedor es de apenas ~15% — comprobado empujando el
-       escalado hasta desbordar y retrocediendo. A partir de 1000px
-       hay cada vez más aire (contenedor más ancho, mismo texto), así
-       que el pico crece con el viewport hasta un tope en 1500px+
-       (1.12 a 1000px → 1.5 a 1500px+), en vez de dejar la misma
-       cantidad fija de "aire" desperdiciado en pantallas anchas o
-       arriesgar el corte en las estrechas. transform-origin a la
-       izquierda: se encoge hacia donde ya vive el texto (alineado a
-       la izquierda), no hacia el centro del bloque. */
+       verdad, no una aproximación. --cities-title-peak YA NO es una
+       fórmula fija basada en 100vw (lo era antes: clamp(1.12, 1.12 +
+       (100vw-1000px)*0.00076, 1.5) — parecía razonable probando en un
+       par de anchos, pero esa fórmula no sabe que el CONTENEDOR deja
+       de crecer con el viewport pasado ~1408px (.section tiene
+       max-width: var(--container-max), 1280px) mientras el pico
+       seguía subiendo hasta 1500px+: a 1440px de viewport, un caso
+       real y nada raro (portátil típico), el título escalado acababa
+       ~40px más ancho que .cities-pin y ese sobrante se recortaba de
+       verdad por el overflow:hidden de arriba — bug real, reportado
+       por Álvaro). Ahora initCitiesScrollEffect (index.js) MIDE el
+       ancho real del título (offsetWidth, ajeno a cualquier transform
+       ya aplicado — transform nunca afecta la caja de layout) contra
+       el ancho real disponible dentro de .cities-pin (clientWidth, el
+       propio límite que aplica este overflow:hidden) y calcula el
+       mayor escalado que cabe sin desbordar, con margen de seguridad
+       — así que la broma automáticamente sube menos en viewports
+       donde hay menos contenedor de sobra (p. ej. justo en el corte
+       de 1000px) y se topa con un límite real en vez de una
+       aproximación, sea cual sea el ancho de ventana. transform-origin
+       a la izquierda: se encoge hacia donde ya vive el texto (alineado
+       a la izquierda), no hacia el centro del bloque. */
     .cities-pin .section-title {
-        --cities-title-peak: clamp(1.12, calc(1.12 + (100vw - 1000px) * 0.00076 / 1px), 1.5);
         transform-origin: left center;
         transform: scale(
             calc(var(--cities-title-peak) - (var(--cities-title-peak) - 1) * var(--cities-progress))

@@ -787,7 +787,32 @@ function initCitiesScrollEffect() {
     if (!stage) return;
     if (prefersReducedMotion()) return;
 
+    const pin = stage.querySelector('.cities-pin');
+    const title = stage.querySelector('.section-title');
     let ticking = false;
+
+    // El pico de escala del título ya no es una fórmula fija basada en
+    // el viewport (ver el comentario de home.css: eso es justo lo que
+    // producía el recorte real en anchos como 1440px, donde el
+    // contenedor deja de crecer con el viewport pero la fórmula no lo
+    // sabía). Se mide el ancho NATURAL del título — offsetWidth, la
+    // caja de layout, que un transform nunca toca — contra el ancho
+    // real disponible dentro de .cities-pin (clientWidth, el mismo
+    // límite que aplica su overflow:hidden), y se calcula el mayor
+    // escalado que cabe de verdad, con un 4% de margen de seguridad.
+    // Tope en 1.5 (el máximo que ya tenía el diseño original) para no
+    // pasarse de dramático donde sobra ancho de verdad; suelo en 1.05
+    // para que el efecto siga notándose aunque el margen real sea
+    // mínimo. Recalcula solo en resize (el ancho no cambia con el
+    // scroll), no en cada frame de scroll.
+    function updatePeak() {
+        if (!pin || !title || window.innerWidth < 1000) return;
+        const naturalWidth = title.offsetWidth;
+        if (!naturalWidth) return;
+        const safeScale = (pin.clientWidth / naturalWidth) * 0.96;
+        const peak = Math.min(1.5, Math.max(1.05, safeScale));
+        stage.style.setProperty('--cities-title-peak', peak);
+    }
 
     function update() {
         ticking = false;
@@ -807,8 +832,14 @@ function initCitiesScrollEffect() {
         requestAnimationFrame(update);
     }
 
+    function onResize() {
+        updatePeak();
+        onScroll();
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
+    updatePeak();
     update();
 }
 
