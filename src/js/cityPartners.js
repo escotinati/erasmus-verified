@@ -22,6 +22,16 @@
 //      muchos partners (ver el mockup "Ciudad Sin Mapa" acordado con
 //      Álvaro antes de esta rama: tope de 6 tarjetas + "ver todo").
 //
+//  showHighlights (Verified, siempre) — la respuesta a "de un vistazo
+//  es confuso, demasiada información de golpe" (mockup "Destacados +
+//  categorías plegadas" acordado con Álvaro): todas las categorías
+//  plegadas salvo la más numerosa, más una franja de "destacados" (el
+//  primer partner — ya viene ordenado por priority — de hasta 4
+//  categorías distintas) antes de la lista. Se aplica SIEMPRE en
+//  Verified, a petición explícita — aunque solo haya 1 partner, para
+//  que la página se vea siempre igual (Parties conserva su propio
+//  criterio de arranque, sin tocar).
+//
 //  Devuelve { listGroups, selectPartner, activateOnlyCategory } — LA
 //  MISMA forma que mountPartnersList() (mapPartners.js) a propósito:
 //  initCitySearch() en ciudad.js sigue funcionando prácticamente sin
@@ -81,6 +91,30 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
         };
     });
 
+    // Mostrar TODAS las categorías desplegadas de golpe es justo el
+    // problema reportado por Álvaro ("de un vistazo es confuso,
+    // demasiada información de golpe") — mockup "Destacados +
+    // categorías plegadas" acordado antes de este cambio. A petición
+    // explícita, esto se aplica SIEMPRE en Verified, no solo con muchas
+    // categorías — aunque solo haya 1 partner, la página se ve igual
+    // (consistencia visual por encima de ahorrarse una franja
+    // "Destacados" redundante con 1 solo elemento).
+    const showHighlights = !isPartiesExperience();
+
+    // Destacados: el primer partner (ya viene ordenado por priority
+    // desc desde fetchPartnersByCity) de hasta 4 categorías distintas —
+    // variedad entre categorías, no solo "los 4 de mayor priority" (que
+    // podrían ser todos de la misma categoría si esta domina). Puede
+    // solaparse con lo que ya se ve dentro de su categoría al
+    // desplegarla — a propósito, mismo criterio que cualquier fila de
+    // "destacados" sobre un listado por categorías (Netflix, App
+    // Store...): no es un defecto, es el patrón. Con 1 sola categoría,
+    // sale un único destacado — el mismo partner que ya se ve justo
+    // debajo, redundante a propósito (ver comentario de arriba).
+    const highlights = showHighlights
+        ? listGroups.slice(0, 4).map((group) => ({ partner: group.partners[0], group }))
+        : [];
+
     const state = {
         collapsedCategories: initialCollapsedCategories(),
         focusCategory: null,
@@ -103,7 +137,12 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
         for (const group of listGroups) {
             for (const partner of group.partners) {
                 if (partner.lat == null || partner.lng == null) continue;
-                partner.distanceMeters = distanceMeters(coords.lat, coords.lng, partner.lat, partner.lng);
+                partner.distanceMeters = distanceMeters(
+                    coords.lat,
+                    coords.lng,
+                    partner.lat,
+                    partner.lng
+                );
             }
         }
         renderList();
@@ -131,11 +170,18 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
     // mapPartners.js) — en Parties, solo Fiestas arranca desplegada; el
     // resto de categorías sigue ahí (nunca desaparece del todo, solo
     // plegada) para no enterrar contenido ajeno a la marca de esa
-    // página bajo el de otras categorías. ──────────────────────────
+    // página bajo el de otras categorías. En Verified, se pliegan todas
+    // menos la más numerosa (empate: gana la primera en orden
+    // original) — con 1 sola categoría, "la más numerosa" es esa misma,
+    // así que no se pliega nada y el resultado es idéntico a antes.
+    // ──────────────────────────────────────────────────────────────
     function initialCollapsedCategories() {
-        if (!isPartiesExperience()) return new Set();
+        if (isPartiesExperience()) {
+            return new Set(groups.filter((g) => g.category !== 'nightlife').map((g) => g.category));
+        }
+        const richest = groups.reduce((a, b) => (b.partners.length > a.partners.length ? b : a));
         return new Set(
-            groups.filter((g) => g.category !== 'nightlife').map((g) => g.category)
+            groups.filter((g) => g.category !== richest.category).map((g) => g.category)
         );
     }
 
@@ -165,6 +211,7 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
     function renderList() {
         listRoot.render({
             groups: listGroups,
+            highlights,
             collapsedCategories: state.collapsedCategories,
             focusCategory: state.focusCategory,
             onToggleCollapse: toggleCollapse,
@@ -205,8 +252,16 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
             btn.href = safeWhatsapp;
             btn.target = '_blank';
             btn.rel = 'noopener noreferrer';
-            btn.className = 'btn-primary-pill';
-            btn.textContent = I18n.t('city.join_whatsapp_group');
+            // .city-action-btn/--whatsapp (ciudad.css) + iconWa()
+            // (ciudad.js, global de script clásico — ciudad.js ya cargó
+            // antes de que esta función se ejecute) — mismo botón
+            // "familia de acciones rápidas" (verde, colapsa a círculo con
+            // hover real) que el CTA de arriba de la página, para que se
+            // reconozca igual también en el estado "sin partners".
+            const label = I18n.t('city.join_whatsapp_group');
+            btn.className = 'city-action-btn city-action-btn--whatsapp';
+            btn.setAttribute('aria-label', label);
+            btn.innerHTML = `<span class="action-icon" aria-hidden="true">${iconWa()}</span><span class="action-caption" aria-hidden="true">WhatsApp</span><span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>`;
             wrap.appendChild(btn);
         }
 

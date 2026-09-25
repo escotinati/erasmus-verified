@@ -33,7 +33,6 @@ window.I18n.translations = {
         },
         common: {
             loading: 'Cargando…',
-            check_back_soon: 'Vuelve pronto.',
             close: 'Cerrar',
         },
         home: {
@@ -148,12 +147,8 @@ window.I18n.translations = {
             tip_label: 'Consejo:',
             tip_text:
                 'Al unirte, preséntate indicando tu universidad y fechas de Erasmus. La comunidad te recibirá con los brazos abiertos.',
-            join_groups_divider: 'Unirse a los grupos',
             join_whatsapp_group: 'Unirse al grupo de WhatsApp',
-            whatsapp_group_label: 'Grupo de WhatsApp',
-            join_telegram_channel: 'Unirse al canal de Telegram',
             groups_coming_soon_title: 'Grupos próximamente',
-            groups_coming_soon_prefix: 'Todavía no tenemos grupos para',
             find_housing_prefix: 'Encuentra piso en',
             find_housing_body:
                 'Accede a nuestros colaboradores verificados para encontrar tu alojamiento antes de llegar.',
@@ -161,8 +156,11 @@ window.I18n.translations = {
             view_trip_cta: 'Ver viaje',
             escapadas_prefix: 'Escapadas desde',
             map_fullscreen_link: 'Ver mapa a pantalla completa',
+            map_caption_short: 'Mapa',
             partners_more_cta: 'Ver todo en',
             partners_back_to_categories: 'Todas las categorías',
+            partners_highlights_eyebrow: 'Lo más popular',
+            partners_highlights_title: 'Destacados',
         },
         map: {
             loading_partners: 'Cargando partners…',
@@ -387,7 +385,6 @@ window.I18n.translations = {
         },
         common: {
             loading: 'Loading…',
-            check_back_soon: 'Check back soon.',
             close: 'Close',
         },
         home: {
@@ -501,12 +498,8 @@ window.I18n.translations = {
             tip_label: 'Tip:',
             tip_text:
                 'When you join, introduce yourself with your university and Erasmus dates. The community will welcome you with open arms.',
-            join_groups_divider: 'Join the groups',
             join_whatsapp_group: 'Join the WhatsApp group',
-            whatsapp_group_label: 'WhatsApp group',
-            join_telegram_channel: 'Join the Telegram channel',
             groups_coming_soon_title: 'Groups coming soon',
-            groups_coming_soon_prefix: "We don't have any groups for",
             find_housing_prefix: 'Find housing in',
             find_housing_body:
                 'Access our verified collaborators to find your accommodation before you arrive.',
@@ -514,8 +507,11 @@ window.I18n.translations = {
             view_trip_cta: 'View trip',
             escapadas_prefix: 'Getaways from',
             map_fullscreen_link: 'View fullscreen map',
+            map_caption_short: 'Map',
             partners_more_cta: 'See all in',
             partners_back_to_categories: 'All categories',
+            partners_highlights_eyebrow: 'Most popular',
+            partners_highlights_title: 'Highlights',
         },
         map: {
             loading_partners: 'Loading partners…',

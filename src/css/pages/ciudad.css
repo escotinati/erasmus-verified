@@ -100,29 +100,6 @@ main.city-main {
     }
 }
 
-.section-divider {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 20px;
-}
-
-.section-divider::before,
-.section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--outline-variant);
-}
-
-.section-divider span {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--on-surface-variant);
-}
-
 .actions {
     display: flex;
     flex-direction: column;
@@ -130,129 +107,214 @@ main.city-main {
     margin-bottom: 32px;
 }
 
-.action-btn {
+/* ── Acciones rápidas justo debajo del <h1> ───────────────────────
+   Antes había un banner grande (.action-btn, 20px de padding, icono de
+   32px, título+subtítulo) muy abajo en la página, después de toda la
+   lista de partners — a petición explícita de Álvaro.
+
+   Familia .city-action-btn, dos formas según haya hover real o no —
+   NUNCA se le pide a quien no tiene ratón que "descubra" algo que
+   depende de un hover que no puede disparar (no hay hover en móvil):
+
+   · Sin hover real (mobile-first, por defecto) — "tile": icono en
+     círculo de color (.action-icon, 44px) + una CAPTION corta siempre
+     visible debajo (.action-caption — "WhatsApp"/"Mapa", no la frase
+     larga completa: en una columna de ~70-90px de ancho no cabría sin
+     desentonar). Mismo patrón que el propio selector de acciones de
+     WhatsApp (Mensaje/Llamar/Vídeo con icono+caption) — grounded en el
+     propio icono que ya se está mostrando.
+   · Con hover real (@media hover:hover/pointer:fine, más abajo) — el
+     icono colapsa a un círculo de solo icono (sin caption, oculta) y
+     se EXPANDE a una pill con la frase completa (.action-label) al
+     pasar el ratón o enfocar con teclado — "aumentable", a petición
+     explícita.
+
+   --action-color/--action-color-hover (custom properties por
+   modificador --whatsapp/--map) alimentan el color en los dos
+   contextos sin duplicar la paleta — la propia idea de "familia" que
+   pedía Álvaro, no dos componentes sueltos. */
+.city-quick-actions {
     display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.city-action-btn {
+    display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 20px 24px;
-    border-radius: 20px;
+    gap: 6px;
+    color: var(--on-surface);
+    font-family: var(--font-body);
     text-decoration: none;
     cursor: pointer;
-    border: none;
-    width: 100%;
-    font-family: inherit;
-    transition:
-        transform 0.18s,
-        opacity 0.18s;
-    position: relative;
-    overflow: hidden;
 }
 
-.action-btn:hover {
-    transform: translateY(-2px);
-    opacity: 0.93;
-}
-
-.action-btn:active {
-    transform: translateY(0);
-    opacity: 0.88;
-}
-
-.btn-wa {
-    background: var(--wa);
-    box-shadow: 0 8px 24px rgba(29, 170, 97, 0.22);
-}
-
-.btn-tg {
-    background: var(--tg);
-    box-shadow: 0 8px 24px rgba(42, 171, 238, 0.2);
-}
-
-.btn-generic {
-    background: var(--surface-container-low);
-    border: 1.5px solid var(--outline-variant);
-    box-shadow: 0 4px 16px rgba(70, 72, 212, 0.1);
-}
-
-.btn-generic .btn-label strong {
-    color: var(--on-surface);
-}
-
-.btn-generic .btn-label span {
-    color: var(--on-surface-variant);
-}
-
-.btn-generic .btn-chevron {
-    color: var(--on-surface-variant);
-}
-
-.btn-generic .btn-icon {
-    fill: none;
-    stroke: var(--primary);
-    stroke-width: 1.8px;
-}
-
-.btn-icon {
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-    fill: #fff;
-}
-
-.btn-label {
-    flex: 1;
-    text-align: left;
-}
-
-.btn-label strong {
-    display: block;
-    font-size: 16px;
-    font-weight: 800;
+.city-action-btn .action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--action-color);
     color: #fff;
-    margin-bottom: 2px;
-}
-
-.btn-label span {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.65);
-    font-weight: 500;
-}
-
-.btn-chevron {
-    color: rgba(255, 255, 255, 0.45);
     flex-shrink: 0;
-    transition: transform 0.15s;
+    transition:
+        background-color var(--duration-base) var(--ease-out),
+        transform var(--anim-duration-fast) var(--anim-easing-standard);
 }
 
-.action-btn:hover .btn-chevron {
-    transform: translateX(3px);
+.city-action-btn:active .action-icon {
+    transform: scale(0.94);
 }
 
-.coming-soon {
+.city-action-btn:focus-visible .action-icon {
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.city-action-btn .action-icon .btn-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.city-action-btn .action-icon .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.city-action-btn .action-caption {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--on-surface-variant);
     text-align: center;
-    padding: 40px 20px;
+}
+
+/* Oculta mobile-first — solo se usa en escritorio (ver @media abajo).
+   aria-hidden en el HTML de todas formas: el nombre accesible lo da
+   aria-label en el propio <a>, nunca este span (que en escritorio se
+   revela/oculta por CSS, así que no puede ser LA fuente del nombre). */
+.city-action-btn .action-label {
+    display: none;
+}
+
+.city-action-btn--whatsapp {
+    --action-color: var(--wa);
+    --action-color-hover: color-mix(in srgb, var(--wa) 85%, black);
+}
+
+.city-action-btn--map {
+    --action-color: var(--primary);
+    --action-color-hover: var(--color-primary-hover, var(--primary));
+}
+
+/* ── Solo con hover real: el icono deja de ser un círculo suelto con
+   caption debajo y pasa a SER la propia pill (fila, no columna), que
+   colapsa a solo icono y se expande al pasar el ratón o enfocar con
+   teclado (:focus-visible, nunca solo :hover — quien navega con
+   teclado también tiene que poder "ver" el botón). */
+@media (hover: hover) and (pointer: fine) {
+    .city-quick-actions {
+        align-items: center;
+        gap: 12px;
+    }
+
+    .city-action-btn {
+        flex-direction: row;
+        gap: 0;
+        height: 44px;
+        max-width: 44px;
+        padding: 0 13px;
+        border-radius: var(--radius-full);
+        background: var(--action-color);
+        color: #fff;
+        overflow: hidden;
+        white-space: nowrap;
+        transition:
+            max-width var(--duration-base) var(--ease-out),
+            background-color var(--duration-base) var(--ease-out);
+    }
+
+    /* color explícito — sin esto, la regla global "a:hover"
+       (typography.css) gana por especificidad sobre el "color" base de
+       arriba (que no lleva :hover en su propio selector) y el texto se
+       queda del mismo tono indigo que ese estilo global de enlace,
+       casi invisible sobre el propio fondo del botón — mismo bug ya
+       documentado en components.css para .btn-primary-pill:hover, aquí
+       repetido antes de corregirlo (verificado con Playwright: color
+       de texto y de fondo idénticos al pasar el ratón, texto ilegible). */
+    .city-action-btn:hover,
+    .city-action-btn:focus-visible {
+        max-width: 320px;
+        background: var(--action-color-hover);
+        color: #fff;
+    }
+
+    .city-action-btn:focus-visible {
+        box-shadow: var(--shadow-focus);
+        outline: none;
+    }
+
+    /* El icono ya no lleva su propio círculo de color — ahora es la
+       pill entera (arriba) la que lo lleva; el icono solo aporta forma
+       y tamaño, con el color heredado del texto (blanco) del botón. */
+    .city-action-btn .action-icon {
+        width: 18px;
+        height: 18px;
+        background: transparent;
+        color: inherit;
+    }
+
+    .city-action-btn:focus-visible .action-icon {
+        box-shadow: none;
+    }
+
+    .city-action-btn .action-caption {
+        display: none;
+    }
+
+    .city-action-btn .action-label {
+        display: inline-block;
+        max-width: 0;
+        margin-left: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+            max-width var(--duration-base) var(--ease-out),
+            margin-left var(--duration-base) var(--ease-out),
+            opacity var(--duration-fast) var(--ease-out);
+    }
+
+    .city-action-btn:hover .action-label,
+    .city-action-btn:focus-visible .action-label {
+        max-width: 280px;
+        margin-left: 8px;
+        opacity: 1;
+    }
+}
+
+/* Sin grupo todavía — informativo, no una acción, así que ni el color
+   ni la talla de .btn-primary-pill encajarían (invitaría a pulsar algo
+   que no hace nada). Misma altura/padding para no romper la fila. */
+.city-group-pending {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-full);
     background: var(--surface-container-low);
     border: 1px solid var(--outline-variant);
-    border-radius: 20px;
-    margin-bottom: 32px;
-}
-
-.coming-soon .emoji {
-    font-size: 2.2rem;
-    display: block;
-    margin-bottom: 12px;
-}
-
-.coming-soon h3 {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: var(--on-surface);
-}
-
-.coming-soon p {
-    font-size: 14px;
     color: var(--on-surface-variant);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.city-group-pending .material-symbols-outlined {
+    font-size: 18px;
 }
 
 .info-box {
@@ -540,32 +602,6 @@ main.city-main {
     gap: 12px;
 }
 
-.city-partners-map-link {
-    display: inline-flex;
-    align-self: flex-start;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 16px;
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--radius-full);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--primary);
-    text-decoration: none;
-    transition:
-        border-color var(--duration-fast) var(--ease-out),
-        transform var(--duration-fast) var(--ease-out);
-}
-
-.city-partners-map-link:hover {
-    border-color: var(--primary);
-    transform: translateY(-1px);
-}
-
-.city-partners-map-link .material-symbols-outlined {
-    font-size: 18px;
-}
-
 .city-partners-focus-bar {
     padding: 4px 0 2px;
 }
@@ -587,6 +623,85 @@ main.city-main {
 
 .city-partners-focus-back .material-symbols-outlined {
     font-size: 18px;
+}
+
+/* ── Destacados + pastillas de categoría (showHighlights en
+   cityPartners.js — siempre activo en Verified) — mockup "Destacados +
+   categorías plegadas" acordado con Álvaro. Reutiliza .city-partners-grid
+   (misma rejilla que cualquier categoría) para las cards de destacados. */
+.city-partners-highlights {
+    margin-bottom: 32px;
+}
+
+.city-partners-highlights__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0 0 14px;
+}
+
+.city-partners-highlights__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--on-surface);
+}
+
+.city-partners-category-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 32px;
+}
+
+.city-partners-category-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--tap-min);
+    padding: 8px 16px 8px 8px;
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-full);
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--on-surface);
+    cursor: pointer;
+    transition:
+        border-color var(--duration-fast) var(--ease-out),
+        transform var(--duration-fast) var(--ease-out);
+}
+
+.city-partners-category-pill:hover {
+    border-color: var(--cat-color);
+    transform: translateY(-1px);
+}
+
+.city-partners-category-pill:focus-visible {
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.city-partners-category-pill__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--cat-color) 18%, var(--surface));
+    color: var(--cat-color);
+    flex-shrink: 0;
+}
+
+.city-partners-category-pill__icon .material-symbols-outlined {
+    font-size: 15px;
+}
+
+.city-partners-category-pill__count {
+    color: var(--on-surface-variant);
+    font-weight: 500;
 }
 
 .city-partners-group {

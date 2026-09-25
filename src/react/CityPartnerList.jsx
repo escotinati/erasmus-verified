@@ -22,6 +22,16 @@
 //  Categorías con menos partners que el tope nunca muestran el botón
 //  "ver todo" (mismo criterio que la Regla 4 de mapPartners.js: sin
 //  control para algo que no hace falta controlar).
+//
+//  showOverview (highlights + pastillas de categoría) — mockup
+//  "Destacados + categorías plegadas" acordado con Álvaro, SIEMPRE
+//  activo en Verified (ver showHighlights en cityPartners.js, aunque
+//  solo haya 1 partner — consistencia visual a propósito): antes de la
+//  lista, una franja de partners destacados y una fila de pastillas
+//  (icono+nombre+contador) que entran en modo foco al pulsarlas —
+//  mismo onEnterFocus que ya usaba el botón "ver todo". highlights
+//  llega vacío solo en Parties, que conserva su propio criterio de
+//  arranque sin tocar.
 // ─────────────────────────────────────────────────────────────
 
 import Card from './Card.jsx';
@@ -86,6 +96,7 @@ function PartnerCard({ partner, group, onSelectPartner, onDirectionsClick }) {
 
 export default function CityPartnerList({
     groups,
+    highlights,
     collapsedCategories,
     focusCategory,
     onToggleCollapse,
@@ -100,6 +111,11 @@ export default function CityPartnerList({
     const visibleGroups = focusCategory
         ? groups.filter((g) => g.category === focusCategory)
         : groups;
+    // highlights llega vacío solo en Parties (ver showHighlights en
+    // cityPartners.js) — en Verified siempre trae contenido, aunque sea
+    // 1 solo destacado. Ocultos en modo foco: son un atajo para
+    // explorar, no tienen sentido dentro de "ver todo de esta categoría".
+    const showOverview = !focusCategory && highlights.length > 0;
 
     return (
         <>
@@ -115,6 +131,52 @@ export default function CityPartnerList({
                         </span>
                         {I18n.t('city.partners_back_to_categories')}
                     </button>
+                </div>
+            ) : null}
+
+            {showOverview ? (
+                <section className="city-partners-highlights">
+                    <h3 className="city-partners-highlights__heading">
+                        <span className="eyebrow eyebrow--primary">
+                            {I18n.t('city.partners_highlights_eyebrow')}
+                        </span>
+                        <span className="city-partners-highlights__title">
+                            {I18n.t('city.partners_highlights_title')}
+                        </span>
+                    </h3>
+                    <div className="city-partners-grid">
+                        {highlights.map(({ partner, group }) => (
+                            <PartnerCard
+                                key={partner.id}
+                                partner={partner}
+                                group={group}
+                                onSelectPartner={onSelectPartner}
+                                onDirectionsClick={onDirectionsClick}
+                            />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            {showOverview ? (
+                <div className="city-partners-category-nav">
+                    {groups.map((group) => (
+                        <button
+                            type="button"
+                            key={group.category}
+                            className="city-partners-category-pill"
+                            style={{ '--cat-color': group.color }}
+                            onClick={() => onEnterFocus(group.category)}
+                        >
+                            <span className="city-partners-category-pill__icon" aria-hidden="true">
+                                <span className="material-symbols-outlined">{group.icon}</span>
+                            </span>
+                            {group.label}
+                            <span className="city-partners-category-pill__count">
+                                · {group.partners.length}
+                            </span>
+                        </button>
+                    ))}
                 </div>
             ) : null}
 
