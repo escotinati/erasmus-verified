@@ -107,16 +107,21 @@ main.city-main {
     margin-bottom: 32px;
 }
 
-/* ── CTA de WhatsApp + "ver mapa" — acciones rápidas justo debajo
-   del <h1> ───────────────────────────────────────────────────────
+/* ── Acciones rápidas justo debajo del <h1> ───────────────────────
    Antes había un banner grande (.action-btn, 20px de padding, icono de
    32px, título+subtítulo) muy abajo en la página, después de toda la
-   lista de partners — a petición explícita de Álvaro. En columna, no
-   en fila: el CTA de WhatsApp va SOLO en su propia línea (es la acción
-   principal de toda la página — el producto es, literalmente, un
-   directorio de grupos de WhatsApp) y "ver mapa" queda claramente
-   subordinado justo debajo, en vez de competir por atención en la
-   misma fila. */
+   lista de partners — a petición explícita de Álvaro.
+
+   Familia .city-action-btn — pill con icono siempre (mobile-first: la
+   etiqueta va siempre visible, como cualquier botón normal) que en
+   escritorio CON HOVER REAL (@media hover:hover/pointer:fine, más
+   abajo) colapsa a un círculo de solo icono y se expande a la pill
+   completa al pasar el ratón o enfocar — "aumentable", a petición
+   explícita. Sin hover real (móvil/táctil) se queda como pill fija:
+   nunca se le pide a alguien sin ratón que "descubra" un botón que
+   depende de un hover que no puede disparar. --whatsapp/--map son
+   modificadores de color sobre la misma estructura — la propia idea de
+   "familia" que pedía Álvaro, no dos componentes sueltos. */
 .city-quick-actions {
     display: flex;
     flex-direction: column;
@@ -125,28 +130,128 @@ main.city-main {
     margin-bottom: 24px;
 }
 
-/* .city-whatsapp-cta reutiliza el box-model de .btn-primary-pill
-   (padding/talla/tipografía — misma familia que cualquier botón
-   primario del sitio) pero NO su color: verde WhatsApp (--wa, el mismo
-   token que ya usa el enlace real del grupo en mapa.html/ciudad.css),
-   a propósito — a petición explícita de Álvaro, "que al verlo se sepa
-   a qué se refiere". Es la única card/botón de toda la página que NO
-   es indigo/magenta de marca — precisamente por eso destaca del resto,
-   igual que ya destacaba en el mockup del 404 (--wa también ahí). */
-.city-whatsapp-cta {
-    gap: 8px;
+.city-action-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 24px;
+    border-radius: var(--radius-full);
+    border: none;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        background-color var(--duration-base) var(--ease-out),
+        transform var(--anim-duration-fast) var(--anim-easing-standard);
+}
+
+/* color explícito en :hover — sin esto, la regla global "a:hover"
+   (typography.css) gana por especificidad sobre el "color" base de
+   arriba (que no lleva :hover en su propio selector) y el texto se
+   queda del mismo tono indigo que ese estilo global de enlace, casi
+   invisible sobre el propio fondo del botón — mismo bug ya documentado
+   en components.css para .btn-primary-pill:hover, aquí repetido antes
+   de corregirlo (verificado con Playwright: color de texto y de fondo
+   idénticos al pasar el ratón sobre el botón de mapa, texto ilegible). */
+.city-action-btn:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.city-action-btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.city-action-btn:focus-visible {
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.city-action-btn .action-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.city-action-btn .action-icon .btn-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.city-action-btn .action-icon .material-symbols-outlined {
+    font-size: 18px;
+}
+
+/* aria-hidden en el HTML (el nombre accesible ya lo da aria-label en
+   el <a>) — este span es solo el texto visible, que se oculta/revela
+   por CSS en escritorio (ver el @media de abajo). */
+.city-action-btn .action-label {
+    margin-left: 8px;
+}
+
+.city-action-btn--whatsapp {
     background: var(--wa);
 }
 
-.city-whatsapp-cta:hover {
+.city-action-btn--whatsapp:hover {
     background: color-mix(in srgb, var(--wa) 85%, black);
 }
 
-.city-whatsapp-cta .btn-icon {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    fill: currentColor;
+.city-action-btn--map {
+    background: var(--primary);
+}
+
+.city-action-btn--map:hover {
+    background: var(--color-primary-hover, var(--primary));
+}
+
+/* ── Solo con hover real: colapsa a círculo, se expande al pasar el
+   ratón o al enfocar con teclado (:focus-visible, nunca solo :hover —
+   quien navega con teclado también tiene que poder "ver" el botón). */
+@media (hover: hover) and (pointer: fine) {
+    .city-quick-actions {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .city-action-btn {
+        max-width: 44px;
+        padding: 0 13px;
+        overflow: hidden;
+        transition:
+            max-width var(--duration-base) var(--ease-out),
+            background-color var(--duration-base) var(--ease-out),
+            transform var(--anim-duration-fast) var(--anim-easing-standard);
+    }
+
+    .city-action-btn .action-label {
+        display: inline-block;
+        max-width: 0;
+        margin-left: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+            max-width var(--duration-base) var(--ease-out),
+            margin-left var(--duration-base) var(--ease-out),
+            opacity var(--duration-fast) var(--ease-out);
+    }
+
+    .city-action-btn:hover,
+    .city-action-btn:focus-visible {
+        max-width: 320px;
+    }
+
+    .city-action-btn:hover .action-label,
+    .city-action-btn:focus-visible .action-label {
+        max-width: 280px;
+        margin-left: 8px;
+        opacity: 1;
+    }
 }
 
 /* Sin grupo todavía — informativo, no una acción, así que ni el color
@@ -453,32 +558,6 @@ main.city-main {
     display: flex;
     flex-direction: column;
     gap: 12px;
-}
-
-.city-partners-map-link {
-    display: inline-flex;
-    align-self: flex-start;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 16px;
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--radius-full);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--primary);
-    text-decoration: none;
-    transition:
-        border-color var(--duration-fast) var(--ease-out),
-        transform var(--duration-fast) var(--ease-out);
-}
-
-.city-partners-map-link:hover {
-    border-color: var(--primary);
-    transform: translateY(-1px);
-}
-
-.city-partners-map-link .material-symbols-outlined {
-    font-size: 18px;
 }
 
 .city-partners-focus-bar {

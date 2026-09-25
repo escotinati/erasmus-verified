@@ -252,13 +252,16 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
             btn.href = safeWhatsapp;
             btn.target = '_blank';
             btn.rel = 'noopener noreferrer';
-            // .city-whatsapp-cta (ciudad.css) + iconWa() (ciudad.js,
-            // global de script clásico — ciudad.js ya cargó antes de que
-            // esta función se ejecute) — mismo verde/icono que el CTA de
-            // arriba de la página, para que el botón de unirse se
+            // .city-action-btn/--whatsapp (ciudad.css) + iconWa()
+            // (ciudad.js, global de script clásico — ciudad.js ya cargó
+            // antes de que esta función se ejecute) — mismo botón
+            // "familia de acciones rápidas" (verde, colapsa a círculo con
+            // hover real) que el CTA de arriba de la página, para que se
             // reconozca igual también en el estado "sin partners".
-            btn.className = 'btn-primary-pill city-whatsapp-cta';
-            btn.innerHTML = `${iconWa()} ${escapeHtml(I18n.t('city.join_whatsapp_group'))}`;
+            const label = I18n.t('city.join_whatsapp_group');
+            btn.className = 'city-action-btn city-action-btn--whatsapp';
+            btn.setAttribute('aria-label', label);
+            btn.innerHTML = `<span class="action-icon" aria-hidden="true">${iconWa()}</span><span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>`;
             wrap.appendChild(btn);
         }
 

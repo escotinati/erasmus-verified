@@ -280,18 +280,21 @@ function showCityError() {
 // un `platform` genérico ('whatsapp'/'telegram'/otro) pero el único
 // llamador real siempre pasaba 'whatsapp'; las otras dos ramas
 // (iconTg/iconGeneric, .btn-tg/.btn-generic en ciudad.css) eran código
-// muerto inalcanzable. Se unifica: un único CTA de WhatsApp, con la
-// TALLA de .btn-primary-pill (misma familia que cualquier botón
-// primario del sitio: padding/tipografía/radio) pero en verde
-// (--wa, ciudad.css) en vez de indigo — a petición explícita, para que
-// destaque y se reconozca de un vistazo qué es — en lugar del banner
-// grande (.action-btn/.btn-wa) que tenía antes.
+// muerto inalcanzable. Se unifica: un único CTA de WhatsApp,
+// .city-action-btn (ciudad.css) — la familia de "acciones rápidas" que
+// comparte con buildMapLink(): mismo componente, un modificador de
+// color (--whatsapp, verde --wa) en vez de un botón aparte — a
+// petición explícita, para que destaque y se reconozca de un vistazo
+// qué es. aria-label repite la etiqueta visible porque en escritorio
+// (hover real) .action-label empieza oculta por CSS — ver el @media
+// hover:hover en ciudad.css — así que el nombre accesible no puede
+// depender de que esté visible.
 function buildWhatsappCta(url, label) {
     return `
     <a href="${sanitizeUrl(url, '#')}" target="_blank" rel="noopener noreferrer"
-      class="btn-primary-pill city-whatsapp-cta">
-      ${iconWa()}
-      ${escapeHtml(label)}
+      class="city-action-btn city-action-btn--whatsapp" aria-label="${escapeHtml(label)}">
+      <span class="action-icon" aria-hidden="true">${iconWa()}</span>
+      <span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>
     </a>`;
 }
 
@@ -369,12 +372,20 @@ function buildPartnersBlock(city) {
     </div>`;
 }
 
+// Mismo componente .city-action-btn que buildWhatsappCta() — un
+// modificador de color (--map) sobre la misma estructura, no un botón
+// aparte. aria-label repite la etiqueta visible: la propia etiqueta
+// (.action-label) se oculta por CSS en escritorio (ver ciudad.css), así
+// que el nombre accesible no puede depender de que esté visible.
 function buildMapLink(cityId) {
     const fullscreenUrl = `mapa.html?city=${cityId}`;
+    const label = I18n.t('city.map_fullscreen_link');
     return `
-    <a href="${fullscreenUrl}" class="city-partners-map-link">
-      <span class="material-symbols-outlined" aria-hidden="true">map</span>
-      ${I18n.t('city.map_fullscreen_link')}
+    <a href="${fullscreenUrl}" class="city-action-btn city-action-btn--map" aria-label="${escapeHtml(label)}">
+      <span class="action-icon" aria-hidden="true">
+        <span class="material-symbols-outlined">map</span>
+      </span>
+      <span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>
     </a>`;
 }
 
