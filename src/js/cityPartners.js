@@ -261,7 +261,7 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
             const label = I18n.t('city.join_whatsapp_group');
             btn.className = 'city-action-btn city-action-btn--whatsapp';
             btn.setAttribute('aria-label', label);
-            btn.innerHTML = `<span class="action-icon" aria-hidden="true">${iconWa()}</span><span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>`;
+            btn.innerHTML = `<span class="action-icon" aria-hidden="true">${iconWa()}</span><span class="action-caption" aria-hidden="true">WhatsApp</span><span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>`;
             wrap.appendChild(btn);
         }
 

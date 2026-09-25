@@ -112,68 +112,68 @@ main.city-main {
    32px, título+subtítulo) muy abajo en la página, después de toda la
    lista de partners — a petición explícita de Álvaro.
 
-   Familia .city-action-btn — pill con icono siempre (mobile-first: la
-   etiqueta va siempre visible, como cualquier botón normal) que en
-   escritorio CON HOVER REAL (@media hover:hover/pointer:fine, más
-   abajo) colapsa a un círculo de solo icono y se expande a la pill
-   completa al pasar el ratón o enfocar — "aumentable", a petición
-   explícita. Sin hover real (móvil/táctil) se queda como pill fija:
-   nunca se le pide a alguien sin ratón que "descubra" un botón que
-   depende de un hover que no puede disparar. --whatsapp/--map son
-   modificadores de color sobre la misma estructura — la propia idea de
-   "familia" que pedía Álvaro, no dos componentes sueltos. */
+   Familia .city-action-btn, dos formas según haya hover real o no —
+   NUNCA se le pide a quien no tiene ratón que "descubra" algo que
+   depende de un hover que no puede disparar (no hay hover en móvil):
+
+   · Sin hover real (mobile-first, por defecto) — "tile": icono en
+     círculo de color (.action-icon, 44px) + una CAPTION corta siempre
+     visible debajo (.action-caption — "WhatsApp"/"Mapa", no la frase
+     larga completa: en una columna de ~70-90px de ancho no cabría sin
+     desentonar). Mismo patrón que el propio selector de acciones de
+     WhatsApp (Mensaje/Llamar/Vídeo con icono+caption) — grounded en el
+     propio icono que ya se está mostrando.
+   · Con hover real (@media hover:hover/pointer:fine, más abajo) — el
+     icono colapsa a un círculo de solo icono (sin caption, oculta) y
+     se EXPANDE a una pill con la frase completa (.action-label) al
+     pasar el ratón o enfocar con teclado — "aumentable", a petición
+     explícita.
+
+   --action-color/--action-color-hover (custom properties por
+   modificador --whatsapp/--map) alimentan el color en los dos
+   contextos sin duplicar la paleta — la propia idea de "familia" que
+   pedía Álvaro, no dos componentes sueltos. */
 .city-quick-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    gap: 12px;
+    gap: 20px;
     margin-bottom: 24px;
 }
 
 .city-action-btn {
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    height: 44px;
-    padding: 0 24px;
-    border-radius: var(--radius-full);
-    border: none;
-    color: #fff;
+    gap: 6px;
+    color: var(--on-surface);
     font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
     text-decoration: none;
     cursor: pointer;
-    white-space: nowrap;
+}
+
+.city-action-btn .action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--action-color);
+    color: #fff;
+    flex-shrink: 0;
     transition:
         background-color var(--duration-base) var(--ease-out),
         transform var(--anim-duration-fast) var(--anim-easing-standard);
 }
 
-/* color explícito en :hover — sin esto, la regla global "a:hover"
-   (typography.css) gana por especificidad sobre el "color" base de
-   arriba (que no lleva :hover en su propio selector) y el texto se
-   queda del mismo tono indigo que ese estilo global de enlace, casi
-   invisible sobre el propio fondo del botón — mismo bug ya documentado
-   en components.css para .btn-primary-pill:hover, aquí repetido antes
-   de corregirlo (verificado con Playwright: color de texto y de fondo
-   idénticos al pasar el ratón sobre el botón de mapa, texto ilegible). */
-.city-action-btn:hover {
-    color: #fff;
+.city-action-btn:active .action-icon {
+    transform: scale(0.94);
 }
 
-.city-action-btn:active {
-    transform: translateY(0) scale(0.97);
-}
-
-.city-action-btn:focus-visible {
+.city-action-btn:focus-visible .action-icon {
     box-shadow: var(--shadow-focus);
     outline: none;
-}
-
-.city-action-btn .action-icon {
-    display: inline-flex;
-    flex-shrink: 0;
 }
 
 .city-action-btn .action-icon .btn-icon {
@@ -186,46 +186,94 @@ main.city-main {
     font-size: 18px;
 }
 
-/* aria-hidden en el HTML (el nombre accesible ya lo da aria-label en
-   el <a>) — este span es solo el texto visible, que se oculta/revela
-   por CSS en escritorio (ver el @media de abajo). */
+.city-action-btn .action-caption {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--on-surface-variant);
+    text-align: center;
+}
+
+/* Oculta mobile-first — solo se usa en escritorio (ver @media abajo).
+   aria-hidden en el HTML de todas formas: el nombre accesible lo da
+   aria-label en el propio <a>, nunca este span (que en escritorio se
+   revela/oculta por CSS, así que no puede ser LA fuente del nombre). */
 .city-action-btn .action-label {
-    margin-left: 8px;
+    display: none;
 }
 
 .city-action-btn--whatsapp {
-    background: var(--wa);
-}
-
-.city-action-btn--whatsapp:hover {
-    background: color-mix(in srgb, var(--wa) 85%, black);
+    --action-color: var(--wa);
+    --action-color-hover: color-mix(in srgb, var(--wa) 85%, black);
 }
 
 .city-action-btn--map {
-    background: var(--primary);
+    --action-color: var(--primary);
+    --action-color-hover: var(--color-primary-hover, var(--primary));
 }
 
-.city-action-btn--map:hover {
-    background: var(--color-primary-hover, var(--primary));
-}
-
-/* ── Solo con hover real: colapsa a círculo, se expande al pasar el
-   ratón o al enfocar con teclado (:focus-visible, nunca solo :hover —
-   quien navega con teclado también tiene que poder "ver" el botón). */
+/* ── Solo con hover real: el icono deja de ser un círculo suelto con
+   caption debajo y pasa a SER la propia pill (fila, no columna), que
+   colapsa a solo icono y se expande al pasar el ratón o enfocar con
+   teclado (:focus-visible, nunca solo :hover — quien navega con
+   teclado también tiene que poder "ver" el botón). */
 @media (hover: hover) and (pointer: fine) {
     .city-quick-actions {
-        flex-direction: row;
         align-items: center;
+        gap: 12px;
     }
 
     .city-action-btn {
+        flex-direction: row;
+        gap: 0;
+        height: 44px;
         max-width: 44px;
         padding: 0 13px;
+        border-radius: var(--radius-full);
+        background: var(--action-color);
+        color: #fff;
         overflow: hidden;
+        white-space: nowrap;
         transition:
             max-width var(--duration-base) var(--ease-out),
-            background-color var(--duration-base) var(--ease-out),
-            transform var(--anim-duration-fast) var(--anim-easing-standard);
+            background-color var(--duration-base) var(--ease-out);
+    }
+
+    /* color explícito — sin esto, la regla global "a:hover"
+       (typography.css) gana por especificidad sobre el "color" base de
+       arriba (que no lleva :hover en su propio selector) y el texto se
+       queda del mismo tono indigo que ese estilo global de enlace,
+       casi invisible sobre el propio fondo del botón — mismo bug ya
+       documentado en components.css para .btn-primary-pill:hover, aquí
+       repetido antes de corregirlo (verificado con Playwright: color
+       de texto y de fondo idénticos al pasar el ratón, texto ilegible). */
+    .city-action-btn:hover,
+    .city-action-btn:focus-visible {
+        max-width: 320px;
+        background: var(--action-color-hover);
+        color: #fff;
+    }
+
+    .city-action-btn:focus-visible {
+        box-shadow: var(--shadow-focus);
+        outline: none;
+    }
+
+    /* El icono ya no lleva su propio círculo de color — ahora es la
+       pill entera (arriba) la que lo lleva; el icono solo aporta forma
+       y tamaño, con el color heredado del texto (blanco) del botón. */
+    .city-action-btn .action-icon {
+        width: 18px;
+        height: 18px;
+        background: transparent;
+        color: inherit;
+    }
+
+    .city-action-btn:focus-visible .action-icon {
+        box-shadow: none;
+    }
+
+    .city-action-btn .action-caption {
+        display: none;
     }
 
     .city-action-btn .action-label {
@@ -238,11 +286,6 @@ main.city-main {
             max-width var(--duration-base) var(--ease-out),
             margin-left var(--duration-base) var(--ease-out),
             opacity var(--duration-fast) var(--ease-out);
-    }
-
-    .city-action-btn:hover,
-    .city-action-btn:focus-visible {
-        max-width: 320px;
     }
 
     .city-action-btn:hover .action-label,

@@ -285,15 +285,21 @@ function showCityError() {
 // comparte con buildMapLink(): mismo componente, un modificador de
 // color (--whatsapp, verde --wa) en vez de un botón aparte — a
 // petición explícita, para que destaque y se reconozca de un vistazo
-// qué es. aria-label repite la etiqueta visible porque en escritorio
-// (hover real) .action-label empieza oculta por CSS — ver el @media
-// hover:hover en ciudad.css — así que el nombre accesible no puede
-// depender de que esté visible.
+// qué es. aria-label repite la etiqueta visible porque ninguno de los
+// dos textos visibles es fijo: en móvil (sin hover) se ve
+// .action-caption, una versión corta ("WhatsApp", nombre de marca
+// literal — translations.js no lleva nombres propios, igual que
+// buildMapLink() con "Mapa"/"Map"); en escritorio con hover real
+// .action-caption se oculta y aparece .action-label (la frase larga,
+// oculta en móvil) al pasar el ratón o enfocar — ver el @media
+// hover:hover en ciudad.css. El nombre accesible no puede depender de
+// cuál de los dos esté visible en cada momento.
 function buildWhatsappCta(url, label) {
     return `
     <a href="${sanitizeUrl(url, '#')}" target="_blank" rel="noopener noreferrer"
       class="city-action-btn city-action-btn--whatsapp" aria-label="${escapeHtml(label)}">
       <span class="action-icon" aria-hidden="true">${iconWa()}</span>
+      <span class="action-caption" aria-hidden="true">WhatsApp</span>
       <span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>
     </a>`;
 }
@@ -374,17 +380,21 @@ function buildPartnersBlock(city) {
 
 // Mismo componente .city-action-btn que buildWhatsappCta() — un
 // modificador de color (--map) sobre la misma estructura, no un botón
-// aparte. aria-label repite la etiqueta visible: la propia etiqueta
-// (.action-label) se oculta por CSS en escritorio (ver ciudad.css), así
-// que el nombre accesible no puede depender de que esté visible.
+// aparte. aria-label repite la etiqueta visible: ni .action-caption
+// (corta, "Mapa"/"Map" — visible en móvil) ni .action-label (la frase
+// larga, visible solo al pasar el ratón en escritorio, ver ciudad.css)
+// están visibles todo el tiempo, así que el nombre accesible no puede
+// depender de ninguna de las dos.
 function buildMapLink(cityId) {
     const fullscreenUrl = `mapa.html?city=${cityId}`;
     const label = I18n.t('city.map_fullscreen_link');
+    const caption = I18n.t('city.map_caption_short');
     return `
     <a href="${fullscreenUrl}" class="city-action-btn city-action-btn--map" aria-label="${escapeHtml(label)}">
       <span class="action-icon" aria-hidden="true">
         <span class="material-symbols-outlined">map</span>
       </span>
+      <span class="action-caption" aria-hidden="true">${escapeHtml(caption)}</span>
       <span class="action-label" aria-hidden="true">${escapeHtml(label)}</span>
     </a>`;
 }
