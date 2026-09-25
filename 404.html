@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Página no encontrada — Erasmus Verified</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Design System tokens -->
+        <link rel="stylesheet" href="/src/styles/tokens.css" />
+        <link rel="stylesheet" href="/src/styles/typography.css" />
+        <link rel="stylesheet" href="/src/css/styles.css" />
+        <link rel="stylesheet" href="/src/css/animations.css" />
+        <script src="/src/js/experience.js"></script>
+    </head>
+
+    <body class="notfound-page">
+        <!-- ── TOP NAV (React) — ver src/react/TopbarNav.jsx ── -->
+        <div id="nav-root"></div>
+        <script type="module" src="/src/react/mount-topbar-nav.jsx"></script>
+
+        <main style="flex: 1">
+            <div class="section">
+                <div class="notfound-hero">
+                    <span
+                        class="eyebrow eyebrow--secondary anim-page-enter"
+                        data-i18n="notfound.eyebrow"
+                        >ERROR 404</span
+                    >
+                    <h1 class="section-title anim-page-enter" data-i18n="notfound.title">
+                        Este grupo ya no existe
+                    </h1>
+                    <p class="section-sub anim-page-enter" data-i18n="notfound.subtitle">
+                        Como en tu primer día de Erasmus: te has perdido. Por suerte, aquí no hace
+                        falta preguntar por la calle.
+                    </p>
+                </div>
+
+                <!-- El "chat" es el elemento distintivo de esta página — ver
+                     src/js/notFound.js (rellena la ruta real intentada y
+                     orquesta la animación "escribiendo… → salió del grupo")
+                     y src/css/pages/not-found.css. -->
+                <div class="notfound-chat" role="group" aria-label="Conversación simulada">
+                    <div class="notfound-chat-header">
+                        <div class="notfound-chat-avatar">
+                            <span class="notfound-chat-badge" aria-hidden="true">404</span>
+                            <span class="material-symbols-outlined" aria-hidden="true"
+                                >question_mark</span
+                            >
+                        </div>
+                        <div>
+                            <div class="notfound-chat-name" data-i18n="notfound.chat_contact_name">
+                                Esta página
+                            </div>
+                            <div class="notfound-chat-status" data-i18n="notfound.chat_last_seen">
+                                última conexión: nunca
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="notfound-chat-body">
+                        <div class="notfound-bubble notfound-bubble--in">
+                            <span data-i18n="notfound.chat_incoming_intro"
+                                >Épale 👋 Preguntabas por esto:</span
+                            >
+                            <code class="notfound-bubble-path" id="notfoundPath"></code>
+                            <span data-i18n="notfound.chat_incoming_outro"
+                                >Pero aquí no hay nadie con ese nombre.</span
+                            >
+                            <span class="notfound-bubble-time">04:04</span>
+                        </div>
+
+                        <div class="notfound-bubble notfound-bubble--out">
+                            <span data-i18n="notfound.chat_outgoing"
+                                >Vaya… 😅 ¿Seguro que no le diste a un enlace roto?</span
+                            >
+                            <span class="notfound-bubble-time">
+                                04:04
+                                <span class="material-symbols-outlined" aria-hidden="true"
+                                    >done_all</span
+                                >
+                            </span>
+                        </div>
+
+                        <div class="notfound-typing" id="notfoundTyping" aria-hidden="true">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <p class="notfound-system" id="notfoundSystem" aria-live="polite">
+                            <span data-i18n="notfound.chat_system_message"
+                                >Esta página salió del grupo</span
+                            >
+                        </p>
+                    </div>
+                </div>
+
+                <p class="notfound-lead anim-fade-up" data-i18n="notfound.after_chat_lead">
+                    Pero por aquí sí hay sitio 👇
+                </p>
+
+                <div class="notfound-actions anim-fade-up">
+                    <a href="/" class="btn-primary-pill">
+                        <span data-i18n="notfound.cta_home">Ir al inicio</span>
+                        <span class="material-symbols-outlined" aria-hidden="true">home</span>
+                    </a>
+                    <a href="/ciudades-todas.html" class="notfound-chip">
+                        <span class="material-symbols-outlined" aria-hidden="true"
+                            >location_city</span
+                        >
+                        <span data-i18n="notfound.cta_cities">Ver ciudades</span>
+                    </a>
+                    <a href="/mapa.html" class="notfound-chip">
+                        <span class="material-symbols-outlined" aria-hidden="true">map</span>
+                        <span data-i18n="notfound.cta_map">Abrir el mapa</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER (React) — ver src/react/Footer.jsx -->
+        <div id="footer-root"></div>
+        <script type="module" src="/src/react/mount-footer.jsx"></script>
+
+        <!-- ── APP BOTTOM NAV (React) — ver src/react/AppShell.jsx ── -->
+        <div id="shell-root"></div>
+        <script type="module" src="/src/react/mount-shell.jsx"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+        <script src="/src/js/lib/supabaseClient.js"></script>
+        <script src="/src/utils/i18n.js"></script>
+        <script src="/src/utils/translations.js"></script>
+        <script src="/src/js/langSwitcher.js"></script>
+        <script src="/src/js/utils/sanitize.js"></script>
+        <script src="/src/js/services/authService.js"></script>
+        <script src="/src/js/utils/animations.js"></script>
+        <script src="/src/js/notFound.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                window.I18n.applyTranslations();
+                if (window.initScrollReveal) window.initScrollReveal();
+            });
+        </script>
+    </body>
+</html>

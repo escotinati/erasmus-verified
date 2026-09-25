@@ -28,5 +28,6 @@
 @import './pages/listing-detail.css';
 @import './pages/featured-listings.css';
 @import './pages/auth.css';
+@import './pages/not-found.css';
 @import './responsive.css';
 @import './transitions.css';
