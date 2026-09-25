@@ -22,13 +22,15 @@
 //      muchos partners (ver el mockup "Ciudad Sin Mapa" acordado con
 //      Álvaro antes de esta rama: tope de 6 tarjetas + "ver todo").
 //
-//  isRich (>3 categorías, Verified) — la respuesta a "de un vistazo es
-//  confuso, demasiada información de golpe" (mockup "Destacados +
-//  categorías plegadas" acordado con Álvaro): con muchas categorías,
-//  todas plegadas salvo la más numerosa, más una franja de
-//  "destacados" (el primer partner — ya viene ordenado por priority —
-//  de hasta 4 categorías distintas) antes de la lista. Con 3 o menos
-//  categorías no cambia nada (todas desplegadas, como siempre).
+//  showHighlights (Verified, siempre) — la respuesta a "de un vistazo
+//  es confuso, demasiada información de golpe" (mockup "Destacados +
+//  categorías plegadas" acordado con Álvaro): todas las categorías
+//  plegadas salvo la más numerosa, más una franja de "destacados" (el
+//  primer partner — ya viene ordenado por priority — de hasta 4
+//  categorías distintas) antes de la lista. Se aplica SIEMPRE en
+//  Verified, a petición explícita — aunque solo haya 1 partner, para
+//  que la página se vea siempre igual (Parties conserva su propio
+//  criterio de arranque, sin tocar).
 //
 //  Devuelve { listGroups, selectPartner, activateOnlyCategory } — LA
 //  MISMA forma que mountPartnersList() (mapPartners.js) a propósito:
@@ -89,16 +91,15 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
         };
     });
 
-    // Con más de 3 categorías, mostrarlas TODAS desplegadas de golpe es
-    // justo el problema reportado por Álvaro ("de un vistazo es
-    // confuso, demasiada información de golpe") — mockup "Destacados +
-    // categorías plegadas" acordado antes de este cambio. Con 3 o
-    // menos no hace falta (ya se ve todo sin agobiar, mismo criterio
-    // que Regla 4: sin control para algo que no hace falta controlar).
-    // isRich decide dos cosas a la vez: si initialCollapsedCategories()
-    // pliega todo menos la categoría más numerosa, y si se muestra la
-    // franja de destacados.
-    const isRich = !isPartiesExperience() && groups.length > 3;
+    // Mostrar TODAS las categorías desplegadas de golpe es justo el
+    // problema reportado por Álvaro ("de un vistazo es confuso,
+    // demasiada información de golpe") — mockup "Destacados +
+    // categorías plegadas" acordado antes de este cambio. A petición
+    // explícita, esto se aplica SIEMPRE en Verified, no solo con muchas
+    // categorías — aunque solo haya 1 partner, la página se ve igual
+    // (consistencia visual por encima de ahorrarse una franja
+    // "Destacados" redundante con 1 solo elemento).
+    const showHighlights = !isPartiesExperience();
 
     // Destacados: el primer partner (ya viene ordenado por priority
     // desc desde fetchPartnersByCity) de hasta 4 categorías distintas —
@@ -107,8 +108,10 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
     // solaparse con lo que ya se ve dentro de su categoría al
     // desplegarla — a propósito, mismo criterio que cualquier fila de
     // "destacados" sobre un listado por categorías (Netflix, App
-    // Store...): no es un defecto, es el patrón.
-    const highlights = isRich
+    // Store...): no es un defecto, es el patrón. Con 1 sola categoría,
+    // sale un único destacado — el mismo partner que ya se ve justo
+    // debajo, redundante a propósito (ver comentario de arriba).
+    const highlights = showHighlights
         ? listGroups.slice(0, 4).map((group) => ({ partner: group.partners[0], group }))
         : [];
 
@@ -167,15 +170,15 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
     // mapPartners.js) — en Parties, solo Fiestas arranca desplegada; el
     // resto de categorías sigue ahí (nunca desaparece del todo, solo
     // plegada) para no enterrar contenido ajeno a la marca de esa
-    // página bajo el de otras categorías. En Verified, con más de 3
-    // categorías (ver isRich más arriba) se pliegan todas menos la más
-    // numerosa — mismo motivo, aplicado ahora también a la marca
-    // principal. ──────────────────────────────────────────────────
+    // página bajo el de otras categorías. En Verified, se pliegan todas
+    // menos la más numerosa (empate: gana la primera en orden
+    // original) — con 1 sola categoría, "la más numerosa" es esa misma,
+    // así que no se pliega nada y el resultado es idéntico a antes.
+    // ──────────────────────────────────────────────────────────────
     function initialCollapsedCategories() {
         if (isPartiesExperience()) {
             return new Set(groups.filter((g) => g.category !== 'nightlife').map((g) => g.category));
         }
-        if (!isRich) return new Set();
         const richest = groups.reduce((a, b) => (b.partners.length > a.partners.length ? b : a));
         return new Set(
             groups.filter((g) => g.category !== richest.category).map((g) => g.category)

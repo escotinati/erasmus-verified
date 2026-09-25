@@ -589,8 +589,8 @@ main.city-main {
     font-size: 18px;
 }
 
-/* ── Destacados + pastillas de categoría ("modo rico", isRich en
-   cityPartners.js — más de 3 categorías) — mockup "Destacados +
+/* ── Destacados + pastillas de categoría (showHighlights en
+   cityPartners.js — siempre activo en Verified) — mockup "Destacados +
    categorías plegadas" acordado con Álvaro. Reutiliza .city-partners-grid
    (misma rejilla que cualquier categoría) para las cards de destacados. */
 .city-partners-highlights {

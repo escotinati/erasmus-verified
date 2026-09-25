@@ -24,13 +24,14 @@
 //  control para algo que no hace falta controlar).
 //
 //  showOverview (highlights + pastillas de categoría) — mockup
-//  "Destacados + categorías plegadas" acordado con Álvaro para
-//  ciudades con muchas categorías (isRich, ver cityPartners.js): antes
-//  de la lista, una franja de partners destacados y una fila de
-//  pastillas (icono+nombre+contador) que entran en modo foco al
-//  pulsarlas — mismo onEnterFocus que ya usaba el botón "ver todo".
-//  highlights llega vacío en ciudades pequeñas, así que ambos bloques
-//  no se renderizan y el comportamiento no cambia.
+//  "Destacados + categorías plegadas" acordado con Álvaro, SIEMPRE
+//  activo en Verified (ver showHighlights en cityPartners.js, aunque
+//  solo haya 1 partner — consistencia visual a propósito): antes de la
+//  lista, una franja de partners destacados y una fila de pastillas
+//  (icono+nombre+contador) que entran en modo foco al pulsarlas —
+//  mismo onEnterFocus que ya usaba el botón "ver todo". highlights
+//  llega vacío solo en Parties, que conserva su propio criterio de
+//  arranque sin tocar.
 // ─────────────────────────────────────────────────────────────
 
 import Card from './Card.jsx';
@@ -110,10 +111,10 @@ export default function CityPartnerList({
     const visibleGroups = focusCategory
         ? groups.filter((g) => g.category === focusCategory)
         : groups;
-    // highlights solo llega con contenido cuando cityPartners.js decidió
-    // "modo rico" (isRich, >3 categorías) — ver su cabecera. Ocultos en
-    // modo foco: son un atajo para explorar, no tienen sentido dentro
-    // de "ver todo de esta categoría".
+    // highlights llega vacío solo en Parties (ver showHighlights en
+    // cityPartners.js) — en Verified siempre trae contenido, aunque sea
+    // 1 solo destacado. Ocultos en modo foco: son un atajo para
+    // explorar, no tienen sentido dentro de "ver todo de esta categoría".
     const showOverview = !focusCategory && highlights.length > 0;
 
     return (
