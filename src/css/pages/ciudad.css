@@ -589,6 +589,85 @@ main.city-main {
     font-size: 18px;
 }
 
+/* ── Destacados + pastillas de categoría ("modo rico", isRich en
+   cityPartners.js — más de 3 categorías) — mockup "Destacados +
+   categorías plegadas" acordado con Álvaro. Reutiliza .city-partners-grid
+   (misma rejilla que cualquier categoría) para las cards de destacados. */
+.city-partners-highlights {
+    margin-bottom: 32px;
+}
+
+.city-partners-highlights__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0 0 14px;
+}
+
+.city-partners-highlights__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--on-surface);
+}
+
+.city-partners-category-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 32px;
+}
+
+.city-partners-category-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--tap-min);
+    padding: 8px 16px 8px 8px;
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-full);
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--on-surface);
+    cursor: pointer;
+    transition:
+        border-color var(--duration-fast) var(--ease-out),
+        transform var(--duration-fast) var(--ease-out);
+}
+
+.city-partners-category-pill:hover {
+    border-color: var(--cat-color);
+    transform: translateY(-1px);
+}
+
+.city-partners-category-pill:focus-visible {
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.city-partners-category-pill__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--cat-color) 18%, var(--surface));
+    color: var(--cat-color);
+    flex-shrink: 0;
+}
+
+.city-partners-category-pill__icon .material-symbols-outlined {
+    font-size: 15px;
+}
+
+.city-partners-category-pill__count {
+    color: var(--on-surface-variant);
+    font-weight: 500;
+}
+
 .city-partners-group {
     margin-top: 28px;
 }

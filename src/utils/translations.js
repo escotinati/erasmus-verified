@@ -163,6 +163,8 @@ window.I18n.translations = {
             map_fullscreen_link: 'Ver mapa a pantalla completa',
             partners_more_cta: 'Ver todo en',
             partners_back_to_categories: 'Todas las categorías',
+            partners_highlights_eyebrow: 'Lo más popular',
+            partners_highlights_title: 'Destacados',
         },
         map: {
             loading_partners: 'Cargando partners…',
@@ -516,6 +518,8 @@ window.I18n.translations = {
             map_fullscreen_link: 'View fullscreen map',
             partners_more_cta: 'See all in',
             partners_back_to_categories: 'All categories',
+            partners_highlights_eyebrow: 'Most popular',
+            partners_highlights_title: 'Highlights',
         },
         map: {
             loading_partners: 'Loading partners…',

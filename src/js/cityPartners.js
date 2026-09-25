@@ -22,6 +22,14 @@
 //      muchos partners (ver el mockup "Ciudad Sin Mapa" acordado con
 //      Álvaro antes de esta rama: tope de 6 tarjetas + "ver todo").
 //
+//  isRich (>3 categorías, Verified) — la respuesta a "de un vistazo es
+//  confuso, demasiada información de golpe" (mockup "Destacados +
+//  categorías plegadas" acordado con Álvaro): con muchas categorías,
+//  todas plegadas salvo la más numerosa, más una franja de
+//  "destacados" (el primer partner — ya viene ordenado por priority —
+//  de hasta 4 categorías distintas) antes de la lista. Con 3 o menos
+//  categorías no cambia nada (todas desplegadas, como siempre).
+//
 //  Devuelve { listGroups, selectPartner, activateOnlyCategory } — LA
 //  MISMA forma que mountPartnersList() (mapPartners.js) a propósito:
 //  initCitySearch() en ciudad.js sigue funcionando prácticamente sin
@@ -81,6 +89,29 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
         };
     });
 
+    // Con más de 3 categorías, mostrarlas TODAS desplegadas de golpe es
+    // justo el problema reportado por Álvaro ("de un vistazo es
+    // confuso, demasiada información de golpe") — mockup "Destacados +
+    // categorías plegadas" acordado antes de este cambio. Con 3 o
+    // menos no hace falta (ya se ve todo sin agobiar, mismo criterio
+    // que Regla 4: sin control para algo que no hace falta controlar).
+    // isRich decide dos cosas a la vez: si initialCollapsedCategories()
+    // pliega todo menos la categoría más numerosa, y si se muestra la
+    // franja de destacados.
+    const isRich = !isPartiesExperience() && groups.length > 3;
+
+    // Destacados: el primer partner (ya viene ordenado por priority
+    // desc desde fetchPartnersByCity) de hasta 4 categorías distintas —
+    // variedad entre categorías, no solo "los 4 de mayor priority" (que
+    // podrían ser todos de la misma categoría si esta domina). Puede
+    // solaparse con lo que ya se ve dentro de su categoría al
+    // desplegarla — a propósito, mismo criterio que cualquier fila de
+    // "destacados" sobre un listado por categorías (Netflix, App
+    // Store...): no es un defecto, es el patrón.
+    const highlights = isRich
+        ? listGroups.slice(0, 4).map((group) => ({ partner: group.partners[0], group }))
+        : [];
+
     const state = {
         collapsedCategories: initialCollapsedCategories(),
         focusCategory: null,
@@ -103,7 +134,12 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
         for (const group of listGroups) {
             for (const partner of group.partners) {
                 if (partner.lat == null || partner.lng == null) continue;
-                partner.distanceMeters = distanceMeters(coords.lat, coords.lng, partner.lat, partner.lng);
+                partner.distanceMeters = distanceMeters(
+                    coords.lat,
+                    coords.lng,
+                    partner.lat,
+                    partner.lng
+                );
             }
         }
         renderList();
@@ -131,11 +167,18 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
     // mapPartners.js) — en Parties, solo Fiestas arranca desplegada; el
     // resto de categorías sigue ahí (nunca desaparece del todo, solo
     // plegada) para no enterrar contenido ajeno a la marca de esa
-    // página bajo el de otras categorías. ──────────────────────────
+    // página bajo el de otras categorías. En Verified, con más de 3
+    // categorías (ver isRich más arriba) se pliegan todas menos la más
+    // numerosa — mismo motivo, aplicado ahora también a la marca
+    // principal. ──────────────────────────────────────────────────
     function initialCollapsedCategories() {
-        if (!isPartiesExperience()) return new Set();
+        if (isPartiesExperience()) {
+            return new Set(groups.filter((g) => g.category !== 'nightlife').map((g) => g.category));
+        }
+        if (!isRich) return new Set();
+        const richest = groups.reduce((a, b) => (b.partners.length > a.partners.length ? b : a));
         return new Set(
-            groups.filter((g) => g.category !== 'nightlife').map((g) => g.category)
+            groups.filter((g) => g.category !== richest.category).map((g) => g.category)
         );
     }
 
@@ -165,6 +208,7 @@ async function mountCityPartners(listContainerId, city, { autoOpenPartnerId } = 
     function renderList() {
         listRoot.render({
             groups: listGroups,
+            highlights,
             collapsedCategories: state.collapsedCategories,
             focusCategory: state.focusCategory,
             onToggleCollapse: toggleCollapse,
