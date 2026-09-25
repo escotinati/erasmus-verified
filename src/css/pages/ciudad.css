@@ -100,29 +100,6 @@ main.city-main {
     }
 }
 
-.section-divider {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 20px;
-}
-
-.section-divider::before,
-.section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--outline-variant);
-}
-
-.section-divider span {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--on-surface-variant);
-}
-
 .actions {
     display: flex;
     flex-direction: column;
@@ -130,129 +107,57 @@ main.city-main {
     margin-bottom: 32px;
 }
 
-.action-btn {
+/* ── CTA de WhatsApp + "ver mapa" — fila de acciones rápidas ─────
+   Antes había un banner grande (.action-btn, 20px de padding, icono de
+   32px, título+subtítulo) muy abajo en la página, después de toda la
+   lista de partners — a petición explícita de Álvaro, ahora es una
+   fila compacta justo debajo del <h1>, con pills del mismo tamaño que
+   cualquier botón del sitio (.btn-primary-pill) en vez de un
+   componente propio. */
+.city-quick-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
-    padding: 20px 24px;
-    border-radius: 20px;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    width: 100%;
-    font-family: inherit;
-    transition:
-        transform 0.18s,
-        opacity 0.18s;
-    position: relative;
-    overflow: hidden;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
-.action-btn:hover {
-    transform: translateY(-2px);
-    opacity: 0.93;
+/* .city-whatsapp-cta reutiliza .btn-primary-pill tal cual (misma
+   familia/talla que cualquier botón primario del sitio — mismo
+   criterio que ya usa renderNoPartnersState() en cityPartners.js para
+   este mismo CTA en el estado "sin partners") — aquí solo el gap con
+   el icono y su tamaño, que .btn-primary-pill no necesita en su uso
+   habitual (texto solo). */
+.city-whatsapp-cta {
+    gap: 8px;
 }
 
-.action-btn:active {
-    transform: translateY(0);
-    opacity: 0.88;
-}
-
-.btn-wa {
-    background: var(--wa);
-    box-shadow: 0 8px 24px rgba(29, 170, 97, 0.22);
-}
-
-.btn-tg {
-    background: var(--tg);
-    box-shadow: 0 8px 24px rgba(42, 171, 238, 0.2);
-}
-
-.btn-generic {
-    background: var(--surface-container-low);
-    border: 1.5px solid var(--outline-variant);
-    box-shadow: 0 4px 16px rgba(70, 72, 212, 0.1);
-}
-
-.btn-generic .btn-label strong {
-    color: var(--on-surface);
-}
-
-.btn-generic .btn-label span {
-    color: var(--on-surface-variant);
-}
-
-.btn-generic .btn-chevron {
-    color: var(--on-surface-variant);
-}
-
-.btn-generic .btn-icon {
-    fill: none;
-    stroke: var(--primary);
-    stroke-width: 1.8px;
-}
-
-.btn-icon {
-    width: 32px;
-    height: 32px;
+.city-whatsapp-cta .btn-icon {
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
-    fill: #fff;
+    fill: currentColor;
 }
 
-.btn-label {
-    flex: 1;
-    text-align: left;
-}
-
-.btn-label strong {
-    display: block;
-    font-size: 16px;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 2px;
-}
-
-.btn-label span {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.65);
-    font-weight: 500;
-}
-
-.btn-chevron {
-    color: rgba(255, 255, 255, 0.45);
-    flex-shrink: 0;
-    transition: transform 0.15s;
-}
-
-.action-btn:hover .btn-chevron {
-    transform: translateX(3px);
-}
-
-.coming-soon {
-    text-align: center;
-    padding: 40px 20px;
+/* Sin grupo todavía — informativo, no una acción, así que ni el color
+   ni la talla de .btn-primary-pill encajarían (invitaría a pulsar algo
+   que no hace nada). Misma altura/padding para no romper la fila. */
+.city-group-pending {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-full);
     background: var(--surface-container-low);
     border: 1px solid var(--outline-variant);
-    border-radius: 20px;
-    margin-bottom: 32px;
-}
-
-.coming-soon .emoji {
-    font-size: 2.2rem;
-    display: block;
-    margin-bottom: 12px;
-}
-
-.coming-soon h3 {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: var(--on-surface);
-}
-
-.coming-soon p {
-    font-size: 14px;
     color: var(--on-surface-variant);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.city-group-pending .material-symbols-outlined {
+    font-size: 18px;
 }
 
 .info-box {
