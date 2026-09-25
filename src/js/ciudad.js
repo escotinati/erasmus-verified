@@ -47,9 +47,10 @@ function isDesktopLayout() {
     // contenedor estuviera arriba en el HTML, el botón acababa
     // apareciendo muy abajo en pantalla una vez la lista de partners
     // (con "Destacados" + categorías, a veces larga) se pintaba antes
-    // que él. Junto al enlace "ver mapa" en una misma fila de acciones
-    // rápidas (.city-quick-actions) — ambos son pills compactas, no un
-    // banner grande.
+    // que él. .city-quick-actions los apila en columna (ver
+    // ciudad.css): el CTA de WhatsApp en su propia línea, destacado en
+    // verde (--wa) por ser la acción principal de la página, y el
+    // enlace "ver mapa" justo debajo, claramente subordinado.
     let quickActions = city.whatsapp_url
         ? buildWhatsappCta(city.whatsapp_url, I18n.t('city.join_whatsapp_group'))
         : buildGroupPending();
@@ -279,12 +280,12 @@ function showCityError() {
 // un `platform` genérico ('whatsapp'/'telegram'/otro) pero el único
 // llamador real siempre pasaba 'whatsapp'; las otras dos ramas
 // (iconTg/iconGeneric, .btn-tg/.btn-generic en ciudad.css) eran código
-// muerto inalcanzable. Se unifica: un único CTA de WhatsApp, y
-// reutiliza .btn-primary-pill (misma familia/talla que cualquier botón
-// primario del sitio) en vez del banner grande (.action-btn/.btn-wa)
-// que tenía antes — mismo botón, en tamaño, que ya usa
-// renderNoPartnersState() (cityPartners.js) para este mismo CTA en el
-// estado "sin partners".
+// muerto inalcanzable. Se unifica: un único CTA de WhatsApp, con la
+// TALLA de .btn-primary-pill (misma familia que cualquier botón
+// primario del sitio: padding/tipografía/radio) pero en verde
+// (--wa, ciudad.css) en vez de indigo — a petición explícita, para que
+// destaque y se reconozca de un vistazo qué es — en lugar del banner
+// grande (.action-btn/.btn-wa) que tenía antes.
 function buildWhatsappCta(url, label) {
     return `
     <a href="${sanitizeUrl(url, '#')}" target="_blank" rel="noopener noreferrer"

@@ -107,29 +107,39 @@ main.city-main {
     margin-bottom: 32px;
 }
 
-/* ── CTA de WhatsApp + "ver mapa" — fila de acciones rápidas ─────
+/* ── CTA de WhatsApp + "ver mapa" — acciones rápidas justo debajo
+   del <h1> ───────────────────────────────────────────────────────
    Antes había un banner grande (.action-btn, 20px de padding, icono de
    32px, título+subtítulo) muy abajo en la página, después de toda la
-   lista de partners — a petición explícita de Álvaro, ahora es una
-   fila compacta justo debajo del <h1>, con pills del mismo tamaño que
-   cualquier botón del sitio (.btn-primary-pill) en vez de un
-   componente propio. */
+   lista de partners — a petición explícita de Álvaro. En columna, no
+   en fila: el CTA de WhatsApp va SOLO en su propia línea (es la acción
+   principal de toda la página — el producto es, literalmente, un
+   directorio de grupos de WhatsApp) y "ver mapa" queda claramente
+   subordinado justo debajo, en vez de competir por atención en la
+   misma fila. */
 .city-quick-actions {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
     margin-bottom: 24px;
 }
 
-/* .city-whatsapp-cta reutiliza .btn-primary-pill tal cual (misma
-   familia/talla que cualquier botón primario del sitio — mismo
-   criterio que ya usa renderNoPartnersState() en cityPartners.js para
-   este mismo CTA en el estado "sin partners") — aquí solo el gap con
-   el icono y su tamaño, que .btn-primary-pill no necesita en su uso
-   habitual (texto solo). */
+/* .city-whatsapp-cta reutiliza el box-model de .btn-primary-pill
+   (padding/talla/tipografía — misma familia que cualquier botón
+   primario del sitio) pero NO su color: verde WhatsApp (--wa, el mismo
+   token que ya usa el enlace real del grupo en mapa.html/ciudad.css),
+   a propósito — a petición explícita de Álvaro, "que al verlo se sepa
+   a qué se refiere". Es la única card/botón de toda la página que NO
+   es indigo/magenta de marca — precisamente por eso destaca del resto,
+   igual que ya destacaba en el mockup del 404 (--wa también ahí). */
 .city-whatsapp-cta {
     gap: 8px;
+    background: var(--wa);
+}
+
+.city-whatsapp-cta:hover {
+    background: color-mix(in srgb, var(--wa) 85%, black);
 }
 
 .city-whatsapp-cta .btn-icon {
