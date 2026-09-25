@@ -160,7 +160,6 @@ main.city-main {
    idénticos al pasar el ratón sobre el botón de mapa, texto ilegible). */
 .city-action-btn:hover {
     color: #fff;
-    transform: translateY(-2px);
 }
 
 .city-action-btn:active {
