@@ -1,0 +1,36 @@
+# Vigila PRODUCCIÓN cada día: que las cabeceras de seguridad sigan ahí y que los
+# permisos de la base de datos para un visitante anónimo no se hayan abierto.
+# Si algo falla, GitHub te avisa por correo (Settings > Notifications > Actions).
+name: Seguridad (producción)
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # cada día 07:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cabeceras:
+    name: Cabeceras HTTP y CSP
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Comprobar cabeceras
+        run: bash scripts/ci/check-headers.sh "${{ vars.PRODUCTION_URL || 'https://erasmus-verified.vercel.app' }}"
+
+  permisos-anonimos:
+    name: Permisos anónimos en Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Solo corre si has definido la variable SUPABASE_ANON_KEY (ver instrucciones).
+    if: ${{ vars.SUPABASE_ANON_KEY != '' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Comprobar permisos con la clave anon
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL || 'https://puivkbjgbfnlpepyednt.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: bash scripts/ci/check-rls-anon.sh
