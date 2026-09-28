@@ -10,9 +10,14 @@ API="${SUPABASE_URL%/}/rest/v1"
 ZERO_UUID="00000000-0000-0000-0000-000000000000"
 FAIL=0
 
+# Las claves antiguas (JWT, empiezan por "eyJ") se envían también como Bearer.
+# Las nuevas (sb_publishable_...) NO son JWT y solo van en la cabecera apikey.
+AUTH=()
+case "$SUPABASE_ANON_KEY" in eyJ*) AUTH=(-H "Authorization: Bearer $SUPABASE_ANON_KEY") ;; esac
+
 req() { # req METHOD PATH [BODY] -> imprime el código HTTP
   curl -sS -o /dev/null -w '%{http_code}' --max-time 20 -X "$1" \
-    -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+    -H "apikey: $SUPABASE_ANON_KEY" "${AUTH[@]}" \
     -H "Content-Type: application/json" ${3:+-d "$3"} "$API$2"
 }
 expect_denied() { # descripción, método, ruta, [cuerpo]
