@@ -133,6 +133,12 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
     // pero no los añade al mapa todavía — eso lo decide syncMarkers().
     for (const { partners } of groups) {
         for (const partner of partners) {
+            // Un partner sin coordenadas (p. ej. recién creado en el admin sin
+            // lat/lng) sigue saliendo en el listado, pero no tiene pin.
+            // Sin esta guarda, L.marker([null, null]) se crea con posición null
+            // y marker.addTo(map) (en syncMarkers) lanza una excepción que
+            // aborta el arranque: el mapa se queda sin listado ni categorías.
+            if (partner.lat == null || partner.lng == null) continue;
             const marker = createPartnerMarker(partner, { expanded: false });
             marker.on('click', () => selectPartner(partner.id, marker));
             markersByPartnerId[partner.id] = marker;
@@ -201,6 +207,7 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
             const shouldShow = isCategoryVisible(category);
             for (const partner of partners) {
                 const marker = markersByPartnerId[partner.id];
+                if (!marker) continue; // partner sin coordenadas: no hay pin
                 if (shouldShow) {
                     marker.addTo(map);
                 } else {
@@ -325,7 +332,7 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
         if (!partner) return;
 
         const marker = markersByPartnerId[partnerId];
-        setMarkerExpanded(marker, partner, true);
+        if (marker) setMarkerExpanded(marker, partner, true);
 
         const contentEl = document.createElement('div');
         const detailRoot = mountPartnerDetail(contentEl, {
@@ -354,7 +361,7 @@ async function mountPartnersList(listContainerId, map, city, { autoOpenPartnerId
             content: contentEl,
             closeLabel: I18n.t('common.close'),
             onClose: () => {
-                setMarkerExpanded(marker, partner, false);
+                if (marker) setMarkerExpanded(marker, partner, false);
                 detailRoot.unmount();
             },
         });
