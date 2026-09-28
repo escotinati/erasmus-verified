@@ -1,0 +1,58 @@
+# Comprobaciones de seguridad deterministas sobre el CÓDIGO del repo.
+# Corre en cada PR, en cada push a main y una vez por semana (los lunes),
+# porque una dependencia puede volverse vulnerable sin que nadie toque el repo.
+name: Seguridad (código)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'   # lunes 06:00 UTC
+  workflow_dispatch:      # botón "Run workflow" para lanzarlo a mano
+
+permissions:
+  contents: read
+
+jobs:
+  dependencias-y-build:
+    name: Dependencias, build y SRI
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Acciones fijadas por hash de commit (no por etiqueta movible): mismo criterio que el SRI de supabase-js.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Solo falla con vulnerabilidades altas/críticas en dependencias de producción.
+      - name: npm audit
+        run: npm audit --omit=dev --audit-level=high
+      # El build ejecuta además scripts/check-sanitization.js (guardarraíl anti-XSS).
+      - name: Build
+        run: npm run build
+      # Guarda de regresión: todo <script> de supabase-js debe llevar integrity (SRI).
+      - name: supabase-js siempre con SRI
+        run: |
+          sin_sri="$(grep -rn 'supabase-js@' --include='*.html' . --exclude-dir=node_modules --exclude-dir=dist | grep -v 'integrity=' || true)"
+          if [ -n "$sin_sri" ]; then
+            echo "::error::Hay <script> de supabase-js sin integrity (SRI):"; echo "$sin_sri"; exit 1
+          fi
+          echo "Todas las cargas de supabase-js llevan SRI."
+
+  secretos:
+    name: Búsqueda de secretos (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0   # historial completo: un secreto borrado sigue en el historial
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
