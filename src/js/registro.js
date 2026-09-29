@@ -70,6 +70,28 @@
 let turnstileToken = null;
 let turnstileWidgetId = null;
 
+// Bug real encontrado en revisión (no reportado por el usuario): el widget
+// NO se puede pintar con turnstile.render() en cuanto carga el script de
+// Cloudflare, porque en ese momento su contenedor (#turnstile-widget) vive
+// dentro de #register-step-3, que todavía tiene el atributo `hidden`
+// (display:none) — el usuario está en el paso 1. Renderizar Turnstile
+// dentro de un contenedor display:none rompe el handshake interno por
+// postMessage entre el iframe del widget y la página (confirmado también
+// fuera de este proyecto, p. ej. drumandbytes/f1-walk#14): el widget se
+// queda colgado hasta expirar, sin dar ningún token, y en consola aparece
+// "[Cloudflare Turnstile] Ignored message from unexpected source".
+//
+// Solución: separar "la API de Cloudflare ya cargó" de "toca pintar el
+// widget ya" — turnstileApiReady guarda lo primero, renderTurnstileWidget()
+// hace lo segundo, y solo se llama de verdad cuando el paso 3 ya está
+// visible (hidden = false). Se invoca desde DOS sitios porque no se sabe
+// cuál pasa antes: desde onTurnstileLoad() (por si el usuario ya está en el
+// paso 3 cuando el script termina de cargar) y desde goToStep() (por si el
+// usuario llega al paso 3 después de que la API ya estuviera lista).
+// turnstileRendered evita pintar el widget dos veces si ambos casos se dan.
+let turnstileApiReady = false;
+let turnstileRendered = false;
+
 // Si el script de Cloudflare no llega a cargar (red, bloqueador de
 // anuncios/scripts), onTurnstileLoad() nunca se llama y el usuario se
 // quedaría sin ninguna explicación de por qué "Crear cuenta" no avanza
@@ -80,14 +102,15 @@ const turnstileLoadTimer = setTimeout(function () {
     document.getElementById('turnstile-load-error')?.removeAttribute('hidden');
 }, TURNSTILE_LOAD_TIMEOUT_MS);
 
-// Nombre global exacto: es el valor de ?onload= en el <script> de
-// Cloudflare (registro.html) — el propio script de Cloudflare llama a
-// window[ese nombre] en cuanto termina de cargar y ejecutarse.
-window.onTurnstileLoad = function () {
-    clearTimeout(turnstileLoadTimer);
-    document.getElementById('turnstile-load-error')?.setAttribute('hidden', '');
-
+function renderTurnstileWidget() {
+    if (turnstileRendered || !turnstileApiReady) return;
     const container = document.getElementById('turnstile-widget');
+    // Defensa: si por lo que sea el paso 3 todavía no es visible cuando
+    // esto se llama, no se pinta — se reintentará desde goToStep() en
+    // cuanto el paso 3 quede realmente visible.
+    if (!container || container.closest('[hidden]')) return;
+
+    turnstileRendered = true;
     turnstileWidgetId = turnstile.render(container, {
         sitekey: container.dataset.sitekey,
         callback: function (token) {
@@ -100,6 +123,16 @@ window.onTurnstileLoad = function () {
             turnstileToken = null;
         },
     });
+}
+
+// Nombre global exacto: es el valor de ?onload= en el <script> de
+// Cloudflare (registro.html) — el propio script de Cloudflare llama a
+// window[ese nombre] en cuanto termina de cargar y ejecutarse.
+window.onTurnstileLoad = function () {
+    clearTimeout(turnstileLoadTimer);
+    document.getElementById('turnstile-load-error')?.setAttribute('hidden', '');
+    turnstileApiReady = true;
+    renderTurnstileWidget();
 };
 
 // parentEl: dónde vive el <p> cuando existe. insertBeforeEl (opcional):
@@ -397,6 +430,13 @@ function goToStep(n, direction) {
 
     currentStep = n;
     updateStepDots(n);
+
+    // Ver comentario junto a turnstileApiReady más arriba: el paso 3 recién
+    // queda visible aquí (toEl.hidden = false, dentro de animateStepHeight
+    // más arriba), así que es el segundo punto posible desde el que hace
+    // falta intentar pintar el widget — no hace nada si la API de Cloudflare
+    // todavía no ha cargado (turnstileApiReady) o si ya estaba pintado.
+    if (n === 3) renderTurnstileWidget();
 
     toEl.querySelector('input:not([type="hidden"]), textarea')?.focus();
 
