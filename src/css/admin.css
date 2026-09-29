@@ -1,1170 +1,1220 @@
-[hidden] {
-    display: none !important;
-}
-
-/* ─── Tokens ─────────────────────────────────────────────── */
-:root {
-    --c-bg: #0f172a;
-    --c-surface: #1e293b;
-    --c-surface-alt: #0f172a;
-    --c-border: #334155;
-    --c-text: #f1f5f9;
-    --c-text-muted: #94a3b8;
-    --c-text-subtle: #64748b;
-    --c-accent: #6366f1;
-    --c-accent-hover: #4f46e5;
-    --c-danger: #ef4444;
-    --c-danger-hover: #dc2626;
-    --r-sm: 6px;
-    --r-md: 10px;
-    --r-lg: 16px;
-    --shadow-modal: 0 25px 60px rgba(0, 0, 0, 0.5);
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: var(--c-bg);
-    color: var(--c-text);
-    min-height: 100vh;
-}
-
-.material-symbols-outlined {
-    font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24;
-    line-height: 1;
-    vertical-align: middle;
-    user-select: none;
-}
-
-/* ─── Login ──────────────────────────────────────────────── */
-.admin-login {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-}
-
-.admin-login__box {
-    background: var(--c-surface);
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-lg);
-    padding: 40px;
-    width: 100%;
-    max-width: 400px;
-}
-
-.admin-login__logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
-}
-
-.admin-login__logo-icon {
-    width: 40px;
-    height: 40px;
-    background: var(--c-accent);
-    border-radius: var(--r-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-}
-
-.admin-login__logo-text {
-    line-height: 1.25;
-}
-
-.admin-login__logo-name {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--c-text);
-}
-
-.admin-login__logo-sub {
-    font-size: 0.75rem;
-    color: var(--c-text-subtle);
-    font-weight: 500;
-}
-
-/* ─── Header ─────────────────────────────────────────────── */
-.admin-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 32px;
-    background: var(--c-surface);
-    border-bottom: 1px solid var(--c-border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.admin-header__brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.admin-header__brand-dot {
-    width: 28px;
-    height: 28px;
-    background: var(--c-accent);
-    border-radius: var(--r-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    color: #fff;
-    font-weight: 800;
-}
-
-.admin-header h1 {
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: var(--c-text);
-}
-
-/* ─── Main ───────────────────────────────────────────────── */
-.admin-main {
-    padding: 32px;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.admin-section {
-    margin-bottom: 48px;
-}
-
-.admin-section__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    gap: 12px;
-}
-
-.admin-section__title-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.admin-section h2 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--c-text);
-}
-
-.admin-count {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--c-text-subtle);
-    background: var(--c-border);
-    padding: 2px 8px;
-    border-radius: 100px;
-}
-
-/* ─── Dashboard (vista de entrada) ──────────────────────────── */
-.admin-dashboard-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-bottom: 40px;
-}
-
-.admin-dashboard-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    background: var(--c-surface);
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-lg);
-    padding: 24px;
-    cursor: pointer;
-    font-family: inherit;
-    text-align: left;
-    transition:
-        border-color 0.15s,
-        transform 0.15s;
-}
-
-.admin-dashboard-card:hover {
-    border-color: var(--c-accent);
-    transform: translateY(-2px);
-}
-
-.admin-dashboard-card__icon {
-    font-size: 1.75rem;
-    color: var(--c-accent);
-}
-
-.admin-dashboard-card__title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--c-text);
-}
-
-.admin-dashboard-card__count {
-    font-size: 0.8rem;
-    color: var(--c-text-subtle);
-}
-
-/* ─── Volver / Buscador ──────────────────────────────────────── */
-.admin-back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: transparent;
-    border: none;
-    color: var(--c-text-muted);
-    font-family: inherit;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0;
-    margin-bottom: 20px;
-}
-
-.admin-back-btn:hover {
-    color: var(--c-text);
-}
-
-.admin-back-btn .material-symbols-outlined {
-    font-size: 1.1rem;
-}
-
-/* ─── Tabs (activos/inactivos) ──────────────────────────────── */
-.admin-tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 14px;
-    border-bottom: 1px solid var(--c-border);
-}
-
-.admin-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--c-text-muted);
-    font-family: inherit;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 8px 4px 10px;
-    margin-bottom: -1px;
-    transition: color 0.15s;
-}
-
-.admin-tab:hover {
-    color: var(--c-text);
-}
-
-.admin-tab.is-active {
-    color: var(--c-text);
-    border-color: var(--c-accent);
-}
-
-.admin-tab__count {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--c-text-subtle);
-    background: var(--c-border);
-    padding: 1px 7px;
-    border-radius: 100px;
-}
-
-.admin-tab.is-active .admin-tab__count {
-    color: #fff;
-    background: var(--c-accent);
-}
-
-.admin-search {
-    display: block;
-    width: 100%;
-    background: var(--c-surface-alt);
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-sm);
-    padding: 9px 12px;
-    color: var(--c-text);
-    font-family: inherit;
-    font-size: 0.88rem;
-    margin-bottom: 14px;
-    transition: border-color 0.15s;
-}
-
-.admin-search:focus {
-    outline: none;
-    border-color: var(--c-accent);
-}
-
-/* ─── Buttons ────────────────────────────────────────────── */
-.admin-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 18px;
-    border-radius: var(--r-md);
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    transition:
-        background 0.15s,
-        opacity 0.15s;
-    white-space: nowrap;
-}
-
-.admin-btn--primary {
-    background: var(--c-accent);
-    color: #fff;
-}
-
-.admin-btn--primary:hover {
-    background: var(--c-accent-hover);
-}
-
-.admin-btn--block {
-    width: 100%;
-    justify-content: center;
-    margin-top: 8px;
-}
-
-.admin-btn--ghost {
-    background: transparent;
-    color: var(--c-text-muted);
-    border: 1px solid var(--c-border);
-}
-
-.admin-btn--ghost:hover {
-    border-color: var(--c-text-muted);
-}
-
-.admin-btn--danger {
-    background: var(--c-danger);
-    color: #fff;
-    border: 1px solid var(--c-danger-hover);
-}
-
-.admin-btn--danger:hover {
-    background: var(--c-danger-hover);
-}
-
-.admin-btn--success {
-    background: #16a34a;
-    color: #fff;
-    border: 1px solid #15803d;
-}
-
-.admin-btn--success:hover {
-    background: #15803d;
-}
-
-/* Los botones pequeños son los de acción dentro de una fila de tabla,
-   justo al lado de un .admin-badge de estado — mismo tamaño y paleta
-   aproximados, así que necesitan una silueta claramente distinta (más
-   cuadrada que el pill del badge) y una sombra sutil en reposo para
-   leerse como pulsables sin depender solo del :hover. */
-.admin-btn--sm {
-    padding: 5px 10px;
-    font-size: 0.75rem;
-    border-radius: var(--r-sm);
-    box-shadow: var(--shadow-sm);
-}
-
-/* Eliminar vs Desactivar: ambos son --danger (mismo rojo, misma
-   forma), pero "Eliminar" es irreversible y "Desactivar" no — el
-   icono de papelera y el borde/peso reforzados marcan la diferencia
-   sin depender solo del texto del botón. */
-.admin-btn--delete {
-    font-weight: 700;
-    border-width: 2px;
-}
-
-.admin-btn--delete .material-symbols-outlined {
-    font-size: 1rem;
-}
-
-/* ─── Field groups ───────────────────────────────────────── */
-.admin-field-group {
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-md);
-    padding: 16px;
-    margin-bottom: 14px;
-}
-
-.admin-field-group__title {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--c-accent);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 14px;
-}
-
-/* ─── Fields ─────────────────────────────────────────────── */
-.admin-field {
-    margin-bottom: 14px;
-}
-
-.admin-field:last-child {
-    margin-bottom: 0;
-}
-
-.admin-field label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--c-text-muted);
-    margin-bottom: 6px;
-}
-
-.admin-field input,
-.admin-field select,
-.admin-field textarea {
-    width: 100%;
-    background: var(--c-surface-alt);
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-sm);
-    padding: 9px 12px;
-    color: var(--c-text);
-    font-family: inherit;
-    font-size: 0.88rem;
-    transition: border-color 0.15s;
-}
-
-.admin-field input:focus,
-.admin-field select:focus,
-.admin-field textarea:focus {
-    outline: none;
-    border-color: var(--c-accent);
-}
-
-.admin-field input.admin-input--invalid,
-.admin-field select.admin-input--invalid {
-    border-color: var(--c-danger);
-}
-
-.admin-field--row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.admin-field--row .admin-field {
-    margin-bottom: 0;
-}
-
-.admin-field--check {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.admin-field--check input {
-    width: auto;
-}
-
-.admin-field--check label {
-    margin-bottom: 0;
-    color: var(--c-text);
-}
-
-.admin-hint {
-    color: var(--c-text-subtle);
-    font-weight: 400;
-}
-
-.admin-input-password-wrap {
-    position: relative;
-}
-
-.admin-input-password-wrap input {
-    padding-right: 40px;
-    width: 100%;
-}
-
-.admin-input-password-toggle {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--c-text-muted);
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
-
-.admin-input-password-toggle:hover {
-    color: var(--c-text);
-}
-
-.admin-divider {
-    border: none;
-    border-top: 1px solid var(--c-border);
-    margin: 20px 0;
-}
-
-/* ─── Table ──────────────────────────────────────────────── */
-.admin-table-wrap {
-    overflow-x: auto;
-    border-radius: var(--r-md);
-    border: 1px solid var(--c-border);
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-}
-
-.admin-table th {
-    text-align: left;
-    padding: 10px 14px;
-    color: var(--c-text-subtle);
-    font-size: 0.71rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: var(--c-surface);
-    border-bottom: 1px solid var(--c-border);
-}
-
-.admin-table td {
-    padding: 13px 14px;
-    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-    vertical-align: middle;
-}
-
-.admin-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* Striped: variación sutil del mismo --c-surface que ya usa la
-   cabecera, no un color nuevo — la mitad de opacidad que el :hover
-   para que se note la diferencia entre "fila par" y "fila con el
-   ratón encima". :not(:hover) evita que compita en especificidad con
-   el hover y el rayado se vea a través al pasar el ratón. */
-.admin-table tbody tr:nth-child(even):not(:hover) td {
-    background: rgba(30, 41, 59, 0.3);
-}
-
-.admin-table tr:hover td {
-    background: rgba(30, 41, 59, 0.6);
-}
-
-/* Alineación de columnas: texto siempre a la izquierda (por defecto);
-   numéricas, fecha y acciones a la derecha; estado/badges centradas. */
-.admin-table th.col-num,
-.admin-table th.col-actions,
-.admin-table td.col-num,
-.admin-table td.col-actions {
-    text-align: right;
-}
-
-.admin-table th.col-center,
-.admin-table td.col-center {
-    text-align: center;
-}
-
-.row-actions {
-    display: inline-flex;
-    gap: 8px;
-}
-
-/* Mobile card view */
-@media (max-width: 640px) {
-    .admin-table-wrap {
-        border: none;
-        overflow-x: visible;
-    }
-
-    .admin-table thead {
-        display: none;
-    }
-
-    .admin-table,
-    .admin-table tbody,
-    .admin-table tr {
-        display: block;
-    }
-
-    .admin-table tr {
-        background: var(--c-surface);
-        border: 1px solid var(--c-border);
-        border-radius: var(--r-md);
-        margin-bottom: 10px;
-    }
-
-    .admin-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 14px;
-        border-bottom: 1px solid rgba(51, 65, 85, 0.3);
-        font-size: 0.85rem;
-    }
-
-    .admin-table tr:hover td {
-        background: none;
-    }
-
-    .admin-table td:last-child {
-        border-bottom: none;
-        justify-content: flex-end;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .admin-table td::before {
-        content: attr(data-label);
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--c-text-subtle);
-        flex-shrink: 0;
-        margin-right: 12px;
-    }
-
-    .admin-table td:last-child::before {
-        display: none;
-    }
-}
-
-.admin-empty {
-    color: var(--c-text-subtle);
-    font-size: 0.85rem;
-    padding: 20px;
-    text-align: center;
-}
-
-/* ─── Badges ─────────────────────────────────────────────── */
-/* Puramente informativos, no interactivos — por eso sin sombra ni
-   borde, con el fondo suave de siempre y el punto de color como único
-   acento. Un .admin-btn--sm de la misma fila lleva borde + sombra
-   (ver arriba) precisamente para que a simple vista no se confundan
-   pese a compartir paleta y tamaño similares. */
-.admin-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 2px 8px;
-    border-radius: 100px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    background: rgba(51, 65, 85, 0.5);
-    color: var(--c-text-muted);
-    box-shadow: none;
-}
-
-.admin-badge::before {
-    content: '';
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
-}
-
-.admin-badge--nightlife {
-    background: rgba(225, 20, 123, 0.12);
-    color: #e1147b;
-}
-
-.admin-badge--housing {
-    background: rgba(14, 116, 144, 0.12);
-    color: #22d3ee;
-}
-
-.admin-badge--services {
-    background: rgba(202, 138, 4, 0.12);
-    color: #fbbf24;
-}
-
-.admin-badge--community {
-    background: rgba(22, 163, 74, 0.12);
-    color: #4ade80;
-}
-
-.admin-badge--travel {
-    background: rgba(124, 58, 237, 0.12);
-    color: #a78bfa;
-}
-
-/* Estado activo/inactivo — no existían variantes de color para esto
-   antes de este cambio (activo e inactivo se veían igual de grises).
-   Reutiliza los mismos verdes/grises ya usados como acento en otros
-   badges/botones (--admin-btn--success, --admin-badge--community),
-   no introduce ningún color nuevo. */
-.admin-badge--active {
-    background: rgba(22, 163, 74, 0.12);
-    color: #4ade80;
-}
-
-.admin-badge--inactive {
-    background: rgba(148, 163, 184, 0.12);
-    color: var(--c-text-subtle);
-}
-
-/* Badge de prioridad en la fila de la tabla — mismo valor que el campo
-   "priority" del formulario, visible sin entrar a editar, para
-   entender de un vistazo por qué un partner sale antes que otro en la
-   web pública (mayor prioridad = aparece antes). */
-.admin-priority-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 22px;
-    padding: 2px 7px;
-    border-radius: 100px;
-    background: rgba(99, 102, 241, 0.12);
-    color: #a5b4fc;
-    font-size: 0.72rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-/* ─── Switch (toggle activo/inactivo inline) ────────────────
-   Checkbox real por debajo (accesible, funciona con teclado) con la
-   apariencia visual delegada al <span> hermano — mismo patrón que
-   cualquier "switch" de CSS puro, sin JS de por medio para el dibujo. */
-.admin-switch {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    width: 38px;
-    height: 22px;
-    cursor: pointer;
-}
-
-.admin-switch input {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    cursor: pointer;
-}
-
-.admin-switch__slider {
-    position: absolute;
-    inset: 0;
-    background: var(--c-border);
-    border-radius: 100px;
-    transition: background 0.15s;
-}
-
-.admin-switch__slider::before {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #fff;
-    transition: transform 0.15s;
-}
-
-.admin-switch input:checked + .admin-switch__slider {
-    background: #16a34a;
-}
-
-.admin-switch input:checked + .admin-switch__slider::before {
-    transform: translateX(16px);
-}
-
-.admin-switch input:focus-visible + .admin-switch__slider {
-    outline: 2px solid var(--c-accent);
-    outline-offset: 2px;
-}
-
-.admin-switch input:disabled + .admin-switch__slider {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .admin-switch__slider,
-    .admin-switch__slider::before {
-        transition: none;
-    }
-}
-
-/* ─── Modal ──────────────────────────────────────────────── */
-.admin-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-}
-
-.admin-modal__backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-}
-
-.admin-modal__box {
-    position: relative;
-    background: var(--c-surface);
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-lg);
-    padding: 28px 32px 32px;
-    width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow-modal);
-    animation: modal-in 0.2s ease-out;
-}
-
-@keyframes modal-in {
-    from {
-        opacity: 0;
-        transform: translateY(12px) scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: none;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .admin-modal__box {
-        animation: none;
-    }
-}
-
-.admin-modal__header {
-    margin-bottom: 20px;
-    padding-right: 32px;
-}
-
-.admin-modal__close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    color: var(--c-text-subtle);
-    font-size: 1.25rem;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px;
-    border-radius: var(--r-sm);
-    transition: color 0.15s;
-}
-
-.admin-modal__close:hover {
-    color: var(--c-text);
-}
-
-.admin-modal__title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--c-text);
-}
-
-.admin-modal__subtitle {
-    font-size: 0.78rem;
-    color: var(--c-text-subtle);
-    margin-top: 4px;
-}
-
-.admin-modal__actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 24px;
-}
-
-/* ─── Links section ──────────────────────────────────────── */
-.admin-links-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.admin-links-header h3 {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--c-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-/* Cada fila ahora tiene dos bloques apilados: los datos "simples"
-   (tipo, URL, borrar) y el campo i18n de la etiqueta (ES/EN + traducir)
-   — no caben en una sola fila de grid sin apretar demasiado el campo
-   de idioma, que ya de por sí es una fila compuesta de 3 partes. */
-.admin-link-row {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--c-border);
-}
-
-.admin-link-row:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-}
-
-.admin-link-row__main {
-    display: grid;
-    grid-template-columns: 140px 1fr auto;
-    gap: 8px;
-    align-items: center;
-}
-
-.admin-link-row__main input,
-.admin-link-row__main select {
-    width: 100%;
-    background: var(--c-surface-alt);
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-sm);
-    padding: 8px 10px;
-    color: var(--c-text);
-    font-family: inherit;
-    font-size: 0.82rem;
-}
-
-/* ─── Campos i18n (ES/EN + traducir) ─────────────────────────
-   Mismo patrón para descripción/título/precio/etiqueta en los 3
-   modales (partner, evento, ciudad) y en cada fila de link: bloque ES,
-   botón de traducir, bloque EN. El fondo del EN es un tinte sutil del
-   accent, no el #f8f8ff de un tema claro — este admin es oscuro, así
-   que ese tono literal rompería el contraste; el objetivo real es solo
-   "distinguirlo visualmente", adaptado a la paleta existente. */
-.i18n-field {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-}
-
-.i18n-field__lang {
-    flex: 1;
-    min-width: 0;
-}
-
-.i18n-field__lang label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--c-text-subtle);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 4px;
-}
-
-.i18n-input {
-    width: 100%;
-}
-
-.i18n-field__lang:last-child .i18n-input {
-    background: rgba(99, 102, 241, 0.06);
-}
-
-.i18n-field__actions {
-    flex-shrink: 0;
-    padding-bottom: 1px;
-}
-
-.btn-translate {
-    background: transparent;
-    border: 1px solid var(--c-border);
-    color: var(--c-text-muted);
-    font-family: inherit;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 8px 10px;
-    border-radius: var(--r-sm);
-    cursor: pointer;
-    white-space: nowrap;
-    transition:
-        border-color 0.15s,
-        color 0.15s;
-}
-
-.btn-translate:hover:not(:disabled) {
-    border-color: var(--c-accent);
-    color: var(--c-accent);
-}
-
-.btn-translate:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.i18n-field--compact .i18n-field__lang label {
-    font-size: 0.66rem;
-}
-
-/* ─── Metric cards ───────────────────────────────────────── */
-.admin-metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
-}
-
-.admin-metric-card {
-    background: var(--c-surface);
-    border: 1px solid var(--c-border);
-    border-radius: var(--r-md);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.admin-metric-card__count {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--c-accent);
-    line-height: 1;
-}
-
-.admin-metric-card__name {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--c-text-muted);
-    line-height: 1.3;
-    margin-top: 2px;
-}
-
-.admin-metric-card__label {
-    font-size: 0.7rem;
-    color: var(--c-text-subtle);
-}
-
-/* ─── Error ──────────────────────────────────────────────── */
-.admin-error {
-    color: #f87171;
-    font-size: 0.82rem;
-    margin-top: 10px;
-    min-height: 20px;
-}
-
-/* ─── Toasts ─────────────────────────────────────────────── */
-/* No bloqueantes: sustituyen a los alert() de antes, que paraban toda
-   interacción con el panel hasta pulsar "Aceptar". Se apilan en una
-   esquina fija y desaparecen solas. */
-.admin-toast-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 360px;
-    pointer-events: none;
-}
-
-.admin-toast {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    background: var(--c-surface);
-    border: 1px solid var(--c-border);
-    border-left: 3px solid var(--c-accent);
-    border-radius: var(--r-md);
-    padding: 12px 14px;
-    box-shadow: var(--shadow-modal);
-    font-size: 0.85rem;
-    color: var(--c-text);
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-        opacity 0.2s ease-out,
-        transform 0.2s ease-out;
-    pointer-events: auto;
-}
-
-.admin-toast.is-visible {
-    opacity: 1;
-    transform: none;
-}
-
-.admin-toast--success {
-    border-left-color: #16a34a;
-}
-
-.admin-toast--error {
-    border-left-color: var(--c-danger);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .admin-toast {
-        transition: none;
-    }
-}
-
-/* ─── Responsive ─────────────────────────────────────────── */
-@media (max-width: 640px) {
-    .admin-main {
-        padding: 20px 16px;
-    }
-
-    .admin-header {
-        padding: 12px 16px;
-    }
-
-    .admin-modal__box {
-        padding: 24px 20px;
-        border-radius: var(--r-md);
-    }
-
-    .admin-field--row {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-link-row__main {
-        grid-template-columns: 1fr auto;
-        grid-template-rows: auto auto;
-    }
-
-    .admin-link-row__main .link-type {
-        grid-column: 1 / -1;
-    }
-
-    .i18n-field {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .i18n-field__actions {
-        display: flex;
-        justify-content: flex-start;
-    }
-}
+[hidden] {
+    display: none !important;
+}
+
+/* ─── Tokens ─────────────────────────────────────────────── */
+:root {
+    --c-bg: #0f172a;
+    --c-surface: #1e293b;
+    --c-surface-alt: #0f172a;
+    --c-border: #334155;
+    --c-text: #f1f5f9;
+    --c-text-muted: #94a3b8;
+    --c-text-subtle: #64748b;
+    --c-accent: #6366f1;
+    --c-accent-hover: #4f46e5;
+    --c-danger: #ef4444;
+    --c-danger-hover: #dc2626;
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 16px;
+    --shadow-modal: 0 25px 60px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--c-bg);
+    color: var(--c-text);
+    min-height: 100vh;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+    line-height: 1;
+    vertical-align: middle;
+    user-select: none;
+}
+
+/* ─── Login ──────────────────────────────────────────────── */
+.admin-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.admin-login__box {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.admin-login__logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.admin-login__logo-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--c-accent);
+    border-radius: var(--r-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.admin-login__logo-text {
+    line-height: 1.25;
+}
+
+.admin-login__logo-name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--c-text);
+}
+
+.admin-login__logo-sub {
+    font-size: 0.75rem;
+    color: var(--c-text-subtle);
+    font-weight: 500;
+}
+
+/* ─── MFA (login) ────────────────────────────────────────── */
+.admin-mfa-intro {
+    font-size: 0.85rem;
+    color: var(--c-text-muted);
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.admin-mfa-qr {
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    border-radius: var(--r-md);
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.admin-mfa-qr svg,
+.admin-mfa-qr img {
+    width: 180px;
+    height: 180px;
+}
+
+.admin-mfa-secret {
+    font-size: 0.75rem;
+    color: var(--c-text-subtle);
+    margin-bottom: 16px;
+    word-break: break-all;
+}
+
+.admin-mfa-secret code {
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    padding: 2px 6px;
+    font-size: 0.75rem;
+}
+
+#mfa-enroll-code,
+#mfa-challenge-code {
+    letter-spacing: 0.3em;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+#mfa-enroll-cancel-btn,
+#mfa-challenge-cancel-btn {
+    margin-top: 8px;
+}
+
+/* ─── Header ─────────────────────────────────────────────── */
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-header__brand-dot {
+    width: 28px;
+    height: 28px;
+    background: var(--c-accent);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #fff;
+    font-weight: 800;
+}
+
+.admin-header h1 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--c-text);
+}
+
+/* ─── Main ───────────────────────────────────────────────── */
+.admin-main {
+    padding: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.admin-section {
+    margin-bottom: 48px;
+}
+
+.admin-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.admin-section__title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-section h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--c-text);
+}
+
+.admin-count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--c-text-subtle);
+    background: var(--c-border);
+    padding: 2px 8px;
+    border-radius: 100px;
+}
+
+/* ─── Dashboard (vista de entrada) ──────────────────────────── */
+.admin-dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.admin-dashboard-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition:
+        border-color 0.15s,
+        transform 0.15s;
+}
+
+.admin-dashboard-card:hover {
+    border-color: var(--c-accent);
+    transform: translateY(-2px);
+}
+
+.admin-dashboard-card__icon {
+    font-size: 1.75rem;
+    color: var(--c-accent);
+}
+
+.admin-dashboard-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--c-text);
+}
+
+.admin-dashboard-card__count {
+    font-size: 0.8rem;
+    color: var(--c-text-subtle);
+}
+
+/* ─── Volver / Buscador ──────────────────────────────────────── */
+.admin-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: var(--c-text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.admin-back-btn:hover {
+    color: var(--c-text);
+}
+
+.admin-back-btn .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+
+/* ─── Tabs (activos/inactivos) ──────────────────────────────── */
+.admin-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--c-border);
+}
+
+.admin-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--c-text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 4px 10px;
+    margin-bottom: -1px;
+    transition: color 0.15s;
+}
+
+.admin-tab:hover {
+    color: var(--c-text);
+}
+
+.admin-tab.is-active {
+    color: var(--c-text);
+    border-color: var(--c-accent);
+}
+
+.admin-tab__count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--c-text-subtle);
+    background: var(--c-border);
+    padding: 1px 7px;
+    border-radius: 100px;
+}
+
+.admin-tab.is-active .admin-tab__count {
+    color: #fff;
+    background: var(--c-accent);
+}
+
+.admin-search {
+    display: block;
+    width: 100%;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    padding: 9px 12px;
+    color: var(--c-text);
+    font-family: inherit;
+    font-size: 0.88rem;
+    margin-bottom: 14px;
+    transition: border-color 0.15s;
+}
+
+.admin-search:focus {
+    outline: none;
+    border-color: var(--c-accent);
+}
+
+/* ─── Buttons ────────────────────────────────────────────── */
+.admin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: var(--r-md);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition:
+        background 0.15s,
+        opacity 0.15s;
+    white-space: nowrap;
+}
+
+.admin-btn--primary {
+    background: var(--c-accent);
+    color: #fff;
+}
+
+.admin-btn--primary:hover {
+    background: var(--c-accent-hover);
+}
+
+.admin-btn--block {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.admin-btn--ghost {
+    background: transparent;
+    color: var(--c-text-muted);
+    border: 1px solid var(--c-border);
+}
+
+.admin-btn--ghost:hover {
+    border-color: var(--c-text-muted);
+}
+
+.admin-btn--danger {
+    background: var(--c-danger);
+    color: #fff;
+    border: 1px solid var(--c-danger-hover);
+}
+
+.admin-btn--danger:hover {
+    background: var(--c-danger-hover);
+}
+
+.admin-btn--success {
+    background: #16a34a;
+    color: #fff;
+    border: 1px solid #15803d;
+}
+
+.admin-btn--success:hover {
+    background: #15803d;
+}
+
+/* Los botones pequeños son los de acción dentro de una fila de tabla,
+   justo al lado de un .admin-badge de estado — mismo tamaño y paleta
+   aproximados, así que necesitan una silueta claramente distinta (más
+   cuadrada que el pill del badge) y una sombra sutil en reposo para
+   leerse como pulsables sin depender solo del :hover. */
+.admin-btn--sm {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    border-radius: var(--r-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Eliminar vs Desactivar: ambos son --danger (mismo rojo, misma
+   forma), pero "Eliminar" es irreversible y "Desactivar" no — el
+   icono de papelera y el borde/peso reforzados marcan la diferencia
+   sin depender solo del texto del botón. */
+.admin-btn--delete {
+    font-weight: 700;
+    border-width: 2px;
+}
+
+.admin-btn--delete .material-symbols-outlined {
+    font-size: 1rem;
+}
+
+/* ─── Field groups ───────────────────────────────────────── */
+.admin-field-group {
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.admin-field-group__title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--c-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 14px;
+}
+
+/* ─── Fields ─────────────────────────────────────────────── */
+.admin-field {
+    margin-bottom: 14px;
+}
+
+.admin-field:last-child {
+    margin-bottom: 0;
+}
+
+.admin-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    margin-bottom: 6px;
+}
+
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+    width: 100%;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    padding: 9px 12px;
+    color: var(--c-text);
+    font-family: inherit;
+    font-size: 0.88rem;
+    transition: border-color 0.15s;
+}
+
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+    outline: none;
+    border-color: var(--c-accent);
+}
+
+.admin-field input.admin-input--invalid,
+.admin-field select.admin-input--invalid {
+    border-color: var(--c-danger);
+}
+
+.admin-field--row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.admin-field--row .admin-field {
+    margin-bottom: 0;
+}
+
+.admin-field--check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-field--check input {
+    width: auto;
+}
+
+.admin-field--check label {
+    margin-bottom: 0;
+    color: var(--c-text);
+}
+
+.admin-hint {
+    color: var(--c-text-subtle);
+    font-weight: 400;
+}
+
+.admin-input-password-wrap {
+    position: relative;
+}
+
+.admin-input-password-wrap input {
+    padding-right: 40px;
+    width: 100%;
+}
+
+.admin-input-password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--c-text-muted);
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.admin-input-password-toggle:hover {
+    color: var(--c-text);
+}
+
+.admin-divider {
+    border: none;
+    border-top: 1px solid var(--c-border);
+    margin: 20px 0;
+}
+
+/* ─── Table ──────────────────────────────────────────────── */
+.admin-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--r-md);
+    border: 1px solid var(--c-border);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 10px 14px;
+    color: var(--c-text-subtle);
+    font-size: 0.71rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+}
+
+.admin-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Striped: variación sutil del mismo --c-surface que ya usa la
+   cabecera, no un color nuevo — la mitad de opacidad que el :hover
+   para que se note la diferencia entre "fila par" y "fila con el
+   ratón encima". :not(:hover) evita que compita en especificidad con
+   el hover y el rayado se vea a través al pasar el ratón. */
+.admin-table tbody tr:nth-child(even):not(:hover) td {
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.admin-table tr:hover td {
+    background: rgba(30, 41, 59, 0.6);
+}
+
+/* Alineación de columnas: texto siempre a la izquierda (por defecto);
+   numéricas, fecha y acciones a la derecha; estado/badges centradas. */
+.admin-table th.col-num,
+.admin-table th.col-actions,
+.admin-table td.col-num,
+.admin-table td.col-actions {
+    text-align: right;
+}
+
+.admin-table th.col-center,
+.admin-table td.col-center {
+    text-align: center;
+}
+
+.row-actions {
+    display: inline-flex;
+    gap: 8px;
+}
+
+/* Mobile card view */
+@media (max-width: 640px) {
+    .admin-table-wrap {
+        border: none;
+        overflow-x: visible;
+    }
+
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table,
+    .admin-table tbody,
+    .admin-table tr {
+        display: block;
+    }
+
+    .admin-table tr {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--r-md);
+        margin-bottom: 10px;
+    }
+
+    .admin-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+        font-size: 0.85rem;
+    }
+
+    .admin-table tr:hover td {
+        background: none;
+    }
+
+    .admin-table td:last-child {
+        border-bottom: none;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .admin-table td::before {
+        content: attr(data-label);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--c-text-subtle);
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+
+    .admin-table td:last-child::before {
+        display: none;
+    }
+}
+
+.admin-empty {
+    color: var(--c-text-subtle);
+    font-size: 0.85rem;
+    padding: 20px;
+    text-align: center;
+}
+
+/* ─── Badges ─────────────────────────────────────────────── */
+/* Puramente informativos, no interactivos — por eso sin sombra ni
+   borde, con el fondo suave de siempre y el punto de color como único
+   acento. Un .admin-btn--sm de la misma fila lleva borde + sombra
+   (ver arriba) precisamente para que a simple vista no se confundan
+   pese a compartir paleta y tamaño similares. */
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: rgba(51, 65, 85, 0.5);
+    color: var(--c-text-muted);
+    box-shadow: none;
+}
+
+.admin-badge::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.admin-badge--nightlife {
+    background: rgba(225, 20, 123, 0.12);
+    color: #e1147b;
+}
+
+.admin-badge--housing {
+    background: rgba(14, 116, 144, 0.12);
+    color: #22d3ee;
+}
+
+.admin-badge--services {
+    background: rgba(202, 138, 4, 0.12);
+    color: #fbbf24;
+}
+
+.admin-badge--community {
+    background: rgba(22, 163, 74, 0.12);
+    color: #4ade80;
+}
+
+.admin-badge--travel {
+    background: rgba(124, 58, 237, 0.12);
+    color: #a78bfa;
+}
+
+/* Estado activo/inactivo — no existían variantes de color para esto
+   antes de este cambio (activo e inactivo se veían igual de grises).
+   Reutiliza los mismos verdes/grises ya usados como acento en otros
+   badges/botones (--admin-btn--success, --admin-badge--community),
+   no introduce ningún color nuevo. */
+.admin-badge--active {
+    background: rgba(22, 163, 74, 0.12);
+    color: #4ade80;
+}
+
+.admin-badge--inactive {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--c-text-subtle);
+}
+
+/* Badge de prioridad en la fila de la tabla — mismo valor que el campo
+   "priority" del formulario, visible sin entrar a editar, para
+   entender de un vistazo por qué un partner sale antes que otro en la
+   web pública (mayor prioridad = aparece antes). */
+.admin-priority-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: rgba(99, 102, 241, 0.12);
+    color: #a5b4fc;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Switch (toggle activo/inactivo inline) ────────────────
+   Checkbox real por debajo (accesible, funciona con teclado) con la
+   apariencia visual delegada al <span> hermano — mismo patrón que
+   cualquier "switch" de CSS puro, sin JS de por medio para el dibujo. */
+.admin-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 38px;
+    height: 22px;
+    cursor: pointer;
+}
+
+.admin-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+.admin-switch__slider {
+    position: absolute;
+    inset: 0;
+    background: var(--c-border);
+    border-radius: 100px;
+    transition: background 0.15s;
+}
+
+.admin-switch__slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.15s;
+}
+
+.admin-switch input:checked + .admin-switch__slider {
+    background: #16a34a;
+}
+
+.admin-switch input:checked + .admin-switch__slider::before {
+    transform: translateX(16px);
+}
+
+.admin-switch input:focus-visible + .admin-switch__slider {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+}
+
+.admin-switch input:disabled + .admin-switch__slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-switch__slider,
+    .admin-switch__slider::before {
+        transition: none;
+    }
+}
+
+/* ─── Modal ──────────────────────────────────────────────── */
+.admin-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.admin-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.admin-modal__box {
+    position: relative;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 28px 32px 32px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-modal);
+    animation: modal-in 0.2s ease-out;
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-modal__box {
+        animation: none;
+    }
+}
+
+.admin-modal__header {
+    margin-bottom: 20px;
+    padding-right: 32px;
+}
+
+.admin-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--c-text-subtle);
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    border-radius: var(--r-sm);
+    transition: color 0.15s;
+}
+
+.admin-modal__close:hover {
+    color: var(--c-text);
+}
+
+.admin-modal__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--c-text);
+}
+
+.admin-modal__subtitle {
+    font-size: 0.78rem;
+    color: var(--c-text-subtle);
+    margin-top: 4px;
+}
+
+.admin-modal__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+/* ─── Links section ──────────────────────────────────────── */
+.admin-links-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.admin-links-header h3 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Cada fila ahora tiene dos bloques apilados: los datos "simples"
+   (tipo, URL, borrar) y el campo i18n de la etiqueta (ES/EN + traducir)
+   — no caben en una sola fila de grid sin apretar demasiado el campo
+   de idioma, que ya de por sí es una fila compuesta de 3 partes. */
+.admin-link-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--c-border);
+}
+
+.admin-link-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.admin-link-row__main {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.admin-link-row__main input,
+.admin-link-row__main select {
+    width: 100%;
+    background: var(--c-surface-alt);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    padding: 8px 10px;
+    color: var(--c-text);
+    font-family: inherit;
+    font-size: 0.82rem;
+}
+
+/* ─── Campos i18n (ES/EN + traducir) ─────────────────────────
+   Mismo patrón para descripción/título/precio/etiqueta en los 3
+   modales (partner, evento, ciudad) y en cada fila de link: bloque ES,
+   botón de traducir, bloque EN. El fondo del EN es un tinte sutil del
+   accent, no el #f8f8ff de un tema claro — este admin es oscuro, así
+   que ese tono literal rompería el contraste; el objetivo real es solo
+   "distinguirlo visualmente", adaptado a la paleta existente. */
+.i18n-field {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.i18n-field__lang {
+    flex: 1;
+    min-width: 0;
+}
+
+.i18n-field__lang label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--c-text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+}
+
+.i18n-input {
+    width: 100%;
+}
+
+.i18n-field__lang:last-child .i18n-input {
+    background: rgba(99, 102, 241, 0.06);
+}
+
+.i18n-field__actions {
+    flex-shrink: 0;
+    padding-bottom: 1px;
+}
+
+.btn-translate {
+    background: transparent;
+    border: 1px solid var(--c-border);
+    color: var(--c-text-muted);
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 8px 10px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        border-color 0.15s,
+        color 0.15s;
+}
+
+.btn-translate:hover:not(:disabled) {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+}
+
+.btn-translate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.i18n-field--compact .i18n-field__lang label {
+    font-size: 0.66rem;
+}
+
+/* ─── Metric cards ───────────────────────────────────────── */
+.admin-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.admin-metric-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-metric-card__count {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--c-accent);
+    line-height: 1;
+}
+
+.admin-metric-card__name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--c-text-muted);
+    line-height: 1.3;
+    margin-top: 2px;
+}
+
+.admin-metric-card__label {
+    font-size: 0.7rem;
+    color: var(--c-text-subtle);
+}
+
+/* ─── Error ──────────────────────────────────────────────── */
+.admin-error {
+    color: #f87171;
+    font-size: 0.82rem;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+/* ─── Toasts ─────────────────────────────────────────────── */
+/* No bloqueantes: sustituyen a los alert() de antes, que paraban toda
+   interacción con el panel hasta pulsar "Aceptar". Se apilan en una
+   esquina fija y desaparecen solas. */
+.admin-toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+    pointer-events: none;
+}
+
+.admin-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-left: 3px solid var(--c-accent);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+    box-shadow: var(--shadow-modal);
+    font-size: 0.85rem;
+    color: var(--c-text);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+        opacity 0.2s ease-out,
+        transform 0.2s ease-out;
+    pointer-events: auto;
+}
+
+.admin-toast.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+.admin-toast--success {
+    border-left-color: #16a34a;
+}
+
+.admin-toast--error {
+    border-left-color: var(--c-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-toast {
+        transition: none;
+    }
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .admin-main {
+        padding: 20px 16px;
+    }
+
+    .admin-header {
+        padding: 12px 16px;
+    }
+
+    .admin-modal__box {
+        padding: 24px 20px;
+        border-radius: var(--r-md);
+    }
+
+    .admin-field--row {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-link-row__main {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+    }
+
+    .admin-link-row__main .link-type {
+        grid-column: 1 / -1;
+    }
+
+    .i18n-field {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .i18n-field__actions {
+        display: flex;
+        justify-content: flex-start;
+    }
+}
