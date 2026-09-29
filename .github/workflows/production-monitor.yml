@@ -25,10 +25,19 @@ jobs:
     name: Permisos anónimos en Supabase
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Solo corre si has definido la variable SUPABASE_ANON_KEY (ver instrucciones).
-    if: ${{ vars.SUPABASE_ANON_KEY != '' }}
+    # Antes este job se omitía (quedaba en gris) si faltaba SUPABASE_ANON_KEY,
+    # y eso parecía "todo bien" sin vigilar nada. Ahora el job SIEMPRE corre,
+    # y si falta la variable, falla en rojo con instrucciones de cómo crearla.
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Comprobar que la variable SUPABASE_ANON_KEY existe
+        run: |
+          if [ -z "${{ vars.SUPABASE_ANON_KEY }}" ]; then
+            echo "::error::Falta la variable de repositorio SUPABASE_ANON_KEY, así que no se pueden comprobar los permisos anónimos de Supabase."
+            echo "::error::Créala en Settings > Secrets and variables > Actions > pestaña Variables > New repository variable."
+            echo "::error::Nombre exacto: SUPABASE_ANON_KEY. Valor: la clave pública anon o sb_publishable_... del proyecto (nunca la service_role)."
+            exit 1
+          fi
       - name: Comprobar permisos con la clave anon
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL || 'https://puivkbjgbfnlpepyednt.supabase.co' }}
