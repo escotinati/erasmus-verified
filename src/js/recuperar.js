@@ -169,7 +169,7 @@ function initResetForm() {
         const fieldChecks = [
             {
                 id: 'recover-new-password',
-                valid: password.length >= 6,
+                valid: password.length >= 10,
                 message: !password
                     ? I18n.t('auth.error_password_required')
                     : I18n.t('auth.error_password_short'),
