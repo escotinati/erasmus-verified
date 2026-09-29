@@ -704,6 +704,22 @@ async function savePartner() {
         return;
     }
 
+    const lat = parseFloat(document.getElementById('f-lat').value);
+    const lng = parseFloat(document.getElementById('f-lng').value);
+    const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
+
+    // Un partner sin coordenadas es válido (p. ej. un servicio 100% online),
+    // pero no debe quedar sin pin en el mapa por descuido. Se pide confirmación
+    // explícita en vez de bloquear el guardado.
+    if (!hasCoords) {
+        const continuar = window.confirm(
+            'Este partner no tiene coordenadas (lat/lng) y NO aparecerá con pin en el mapa, ' +
+            'aunque sí saldrá en el listado.\n\n¿Es correcto? Pulsa "Aceptar" para guardarlo así, ' +
+            'o "Cancelar" para volver y añadir las coordenadas.'
+        );
+        if (!continuar) return;
+    }
+
     const partnerData = {
         name,
         category: document.getElementById('f-category').value,
@@ -713,8 +729,8 @@ async function savePartner() {
             en: document.getElementById('f-description-en').value.trim(),
         },
         image_url: imageUrl,
-        lat: parseFloat(document.getElementById('f-lat').value) || null,
-        lng: parseFloat(document.getElementById('f-lng').value) || null,
+        lat: hasCoords ? lat : null,
+        lng: hasCoords ? lng : null,
         priority: parseInt(document.getElementById('f-priority').value) || 0,
         active: document.getElementById('f-active').checked,
     };
