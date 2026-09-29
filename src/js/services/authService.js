@@ -24,11 +24,26 @@
 // así que un valor no numérico rompería el INSERT — validar la
 // selección de ciudad ANTES de llamar a esta función es cosa de quien
 // la llama (ver registro.js), no de aquí.
-async function signUp({ email, password, cityId, university, interests, firstName, lastName }) {
+// captchaToken: token de un solo uso de Cloudflare Turnstile (registro.js,
+// turnstile.render()). Supabase lo valida contra la Secret Key configurada
+// en Authentication > Attack Protection — si esa protección está desactivada
+// en el panel, Supabase ignora el campo sin dar error, así que mandarlo
+// siempre es seguro, esté o no activo el CAPTCHA.
+async function signUp({
+    email,
+    password,
+    cityId,
+    university,
+    interests,
+    firstName,
+    lastName,
+    captchaToken,
+}) {
     return window.supabaseClient.auth.signUp({
         email,
         password,
         options: {
+            captchaToken,
             data: {
                 city_id: cityId,
                 university: university || '',

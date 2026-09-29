@@ -361,6 +361,14 @@
     }
 }
 
+/* Turnstile inyecta su propio iframe (~300px, tamaño fijo del widget
+   Managed) — solo hace falta separarlo del fieldset de intereses de
+   arriba y de los botones de abajo, nada de tamaño ni color: eso lo
+   decide el iframe de Cloudflare, no este CSS. */
+.auth-turnstile {
+    margin-top: var(--space-3);
+}
+
 .auth-step-actions {
     display: flex;
     align-items: center;
