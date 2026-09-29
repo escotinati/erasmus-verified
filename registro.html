@@ -20,6 +20,21 @@
         <link rel="stylesheet" href="/src/css/styles.css" />
         <link rel="stylesheet" href="/src/css/animations.css" />
         <script src="/src/js/experience.js"></script>
+        <!-- Cloudflare Turnstile (CAPTCHA del registro, ver Auth > Attack
+             Protection en Supabase). `defer` SIN `async`: a propósito, para
+             garantizar que se ejecuta después del <script src="registro.js">
+             clásico del body (que define window.onTurnstileLoad de forma
+             síncrona al cargar la página) y no antes por una carrera con la
+             red — con `async` este script podría terminar de descargar y
+             ejecutarse en cualquier momento, incluso antes de que exista la
+             función a la que llama. El widget se renderiza explícitamente
+             (turnstile.render(), en registro.js) en vez de con data-sitekey
+             declarativo, porque hace falta reiniciarlo tras un error de
+             signUp() (el token es de un solo uso). -->
+        <script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad"
+            defer
+        ></script>
     </head>
 
     <body class="auth-page auth-page--register">
@@ -301,6 +316,29 @@
                                     <span data-i18n="auth.interest_travel">Viajes</span>
                                 </label>
                             </fieldset>
+
+                            <!-- Cloudflare Turnstile: turnstile.render() lo rellena (registro.js,
+                                 onTurnstileLoad). El data-sitekey es la clave PÚBLICA del widget
+                                 (no la secreta, esa vive solo en el panel de Supabase) — vale
+                                 estar aquí, en el HTML, a la vista. aria-live para que un lector
+                                 de pantalla anuncie el mensaje de "revisa tu conexión" si el
+                                 script no llega a cargar (ver TURNSTILE_LOAD_TIMEOUT_MS). -->
+                            <div
+                                id="turnstile-widget"
+                                class="auth-turnstile"
+                                data-sitekey="0x4AAAAAAFI2TJU1SoVTz3kY"
+                            ></div>
+                            <p
+                                class="auth-hint"
+                                id="turnstile-load-error"
+                                data-i18n="auth.turnstile_load_error"
+                                aria-live="polite"
+                                hidden
+                            >
+                                No se pudo cargar la verificación de seguridad. Comprueba tu
+                                conexión o desactiva temporalmente cualquier bloqueador de
+                                anuncios/scripts, y recarga la página.
+                            </p>
 
                             <div class="auth-step-actions">
                                 <button

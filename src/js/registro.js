@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 //  REGISTRO.JS — Erasmus Verified
 //
-//  Formulario de registro: email + contraseña (mínimo 6 caracteres, con
+//  Formulario de registro: email + contraseña (mínimo 10 caracteres, con
 //  su confirmación, reg-confirm-password) + nombre obligatorio + ciudad
 //  obligatoria + apellidos/universidad/intereses opcionales. El perfil
 //  (public.profiles) NO se inserta desde aquí — lo crea el trigger
@@ -49,7 +49,58 @@
 //
 //  Depende de: fetchActiveCities() (citiesService.js), signUp()
 //  (authService.js), window.I18n (i18n.js/translations.js).
+//
+//  Cloudflare Turnstile (CAPTCHA, ver Auth > Attack Protection en
+//  Supabase): el widget se pinta al final del paso 3 (registro.html)
+//  y se renderiza EXPLÍCITAMENTE con turnstile.render() (no con
+//  data-sitekey declarativo) porque el token es de un solo uso y hay
+//  que reiniciarlo (turnstile.reset()) tras cualquier error de
+//  signUp() — si no, un segundo intento (p. ej. tras corregir un
+//  email duplicado) reenviaría un token ya gastado y Supabase lo
+//  rechazaría sin explicación visible para el usuario. Ver
+//  window.onTurnstileLoad más abajo — es la función a la que llama
+//  el propio script de Cloudflare (registro.html, ?onload=) en
+//  cuanto termina de cargar.
 // ─────────────────────────────────────────────────────────────
+
+// undefined hasta que el usuario resuelve el widget (o Turnstile lo
+// resuelve solo, modo Managed — lo normal). null tras un reset()
+// (error de signUp, o el propio Turnstile expira el token a los
+// ~5 min — 'expired-callback' lo limpia igual que un error).
+let turnstileToken = null;
+let turnstileWidgetId = null;
+
+// Si el script de Cloudflare no llega a cargar (red, bloqueador de
+// anuncios/scripts), onTurnstileLoad() nunca se llama y el usuario se
+// quedaría sin ninguna explicación de por qué "Crear cuenta" no avanza
+// nunca — mismo criterio que el resto del proyecto de no dejar callejones
+// sin salida silenciosos (ver p. ej. el aviso de coordenadas del admin).
+const TURNSTILE_LOAD_TIMEOUT_MS = 8000;
+const turnstileLoadTimer = setTimeout(function () {
+    document.getElementById('turnstile-load-error')?.removeAttribute('hidden');
+}, TURNSTILE_LOAD_TIMEOUT_MS);
+
+// Nombre global exacto: es el valor de ?onload= en el <script> de
+// Cloudflare (registro.html) — el propio script de Cloudflare llama a
+// window[ese nombre] en cuanto termina de cargar y ejecutarse.
+window.onTurnstileLoad = function () {
+    clearTimeout(turnstileLoadTimer);
+    document.getElementById('turnstile-load-error')?.setAttribute('hidden', '');
+
+    const container = document.getElementById('turnstile-widget');
+    turnstileWidgetId = turnstile.render(container, {
+        sitekey: container.dataset.sitekey,
+        callback: function (token) {
+            turnstileToken = token;
+        },
+        'error-callback': function () {
+            turnstileToken = null;
+        },
+        'expired-callback': function () {
+            turnstileToken = null;
+        },
+    });
+};
 
 // parentEl: dónde vive el <p> cuando existe. insertBeforeEl (opcional):
 // referencia para mantener el orden visual original al crearlo — solo
@@ -520,6 +571,23 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         }
 
+        // El modo Managed de Turnstile resuelve el widget solo, sin que el
+        // usuario haga nada, en la mayoría de los casos — pero si aún no ha
+        // terminado (conexión lenta) o el script nunca cargó (ver
+        // TURNSTILE_LOAD_TIMEOUT_MS más arriba), turnstileToken sigue a
+        // null. Sin esta comprobación, signUp() se llamaría sin
+        // captchaToken y Supabase lo rechazaría con un error genérico en
+        // inglés, sin pista de qué ha pasado.
+        if (!turnstileToken) {
+            renderAuthError(
+                step3El,
+                'register-form-error',
+                I18n.t('auth.error_captcha_missing'),
+                step3Actions
+            );
+            return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.textContent = I18n.t('auth.register_submitting');
 
@@ -531,7 +599,15 @@ document.addEventListener('DOMContentLoaded', async function () {
             interests,
             firstName,
             lastName,
+            captchaToken: turnstileToken,
         });
+
+        // Se gasta al primer intento, haya ido bien o mal — un reintento
+        // (p. ej. tras "este email ya existe") con el mismo token, Supabase
+        // lo rechazaría igual. turnstile.reset() pide uno nuevo solo; con
+        // Managed, normalmente sin que el usuario note nada.
+        if (turnstileWidgetId != null) turnstile.reset(turnstileWidgetId);
+        turnstileToken = null;
 
         if (error) {
             submitBtn.disabled = false;

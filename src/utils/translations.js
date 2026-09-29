@@ -324,6 +324,10 @@ window.I18n.translations = {
             error_city_required: 'Selecciona tu ciudad.',
             error_password_mismatch: 'Las contraseñas no coinciden.',
             error_generic: 'Ha ocurrido un error. Inténtalo de nuevo.',
+            error_captcha_missing:
+                'Espera un momento a que se complete la verificación de seguridad e inténtalo de nuevo.',
+            turnstile_load_error:
+                'No se pudo cargar la verificación de seguridad. Comprueba tu conexión o desactiva temporalmente cualquier bloqueador de anuncios/scripts, y recarga la página.',
 
             show_password: 'Mostrar contraseña',
             hide_password: 'Ocultar contraseña',
@@ -674,6 +678,9 @@ window.I18n.translations = {
             error_city_required: 'Select your city.',
             error_password_mismatch: "Passwords don't match.",
             error_generic: 'Something went wrong. Please try again.',
+            error_captcha_missing: 'Please wait for the security check to finish and try again.',
+            turnstile_load_error:
+                'The security check could not load. Check your connection or temporarily disable any ad/script blocker, then reload the page.',
 
             show_password: 'Show password',
             hide_password: 'Hide password',
