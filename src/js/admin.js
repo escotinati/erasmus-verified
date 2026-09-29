@@ -172,6 +172,33 @@ document.addEventListener('DOMContentLoaded', function () {
             if (e.key === 'Enter') login();
         });
     });
+
+    document
+        .getElementById('mfa-enroll-confirm-btn')
+        .addEventListener('click', confirmMfaEnrollment);
+    document.getElementById('mfa-enroll-cancel-btn').addEventListener('click', cancelMfaEnrollment);
+    document
+        .getElementById('mfa-challenge-confirm-btn')
+        .addEventListener('click', confirmMfaChallenge);
+    document
+        .getElementById('mfa-challenge-cancel-btn')
+        .addEventListener('click', cancelMfaChallenge);
+
+    // Mismo patrón en los dos campos de código: solo dígitos mientras se
+    // teclea (evita despistes con espacios/letras al copiar del gestor
+    // de contraseñas) y Enter envía, igual que en email/contraseña.
+    [
+        ['mfa-enroll-code', confirmMfaEnrollment],
+        ['mfa-challenge-code', confirmMfaChallenge],
+    ].forEach(([id, submitFn]) => {
+        const input = document.getElementById(id);
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(0, 6);
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') submitFn();
+        });
+    });
     document
         .getElementById('confirm-modal-close')
         .addEventListener('click', () => closeConfirmModal(false));
@@ -318,13 +345,209 @@ document.addEventListener('DOMContentLoaded', function () {
     window.supabaseClient.auth
         .getSession()
         .then(({ data: { session } }) => {
-            session ? showPanel() : showLogin();
+            // proceedAfterPasswordOrSession() y no showPanel() directo:
+            // una sesión existente todavía puede estar a medias de MFA
+            // (aal1 con factor pendiente de verificar), ver comentario
+            // junto a esa función más abajo.
+            session ? proceedAfterPasswordOrSession() : showLogin();
         })
         .catch((err) => {
             console.error('[admin] error comprobando sesión:', err);
             showLogin();
         });
 });
+
+// ── MFA (verificación en dos pasos, TOTP) ───────────────────────
+//
+// Segundo factor obligatorio para entrar al panel — email+contraseña ya
+// no basta. mfaEnrollFactorId/mfaChallengeFactorId/mfaChallengeId son
+// estado de un solo intento de login, por eso showLogin() los limpia:
+// no tiene sentido que sobrevivan a un logout ni a un fallo que te
+// devuelve al paso 1.
+//
+// Si algún día pierdes el móvil con la app de verificación: entra en el
+// SQL Editor de Supabase y borra la fila de esta cuenta en
+// auth.mfa_factors (select * from auth.mfa_factors donde user_id sea el
+// tuyo, y delete esa fila) — eso quita el segundo factor y vuelve a
+// dejar la cuenta en solo email+contraseña, sin tocar nada más.
+let mfaEnrollFactorId = null;
+let mfaChallengeFactorId = null;
+let mfaChallengeId = null;
+
+// Se llama tanto tras un signInWithPassword recién hecho como al
+// recargar la página con una sesión ya existente (ver getSession() en
+// DOMContentLoaded) — en los dos casos hay que comprobar el nivel de
+// verificación antes de enseñar el panel. Sin esto, una sesión que se
+// quedó a medias (por ejemplo, se cerró la pestaña justo después de la
+// contraseña, antes de meter el código) entraría directa al panel con
+// solo recargar la página.
+//
+// getAuthenticatorAssuranceLevel() da dos niveles: currentLevel (el de
+// la sesión ahora mismo) y nextLevel (el máximo alcanzable con los
+// factores que existen). aal1 = solo contraseña, aal2 = contraseña +
+// segundo factor ya verificado.
+async function proceedAfterPasswordOrSession() {
+    const { data, error } = await window.supabaseClient.auth.mfa.getAuthenticatorAssuranceLevel();
+
+    if (error) {
+        console.error('[admin] error comprobando nivel de verificación MFA:', error);
+        document.getElementById('login-error').textContent =
+            'No se pudo comprobar la verificación en dos pasos. Recarga la página.';
+        return;
+    }
+
+    const { currentLevel, nextLevel } = data;
+
+    if (currentLevel === 'aal2') {
+        // Ya verificado en esta sesión (p. ej. recarga de página tras
+        // haber metido el código antes) — directo al panel.
+        showPanel();
+        return;
+    }
+
+    if (nextLevel === 'aal2') {
+        // Hay un factor TOTP ya activo de un login anterior — toca pedir
+        // el código, no volver a enseñar el QR.
+        await startMfaChallenge();
+        return;
+    }
+
+    // nextLevel === 'aal1': esta cuenta todavía no tiene ningún factor
+    // TOTP dado de alta — primera vez, hay que crearlo antes de dejar
+    // pasar (el segundo factor es obligatorio, no opcional).
+    await startMfaEnrollment();
+}
+
+async function startMfaEnrollment() {
+    document.getElementById('login-step-password').hidden = true;
+    document.getElementById('login-error').textContent = '';
+
+    const { data, error } = await window.supabaseClient.auth.mfa.enroll({ factorType: 'totp' });
+
+    if (error) {
+        // Caso raro pero posible: un intento de alta anterior se quedó a
+        // medias (factor creado, nunca verificado) y Supabase no deja
+        // crear un segundo. cancelMfaEnrollment() ya limpia esto con
+        // unenroll() cuando el usuario cancela correctamente — si llega
+        // aquí es porque no se canceló bien (cerrar pestaña, etc.).
+        document.getElementById('login-step-password').hidden = false;
+        document.getElementById('login-error').textContent =
+            'No se pudo iniciar la verificación en dos pasos: ' + error.message;
+        return;
+    }
+
+    mfaEnrollFactorId = data.id;
+    // data.totp.qr_code ya es un <svg>...</svg> completo (Supabase lo
+    // genera así) — se inyecta tal cual, no es HTML que venga del
+    // usuario ni de Supabase-datos, es contenido interno del SDK.
+    document.getElementById('mfa-enroll-qr').innerHTML = data.totp.qr_code;
+    document.getElementById('mfa-enroll-secret').textContent = data.totp.secret;
+    document.getElementById('login-step-mfa-enroll').hidden = false;
+    document.getElementById('mfa-enroll-code').focus();
+}
+
+async function confirmMfaEnrollment() {
+    const code = document.getElementById('mfa-enroll-code').value.trim();
+    const errorEl = document.getElementById('mfa-enroll-error');
+    errorEl.textContent = '';
+
+    if (!/^\d{6}$/.test(code)) {
+        errorEl.textContent = 'Introduce los 6 dígitos del código.';
+        return;
+    }
+
+    // challengeAndVerify() hace challenge()+verify() en un solo paso —
+    // válido aquí porque el factor recién creado no puede tener ningún
+    // challenge pendiente de antes.
+    const { error } = await window.supabaseClient.auth.mfa.challengeAndVerify({
+        factorId: mfaEnrollFactorId,
+        code,
+    });
+
+    if (error) {
+        errorEl.textContent = error.message || 'Código incorrecto. Inténtalo de nuevo.';
+        return;
+    }
+    showPanel();
+}
+
+async function cancelMfaEnrollment() {
+    // Sin este unenroll(), el factor "pending" (creado pero nunca
+    // verificado) se queda huérfano en auth.mfa_factors, y el próximo
+    // intento de enroll() para esta cuenta falla porque Supabase no dado
+    // de alta un segundo factor TOTP mientras el primero siga pendiente.
+    if (mfaEnrollFactorId) {
+        await window.supabaseClient.auth.mfa.unenroll({ factorId: mfaEnrollFactorId });
+        mfaEnrollFactorId = null;
+    }
+    await logout();
+}
+
+async function startMfaChallenge() {
+    document.getElementById('login-step-password').hidden = true;
+    document.getElementById('login-error').textContent = '';
+
+    const { data: factorsData, error: factorsError } =
+        await window.supabaseClient.auth.mfa.listFactors();
+
+    if (factorsError || !factorsData?.totp?.length) {
+        document.getElementById('login-step-password').hidden = false;
+        document.getElementById('login-error').textContent =
+            'No se pudo cargar la verificación en dos pasos. Recarga la página.';
+        return;
+    }
+
+    mfaChallengeFactorId = factorsData.totp[0].id;
+
+    const { data, error } = await window.supabaseClient.auth.mfa.challenge({
+        factorId: mfaChallengeFactorId,
+    });
+
+    if (error) {
+        document.getElementById('login-step-password').hidden = false;
+        document.getElementById('login-error').textContent = error.message;
+        return;
+    }
+
+    mfaChallengeId = data.id;
+    document.getElementById('login-step-mfa-challenge').hidden = false;
+    document.getElementById('mfa-challenge-code').focus();
+}
+
+async function confirmMfaChallenge() {
+    const code = document.getElementById('mfa-challenge-code').value.trim();
+    const errorEl = document.getElementById('mfa-challenge-error');
+    errorEl.textContent = '';
+
+    if (!/^\d{6}$/.test(code)) {
+        errorEl.textContent = 'Introduce los 6 dígitos del código.';
+        return;
+    }
+
+    const { error } = await window.supabaseClient.auth.mfa.verify({
+        factorId: mfaChallengeFactorId,
+        challengeId: mfaChallengeId,
+        code,
+    });
+
+    if (error) {
+        errorEl.textContent = error.message || 'Código incorrecto. Inténtalo de nuevo.';
+        // Un challenge es de un solo uso — si el código falla, se pide
+        // uno nuevo para el siguiente intento (mismo criterio que
+        // turnstile.reset() en registro.js: nunca reintentar con algo
+        // ya gastado).
+        const { data } = await window.supabaseClient.auth.mfa.challenge({
+            factorId: mfaChallengeFactorId,
+        });
+        mfaChallengeId = data?.id || null;
+        return;
+    }
+    showPanel();
+}
+
+async function cancelMfaChallenge() {
+    await logout();
+}
 
 async function login() {
     const email = document.getElementById('login-email').value.trim();
@@ -341,7 +564,7 @@ async function login() {
         errorEl.textContent = error.message || 'Credenciales incorrectas.';
         return;
     }
-    showPanel();
+    await proceedAfterPasswordOrSession();
 }
 
 async function logout() {
@@ -355,6 +578,17 @@ async function logout() {
 function showLogin() {
     document.getElementById('login-view').hidden = false;
     document.getElementById('panel-view').hidden = true;
+
+    document.getElementById('login-step-password').hidden = false;
+    document.getElementById('login-step-mfa-enroll').hidden = true;
+    document.getElementById('login-step-mfa-challenge').hidden = true;
+    document.getElementById('mfa-enroll-code').value = '';
+    document.getElementById('mfa-challenge-code').value = '';
+    document.getElementById('mfa-enroll-error').textContent = '';
+    document.getElementById('mfa-challenge-error').textContent = '';
+    mfaEnrollFactorId = null;
+    mfaChallengeFactorId = null;
+    mfaChallengeId = null;
 }
 
 async function showPanel() {

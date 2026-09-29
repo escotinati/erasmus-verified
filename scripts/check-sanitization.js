@@ -148,6 +148,11 @@ const EXPLICIT_EXCEPTIONS = [
         reason: 'safeImageUrl ya pasó por sanitizeUrl() (línea de arriba); JSON.stringify() aquí resuelve el escapado de comillas específico de un valor dentro de url(...) en CSS — ver el comentario del propio archivo. No se generaliza JSON.stringify(...) como wrapper seguro en las reglas globales porque NO escapa < > & (no serviría para innerHTML de texto, solo para este contexto de cadena CSS/JS).',
     },
     {
+        file: 'src/js/admin.js',
+        contains: "document.getElementById('mfa-enroll-qr').innerHTML = data.totp.qr_code;",
+        reason: 'data.totp.qr_code lo genera el propio SDK de Supabase (auth.mfa.enroll()) a partir de un secreto TOTP recién creado en el servidor — no hay ningún dato de usuario ni de la tabla partners en esta cadena, es un <svg> fijo por estructura. Ni email ni password del formulario de login entran en este valor.',
+    },
+    {
         file: 'src/js/registro.js',
         contains: "container.style.height = startHeight + 'px';",
         reason: 'startHeight viene de container.getBoundingClientRect().height (animateStepHeight()) — una medida numérica de layout, nunca un dato de Supabase ni de usuario; no hay nada que escapar.',
