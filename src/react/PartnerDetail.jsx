@@ -31,6 +31,10 @@
 //  en el objeto que arma para cada link (ver partnersService.js) — se
 //  usa link.url como key, es el único campo realmente estable que
 //  identifica un link entre renders.
+//
+//  Sin lat/lng no hay a dónde llevar — "Cómo llegar" no se renderiza en
+//  vez de apuntar a Google Maps con coordenadas vacías (mismo criterio
+//  que PartnerCard en CityPartnerList.jsx: "ningún <a> muerto").
 // ─────────────────────────────────────────────────────────────
 
 export default function PartnerDetail({
@@ -39,7 +43,10 @@ export default function PartnerDetail({
     onLinkClick,
     onDirectionsClick,
 }) {
-    const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${partner.lat},${partner.lng}`;
+    const hasCoords = partner.lat != null && partner.lng != null;
+    const directionsHref = hasCoords
+        ? `https://www.google.com/maps/dir/?api=1&destination=${partner.lat},${partner.lng}`
+        : null;
 
     return (
         <div className="partner-detail">
@@ -63,15 +70,17 @@ export default function PartnerDetail({
                 );
             })}
 
-            <a
-                href={directionsHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="partner-detail__directions"
-                onClick={onDirectionsClick}
-            >
-                {directionsLabel}
-            </a>
+            {hasCoords && (
+                <a
+                    href={directionsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="partner-detail__directions"
+                    onClick={onDirectionsClick}
+                >
+                    {directionsLabel}
+                </a>
+            )}
         </div>
     );
 }
