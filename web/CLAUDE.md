@@ -121,6 +121,6 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 | 5    | Integración real con Fourvenues (adapter real, webhook, clave alpha)                      | Bloqueada (SL, clave, contrato) |
 | 6    | Legal, pruebas end-to-end, producción y dominios                                          | Bloqueada                       |
 
-Pendientes conocidos: el precio destacado debe incluir los gastos obligatorios (decisión legal, contrastar con `erasmuscumplimientolegal.pdf`); `Mis entradas` y `Cuenta` (rutas de la barra inferior) dan 404 hasta las fases 3-4; auditoría de seguridad (CSP con nonce, `img-src` más estricto, HSTS `preload`); que el adapter falle en producción si falta `FOURVENUES_ADAPTER` en lugar de servir el mock; aviso de "multiple lockfiles" (`turbopack.root`).
+Pendientes conocidos: el precio destacado debe incluir los gastos obligatorios (decisión legal, contrastar con `erasmuscumplimientolegal.pdf`); `Mis entradas` y `Cuenta` (rutas de la barra inferior) dan 404 hasta las fases 3-4; auditoría de seguridad (CSP con nonce, `img-src` más estricto, HSTS `preload`); que el adapter falle en producción si falta `FOURVENUES_ADAPTER` en lugar de servir el mock.
 
 Las decisiones y su historial están en el documento `claude/decisiones-entradas-fourvenues.md` del proyecto ERASMUS en claude.ai.

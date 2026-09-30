@@ -1,3 +1,4 @@
+import path from 'node:path';
 import type { NextConfig } from 'next';
 
 /**
@@ -33,6 +34,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Oculta el logo de Next.js que aparece abajo a la izquierda en desarrollo (solo afecta a `next dev`).
   devIndicators: false,
+  // El repo tiene otro package-lock.json en la raíz (web antigua): sin esto Turbopack
+  // infiere mal la raíz del workspace y avisa de "multiple lockfiles".
+  turbopack: { root: path.resolve(__dirname) },
   async headers() {
     return [
       {
