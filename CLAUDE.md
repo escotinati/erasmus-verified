@@ -2,7 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Proyecto
+## ⚠️ Este repo tiene DOS aplicaciones — lee esto primero
+
+| Nombre          | Dónde                                           | Stack                                 | Estado                                          |
+| --------------- | ----------------------------------------------- | ------------------------------------- | ----------------------------------------------- |
+| **web**         | `web/`                                          | Next.js 16 + React 19 + TypeScript    | **Activa.** Todo el desarrollo nuevo va aquí.   |
+| **web antigua** | raíz del repo (`index.html`, `src/`, `admin/`…) | Vite + HTML/CSS/JS vanilla + Supabase | **Congelada.** Solo se toca si se pide expresa. |
+
+- **Todo lo que sigue en este archivo describe la web antigua.** No aplica al código de `web/`, que tiene su propio [`web/CLAUDE.md`](web/CLAUDE.md) y **manda** sobre este para todo lo que esté dentro de esa carpeta.
+- Si el usuario dice "web", o no aclara a cuál se refiere, es **`web/`**. Si dice "web antigua", es la raíz: confirma con él antes de editar nada.
+- Trabajando en `web`, **no edites nada de la web antigua** (`.html` de la raíz, `src/`, `admin/`, `vite.config.js`, `package.json` de la raíz, `vercel.json`, `.claude/`…) ni copies sus patrones.
+- **Supabase** (`puivkbjgbfnlpepyednt`) es el mismo proyecto para las dos: mantén toda su seguridad (RLS, `private.is_admin()`, CHECK de URLs) y usa `supabase-schema-guardian` antes de cambiar el esquema.
+- Los agentes de `.claude/agents/`, el hook de Prettier y las skills `/add-city` y `/add-partner` son de la web antigua.
+- Producción: `web` sirve **ambos dominios** (`erasmusparties.org` y `erasmusverified.com`). Cada aplicación tiene su proyecto de Vercel (`erasmusparties-web` con Root Directory `web`, y `erasmus-verified` en la raíz).
+
+## Proyecto (web antigua)
 
 **Erasmus Verified** — directorio de grupos de WhatsApp/Telegram para estudiantes Erasmus en 36+ países y 528+ ciudades europeas. También muestra un mapa interactivo con partners (locales nocturnos, alojamientos, etc.) por ciudad.
 
