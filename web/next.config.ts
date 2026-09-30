@@ -31,6 +31,8 @@ const csp = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Oculta el logo de Next.js que aparece abajo a la izquierda en desarrollo (solo afecta a `next dev`).
+  devIndicators: false,
   async headers() {
     return [
       {
