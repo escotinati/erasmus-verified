@@ -1,0 +1,4 @@
+.page { min-height: 100dvh; max-width: 480px; margin: 0 auto; padding: 8px 16px 32px; }
+.back { width: var(--tap-min); height: var(--tap-min); display: grid; place-items: center; border-radius: 50%; }
+.card { padding: 8px 0 0; }
+.card h1 { font-size: 1.75rem; letter-spacing: -0.025em; margin-bottom: 20px; }

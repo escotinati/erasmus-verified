@@ -1,12 +1,13 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { updateSession } from '@/lib/supabase/proxy';
 import { EXPERIENCE_COOKIE, EXPERIENCE_HEADER, isProductionHost, resolveExperience } from '@/lib/experience';
 
 /**
  * Next.js 16: "proxy" sustituye a "middleware".
  * Resuelve la experiencia (parties/verified) por hostname y la pasa a los
- * Server Components mediante una cabecera de petición interna.
+ * Server Components mediante una cabecera de petición interna, y refresca la sesión de Supabase.
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const host = request.headers.get('host');
   const queryOverride = request.nextUrl.searchParams.get('exp');
   const override = queryOverride ?? request.cookies.get(EXPERIENCE_COOKIE)?.value;
@@ -17,7 +18,8 @@ export function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(EXPERIENCE_HEADER, experience);
 
-  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  // Refresca la sesión de Supabase (si la hay) conservando la cabecera x-experience.
+  const response = await updateSession(request, requestHeaders);
 
   // Persistimos ?exp= entre páginas solo fuera de producción.
   if (queryOverride && !isProductionHost(host)) {

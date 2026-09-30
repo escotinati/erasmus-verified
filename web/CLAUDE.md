@@ -82,7 +82,8 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 - **Antes de cualquier cambio de esquema, RLS o tabla nueva: usa el agente `supabase-schema-guardian`** (el estado real de la base de datos se consulta con el MCP de Supabase; no todas las migraciones están en el repo).
 - Tablas nuevas (`orders`, `webhook_events`…) **nacen con RLS activado** y políticas explícitas. Nunca desactivar RLS "para probar".
 - Los cambios de esquema se aplican con `apply_migration` (no `execute_sql`) y el archivo de migración se guarda en `supabase/migrations/` **de la raíz** (es el único sitio). Tocar la raíz aquí es la excepción permitida, pero avisa antes.
-- Auth de usuarios: Supabase Auth con email + contraseña. `profiles` la rellena el trigger `handle_new_user`, nunca un `INSERT` desde el frontend. No cambies claves de `options.data` sin comprobar el trigger.
+- Auth de usuarios (implementado en `src/lib/supabase/`, `src/lib/auth/`, rutas `/login`, `/registro`, `/cuenta`, `/auth/callback`): Supabase Auth con email + contraseña, sesión en cookies con `@supabase/ssr`, formularios con Server Actions. El proxy solo refresca la sesión; la comprobación de acceso va en cada página de servidor con `getUser()`. `profiles.city_id` es opcional (migración `20260930150946`); el registro solo envía `first_name` (máx. 60, CHECK de `profiles`).
+- Auth de usuarios (reglas): `profiles` la rellena el trigger `handle_new_user`, nunca un `INSERT` desde el frontend. No cambies claves de `options.data` sin comprobar el trigger.
 - La web antigua y `web` comparten usuarios. Un cambio de esquema afecta a las dos: compruébalo.
 
 ## Diseño
@@ -116,11 +117,11 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 | ---- | ----------------------------------------------------------------------------------------- | ------------------------------- |
 | 1    | Scaffold Next.js, tokens, shell, dominios                                                 | Hecha                           |
 | 2    | Catálogo (listado + ficha con selector), datos simulados                                  | Hecha (PR #125 mergeada)        |
-| 3    | Cuentas con Supabase Auth                                                                 | Siguiente                       |
+| 3    | Cuentas con Supabase Auth                                                                 | En curso (`feature/tickets-auth`) |
 | 4    | Compra simulada (datos, resumen, pago simulado, éxito, Mis entradas); activar "Continuar" | Pendiente                       |
 | 5    | Integración real con Fourvenues (adapter real, webhook, clave alpha)                      | Bloqueada (SL, clave, contrato) |
 | 6    | Legal, pruebas end-to-end, producción y dominios                                          | Bloqueada                       |
 
-Pendientes conocidos: el precio destacado debe incluir los gastos obligatorios (decisión legal, contrastar con `erasmuscumplimientolegal.pdf`); `Mis entradas` y `Cuenta` (rutas de la barra inferior) dan 404 hasta las fases 3-4; auditoría de seguridad (CSP con nonce, `img-src` más estricto, HSTS `preload`); que el adapter falle en producción si falta `FOURVENUES_ADAPTER` en lugar de servir el mock.
+Pendientes conocidos: el precio destacado debe incluir los gastos obligatorios (decisión legal, contrastar con `erasmuscumplimientolegal.pdf`); `Mis entradas` (ruta de la barra inferior) da 404 hasta la fase 4; falta la recuperación de contraseña y el login con Google (decisión pendiente); auditoría de seguridad (CSP con nonce, `img-src` más estricto, HSTS `preload`); que el adapter falle en producción si falta `FOURVENUES_ADAPTER` en lugar de servir el mock.
 
 Las decisiones y su historial están en el documento `claude/decisiones-entradas-fourvenues.md` del proyecto ERASMUS en claude.ai.
