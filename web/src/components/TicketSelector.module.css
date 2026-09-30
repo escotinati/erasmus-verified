@@ -26,7 +26,7 @@
   width: var(--tap-min); height: var(--tap-min); padding: 0; display: grid; place-items: center;
   border-radius: 50%; border: 1.5px solid var(--field); background: transparent; color: var(--text); cursor: pointer;
 }
-.stepBtn:disabled { color: var(--muted); cursor: not-allowed; opacity: 0.6; }
+.stepBtn[aria-disabled='true'] { color: var(--muted); cursor: not-allowed; opacity: 0.6; }
 .qty { min-width: 36px; text-align: center; font-weight: 700; font-size: 1.125rem; }
 
 .bar {
@@ -41,3 +41,4 @@
   background: var(--primary); color: #fff; cursor: pointer;
 }
 .cta:disabled { background: var(--surface-2); color: var(--muted); cursor: not-allowed; }
+.empty { margin: 16px 16px 0; padding: 16px; text-align: center; color: var(--muted); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Icon } from '@/components/Icon';
 import type { TicketRate } from '@/lib/fourvenues/types';
 import { formatEuros } from '@/lib/format';
-import { clampQty, maxQty, summarize, type Selection } from '@/lib/pricing';
+import { clampQty, isSoldOut, maxQty, summarize, type Selection } from '@/lib/pricing';
 import styles from './TicketSelector.module.css';
 
 /**
@@ -15,6 +15,7 @@ import styles from './TicketSelector.module.css';
 export function TicketSelector({ rates }: { rates: TicketRate[] }) {
   const [selection, setSelection] = useState<Selection>({});
   const summary = summarize(rates, selection);
+  const onSale = rates.some((rate) => !isSoldOut(rate));
 
   const change = (rate: TicketRate, delta: number) =>
     setSelection((prev) => ({ ...prev, [rate.id]: clampQty(rate, (prev[rate.id] ?? 0) + delta) }));
@@ -26,22 +27,23 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
           const qty = clampQty(rate, selection[rate.id] ?? 0);
           const max = maxQty(rate);
           const selected = qty > 0;
+          const soldOut = isSoldOut(rate);
           return (
             <section
               key={rate.id}
-              aria-label={rate.soldOut ? `${rate.name}, agotada` : rate.name}
+              aria-label={soldOut ? `${rate.name}, agotada` : rate.name}
               className={`${styles.rate} ${selected ? styles.rateSelected : ''}`}
             >
               <div className={styles.rateHead}>
-                <span className={`${styles.rateName} ${rate.soldOut ? styles.muted : ''}`}>{rate.name}</span>
-                {rate.soldOut ? (
+                <span className={`${styles.rateName} ${soldOut ? styles.muted : ''}`}>{rate.name}</span>
+                {soldOut ? (
                   <span className={styles.badgeOutline}>Agotado</span>
                 ) : rate.badge ? (
                   <span className={styles.badge}>{rate.badge}</span>
                 ) : null}
               </div>
 
-              {rate.soldOut ? (
+              {soldOut ? (
                 <p className={styles.note}>No quedan entradas de este tipo.</p>
               ) : (
                 <>
@@ -75,7 +77,7 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
                     type="button"
                     className={styles.stepBtn}
                     aria-label={`Quitar una entrada ${rate.name}`}
-                    disabled={qty === 0}
+                    aria-disabled={qty === 0}
                     onClick={() => change(rate, -1)}
                   >
                     <Icon name="minus" size={20} />
@@ -87,7 +89,7 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
                     type="button"
                     className={styles.stepBtn}
                     aria-label={`Añadir una entrada ${rate.name}`}
-                    disabled={qty >= max}
+                    aria-disabled={qty >= max}
                     onClick={() => change(rate, 1)}
                   >
                     <Icon name="plus" size={20} />
@@ -99,6 +101,13 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
         })}
       </div>
 
+      {!onSale && (
+        <p className={styles.empty} role="status">
+          {rates.length === 0 ? 'Aún no hay entradas a la venta.' : 'Entradas agotadas.'}
+        </p>
+      )}
+
+      {onSale && (
       <div className={styles.bar}>
         <div className={styles.barTotal}>
           <div className={styles.note} aria-live="polite">
@@ -113,6 +122,7 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
           Continuar
         </button>
       </div>
+      )}
     </>
   );
 }
