@@ -10,10 +10,6 @@ export default async function RegisterPage() {
   const { data } = await supabase.auth.getUser();
   if (data.user) redirect('/cuenta');
 
-  return (
-    <>
-      <h1>Crea tu cuenta</h1>
-      <RegisterForm />
-    </>
-  );
+  // El <h1> vive dentro de RegisterForm porque cambia tras el envío ("Revisa tu correo").
+  return <RegisterForm />;
 }

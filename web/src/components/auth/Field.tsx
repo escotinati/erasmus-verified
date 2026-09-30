@@ -19,7 +19,12 @@ export function Field({ label, error, hint, id, ...input }: Props) {
         {...input}
       />
       {hint && !error && <p id={hintId} className={styles.hint}>{hint}</p>}
-      {error && <p id={errorId} className={styles.error} role="alert">{error}</p>}
+      {error && (
+        <p id={errorId} className={styles.error} role="alert">
+          {/* el icono es decorativo: el lector lee solo el texto */}
+          <span aria-hidden="true">⚠ </span>{error}
+        </p>
+      )}
     </div>
   );
 }

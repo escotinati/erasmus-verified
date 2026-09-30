@@ -7,12 +7,30 @@ import { safeNextPath, validateEmail, validateName, validatePassword, type Field
 
 export type AuthState = { errors?: FieldErrors; message?: string; sent?: boolean; email?: string };
 
-/** URL base de esta petición (localhost, preview o dominio de producción), para el enlace del correo. */
+/** Dominios de producción propios. Los previews de Vercel se añaden desde variables del sistema. */
+const PROD_HOSTS = ['erasmusparties.org', 'www.erasmusparties.org', 'erasmusverified.com', 'www.erasmusverified.com'];
+
+/**
+ * URL base para el enlace del correo. NO se fía de las cabeceras: `Host`/`X-Forwarded-Host`
+ * las controla quien llame a la Server Action, así que solo se acepta un host de la lista
+ * cerrada (producción, localhost y el propio despliegue de Vercel); si no, un valor fijo.
+ * (Supabase además valida contra su lista de Redirect URLs: allí, sin comodines abiertos.)
+ */
 async function getOrigin() {
+  const trusted = new Set([
+    ...PROD_HOSTS,
+    'localhost:3000',
+    process.env.VERCEL_URL,
+    process.env.VERCEL_BRANCH_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  ].filter((h): h is string => Boolean(h)));
+
   const h = await headers();
-  const host = h.get('x-forwarded-host') ?? h.get('host');
-  const proto = h.get('x-forwarded-proto') ?? (host?.startsWith('localhost') ? 'http' : 'https');
-  return `${proto}://${host}`;
+  const host = h.get('x-forwarded-host') ?? h.get('host') ?? '';
+  if (trusted.has(host)) {
+    return `${host.startsWith('localhost') ? 'http' : 'https'}://${host}`;
+  }
+  return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'erasmusparties.org'}`;
 }
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? '');
@@ -30,7 +48,7 @@ export async function signUpAction(_prev: AuthState, form: FormData): Promise<Au
   if (errors.name || errors.email || errors.password) return { errors, email };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -43,11 +61,15 @@ export async function signUpAction(_prev: AuthState, form: FormData): Promise<Au
   });
 
   if (error) {
-    // Mensaje genérico: no revelamos detalles internos. (Un correo ya registrado no da error:
-    // Supabase protege contra la enumeración de usuarios y responde igual que un alta nueva.)
+    // Solo el código (sin correo ni datos personales) para poder depurar en los logs del servidor.
+    console.error('[auth] signUp falló:', error.code ?? error.status ?? error.name);
+    // Mensaje genérico al usuario. (Con "Confirm email" activo, un correo ya registrado no da
+    // error: Supabase responde igual que a un alta nueva, para no revelar qué cuentas existen.)
     return { message: 'No hemos podido crear la cuenta. Inténtalo de nuevo en unos minutos.', email };
   }
-  // Con confirmación de correo activada no hay sesión hasta pulsar el enlace.
+  // Si Supabase devolviera sesión (confirmación de correo desactivada en el dashboard), entramos.
+  if (data.session) redirect('/cuenta');
+  // Con confirmación activada no hay sesión hasta pulsar el enlace del correo.
   return { sent: true, email };
 }
 

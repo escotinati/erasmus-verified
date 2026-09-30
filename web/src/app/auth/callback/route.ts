@@ -8,15 +8,26 @@ import { safeNextPath } from '@/lib/auth/validation';
  * registro, el canje falla (falta el verificador guardado en cookie) aunque el correo SÍ
  * queda confirmado: mandamos a /login con un aviso en lugar de un error.
  */
+function redirectTo(request: NextRequest, path: string) {
+  const url = request.nextUrl.clone();
+  const target = new URL(path, 'http://internal.invalid');
+  url.pathname = target.pathname;
+  url.search = target.search;
+  return NextResponse.redirect(url);
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const code = searchParams.get('code');
+  // Supabase devuelve ?error_code=otp_expired (etc.) cuando el enlace ya no vale.
+  const linkError = searchParams.get('error_code') ?? searchParams.get('error');
   const next = safeNextPath(searchParams.get('next'), '/cuenta');
 
-  if (code) {
+  if (code && !linkError) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(next, request.url));
+    if (!error) return redirectTo(request, next);
   }
-  return NextResponse.redirect(new URL('/login?aviso=confirmado', request.url));
+  // Enlace caducado/usado, o abierto en otro navegador: el correo puede estar ya confirmado o no.
+  return redirectTo(request, `/login?aviso=${linkError ? 'enlace' : 'confirmado'}`);
 }

@@ -15,7 +15,9 @@ export default async function CuentaPage() {
 
   // RLS: solo devuelve la fila propia. Puede no existir (usuarios anteriores al trigger).
   const { data: profile } = await supabase.from('profiles').select('first_name').eq('id', user.id).maybeSingle();
-  const name = profile?.first_name || (user.user_metadata?.first_name as string | undefined) || null;
+  // user_metadata lo puede editar el propio usuario: solo como último recurso y acotado.
+  const metaName = user.user_metadata?.first_name;
+  const name = profile?.first_name || (typeof metaName === 'string' ? metaName.slice(0, 60) : null) || null;
 
   return (
     <main className={styles.main}>

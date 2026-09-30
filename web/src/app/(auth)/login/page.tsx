@@ -17,8 +17,13 @@ export default async function LoginPage({ searchParams }: Props) {
   const { data } = await supabase.auth.getUser();
   if (data.user) redirect(target);
 
+  // Dos casos distintos: no sabemos si el correo quedó confirmado, así que no lo afirmamos.
   const notice =
-    aviso === 'confirmado' ? 'Si acabas de confirmar tu correo, ya puedes iniciar sesión.' : undefined;
+    aviso === 'confirmado'
+      ? 'Si has confirmado tu correo, ya puedes iniciar sesión.'
+      : aviso === 'enlace'
+        ? 'El enlace ha caducado o ya se usó. Si aún no puedes entrar, vuelve a registrarte para recibir uno nuevo.'
+        : undefined;
 
   return (
     <>
