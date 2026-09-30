@@ -9,9 +9,17 @@ export interface TicketRate {
   name: string;
   /** Precio unitario en céntimos, sin gastos. */
   priceCents: number;
+  /** Gastos de gestión por entrada, en céntimos. En el adapter real vendrán de pricing-info. */
+  feeCents: number;
   /** Plazas disponibles; null = sin dato. */
   available: number | null;
   soldOut: boolean;
+  /** Etiqueta corta de tramo, p. ej. "Early bird". */
+  badge?: string;
+  /** Qué incluye, p. ej. "Incluye 1 copa". */
+  includes?: string;
+  /** Si el precio sube al agotarse el tramo actual. */
+  nextTier?: { remaining: number; priceCents: number };
 }
 
 export interface NightEvent {
@@ -19,9 +27,14 @@ export interface NightEvent {
   slug: string;
   name: string;
   venueName: string;
+  address: string | null;
   city: string;
   /** ISO 8601 con zona horaria. */
   startsAt: string;
+  endsAt: string;
+  /** Edad mínima; null = sin restricción. */
+  minAge: number | null;
+  genres: string[];
   imageUrl: string | null;
   rates: TicketRate[];
 }
