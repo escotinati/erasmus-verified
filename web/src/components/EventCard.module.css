@@ -1,0 +1,10 @@
+.card {
+  display: block; padding: 16px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius-card);
+}
+.card:hover { background: var(--surface-2); }
+.date { margin: 0 0 4px; font-size: 0.8125rem; font-weight: 600; color: var(--accent-text); text-transform: capitalize; }
+.title { font-size: 1.25rem; }
+.meta { margin: 4px 0 12px; color: var(--muted); font-size: 0.875rem; }
+.price { margin: 0; font-family: var(--font-title); font-weight: 700; }
+.soldOut { color: var(--warning); }
