@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Archivo_Black, Inter, Plus_Jakarta_Sans } from 'next/font/google';
-import { BottomNav } from '@/components/BottomNav';
 import { getExperience } from '@/lib/get-experience';
 import './globals.css';
 
@@ -21,7 +20,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="es" data-experience={experience} className={`${jakarta.variable} ${inter.variable} ${archivo.variable}`}>
       <body>
         {children}
-        <BottomNav />
       </body>
     </html>
   );
