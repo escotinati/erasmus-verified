@@ -5,8 +5,13 @@
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--surface); border-top: 1px solid var(--line);
 }
+/* Icono + texto en columna. El activo no depende solo del color: barra superior + color. */
 .tab {
-  display: flex; align-items: center; justify-content: center;
-  min-height: var(--tap-min); font-size: 0.8125rem; font-weight: 600; color: var(--muted);
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: var(--tap-min); font-size: 0.75rem; font-weight: 600; color: var(--muted);
 }
 .tab[aria-current='page'] { color: var(--accent-text); }
+.tab[aria-current='page']::before {
+  content: ''; position: absolute; top: 0; left: 50%; width: 28px; height: 3px;
+  transform: translateX(-50%); border-radius: 0 0 3px 3px; background: var(--accent-text);
+}
