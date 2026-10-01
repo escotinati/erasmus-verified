@@ -7,12 +7,6 @@
 .rateHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .rateName { font-weight: 700; font-size: 1.0625rem; }
 .muted { color: var(--muted); }
-.badge, .badgeOutline {
-  display: inline-flex; align-items: center; height: 24px; padding: 0 10px;
-  border-radius: 12px; font-size: 0.75rem; font-weight: 700; white-space: nowrap;
-}
-.badge { background: rgba(225, 20, 123, 0.18); color: var(--accent-text); }
-.badgeOutline { border: 1px solid var(--field); color: var(--text); }
 .priceRow { display: flex; align-items: baseline; gap: 10px; margin: 0; }
 .price { font-family: var(--font-title); font-weight: 800; font-size: 1.625rem; letter-spacing: -0.02em; }
 .note { margin: 0; font-size: 0.8125rem; color: var(--muted); }
@@ -36,9 +30,5 @@
 }
 .barTotal { flex: none; }
 .total { font-family: var(--font-title); font-weight: 800; font-size: 1.375rem; letter-spacing: -0.02em; }
-.cta {
-  flex: 1; height: 56px; border: 0; border-radius: 28px; font: 700 1rem var(--font-body);
-  background: var(--primary); color: #fff; cursor: pointer;
-}
-.cta:disabled { background: var(--surface-2); color: var(--muted); cursor: not-allowed; }
+.cta { flex: 1; }
 .empty { margin: 16px 16px 0; padding: 16px; text-align: center; color: var(--muted); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }

@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { Icon, type IconName } from '@/components/Icon';
+import { Badge } from '@/components/ui/Badge';
+import { BackButton } from '@/components/ui/BackButton';
 import { TicketSelector } from '@/components/TicketSelector';
 import { tickets } from '@/lib/fourvenues';
 import { formatEventDay, formatTimeRange } from '@/lib/format';
@@ -44,10 +45,12 @@ export default async function FichaPage({ params }: Props) {
   return (
     <>
       <div className={styles.hero}>
-        <Link href="/" className={styles.back} aria-label="Volver a las noches">
-          <Icon name="back" size={24} />
-        </Link>
-        {event.minAge !== null && <span className={styles.age}>+{event.minAge}</span>}
+        <BackButton overlay label="Volver a las noches" />
+        {event.minAge !== null && (
+          <Badge variant="solid" className={styles.age}>
+            +{event.minAge}
+          </Badge>
+        )}
       </div>
 
       <main className={styles.main}>

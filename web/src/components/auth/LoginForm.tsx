@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useActionState, useState } from 'react';
 import { signInAction, type AuthState } from '@/lib/auth/actions';
 import { validateEmail } from '@/lib/auth/validation';
+import { Button } from '@/components/ui/Button';
 import { Field } from './Field';
 import { useAuthForm } from './useAuthForm';
 import styles from './auth.module.css';
@@ -38,9 +39,9 @@ export function LoginForm({ next, notice }: { next: string; notice?: string }) {
           </p>
         )}
 
-        <button type="submit" className={styles.cta} aria-disabled={!valid || pending} onClick={form.onSubmitClick}>
+        <Button type="submit" fullWidth aria-disabled={!valid || pending} onClick={form.onSubmitClick}>
           {pending ? 'Entrando…' : 'Entrar'}
-        </button>
+        </Button>
         <p className={styles.switch}>¿No tienes cuenta? <Link href="/registro">Regístrate</Link></p>
       </form>
     </>

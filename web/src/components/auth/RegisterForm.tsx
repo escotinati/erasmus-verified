@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useActionState, useEffect, useRef, useState } from 'react';
 import { signUpAction, type AuthState } from '@/lib/auth/actions';
 import { NAME_MAX, PASSWORD_MIN, validateEmail, validateName, validatePassword } from '@/lib/auth/validation';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { Field } from './Field';
 import { useAuthForm } from './useAuthForm';
 import styles from './auth.module.css';
@@ -38,7 +39,7 @@ export function RegisterForm() {
           podrás entrar.
         </p>
         <p className={styles.hint}>Si no lo ves, mira en spam. Si ya tenías cuenta con este correo, no recibirás nada: inicia sesión.</p>
-        <Link href="/login" className={styles.linkBtn}>Ir a iniciar sesión</Link>
+        <ButtonLink href="/login" variant="outline" fullWidth className={styles.noticeAction}>Ir a iniciar sesión</ButtonLink>
       </div>
     );
   }
@@ -63,9 +64,9 @@ export function RegisterForm() {
           </p>
         )}
 
-        <button type="submit" className={styles.cta} aria-disabled={!valid || pending} onClick={form.onSubmitClick}>
+        <Button type="submit" fullWidth aria-disabled={!valid || pending} onClick={form.onSubmitClick}>
           {pending ? 'Creando cuenta…' : 'Crear cuenta'}
-        </button>
+        </Button>
         <p className={styles.switch}>¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link></p>
       </form>
     </>

@@ -2,6 +2,7 @@ import { CityFilter } from '@/components/CityFilter';
 import { EventCard } from '@/components/EventCard';
 import { tickets } from '@/lib/fourvenues';
 import { getExperience } from '@/lib/get-experience';
+import styles from './noches.module.css';
 
 type Props = { searchParams: Promise<{ ciudad?: string | string[] }> };
 
@@ -15,18 +16,16 @@ export default async function NochesPage({ searchParams }: Props) {
   const events = city ? all.filter((e) => e.city === city) : all;
 
   return (
-    <main className="container" style={{ paddingTop: 24, display: 'grid', gap: 16 }}>
+    <main className={`container ${styles.main}`}>
       <header>
-        <p style={{ margin: 0, color: 'var(--muted)', fontSize: '0.875rem' }}>
-          {experience === 'parties' ? 'Erasmus Parties' : 'Erasmus Verified'}
-        </p>
-        <h1 style={{ fontFamily: 'var(--font-hero)', fontSize: '2rem' }}>Noches</h1>
+        <p className={styles.brand}>{experience === 'parties' ? 'Erasmus Parties' : 'Erasmus Verified'}</p>
+        <h1 className={styles.title}>Noches</h1>
       </header>
 
       <CityFilter cities={cities} active={city} />
 
       {events.length === 0 ? (
-        <p style={{ color: 'var(--muted)' }}>Ahora mismo no hay noches disponibles. Vuelve pronto.</p>
+        <p className={styles.empty}>Ahora mismo no hay noches disponibles. Vuelve pronto.</p>
       ) : (
         events.map((event) => <EventCard key={event.id} event={event} />)
       )}

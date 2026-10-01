@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Icon } from '@/components/Icon';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import type { TicketRate } from '@/lib/fourvenues/types';
 import { formatEuros } from '@/lib/format';
 import { clampQty, isSoldOut, maxQty, summarize, type Selection } from '@/lib/pricing';
@@ -37,9 +39,9 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
               <div className={styles.rateHead}>
                 <span className={`${styles.rateName} ${soldOut ? styles.muted : ''}`}>{rate.name}</span>
                 {soldOut ? (
-                  <span className={styles.badgeOutline}>Agotado</span>
+                  <Badge variant="outline">Agotado</Badge>
                 ) : rate.badge ? (
-                  <span className={styles.badge}>{rate.badge}</span>
+                  <Badge>{rate.badge}</Badge>
                 ) : null}
               </div>
 
@@ -108,20 +110,20 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
       )}
 
       {onSale && (
-      <div className={styles.bar}>
-        <div className={styles.barTotal}>
-          <div className={styles.note} aria-live="polite">
-            {summary.tickets === 0
-              ? 'Elige tus entradas'
-              : `${summary.tickets} ${summary.tickets === 1 ? 'entrada' : 'entradas'} · gastos incluidos`}
+        <div className={styles.bar}>
+          <div className={styles.barTotal}>
+            <div className={styles.note} aria-live="polite">
+              {summary.tickets === 0
+                ? 'Elige tus entradas'
+                : `${summary.tickets} ${summary.tickets === 1 ? 'entrada' : 'entradas'} · gastos incluidos`}
+            </div>
+            <div className={styles.total}>{formatEuros(summary.totalCents)}</div>
           </div>
-          <div className={styles.total}>{formatEuros(summary.totalCents)}</div>
+          {/* Fase 2: catálogo. El botón se activa en la fase de compra (resumen y pago). */}
+          <Button className={styles.cta} disabled>
+            Continuar
+          </Button>
         </div>
-        {/* Fase 2: catálogo. El botón se activa en la fase de compra (resumen y pago). */}
-        <button type="button" className={styles.cta} disabled>
-          Continuar
-        </button>
-      </div>
       )}
     </>
   );

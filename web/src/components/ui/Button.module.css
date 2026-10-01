@@ -1,0 +1,13 @@
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 56px; padding: 0 32px; border: 1.5px solid transparent; border-radius: var(--radius-pill);
+  font: 700 1rem var(--font-body); cursor: pointer;
+}
+.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.outline { background: transparent; border-color: var(--field); color: var(--text); }
+.full { width: 100%; }
+/* Deshabilitado con borde además del color: ningún estado depende solo del color.
+   Cubre el atributo nativo y aria-disabled (los formularios lo usan para no perder el foco ni el autorrelleno). */
+.btn:disabled, .btn[aria-disabled='true'] {
+  background: var(--surface-2); border-color: var(--field); color: var(--muted); cursor: not-allowed;
+}
