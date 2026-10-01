@@ -19,7 +19,14 @@ export default async function NochesPage({ searchParams }: Props) {
     <main className={`container ${styles.main}`}>
       <header>
         <p className={styles.brand}>{experience === 'parties' ? 'Erasmus Parties' : 'Erasmus Verified'}</p>
-        <h1 className={styles.title}>Noches</h1>
+        <h1 className={styles.title}>
+          Tu próxima
+          <br />
+          <span className={styles.accent}>noche Erasmus</span>
+        </h1>
+        <p className={styles.lead}>
+          {events.length} {events.length === 1 ? 'noche' : 'noches'} {city ? `en ${city}` : 'en todas las ciudades'}
+        </p>
       </header>
 
       <CityFilter cities={cities} active={city} />
