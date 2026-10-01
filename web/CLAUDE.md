@@ -41,7 +41,7 @@ Dos aplicaciones conviven en el repo `escotinati/erasmus-verified`. Nombres fijo
 
 ```
 web/src/
-  app/            rutas (App Router). (tabs)/ agrupa las pestañas con barra inferior; eventos/[slug]/ = ficha
+  app/            rutas (App Router). (tabs)/ agrupa las pestañas; eventos/[slug]/ = ficha
   components/     componentes (cada uno con su .module.css)
   components/ui/  piezas básicas reutilizables: Button/ButtonLink, Badge, BackButton, StatusScreen
   lib/
@@ -92,6 +92,7 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 - Tokens en `src/styles/tokens.css` (paleta de septiembre, fondo `#0A0A0F`, primario `#E1147B`). **No escribas colores a mano**: usa `var(--…)`.
 - El primario `#E1147B` **solo como relleno** (texto blanco encima: 4,58:1). Como texto pequeño usa `--accent-text` (`#FF5FAE`).
 - Tipografía: Plus Jakarta Sans (títulos y precios), Inter (cuerpo), Archivo Black (titular de portada), cargadas con `next/font/google` como variables CSS.
+- Layout: **toda** la web es una columna móvil centrada (`.shell`, `--content-max` 480 px) también en escritorio, y el menú inferior (`BottomNav`, en el layout raíz) está en todas las pantallas. Las barras fijas (menú, barra de compra) usan la clase `.dock` y se apilan con `--nav-total`; no uses `position: fixed` con `inset: 0` suelto.
 - Mobile-first. Tap targets ≥ 44 px (`--tap-min`), botón principal 56 px. Un solo botón magenta por pantalla.
 - Ningún estado depende solo del color. Errores de formulario junto al campo, nunca en un aviso flotante; sin `alert()`.
 - Antes de escribir un botón, etiqueta, flecha de volver o pantalla de estado, **usa las piezas de `components/ui/`** (`Button`/`ButtonLink` con `variant="primary"|"outline"`, `Badge`, `BackButton`, `StatusScreen`). Un componente se extrae cuando se repite o la pantalla lo pide, no antes. Nada de estilos en línea (`style={{…}}`).
