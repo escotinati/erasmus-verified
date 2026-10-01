@@ -5,4 +5,4 @@
   border-radius: 22px; border: 1.5px solid var(--field); font-size: 0.875rem; font-weight: 600; color: var(--text);
 }
 /* El estado activo no depende solo del color: relleno + texto blanco (4,58:1) */
-.chip[aria-current='true'] { background: var(--primary); border-color: var(--primary); color: #fff; }
+.chip[aria-current='true'] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }

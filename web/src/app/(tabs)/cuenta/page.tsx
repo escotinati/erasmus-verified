@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { Button } from '@/components/ui/Button';
 import { signOutAction } from '@/lib/auth/actions';
 import { createClient } from '@/lib/supabase/server';
 import styles from './cuenta.module.css';
@@ -24,7 +25,7 @@ export default async function CuentaPage() {
       <h1>{name ? `Hola, ${name}` : 'Tu cuenta'}</h1>
       <p className={styles.email}>{user.email}</p>
       <form action={signOutAction}>
-        <button type="submit" className={styles.out}>Cerrar sesión</button>
+        <Button type="submit" variant="outline" fullWidth>Cerrar sesión</Button>
       </form>
     </main>
   );

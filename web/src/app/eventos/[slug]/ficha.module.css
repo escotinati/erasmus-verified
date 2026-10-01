@@ -1,16 +1,10 @@
 .hero {
   display: flex; align-items: flex-start; justify-content: space-between; height: 232px; padding: 8px;
-  background: linear-gradient(to top, rgba(10, 10, 15, 0.85) 4%, rgba(10, 10, 15, 0) 60%), linear-gradient(145deg, #e1147b, #3a0e5e);
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--bg) 85%, transparent) 4%, transparent 60%),
+    linear-gradient(145deg, var(--primary), var(--primary-deep));
 }
-.back {
-  width: var(--tap-min); height: var(--tap-min); display: grid; place-items: center;
-  border-radius: 50%; background: rgba(10, 10, 15, 0.7); color: var(--text);
-}
-.back:focus-visible { outline-color: var(--text); }
-.age {
-  margin: 10px 8px 0 0; display: inline-flex; align-items: center; height: 24px; padding: 0 10px;
-  border-radius: 12px; font-size: 0.75rem; font-weight: 700; background: var(--text); color: var(--bg);
-}
+.age { margin: 10px 8px 0 0; }
 /* deja sitio a la barra de compra fija (56 + paddings) */
 .main { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
 .head { padding: 16px 16px 8px; }
