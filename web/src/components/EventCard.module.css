@@ -4,18 +4,9 @@
 }
 .card:hover { background: var(--surface-2); }
 
-/* Zona visual: degradado de marca de respaldo; la imagen real (si hay) lo tapa. */
-.media { position: relative; height: 128px; padding: 12px; }
-.tone0 { background: linear-gradient(145deg, var(--primary), var(--primary-deep)); }
-.tone1 { background: linear-gradient(145deg, var(--primary-deep), var(--surface-2)); }
-.tone2 { background: linear-gradient(215deg, var(--primary), var(--surface-2)); }
-.image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-/* sombreado inferior para que la insignia y el borde con el texto se lean sobre cualquier imagen */
-.media::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to top, color-mix(in srgb, var(--bg) 55%, transparent), transparent 55%);
-}
-.date { position: relative; z-index: 1; text-transform: capitalize; }
+/* Zona visual: el degradado/imagen lo pone EventMedia; aquí solo medidas */
+.media { height: 128px; padding: 12px; }
+.date { text-transform: capitalize; }
 
 .body { padding: 14px 16px 16px; }
 .title { font-size: 1.25rem; }

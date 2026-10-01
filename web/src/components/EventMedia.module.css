@@ -1,0 +1,11 @@
+.media { position: relative; overflow: hidden; }
+.tone0 { background: linear-gradient(145deg, var(--primary), var(--primary-deep)); }
+.tone1 { background: linear-gradient(145deg, var(--primary-deep), var(--surface-2)); }
+.tone2 { background: linear-gradient(215deg, var(--primary), var(--surface-2)); }
+.image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Sombreado inferior: legibilidad sobre cualquier imagen y fundido con el fondo. --media-fade lo ajusta quien la usa. */
+.media::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, color-mix(in srgb, var(--bg) var(--media-fade, 55%), transparent), transparent 55%);
+}
+.content { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; height: 100%; }

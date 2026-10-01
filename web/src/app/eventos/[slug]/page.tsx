@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { cache } from 'react';
 import { notFound } from 'next/navigation';
+import { EventMedia } from '@/components/EventMedia';
 import { Icon, type IconName } from '@/components/Icon';
 import { Badge } from '@/components/ui/Badge';
 import { BackButton } from '@/components/ui/BackButton';
@@ -44,14 +45,14 @@ export default async function FichaPage({ params }: Props) {
 
   return (
     <>
-      <div className={styles.hero}>
+      <EventMedia event={event} className={styles.hero}>
         <BackButton overlay label="Volver a las noches" />
         {event.minAge !== null && (
           <Badge variant="solid" className={styles.age}>
             +{event.minAge}
           </Badge>
         )}
-      </div>
+      </EventMedia>
 
       <main className={styles.main}>
         <div className={styles.head}>
