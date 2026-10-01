@@ -63,7 +63,11 @@ export async function signUpAction(_prev: AuthState, form: FormData): Promise<Au
   if (error) {
     // Solo el código (sin correo ni datos personales) para poder depurar en los logs del servidor.
     console.error('[auth] signUp falló:', error.code ?? error.status ?? error.name);
-    // Mensaje genérico al usuario. (Con "Confirm email" activo, un correo ya registrado no da
+    // Límite de envío de correos: no revela nada sobre cuentas, así que se puede ser específico.
+    if (error.code === 'over_email_send_rate_limit') {
+      return { message: 'Hay mucha demanda ahora mismo. Espera unos minutos y vuelve a intentarlo.', email };
+    }
+    // Resto de errores: mensaje genérico. (Con "Confirm email" activo, un correo ya registrado no da
     // error: Supabase responde igual que a un alta nueva, para no revelar qué cuentas existen.)
     return { message: 'No hemos podido crear la cuenta. Inténtalo de nuevo en unos minutos.', email };
   }

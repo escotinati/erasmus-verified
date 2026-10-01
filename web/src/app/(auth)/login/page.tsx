@@ -22,7 +22,7 @@ export default async function LoginPage({ searchParams }: Props) {
     aviso === 'confirmado'
       ? 'Si has confirmado tu correo, ya puedes iniciar sesión.'
       : aviso === 'enlace'
-        ? 'El enlace ha caducado o ya se usó. Si aún no puedes entrar, vuelve a registrarte para recibir uno nuevo.'
+        ? 'No hemos podido iniciar tu sesión desde el enlace (por ejemplo, si lo abriste en otro navegador o dispositivo). Es probable que tu correo ya esté confirmado: inicia sesión con tu contraseña.'
         : undefined;
 
   return (
