@@ -9,7 +9,7 @@
 .date { text-transform: capitalize; }
 
 .body { padding: 14px 16px 16px; }
-.title { font-size: 1.25rem; }
-.meta { margin: 4px 0 12px; color: var(--muted); font-size: 0.875rem; }
+.title { font-size: var(--text-xl); }
+.meta { margin: 4px 0 12px; color: var(--muted); font-size: var(--text-md); }
 .price { margin: 0; font-family: var(--font-title); font-weight: 700; }
 .soldOut { color: var(--warning); }

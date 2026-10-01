@@ -1,3 +1,5 @@
+import styles from './Icon.module.css';
+
 /** Iconos de trazo (mismos que los mockups). Decorativos: aria-hidden; el significado va en el texto. */
 const PATHS = {
   back: <path d="m15 6-6 6 6 6" />,
@@ -28,7 +30,7 @@ export function Icon({ name, size = 22 }: { name: IconName; size?: number }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      style={{ flex: 'none' }}
+      className={styles.icon}
     >
       {PATHS[name]}
     </svg>

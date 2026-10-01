@@ -1,0 +1,2 @@
+/* No se encoge dentro de filas flex */
+.icon { flex: none; }
