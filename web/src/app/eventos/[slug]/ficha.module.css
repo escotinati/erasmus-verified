@@ -4,10 +4,10 @@
 /* deja sitio a la barra de compra fija (56 + paddings); la barra inferior ya la reserva .shell */
 .main { padding-bottom: 88px; }
 .head { padding: 16px 16px 8px; }
-.title { font-size: 1.75rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; }
+.title { font-size: var(--text-3xl); font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; }
 .sub { margin: 4px 0 0; color: var(--muted); }
 .fact { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 16px; }
 .factIcon { color: var(--accent-text); display: inline-flex; }
 .factTitle { font-weight: 600; }
-.factDetail { font-size: 0.8125rem; color: var(--muted); }
-.h2 { padding: 20px 16px 10px; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.015em; }
+.factDetail { font-size: var(--text-sm); color: var(--muted); }
+.h2 { padding: 20px 16px 10px; font-size: var(--text-xl); font-weight: 800; letter-spacing: -0.015em; }

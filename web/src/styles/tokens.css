@@ -29,6 +29,17 @@
   --nav-total: calc(var(--nav-h) + env(safe-area-inset-bottom)); /* alto real de la barra inferior */
   --content-max: 480px; /* ancho máximo del contenido (mobile-first) */
 
+  /* Escala tipográfica: usar siempre estos tokens, nunca un tamaño suelto. */
+  --text-xs: 0.75rem;    /* insignias, etiquetas del menú */
+  --text-sm: 0.8125rem;  /* notas, ayudas, detalles */
+  --text-md: 0.875rem;   /* etiquetas, metadatos, errores, chips */
+  --text-base: 1rem;     /* cuerpo */
+  --text-lg: 1.125rem;   /* nombre de tarifa, cantidades */
+  --text-xl: 1.25rem;    /* títulos de tarjeta y de sección */
+  --text-2xl: 1.5rem;    /* precios, títulos de pantalla de estado */
+  --text-3xl: 1.75rem;   /* título de pantalla (h1) */
+  --text-hero: 2.25rem;  /* titular de portada */
+
   --font-title: var(--font-jakarta), system-ui, sans-serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
   --font-hero: var(--font-archivo), var(--font-jakarta), sans-serif;

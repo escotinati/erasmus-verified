@@ -1,18 +1,18 @@
 .form { display: flex; flex-direction: column; gap: 16px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.label { font-size: 0.875rem; font-weight: 600; }
+.label { font-size: var(--text-md); font-weight: 600; }
 .input {
   height: 52px; padding: 0 14px; font: 400 1rem var(--font-body); color: var(--text);
   background: var(--surface); border: 1.5px solid var(--field); border-radius: var(--radius-field);
 }
 .input[aria-invalid='true'] { border-color: var(--danger); }
-.hint { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+.hint { margin: 0; font-size: var(--text-sm); color: var(--muted); }
 /* el error lleva icono de texto además del color: ningún estado depende solo del color */
-.error, .formError { margin: 0; font-size: 0.875rem; color: var(--danger); }
-.switch { margin: 0; text-align: center; font-size: 0.9375rem; color: var(--muted); }
+.error, .formError { margin: 0; font-size: var(--text-md); color: var(--danger); }
+.switch { margin: 0; text-align: center; font-size: var(--text-base); color: var(--muted); }
 .switch a { display: inline-flex; align-items: center; min-height: var(--tap-min); padding-inline: 6px; color: var(--accent-text); font-weight: 600; text-decoration: underline; }
 .infoBox {
-  margin: 0; padding: 12px 14px; font-size: 0.9375rem;
+  margin: 0; padding: 12px 14px; font-size: var(--text-base);
   background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-field);
 }
 .notice { display: flex; flex-direction: column; gap: 12px; }

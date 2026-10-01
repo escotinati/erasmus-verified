@@ -95,6 +95,7 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 - Layout: **toda** la web es una columna móvil centrada (`.shell`, `--content-max` 480 px) también en escritorio, y el menú inferior (`BottomNav`, en el layout raíz) está en todas las pantallas. Las barras fijas (menú, barra de compra) usan la clase `.dock` y se apilan con `--nav-total`; no uses `position: fixed` con `inset: 0` suelto.
 - Mobile-first. Tap targets ≥ 44 px (`--tap-min`), botón principal 56 px. Un solo botón magenta por pantalla.
 - Ningún estado depende solo del color. Errores de formulario junto al campo, nunca en un aviso flotante; sin `alert()`.
+- Tamaños de letra: **solo los tokens `--text-xs … --text-hero`** de `tokens.css` (9 escalones, de 12 px a 36 px). Nunca un `font-size` suelto; si hace falta un tamaño nuevo, se discute antes de añadir un escalón.
 - Antes de escribir un botón, etiqueta, flecha de volver o pantalla de estado, **usa las piezas de `components/ui/`** (`Button`/`ButtonLink` con `variant="primary"|"outline"`, `Badge`, `BackButton`, `StatusScreen`). Un componente se extrae cuando se repite o la pantalla lo pide, no antes. Nada de estilos en línea (`style={{…}}`).
 - Estilos: **CSS Modules** por componente. Sin Tailwind, sin librerías de UI, sin estado global (Redux…) salvo decisión expresa.
 - Los mockups de las pantallas críticas están en el proyecto de claude.ai (`mobile-app-shell-mockups.html`); el resto se diseña directamente en código.

@@ -2,10 +2,10 @@
 /* Marca: palabra en mayúsculas con una pequeña marca magenta delante */
 .brand {
   display: flex; align-items: center; gap: 8px; margin: 0 0 12px;
-  font-family: var(--font-title); font-size: 0.8125rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  font-family: var(--font-title); font-size: var(--text-sm); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
 }
 .brand::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
-.title { font-family: var(--font-hero); font-size: 2.25rem; line-height: 1.05; letter-spacing: -0.03em; }
+.title { font-family: var(--font-hero); font-size: var(--text-hero); line-height: 1.05; letter-spacing: -0.03em; }
 /* El acento va en --accent-text (texto grande sobre fondo oscuro) */
 .accent { color: var(--accent-text); }
 .lead { margin: 12px 0 0; color: var(--muted); }
