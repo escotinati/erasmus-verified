@@ -43,6 +43,7 @@ Dos aplicaciones conviven en el repo `escotinati/erasmus-verified`. Nombres fijo
 web/src/
   app/            rutas (App Router). (tabs)/ agrupa las pestañas con barra inferior; eventos/[slug]/ = ficha
   components/     componentes (cada uno con su .module.css)
+  components/ui/  piezas básicas reutilizables: Button/ButtonLink, Badge, BackButton, StatusScreen
   lib/
     experience.ts, get-experience.ts   experiencia parties/verified por dominio
     fourvenues/                        capa de acceso a la ticketera (ver abajo)
@@ -93,6 +94,7 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 - Tipografía: Plus Jakarta Sans (títulos y precios), Inter (cuerpo), Archivo Black (titular de portada), cargadas con `next/font/google` como variables CSS.
 - Mobile-first. Tap targets ≥ 44 px (`--tap-min`), botón principal 56 px. Un solo botón magenta por pantalla.
 - Ningún estado depende solo del color. Errores de formulario junto al campo, nunca en un aviso flotante; sin `alert()`.
+- Antes de escribir un botón, etiqueta, flecha de volver o pantalla de estado, **usa las piezas de `components/ui/`** (`Button`/`ButtonLink` con `variant="primary"|"outline"`, `Badge`, `BackButton`, `StatusScreen`). Un componente se extrae cuando se repite o la pantalla lo pide, no antes. Nada de estilos en línea (`style={{…}}`).
 - Estilos: **CSS Modules** por componente. Sin Tailwind, sin librerías de UI, sin estado global (Redux…) salvo decisión expresa.
 - Los mockups de las pantallas críticas están en el proyecto de claude.ai (`mobile-app-shell-mockups.html`); el resto se diseña directamente en código.
 
