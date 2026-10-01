@@ -120,11 +120,11 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 | ---- | ----------------------------------------------------------------------------------------- | ------------------------------- |
 | 1    | Scaffold Next.js, tokens, shell, dominios                                                 | Hecha                           |
 | 2    | Catálogo (listado + ficha con selector), datos simulados                                  | Hecha (PR #125 mergeada)        |
-| 3    | Cuentas con Supabase Auth                                                                 | En curso (`feature/tickets-auth`) |
+| 3    | Cuentas con Supabase Auth                                                                 | Hecha (PR #128)                 |
 | 4    | Compra simulada (datos, resumen, pago simulado, éxito, Mis entradas); activar "Continuar" | Pendiente                       |
 | 5    | Integración real con Fourvenues (adapter real, webhook, clave alpha)                      | Bloqueada (SL, clave, contrato) |
 | 6    | Legal, pruebas end-to-end, producción y dominios                                          | Bloqueada                       |
 
-Pendientes conocidos: el precio destacado debe incluir los gastos obligatorios (decisión legal, contrastar con `erasmuscumplimientolegal.pdf`); `Mis entradas` (ruta de la barra inferior) da 404 hasta la fase 4; falta la recuperación de contraseña y el login con Google (decisión pendiente); auditoría de seguridad (CSP con nonce, `img-src` más estricto, HSTS `preload`); que el adapter falle en producción si falta `FOURVENUES_ADAPTER` en lugar de servir el mock.
+Pendientes conocidos: el precio destacado debe incluir los gastos obligatorios (decisión legal, contrastar con `erasmuscumplimientolegal.pdf`); `Mis entradas` (ruta de la barra inferior) da 404 hasta la fase 4; falta la recuperación de contraseña y el login con Google (decisión pendiente); **el enlace del correo de confirmación solo inicia sesión si se abre en el mismo navegador del registro** (flujo PKCE, cookie del verificador): en otro navegador/app de correo el correo queda confirmado pero hay que iniciar sesión con la contraseña (`/login?aviso=enlace`). Solución futura: `token_hash` + `verifyOtp` con plantilla propia (la plantilla es global y afecta a la web antigua); SMTP propio antes de producción; auditoría de seguridad (CSP con nonce, `img-src` más estricto, HSTS `preload`); que el adapter falle en producción si falta `FOURVENUES_ADAPTER` en lugar de servir el mock.
 
 Las decisiones y su historial están en el documento `claude/decisiones-entradas-fourvenues.md` del proyecto ERASMUS en claude.ai.
