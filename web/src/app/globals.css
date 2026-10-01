@@ -9,8 +9,15 @@ body {
   font-family: var(--font-body);
   line-height: 1.5;
 }
-/* deja sitio a la navegación inferior fija (solo en pantallas con pestañas) */
-.has-nav { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+/* Columna móvil centrada: TODA la web se ve con el ancho de un móvil (también en escritorio). */
+.shell {
+  max-width: var(--content-max); min-height: 100dvh; margin: 0 auto;
+  /* deja sitio a la navegación inferior fija, presente en todas las pantallas */
+  padding-bottom: var(--nav-total);
+  border-inline: 1px solid var(--line);
+}
+/* Barras fijas al borde inferior (menú, barra de compra): ancladas a la misma columna, no a la ventana. */
+.dock { position: fixed; left: 50%; z-index: 50; width: min(100%, var(--content-max)); transform: translateX(-50%); }
 h1, h2, h3 { font-family: var(--font-title); font-weight: 700; line-height: 1.2; margin: 0; }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 3px solid var(--accent-text); outline-offset: 2px; }

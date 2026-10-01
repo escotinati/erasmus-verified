@@ -110,7 +110,7 @@ export function TicketSelector({ rates }: { rates: TicketRate[] }) {
       )}
 
       {onSale && (
-        <div className={styles.bar}>
+        <div className={`dock ${styles.bar}`}>
           <div className={styles.barTotal}>
             <div className={styles.note} aria-live="polite">
               {summary.tickets === 0

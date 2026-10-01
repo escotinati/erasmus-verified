@@ -5,8 +5,8 @@
     linear-gradient(145deg, var(--primary), var(--primary-deep));
 }
 .age { margin: 10px 8px 0 0; }
-/* deja sitio a la barra de compra fija (56 + paddings) */
-.main { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+/* deja sitio a la barra de compra fija (56 + paddings); la barra inferior ya la reserva .shell */
+.main { padding-bottom: 88px; }
 .head { padding: 16px 16px 8px; }
 .title { font-size: 1.75rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; }
 .sub { margin: 4px 0 0; color: var(--muted); }
