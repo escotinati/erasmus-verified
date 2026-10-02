@@ -23,7 +23,7 @@ Dos aplicaciones conviven en el repo `escotinati/erasmus-verified`. Nombres fijo
 
 - Si el usuario dice **"web"**, o **no aclara** a cuál se refiere → es `web/` (Next.js). Se asume esto por defecto.
 - Si dice **"web antigua"** → es la raíz del repo. Está congelada: **antes de editar nada de la web antigua, confirma con el usuario** que es lo que quiere.
-- **Nunca** edites, muevas ni borres archivos de la web antigua mientras trabajas en `web`. Eso incluye: `index.html` y demás `.html` de la raíz, `src/` (raíz), `admin/`, `vite.config.js`, `package.json` y `package-lock.json` **de la raíz**, `vercel.json`, `.claude/`, `scripts/`, `dev/`, `docs/`.
+- **Nunca** edites, muevas ni borres archivos de la web antigua mientras trabajas en `web`. Eso incluye: `index.html` y demás `.html` de la raíz, `src/` (raíz), `admin/`, `vite.config.js`, `package.json` y `package-lock.json` **de la raíz**, `vercel.json`, `.claude/` (salvo añadir agentes `web-*`, que son de `web`), `scripts/`, `dev/`, `docs/`.
 - **No copies patrones de la web antigua.** En la antigua hay JS vanilla sin módulos, `window.escapeHtml`, `sanitizeUrl()`, `Card.jsx`, `I18n`… Nada de eso existe en `web`. Aquí se usan módulos ES, TypeScript y componentes React normales.
 - Excepción compartida: **Supabase** (ver más abajo) es el mismo proyecto para las dos aplicaciones.
 - Si un cambio necesita tocar algo de la raíz (por ejemplo, una migración de Supabase), dilo antes de hacerlo y pide confirmación.
@@ -114,7 +114,8 @@ Proyecto **`puivkbjgbfnlpepyednt`**, el mismo de la web antigua, sin datos reale
 - Cada fase debe poder desplegarse sola. `web` se despliega en el proyecto de Vercel **`erasmusparties-web`** (Root Directory = `web`); la web antigua en `erasmus-verified` (raíz). Son independientes: cada rama genera un preview en cada uno.
 - Los previews están protegidos con SSO de Vercel.
 - Variables de entorno en Vercel: las `NEXT_PUBLIC_*` van como tipo **Config** (Sensitive no las admite); las secretas no llevan ese prefijo.
-- Los agentes de `.claude/agents/` (`code-reviewer`, `design-reviewer`, `security-auditor`, `accessibility-auditor`, `functionality-reviewer`, `pr-orchestrator`) están escritos para la **web antigua**. Al usarlos sobre `web`, indícales explícitamente el contexto: Next.js/TypeScript, CSS Modules, tokens de `web/src/styles/tokens.css`, y que las reglas de vanilla JS/`sanitize.js` no aplican.
+- Agentes de `.claude/agents/`: los de `web` llevan el prefijo `web-` (`web-code-reviewer`, `web-security-auditor`, `web-ui-reviewer`, `web-pr-orchestrator`) y se escriben solo con las reglas de este archivo. `supabase-schema-guardian` es compartido (Supabase es un único proyecto). **Los demás** (`code-reviewer`, `design-reviewer`, `security-auditor`, `accessibility-auditor`, `functionality-reviewer`, `pr-orchestrator`) son de la **web antigua**: no se usan sobre `web/`, porque sus reglas (vanilla JS, `sanitize.js`, `tokens.css` de la raíz…) no aplican aquí.
+- `web-pr-orchestrator` lanza a los demás con la herramienta de subagentes: ejecútalo como agente principal (`claude --agent web-pr-orchestrator`). Si lo lanza otro agente, no podrá delegar y devolverá la lista de revisores que hay que lanzar a mano.
 
 ## Estado y pendientes
 
