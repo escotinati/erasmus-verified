@@ -33,6 +33,11 @@ export function lineSubtotalCents(rate: TicketRate, qty: number): number {
   return atCurrent * rate.priceCents + (qty - atCurrent) * tier.priceCents;
 }
 
+/** Subtotal + gastos de `qty` entradas de una tarifa. */
+export function lineTotalCents(rate: TicketRate, qty: number): number {
+  return lineSubtotalCents(rate, qty) + qty * rate.feeCents;
+}
+
 export function clampQty(rate: TicketRate, qty: number): number {
   if (!Number.isFinite(qty)) return 0;
   return Math.min(maxQty(rate), Math.max(0, Math.trunc(qty)));
