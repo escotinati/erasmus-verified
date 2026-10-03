@@ -7,9 +7,13 @@ import { BackButton } from '@/components/ui/BackButton';
 import { TicketSelector } from '@/components/TicketSelector';
 import { loadEvent } from '@/lib/events';
 import { formatEventDay, formatTimeRange } from '@/lib/format';
+import { parseSelection } from '@/lib/selection';
 import styles from './ficha.module.css';
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ t?: string | string[] }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -31,10 +35,14 @@ function Fact({ icon, title, detail }: { icon: IconName; title: string; detail?:
   );
 }
 
-export default async function FichaPage({ params }: Props) {
+export default async function FichaPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { t } = await searchParams;
   const event = await loadEvent(slug);
   if (!event) notFound();
+
+  // Al volver desde el resumen (?t=…) se recupera la selección; el servidor la valida igual que allí.
+  const { selection } = parseSelection(typeof t === 'string' ? t : undefined, event.rates);
 
   return (
     <>
@@ -63,7 +71,7 @@ export default async function FichaPage({ params }: Props) {
         {event.genres.length > 0 && <Fact icon="music" title={event.genres.join(' · ')} />}
 
         <h2 className={styles.h2}>Entradas</h2>
-        <TicketSelector slug={event.slug} rates={event.rates} />
+        <TicketSelector slug={event.slug} rates={event.rates} initialSelection={selection} />
       </main>
     </>
   );

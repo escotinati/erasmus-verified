@@ -13,8 +13,17 @@ import styles from './TicketSelector.module.css';
  * Selector de entradas de la ficha. Cliente: solo guarda cantidades. El total mostrado es
  * orientativo; en la compra real el servidor recalcula con los precios de Fourvenues.
  */
-export function TicketSelector({ slug, rates }: { slug: string; rates: TicketRate[] }) {
-  const [selection, setSelection] = useState<Selection>({});
+export function TicketSelector({
+  slug,
+  rates,
+  initialSelection = {},
+}: {
+  slug: string;
+  rates: TicketRate[];
+  /** Selección de partida (al volver desde el resumen); ya validada por el servidor. */
+  initialSelection?: Selection;
+}) {
+  const [selection, setSelection] = useState<Selection>(initialSelection);
   const summary = summarize(rates, selection);
   const onSale = rates.some((rate) => !isSoldOut(rate));
 

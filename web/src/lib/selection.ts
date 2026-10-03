@@ -7,6 +7,8 @@ import { MAX_PER_RATE, clampQty, type Selection } from './pricing';
  * recalcula el total; nunca se fía de lo que venga aquí.
  */
 const MAX_ENTRIES = 20;
+/** Tope de longitud del parámetro antes de trocearlo (20 entradas caben de sobra). */
+const MAX_RAW_LENGTH = 1000;
 
 /** Selección -> valor del parámetro `t` (solo cantidades > 0). */
 export function encodeSelection(selection: Selection): string {
@@ -27,7 +29,7 @@ export interface ParsedSelection {
 export function parseSelection(raw: string | undefined, rates: TicketRate[]): ParsedSelection {
   const requested: Selection = {};
   let adjusted = false;
-  const parts = (raw ?? '').split(',').filter(Boolean);
+  const parts = (raw ?? '').slice(0, MAX_RAW_LENGTH).split(',').filter(Boolean);
   if (parts.length > MAX_ENTRIES) adjusted = true;
 
   for (const part of parts.slice(0, MAX_ENTRIES)) {

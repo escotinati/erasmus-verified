@@ -6,7 +6,7 @@ import { StatusScreen } from '@/components/ui/StatusScreen';
 import { loadEvent } from '@/lib/events';
 import { formatEuros, formatEventDay, formatTimeRange } from '@/lib/format';
 import { lineTotalCents, summarize } from '@/lib/pricing';
-import { parseSelection } from '@/lib/selection';
+import { encodeSelection, parseSelection } from '@/lib/selection';
 import styles from './comprar.module.css';
 
 type Props = {
@@ -51,7 +51,7 @@ export default async function ComprarPage({ params, searchParams }: Props) {
   return (
     <main className={styles.main}>
       <div className={styles.top}>
-        <BackButton href={fichaHref} label="Volver a elegir entradas" />
+        <BackButton href={`${fichaHref}?t=${encodeSelection(selection)}`} label="Volver a elegir entradas" />
         <h1 className={styles.title}>Resumen</h1>
       </div>
 
@@ -66,7 +66,7 @@ export default async function ComprarPage({ params, searchParams }: Props) {
       </section>
 
       {adjusted && (
-        <p className={styles.notice} role="status">
+        <p className={styles.notice}>
           Hemos ajustado tu selección a las entradas disponibles ahora mismo. Revisa el total antes de seguir.
         </p>
       )}
