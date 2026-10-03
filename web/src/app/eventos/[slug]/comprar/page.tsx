@@ -6,6 +6,7 @@ import { StatusScreen } from '@/components/ui/StatusScreen';
 import { loadEvent } from '@/lib/events';
 import { formatEuros, formatEventDay, formatTimeRange } from '@/lib/format';
 import { lineTotalCents, summarize } from '@/lib/pricing';
+import { createClient } from '@/lib/supabase/server';
 import { encodeSelection, parseSelection } from '@/lib/selection';
 import styles from './comprar.module.css';
 
@@ -44,6 +45,15 @@ export default async function ComprarPage({ params, searchParams }: Props) {
         <ButtonLink href={fichaHref}>Volver a elegir entradas</ButtonLink>
       </StatusScreen>
     );
+  }
+
+  // Comprar exige cuenta. Se decide en el servidor con getUser() (valida el token contra Supabase;
+  // el proxy solo refresca la sesión). Volvemos aquí con la selección ya validada, no con la cruda.
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  if (!data.user) {
+    const back = `/eventos/${event.slug}/comprar?t=${encodeSelection(selection)}`;
+    redirect(`/login?next=${encodeURIComponent(back)}`);
   }
 
   const lines = event.rates.filter((rate) => selection[rate.id] > 0);

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { safeNextPath } from '@/lib/auth/validation';
+import { DEFAULT_NEXT, NEXT_COOKIE, safeNextPath } from '@/lib/auth/validation';
 
 /**
  * Destino del enlace del correo de confirmación (flujo PKCE): llega con ?code=… y se
@@ -13,7 +13,10 @@ function redirectTo(request: NextRequest, path: string) {
   const target = new URL(path, 'http://internal.invalid');
   url.pathname = target.pathname;
   url.search = target.search;
-  return NextResponse.redirect(url);
+  const response = NextResponse.redirect(url);
+  // De un solo uso: se borra siempre al pasar por aquí.
+  response.cookies.delete({ name: NEXT_COOKIE, path: '/auth' });
+  return response;
 }
 
 export async function GET(request: NextRequest) {
@@ -21,7 +24,7 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code');
   // Supabase devuelve ?error_code=otp_expired (etc.) cuando el enlace ya no vale.
   const linkError = searchParams.get('error_code') ?? searchParams.get('error');
-  const next = safeNextPath(searchParams.get('next'), '/cuenta');
+  const next = safeNextPath(searchParams.get('next') ?? request.cookies.get(NEXT_COOKIE)?.value, DEFAULT_NEXT);
 
   if (code && !linkError) {
     const supabase = await createClient();

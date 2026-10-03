@@ -1,9 +1,9 @@
 'use server';
 
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { safeNextPath, validateEmail, validateName, validatePassword, type FieldErrors } from './validation';
+import { DEFAULT_NEXT, NEXT_COOKIE, safeNextPath, validateEmail, validateName, validatePassword, type FieldErrors } from './validation';
 
 export type AuthState = { errors?: FieldErrors; message?: string; sent?: boolean; email?: string };
 
@@ -35,10 +35,12 @@ async function getOrigin() {
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? '');
 
+
 export async function signUpAction(_prev: AuthState, form: FormData): Promise<AuthState> {
   const name = text(form, 'name').trim();
   const email = text(form, 'email').trim();
   const password = text(form, 'password');
+  const next = safeNextPath(text(form, 'next'), DEFAULT_NEXT);
 
   const errors: FieldErrors = {
     name: validateName(name),
@@ -72,15 +74,25 @@ export async function signUpAction(_prev: AuthState, form: FormData): Promise<Au
     return { message: 'No hemos podido crear la cuenta. Inténtalo de nuevo en unos minutos.', email };
   }
   // Si Supabase devolviera sesión (confirmación de correo desactivada en el dashboard), entramos.
-  if (data.session) redirect('/cuenta');
-  // Con confirmación activada no hay sesión hasta pulsar el enlace del correo.
+  if (data.session) redirect(next);
+  // Con confirmación activada no hay sesión hasta pulsar el enlace del correo: recordamos a dónde volver
+  // (p. ej. el resumen de compra). Solo rutas internas ya validadas; caduca en 1 h y solo viaja a /auth.
+  if (next !== DEFAULT_NEXT) {
+    (await cookies()).set(NEXT_COOKIE, next, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/auth',
+      maxAge: 60 * 60,
+    });
+  }
   return { sent: true, email };
 }
 
 export async function signInAction(_prev: AuthState, form: FormData): Promise<AuthState> {
   const email = text(form, 'email').trim();
   const password = text(form, 'password');
-  const next = safeNextPath(text(form, 'next'), '/cuenta');
+  const next = safeNextPath(text(form, 'next'), DEFAULT_NEXT);
 
   const errors: FieldErrors = { email: validateEmail(email), password: password ? undefined : 'Escribe tu contraseña.' };
   if (errors.email || errors.password) return { errors, email };
