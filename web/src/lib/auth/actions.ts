@@ -1,9 +1,9 @@
 'use server';
 
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { safeNextPath, validateEmail, validateName, validatePassword, type FieldErrors } from './validation';
+import { DEFAULT_NEXT, NEXT_COOKIE, safeNextPath, validateEmail, validateName, validatePassword, type FieldErrors } from './validation';
 
 export type AuthState = { errors?: FieldErrors; message?: string; sent?: boolean; email?: string };
 
@@ -39,6 +39,7 @@ export async function signUpAction(_prev: AuthState, form: FormData): Promise<Au
   const name = text(form, 'name').trim();
   const email = text(form, 'email').trim();
   const password = text(form, 'password');
+  const next = safeNextPath(text(form, 'next'), DEFAULT_NEXT);
 
   const errors: FieldErrors = {
     name: validateName(name),
@@ -72,15 +73,29 @@ export async function signUpAction(_prev: AuthState, form: FormData): Promise<Au
     return { message: 'No hemos podido crear la cuenta. Inténtalo de nuevo en unos minutos.', email };
   }
   // Si Supabase devolviera sesión (confirmación de correo desactivada en el dashboard), entramos.
-  if (data.session) redirect('/cuenta');
-  // Con confirmación activada no hay sesión hasta pulsar el enlace del correo.
+  if (data.session) redirect(next);
+  // Con confirmación activada no hay sesión hasta pulsar el enlace del correo: recordamos a dónde volver
+  // (p. ej. el resumen de compra). Solo rutas internas ya validadas; caduca en 1 h y solo viaja a /auth.
+  const jar = await cookies();
+  if (next !== DEFAULT_NEXT) {
+    jar.set(NEXT_COOKIE, next, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/auth',
+      maxAge: 60 * 60,
+    });
+  } else {
+    // Un alta sin destino no debe heredar el de un intento anterior sin confirmar.
+    jar.delete({ name: NEXT_COOKIE, path: '/auth' });
+  }
   return { sent: true, email };
 }
 
 export async function signInAction(_prev: AuthState, form: FormData): Promise<AuthState> {
   const email = text(form, 'email').trim();
   const password = text(form, 'password');
-  const next = safeNextPath(text(form, 'next'), '/cuenta');
+  const next = safeNextPath(text(form, 'next'), DEFAULT_NEXT);
 
   const errors: FieldErrors = { email: validateEmail(email), password: password ? undefined : 'Escribe tu contraseña.' };
   if (errors.email || errors.password) return { errors, email };
@@ -88,7 +103,8 @@ export async function signInAction(_prev: AuthState, form: FormData): Promise<Au
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    // Mensaje único: no confirmar si el correo existe ni distinguir "sin confirmar" de "clave mala".
+    // No confirmar si el correo existe. "Sin confirmar" solo lo devuelve Supabase con la contraseña correcta,
+    // así que distinguirlo no permite averiguar qué correos tienen cuenta.
     const unconfirmed = error.code === 'email_not_confirmed';
     return {
       message: unconfirmed

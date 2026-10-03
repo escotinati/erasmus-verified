@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { LoginForm } from '@/components/auth/LoginForm';
-import { safeNextPath } from '@/lib/auth/validation';
+import { DEFAULT_NEXT, safeNextPath } from '@/lib/auth/validation';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = { title: 'Iniciar sesión' };
@@ -10,7 +10,7 @@ type Props = { searchParams: Promise<{ next?: string; aviso?: string }> };
 
 export default async function LoginPage({ searchParams }: Props) {
   const { next, aviso } = await searchParams;
-  const target = safeNextPath(next, '/cuenta');
+  const target = safeNextPath(next, DEFAULT_NEXT);
 
   // Si ya hay sesión, no tiene sentido ver el login.
   const supabase = await createClient();

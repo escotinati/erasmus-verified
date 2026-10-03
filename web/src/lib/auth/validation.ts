@@ -53,3 +53,14 @@ export function safeNextPath(value: string | null | undefined, fallback = '/'): 
     return fallback;
   }
 }
+
+/** Cookie con el destino tras confirmar el correo (así no hay que tocar la lista de Redirect URLs de Supabase). */
+export const NEXT_COOKIE = 'auth_next';
+
+/** Destino por defecto tras entrar. */
+export const DEFAULT_NEXT = '/cuenta';
+
+/** Enlace entre login y registro que conserva el destino (`next` ya validado) para no perder la compra. */
+export function authHref(path: '/login' | '/registro', next: string): string {
+  return next === DEFAULT_NEXT ? path : `${path}?next=${encodeURIComponent(next)}`;
+}
