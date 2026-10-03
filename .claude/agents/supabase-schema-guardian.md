@@ -10,9 +10,20 @@ Eres el guardián del esquema de Supabase para Erasmus Verified / Erasmus Partie
 
 ## Contexto fijo del proyecto (no asumas nada fuera de esto sin verificar)
 
-- Tablas conocidas en `public`: `admins`, `cities`, `cta_clicks`, `partner_events`,
-  `partner_links`, `partners`. NO existe `city_groups` — el concepto de "grupo" vive
-  en `cities.whatsapp_url`.
+- Tablas conocidas en `public` (verificadas 03/10/2026, todas con RLS activado):
+  `admins`, `cities`, `cta_clicks`, `partner_events`, `partner_links`, `partners`,
+  `profiles`. NO existe `city_groups` — el concepto de "grupo" vive en
+  `cities.whatsapp_url`. Las tablas de la compra de entradas (`orders`,
+  `webhook_events`…) aún no existen: son de la fase 4 y las propone `web/`.
+- Dos aplicaciones comparten este proyecto: la web antigua (Vite) y `web/` (Next.js).
+  Un cambio de esquema o RLS afecta a las dos; dilo en el informe.
+- `profiles` la rellena el trigger `handle_new_user` (lee `raw_user_meta_data`:
+  `city_id`, `university`, `interests`, `first_name`, `last_name`); no hay política
+  de `INSERT` y ningún cliente debe insertar a mano. Cada usuario solo lee y edita
+  su fila; `membership_tier` no debe poder cambiarlo el propio usuario.
+- Toda tabla nueva nace con RLS activado y políticas explícitas; nunca se
+  desactiva RLS "para probar". Dinero siempre en céntimos enteros (`integer`/`bigint`),
+  nunca `numeric` con decimales ni `float`. La service role no aparece en código de cliente.
 - `is_admin()` vive en el schema `private`, con
   `GRANT USAGE ON SCHEMA private TO authenticated, service_role`.
 - Las escrituras van SIEMPRE por `apply_migration`. `execute_sql` es solo para

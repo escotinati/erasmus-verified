@@ -79,6 +79,6 @@ Supabase, variables de entorno, el mockup. Con qué pantalla y ancho abrir en el
 ## Agentes ejecutados
 [lista y, para los no ejecutados, el motivo]
 
-## En lenguaje llano (para Álvaro Ramos)
+## En lenguaje llano (para Álvaro Suárez)
 [1-2 frases sin jerga: qué se ha comprobado y si es seguro publicar]
 ```
