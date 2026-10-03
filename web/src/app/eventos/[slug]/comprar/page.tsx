@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { BackButton } from '@/components/ui/BackButton';
+import { OrderBreakdown } from '@/components/tickets/OrderBreakdown';
+import { CheckoutNotice, CheckoutShell, EventSummary } from '@/components/tickets/CheckoutShell';
 import { ButtonLink } from '@/components/ui/Button';
 import { StatusScreen } from '@/components/ui/StatusScreen';
+import { requireUser } from '@/lib/auth/session';
+import { loadCheckout } from '@/lib/checkout/load';
+import { isSimulatedCheckoutAllowed } from '@/lib/checkout/simulation';
 import { loadEvent } from '@/lib/events';
-import { formatEuros, formatEventDay, formatTimeRange } from '@/lib/format';
-import { lineTotalCents, summarize } from '@/lib/pricing';
-import { encodeSelection, parseSelection } from '@/lib/selection';
-import { createClient } from '@/lib/supabase/server';
-import styles from './comprar.module.css';
+import { encodeSelection } from '@/lib/selection';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -29,17 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ComprarPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const { t } = await searchParams;
-  const event = await loadEvent(slug);
-  if (!event) notFound();
+  const checkout = await loadCheckout(slug, typeof t === 'string' ? t : undefined);
+  if (checkout.status === 'no-event') notFound();
 
-  const raw = typeof t === 'string' ? t : undefined;
-  const fichaHref = `/eventos/${event.slug}`;
-  if (!raw) redirect(fichaHref);
-
-  const { selection, adjusted } = parseSelection(raw, event.rates);
-  const summary = summarize(event.rates, selection);
-
-  if (summary.tickets === 0) {
+  const fichaHref = `/eventos/${checkout.event.slug}`;
+  if (checkout.status === 'no-selection') {
+    if (!checkout.hasRaw) redirect(fichaHref);
     return (
       <StatusScreen title="Tu selección ya no está disponible" text="Las entradas que elegiste se han agotado o el enlace no es válido.">
         <ButtonLink href={fichaHref}>Volver a elegir entradas</ButtonLink>
@@ -47,75 +42,25 @@ export default async function ComprarPage({ params, searchParams }: Props) {
     );
   }
 
-  // Comprar exige cuenta. Se decide en el servidor con getUser() (valida el token contra Supabase;
-  // el proxy solo refresca la sesión). Volvemos aquí con la selección ya validada, no con la cruda.
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) {
-    const back = `/eventos/${event.slug}/comprar?t=${encodeSelection(selection)}`;
-    redirect(`/login?next=${encodeURIComponent(back)}`);
-  }
-
-  const lines = event.rates.filter((rate) => selection[rate.id] > 0);
+  const { event, selection, adjusted, summary } = checkout;
+  const encoded = encodeSelection(selection);
+  // Comprar exige cuenta. Volvemos aquí con la selección ya validada, no con la cruda.
+  await requireUser(`${fichaHref}/comprar?t=${encoded}`);
 
   return (
-    <main className={styles.main}>
-      <div className={styles.top}>
-        <BackButton href={`${fichaHref}?t=${encodeSelection(selection)}`} label="Volver a elegir entradas" />
-        <h1 className={styles.title}>Resumen</h1>
-      </div>
-
-      <section className={styles.event} aria-label="Evento">
-        <h2 className={styles.eventName}>{event.name}</h2>
-        <p className={styles.eventMeta}>
-          {formatEventDay(event.startsAt)} · {formatTimeRange(event.startsAt, event.endsAt)}
-        </p>
-        <p className={styles.eventMeta}>
-          {event.venueName} · {event.city}
-        </p>
-      </section>
-
+    <CheckoutShell title="Resumen" back={{ href: `${fichaHref}?t=${encoded}`, label: 'Volver a elegir entradas' }}>
+      <EventSummary event={event} />
       {adjusted && (
-        <p className={styles.notice}>
-          Hemos ajustado tu selección a las entradas disponibles ahora mismo. Revisa el total antes de seguir.
-        </p>
+        <CheckoutNotice live>Hemos ajustado tu selección a las entradas disponibles ahora mismo. Revisa el total antes de seguir.</CheckoutNotice>
       )}
-
-      <section aria-label="Entradas elegidas">
-        <ul className={styles.lines}>
-          {lines.map((rate) => {
-            const qty = selection[rate.id];
-            return (
-              <li key={rate.id} className={styles.line}>
-                <div>
-                  <div className={styles.lineName}>{rate.name}</div>
-                  <div className={styles.note}>
-                    {qty} {qty === 1 ? 'entrada' : 'entradas'}
-                  </div>
-                </div>
-                <div className={styles.lineTotal}>{formatEuros(lineTotalCents(rate, qty))}</div>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      <dl className={styles.totals}>
-        <div className={styles.row}>
-          <dt>Entradas</dt>
-          <dd>{formatEuros(summary.subtotalCents)}</dd>
-        </div>
-        <div className={styles.row}>
-          <dt>Gastos de gestión</dt>
-          <dd>{formatEuros(summary.feesCents)}</dd>
-        </div>
-        <div className={`${styles.row} ${styles.grand}`}>
-          <dt>Total</dt>
-          <dd>{formatEuros(summary.totalCents)}</dd>
-        </div>
-      </dl>
-
-      <p className={styles.next}>El siguiente paso (tus datos y el pago) llega en la próxima fase.</p>
-    </main>
+      <OrderBreakdown rates={event.rates} selection={selection} summary={summary} />
+      {(await isSimulatedCheckoutAllowed()) ? (
+        <ButtonLink href={`${fichaHref}/pagar?t=${encoded}`} fullWidth>
+          Continuar al pago
+        </ButtonLink>
+      ) : (
+        <CheckoutNotice>El pago estará disponible muy pronto.</CheckoutNotice>
+      )}
+    </CheckoutShell>
   );
 }
