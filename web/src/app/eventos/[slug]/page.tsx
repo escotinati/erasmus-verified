@@ -1,22 +1,19 @@
 import type { Metadata } from 'next';
-import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { EventMedia } from '@/components/EventMedia';
 import { Icon, type IconName } from '@/components/Icon';
 import { Badge } from '@/components/ui/Badge';
 import { BackButton } from '@/components/ui/BackButton';
 import { TicketSelector } from '@/components/TicketSelector';
-import { tickets } from '@/lib/fourvenues';
+import { loadEvent } from '@/lib/events';
 import { formatEventDay, formatTimeRange } from '@/lib/format';
+import { parseSelection } from '@/lib/selection';
 import styles from './ficha.module.css';
 
-type Props = { params: Promise<{ slug: string }> };
-
-/** Slugs válidos: minúsculas, dígitos y guiones. Se valida antes de tocar el adapter (que acabará usándolo en una URL de la API). */
-const SLUG_RE = /^[a-z0-9-]{1,100}$/;
-
-/** Una sola consulta por petición, compartida entre generateMetadata y la página. */
-const loadEvent = cache(async (slug: string) => (SLUG_RE.test(slug) ? tickets.getEventBySlug(slug) : null));
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ t?: string | string[] }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -38,10 +35,14 @@ function Fact({ icon, title, detail }: { icon: IconName; title: string; detail?:
   );
 }
 
-export default async function FichaPage({ params }: Props) {
+export default async function FichaPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { t } = await searchParams;
   const event = await loadEvent(slug);
   if (!event) notFound();
+
+  // Al volver desde el resumen (?t=…) se recupera la selección; el servidor la valida igual que allí.
+  const { selection } = parseSelection(typeof t === 'string' ? t : undefined, event.rates);
 
   return (
     <>
@@ -70,7 +71,7 @@ export default async function FichaPage({ params }: Props) {
         {event.genres.length > 0 && <Fact icon="music" title={event.genres.join(' · ')} />}
 
         <h2 className={styles.h2}>Entradas</h2>
-        <TicketSelector rates={event.rates} />
+        <TicketSelector slug={event.slug} rates={event.rates} initialSelection={selection} />
       </main>
     </>
   );
