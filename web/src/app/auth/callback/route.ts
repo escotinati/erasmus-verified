@@ -32,5 +32,7 @@ export async function GET(request: NextRequest) {
     if (!error) return redirectTo(request, next);
   }
   // Enlace caducado/usado, o abierto en otro navegador: el correo puede estar ya confirmado o no.
-  return redirectTo(request, `/login?aviso=${linkError ? 'enlace' : 'confirmado'}`);
+  // Se conserva el destino (si lo había) para que el login vuelva a la compra.
+  const keep = next === DEFAULT_NEXT ? '' : `&next=${encodeURIComponent(next)}`;
+  return redirectTo(request, `/login?aviso=${linkError ? 'enlace' : 'confirmado'}${keep}`);
 }

@@ -35,7 +35,6 @@ async function getOrigin() {
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? '');
 
-
 export async function signUpAction(_prev: AuthState, form: FormData): Promise<AuthState> {
   const name = text(form, 'name').trim();
   const email = text(form, 'email').trim();
@@ -77,14 +76,18 @@ export async function signUpAction(_prev: AuthState, form: FormData): Promise<Au
   if (data.session) redirect(next);
   // Con confirmación activada no hay sesión hasta pulsar el enlace del correo: recordamos a dónde volver
   // (p. ej. el resumen de compra). Solo rutas internas ya validadas; caduca en 1 h y solo viaja a /auth.
+  const jar = await cookies();
   if (next !== DEFAULT_NEXT) {
-    (await cookies()).set(NEXT_COOKIE, next, {
+    jar.set(NEXT_COOKIE, next, {
       httpOnly: true,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       path: '/auth',
       maxAge: 60 * 60,
     });
+  } else {
+    // Un alta sin destino no debe heredar el de un intento anterior sin confirmar.
+    jar.delete({ name: NEXT_COOKIE, path: '/auth' });
   }
   return { sent: true, email };
 }
@@ -100,7 +103,8 @@ export async function signInAction(_prev: AuthState, form: FormData): Promise<Au
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    // Mensaje único: no confirmar si el correo existe ni distinguir "sin confirmar" de "clave mala".
+    // No confirmar si el correo existe. "Sin confirmar" solo lo devuelve Supabase con la contraseña correcta,
+    // así que distinguirlo no permite averiguar qué correos tienen cuenta.
     const unconfirmed = error.code === 'email_not_confirmed';
     return {
       message: unconfirmed

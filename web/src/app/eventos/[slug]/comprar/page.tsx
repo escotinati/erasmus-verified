@@ -6,8 +6,8 @@ import { StatusScreen } from '@/components/ui/StatusScreen';
 import { loadEvent } from '@/lib/events';
 import { formatEuros, formatEventDay, formatTimeRange } from '@/lib/format';
 import { lineTotalCents, summarize } from '@/lib/pricing';
-import { createClient } from '@/lib/supabase/server';
 import { encodeSelection, parseSelection } from '@/lib/selection';
+import { createClient } from '@/lib/supabase/server';
 import styles from './comprar.module.css';
 
 type Props = {
