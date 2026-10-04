@@ -3,3 +3,5 @@
 .empty { display: flex; flex-direction: column; gap: 12px; padding: 24px 16px; text-align: center; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }
 .emptyTitle { font-size: var(--text-xl); }
 .emptyText { margin: 0 0 8px; color: var(--muted); }
+.note { margin: 0; font-size: var(--text-md); color: var(--muted); }
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }

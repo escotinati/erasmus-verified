@@ -1,25 +1,30 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { requireUser } from '@/lib/auth/session';
+import { getFirstName, requireUser } from '@/lib/auth/session';
 import { encodeSelection } from '@/lib/selection';
+import { MissingServiceKeyError } from '@/lib/supabase/admin';
 import { loadCheckout } from './load';
+import { createOrder } from './orders';
 import { isSimulatedCheckoutAllowed } from './simulation';
 
 const text = (form: FormData, key: string) => String(form.get(key) ?? '');
 
 /**
- * PAGO SIMULADO (fase 4). No cobra nada, no guarda nada y no emite entradas: solo recorre el flujo.
- * Aun así se comporta como el real: exige sesión, revalida la selección contra las tarifas y
- * recalcula el total en el servidor. El importe que vio el usuario (`total`) solo sirve para
- * detectar que cambió; nunca se usa para cobrar.
+ * PAGO SIMULADO. No cobra nada ni emite entradas, pero SÍ guarda un pedido real (provider
+ * 'simulated', estado 'paid') para que "Mis entradas" y la pantalla de éxito lean datos de verdad.
+ * Se comporta como el pago real: exige sesión, revalida la selección contra las tarifas y recalcula
+ * el total en el servidor. El importe que vio el usuario (`total`) solo sirve para detectar que
+ * cambió; nunca se usa para cobrar ni se guarda.
  */
 export async function payAction(form: FormData): Promise<void> {
   const slug = text(form, 'slug');
   const rawT = text(form, 't');
   // Sesión lo primero: un anónimo no llega a consultar nada. `next` solo es una ruta nuestra;
   // el login la revalida con safeNextPath y, si no es válida, usa el destino por defecto.
-  await requireUser(`/eventos/${encodeURIComponent(slug)}/pagar?t=${encodeURIComponent(rawT)}`);
+  const { supabase, user } = await requireUser(
+    `/eventos/${encodeURIComponent(slug)}/pagar?t=${encodeURIComponent(rawT)}`,
+  );
   if (!(await isSimulatedCheckoutAllowed())) redirect('/');
 
   const checkout = await loadCheckout(slug, rawT);
@@ -35,5 +40,24 @@ export async function payAction(form: FormData): Promise<void> {
     redirect(`/eventos/${event.slug}/pagar?t=${t}&cambio=1`);
   }
 
-  redirect(`/eventos/${event.slug}/exito?t=${t}`);
+  // El pedido se escribe con la secret key, pero solo aquí, ya con el usuario verificado (getUser).
+  // redirect() lanza una excepción interna: no puede ir dentro del try.
+  let orderId: string;
+  try {
+    orderId = await createOrder({
+      user,
+      event,
+      selection,
+      summary,
+      buyerFirstName: await getFirstName(supabase, user),
+      status: 'paid',
+      provider: 'simulated',
+    });
+  } catch (error) {
+    console.error('[payAction] No se pudo guardar el pedido:', error instanceof Error ? error.message : 'error desconocido');
+    const code = error instanceof MissingServiceKeyError ? 'config' : 'guardar';
+    redirect(`/eventos/${event.slug}/pagar?t=${t}&error=${code}`);
+  }
+
+  redirect(`/eventos/${event.slug}/exito?pedido=${orderId}`);
 }

@@ -2,7 +2,7 @@ import type { CookieOptions } from '@supabase/ssr';
 
 /**
  * Variables públicas de Supabase (URL y anon key: públicas por diseño, protegidas por RLS).
- * Falla pronto y claro si faltan; la service role key NO se usa nunca en `web/`.
+ * Falla pronto y claro si faltan. La secret key (service_role) vive aparte, en admin.ts, solo para pedidos.
  */
 export function getSupabaseConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
