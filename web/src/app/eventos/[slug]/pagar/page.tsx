@@ -16,7 +16,7 @@ import styles from './pagar.module.css';
 
 type Props = {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ t?: string | string[]; cambio?: string | string[] }>;
+  searchParams: Promise<{ t?: string | string[]; cambio?: string | string[]; error?: string | string[] }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  */
 export default async function PagarPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { t, cambio } = await searchParams;
+  const { t, cambio, error } = await searchParams;
   const checkout = await loadCheckout(slug, typeof t === 'string' ? t : undefined);
   if (checkout.status === 'no-event') notFound();
 
@@ -58,10 +58,20 @@ export default async function PagarPage({ params, searchParams }: Props) {
   const name = await getFirstName(supabase, user);
   const changed = cambio === '1';
   const live = changed || adjusted;
+  // Fallo al guardar el pedido (nunca se ha cobrado nada). 'config' solo ayuda a quien despliega.
+  const saveError = error === 'config' ? 'config' : error === 'guardar' ? 'guardar' : null;
 
   return (
     <CheckoutShell title="Pago" back={{ href: `${fichaHref}/comprar?t=${encoded}`, label: 'Volver al resumen' }}>
-      <CheckoutNotice>Modo de prueba: no se cobrará nada ni se emitirá ninguna entrada.</CheckoutNotice>
+      <CheckoutNotice>Modo de prueba: no se cobrará nada ni se emitirá ninguna entrada, pero verás el pedido en «Mis entradas».</CheckoutNotice>
+
+      {saveError && (
+        <CheckoutNotice live>
+          {saveError === 'config'
+            ? 'Falta configurar SUPABASE_SERVICE_ROLE_KEY en el servidor: no se puede guardar el pedido. No se ha cobrado nada.'
+            : 'No hemos podido guardar tu pedido. No se ha cobrado nada: inténtalo de nuevo en unos segundos.'}
+        </CheckoutNotice>
+      )}
 
       {live && (
         <CheckoutNotice live>
