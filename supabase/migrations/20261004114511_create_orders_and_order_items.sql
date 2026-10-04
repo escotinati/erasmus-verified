@@ -12,7 +12,7 @@
 --    (create_order), así cabecera y líneas no pueden quedar incoherentes.
 --
 -- No toca ninguna tabla existente: la web antigua no se ve afectada.
--- Estado NO aplicado: se aplica con apply_migration tras revisarla.
+-- Aplicada en puivkbjgbfnlpepyednt el 2026-10-04 (versión 20261004114511).
 -- =====================================================================
 
 
