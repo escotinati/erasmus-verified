@@ -3,10 +3,17 @@
 .sub { margin: 0; color: var(--muted); overflow-wrap: anywhere; }
 .note { margin: var(--space-4) 0 0; padding: var(--space-4); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }
 .card { margin-top: var(--space-4); display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }
-.card p { margin: 0; color: var(--muted); }
+.card > p { margin: 0; color: var(--muted); }
 
 @media (min-width: 900px) {
   .main { padding-top: var(--space-16); padding-bottom: var(--gap-section); }
   .title { font-family: var(--font-hero); font-size: var(--text-4xl); font-weight: 400; line-height: 1.05; letter-spacing: -0.03em; }
   .card { width: min(100%, 480px); padding: var(--space-8); }
 }
+
+.steps { margin: 0; padding-left: var(--space-5); color: var(--muted); display: flex; flex-direction: column; gap: var(--space-1); }
+.card .alert { color: var(--danger); font-size: var(--text-md); }
+/* Fondo claro propio del QR: las apps lo leen mal sobre un fondo oscuro */
+.qr { align-self: center; padding: var(--space-3); background: var(--text); border-radius: var(--radius-field); line-height: 0; }
+.qr img { display: block; max-width: 100%; height: auto; }
+.secret { padding: var(--space-3); background: var(--surface-2); border: 1.5px solid var(--line); border-radius: var(--radius-field); color: var(--text); font-size: var(--text-md); letter-spacing: 0.08em; overflow-wrap: anywhere; user-select: all; }

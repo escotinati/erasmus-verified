@@ -31,8 +31,9 @@ export default async function AdminVerifyPage() {
           <>
             <p>
               Tu cuenta es de administrador, pero aún no tiene la verificación en dos pasos configurada, y el panel la exige.
-              Configúrala y vuelve a entrar.
+              Actívala ahora para entrar.
             </p>
+            <ButtonLink href="/admin/activar-2fa" fullWidth>Activar verificación en dos pasos</ButtonLink>
             <ButtonLink href="/cuenta" variant="outline" fullWidth>Volver a mi cuenta</ButtonLink>
           </>
         )}
