@@ -17,6 +17,10 @@
 .card:hover { border-color: var(--accent-text); }
 .soldOut { color: var(--warning); font-weight: 700; }
 
+@media (min-width: 600px) {
+  .media { height: 280px; }
+}
+
 @media (min-width: 900px) {
   .card { position: relative; min-height: 440px; justify-content: space-between; }
   .card .media { position: absolute; inset: 0; height: auto; padding: var(--space-6) var(--space-8); --media-fade: 90%; }

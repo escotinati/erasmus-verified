@@ -16,12 +16,16 @@
 .featured { grid-column: 1 / -1; display: flex; }
 .featured > * { flex: 1; }
 
+/* Tableta (600-899 px): sigue el diseño móvil pero con 2 columnas; la destacada ocupa las dos. */
+@media (min-width: 600px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 @media (min-width: 900px) {
   .main { padding-top: var(--space-16); gap: var(--space-10); }
   .brand { display: none; }
   .title { font-size: var(--text-display); line-height: 1; }
   .lead { font-size: var(--text-lg); margin-top: var(--space-6); }
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 1100px) {
   .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
