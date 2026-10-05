@@ -20,6 +20,8 @@ export async function SiteHeader() {
   const user = data.user;
   const metaName = user?.user_metadata?.first_name;
   const displayName = user ? ((typeof metaName === 'string' ? metaName.slice(0, NAME_MAX) : '') || user.email || '') : '';
+  // Solo para decidir si se enseña el enlace al panel (el panel vuelve a comprobarlo en el servidor).
+  const isAdmin = user ? (await supabase.rpc('is_admin')).data === true : false;
   const initial = displayName.trim().charAt(0).toUpperCase();
 
   return (
@@ -31,7 +33,7 @@ export async function SiteHeader() {
         </Link>
         <div className={styles.right}>
           <HeaderNav />
-          <AccountMenu loggedIn={Boolean(user)} initial={initial} />
+          <AccountMenu loggedIn={Boolean(user)} initial={initial} isAdmin={isAdmin} />
         </div>
       </div>
     </header>
