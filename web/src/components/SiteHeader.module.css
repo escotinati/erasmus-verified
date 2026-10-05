@@ -1,0 +1,50 @@
+/* Solo escritorio: por debajo de 900 px el menú es BottomNav. */
+.header {
+  display: none;
+  position: sticky; top: 0; z-index: 60;
+  height: var(--header-h);
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+@media (min-width: 900px) {
+  .header { display: block; }
+}
+.inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 100%; width: min(var(--content-wide), calc(100% - 2 * var(--space-8))); margin: 0 auto;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-title); font-weight: 800; font-size: var(--text-md);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--primary); }
+.right { display: flex; align-items: center; gap: var(--space-2); }
+.nav { display: flex; align-items: center; gap: var(--space-2); }
+/* El activo no depende solo del color: subrayado + color. */
+.link {
+  display: flex; align-items: center; min-height: var(--tap-min); padding: 0 var(--space-4);
+  border-bottom: 3px solid transparent;
+  font-size: var(--text-base); font-weight: 600; color: var(--muted);
+}
+.link:hover { color: var(--text); }
+.link[aria-current='page'] { color: var(--accent-text); border-bottom-color: var(--accent-text); }
+
+.accountWrap { position: relative; }
+.accountWrap, .right > .account { margin-left: var(--space-4); }
+.account {
+  display: flex; align-items: center; gap: 10px; height: var(--tap-min);
+  padding: 0 var(--space-4) 0 var(--space-2);
+  background: none; border: 1.5px solid var(--field); border-radius: var(--radius-pill);
+  font: inherit; font-size: var(--text-md); font-weight: 600; color: var(--text); cursor: pointer;
+}
+.avatar { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--surface-2); }
+.menu {
+  position: absolute; right: 0; top: calc(100% + var(--space-2)); min-width: 200px;
+  padding: var(--space-2); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-field);
+}
+.menuItem {
+  display: flex; align-items: center; width: 100%; min-height: var(--tap-min); padding: 0 var(--space-3);
+  background: none; border: 0; border-radius: var(--space-2);
+  font: inherit; font-size: var(--text-md); font-weight: 600; color: var(--text); text-align: left; cursor: pointer;
+}
+.menuItem:hover { background: var(--surface-2); }
