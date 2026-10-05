@@ -19,7 +19,7 @@ export default async function NochesPage({ searchParams }: Props) {
   const { featured, rest } = pickFeatured(events);
 
   return (
-    <main data-layout="wide" className={`wide ${styles.main}`}>
+    <main className={`wide ${styles.main}`}>
       <header>
         <p className={styles.brand}>{experience === 'parties' ? 'Erasmus Parties' : 'Erasmus Verified'}</p>
         <h1 className={styles.title}>

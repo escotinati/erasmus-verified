@@ -13,31 +13,18 @@ body {
   font-family: var(--font-body);
   line-height: 1.5;
 }
-/* Móvil y tableta (<900 px): el contenido ocupa TODO el ancho disponible, sin tope. */
+/* Todas las pantallas ocupan el ancho completo; el contenido se centra a --content-wide con .wide (ver web/CLAUDE.md). */
 .shell {
   min-height: 100dvh; margin: 0 auto;
-  /* deja sitio a la navegación inferior fija, presente en todas las pantallas */
+  /* deja sitio a la navegación inferior fija, presente en todas las pantallas (en escritorio --nav-total es 0) */
   padding-bottom: var(--nav-total);
 }
-/* Escritorio (≥900 px; en tableta sigue la columna móvil): las pantallas que ya tienen su diseño propio (marcan su raíz con data-layout="wide")
-   usan todo el ancho y se centran ellas mismas a --content-wide con .wide. El resto sigue en la
-   columna móvil hasta que se rediseñe (una PR por pantalla). */
-@media (min-width: 900px) {
-  /* Transitorio: las pantallas aún sin rediseñar para escritorio siguen en una columna de --content-max */
-  .shell { max-width: var(--content-max); border-inline: 1px solid var(--line); }
-  .shell:has([data-layout='wide']) { max-width: none; border-inline: 0; }
-}
 .wide { width: min(var(--content-wide), calc(100% - 2 * var(--gutter))); margin: 0 auto; }
-/* Barras fijas al borde inferior (menú, barra de compra): ancladas a la misma columna, no a la ventana. */
-.dock { position: fixed; left: 50%; z-index: 50; width: 100%; transform: translateX(-50%); }
-@media (min-width: 900px) {
-  .dock { width: min(100%, var(--content-max)); }
-}
+/* Barras fijas al borde inferior (menú móvil): a todo el ancho. */
+.dock { position: fixed; left: 0; right: 0; z-index: 50; }
 h1, h2, h3 { font-family: var(--font-title); font-weight: 700; line-height: 1.2; margin: 0; }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 3px solid var(--accent-text); outline-offset: 2px; }
-
-.container { margin: 0 auto; padding: 0 16px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
