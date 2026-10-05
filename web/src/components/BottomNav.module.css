@@ -15,3 +15,8 @@
   content: ''; position: absolute; top: 0; left: 50%; width: 28px; height: 3px;
   transform: translateX(-50%); border-radius: 0 0 3px 3px; background: var(--accent-text);
 }
+
+/* En escritorio el menú es la cabecera (SiteHeader): la barra inferior desaparece. */
+@media (min-width: 900px) {
+  .nav { display: none; }
+}
