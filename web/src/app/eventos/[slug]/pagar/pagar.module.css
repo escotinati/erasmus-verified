@@ -1,6 +1,10 @@
-.buyer { padding: 16px; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }
+.buyer { padding: var(--space-4); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }
 .heading { font-size: var(--text-md); font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
-.buyerName { margin: 8px 0 0; font-size: var(--text-lg); font-weight: 700; overflow-wrap: anywhere; }
-.buyerMail { margin: 2px 0 0; font-size: var(--text-md); color: var(--muted); overflow-wrap: anywhere; }
-.age { margin: 12px 0 0; font-size: var(--text-md); }
+.buyerName { margin: var(--space-2) 0 0; font-size: var(--text-lg); font-weight: 700; overflow-wrap: anywhere; }
+.buyerMail { margin: var(--space-1) 0 0; font-size: var(--text-md); color: var(--muted); overflow-wrap: anywhere; }
+.age { margin: var(--space-3) 0 0; font-size: var(--text-md); }
 .form { margin: 0; }
+
+@media (min-width: 900px) {
+  .buyer { padding: var(--space-6); }
+}
