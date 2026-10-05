@@ -1,13 +1,26 @@
-/* El degradado/imagen lo pone EventMedia; el fundido inferior es más fuerte para enlazar con el fondo de la página */
-.hero { height: 232px; padding: 8px; --media-fade: 85%; }
-.age { margin: 10px 8px 0 0; }
-/* deja sitio a la barra de compra fija (56 + paddings); la barra inferior ya la reserva .shell */
-.main { padding-bottom: 88px; }
-.head { padding: 16px 16px 8px; }
+/* Móvil: foto a todo el ancho y debajo el título. Escritorio: foto con esquinas redondeadas y el título encima (misma celda de rejilla). */
+.top { display: grid; }
+.hero { grid-area: 1 / 1; height: 232px; padding: var(--space-2); --media-fade: 85%; }
+.age { margin: var(--space-3) var(--space-2) 0 0; }
+.head { grid-area: 2 / 1; padding: var(--space-5) var(--gutter) 0; }
 .title { font-size: var(--text-3xl); font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; }
-.sub { margin: 4px 0 0; color: var(--muted); }
-.fact { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 16px; }
+.sub { margin: var(--space-2) 0 0; color: var(--muted); }
+
+.facts { display: grid; gap: var(--space-1); margin-top: var(--space-6); }
+.fact { display: flex; align-items: center; gap: var(--space-3); min-height: 48px; }
 .factIcon { color: var(--accent-text); display: inline-flex; }
 .factTitle { font-weight: 600; }
 .factDetail { font-size: var(--text-sm); color: var(--muted); }
-.h2 { padding: 20px 16px 10px; font-size: var(--text-xl); font-weight: 800; letter-spacing: -0.015em; }
+
+@media (min-width: 900px) {
+  .top { width: min(var(--content-wide), calc(100% - 2 * var(--gutter))); margin: var(--space-8) auto 0; }
+  .hero { height: 380px; padding: var(--space-6); border-radius: var(--radius-card); }
+  .age { margin: 0; }
+  .head { grid-area: 1 / 1; align-self: end; position: relative; z-index: 1; padding: var(--space-8); pointer-events: none; }
+  .title { font-family: var(--font-hero); font-size: var(--text-4xl); font-weight: 400; line-height: 1.02; letter-spacing: -0.03em; }
+  .sub { margin-top: var(--space-3); font-size: var(--text-lg); color: var(--text); }
+
+  /* Datos de la noche: tarjetas en 2×2 */
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin-top: 0; }
+  .fact { gap: var(--space-4); padding: var(--space-5) var(--space-6); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); }
+}
