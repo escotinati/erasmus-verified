@@ -21,7 +21,7 @@ export function CheckoutShell({
   children: ReactNode;
 }) {
   return (
-    <main data-layout="wide" className={`wide ${styles.main}`}>
+    <main className={`wide ${styles.main}`}>
       <div className={styles.top}>
         {back && <BackButton href={back.href} label={back.label} />}
         <h1 className={styles.title}>{title}</h1>

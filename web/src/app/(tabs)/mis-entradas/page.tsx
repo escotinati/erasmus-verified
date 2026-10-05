@@ -17,7 +17,7 @@ export default async function MisEntradasPage() {
   const orders = await listMyOrders(supabase);
 
   return (
-    <main data-layout="wide" className={`wide ${styles.main}`}>
+    <main className={`wide ${styles.main}`}>
       <h1 className={styles.title}>Mis entradas</h1>
       {orders.length === 0 ? (
         <section className={styles.empty} aria-labelledby="sin-entradas">

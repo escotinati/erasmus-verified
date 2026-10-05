@@ -45,7 +45,7 @@ export default async function FichaPage({ params, searchParams }: Props) {
   const { selection } = parseSelection(typeof t === 'string' ? t : undefined, event.rates);
 
   return (
-    <main data-layout="wide">
+    <main>
       <div className={styles.top}>
         <EventMedia event={event} className={styles.hero}>
           <BackButton overlay label="Volver a las noches" />
