@@ -27,7 +27,7 @@
   --tap-min: 44px;
   --nav-h: 72px; /* barra inferior móvil (antes 64: más aire) */
   --nav-total: calc(var(--nav-h) + env(safe-area-inset-bottom)); /* alto real de la barra inferior */
-  --content-max: 480px; /* ancho máximo del contenido en móvil */
+  --content-max: 480px; /* columna de las pantallas aún sin rediseñar, SOLO en escritorio (≥900 px) */
   --content-wide: 1120px; /* ancho máximo del contenido en escritorio (desde 900 px) */
   --header-h: 72px; /* cabecera de escritorio */
 
@@ -58,6 +58,7 @@
   --text-2xl: 1.5rem;    /* precios, títulos de pantalla de estado */
   --text-3xl: 1.75rem;   /* título de pantalla (h1) */
   --text-hero: 2.25rem;  /* titular de portada */
+  --text-display: 4.75rem; /* titular de portada en escritorio (solo ≥900 px) */
 
   --font-title: var(--font-jakarta), system-ui, sans-serif;
   --font-body: var(--font-inter), system-ui, sans-serif;

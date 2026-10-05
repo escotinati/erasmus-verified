@@ -1,15 +1,21 @@
+/* Columna flex para que, en la rejilla de escritorio, todas las tarjetas de una fila midan lo mismo. */
 .card {
-  display: block; overflow: hidden; background: var(--surface);
+  display: flex; flex-direction: column; overflow: hidden; background: var(--surface);
   border: 1px solid var(--line); border-radius: var(--radius-card);
 }
 .card:hover { background: var(--surface-2); }
 
 /* Zona visual: el degradado/imagen lo pone EventMedia; aquí solo medidas */
-.media { height: 128px; padding: 12px; }
+.media { flex: 1; min-height: 168px; padding: var(--space-4); }
 .date { text-transform: capitalize; }
 
-.body { padding: 14px 16px 16px; }
+.body { padding: var(--space-5) var(--space-5) var(--space-6); }
 .title { font-size: var(--text-xl); }
-.meta { margin: 4px 0 12px; color: var(--muted); font-size: var(--text-md); }
+.meta { margin: var(--space-2) 0 var(--space-4); color: var(--muted); font-size: var(--text-md); }
 .price { margin: 0; font-family: var(--font-title); font-weight: 700; }
 .soldOut { color: var(--warning); }
+
+@media (min-width: 900px) {
+  .media { min-height: 200px; }
+  .body { padding: var(--space-6) var(--space-6) var(--space-8); }
+}

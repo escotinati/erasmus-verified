@@ -3,12 +3,12 @@ import { EventMedia } from '@/components/EventMedia';
 import { Badge } from '@/components/ui/Badge';
 import type { NightEvent } from '@/lib/fourvenues';
 import { formatEuros, formatEventDate } from '@/lib/format';
+import { lowestAvailablePriceCents } from '@/lib/pricing';
 import styles from './EventCard.module.css';
 
 /** Tarjeta de evento: imagen (o degradado de respaldo) + datos. Precio "desde" = tarifa disponible más barata. */
 export function EventCard({ event }: { event: NightEvent }) {
-  const available = event.rates.filter((r) => !r.soldOut);
-  const fromCents = available.length ? Math.min(...available.map((r) => r.priceCents)) : null;
+  const fromCents = lowestAvailablePriceCents(event);
 
   return (
     <Link href={`/eventos/${event.slug}`} className={styles.card}>

@@ -33,6 +33,7 @@ const EVENTS: NightEvent[] = [
     minAge: 18,
     genres: ['Reggaetón', 'Latino'],
     imageUrl: null,
+    priority: 0,
     rates: [
       {
         id: 'rate-001a',
@@ -60,6 +61,7 @@ const EVENTS: NightEvent[] = [
     minAge: 18,
     genres: ['Comercial', 'House'],
     imageUrl: null,
+    priority: 10, // la destacada del listado
     rates: [
       { id: 'rate-002a', name: 'Entrada general', priceCents: 1000, feeCents: fee(1000), available: 60, soldOut: false },
     ],
@@ -76,6 +78,7 @@ const EVENTS: NightEvent[] = [
     minAge: null,
     genres: ['Latino'],
     imageUrl: null,
+    priority: 0,
     rates: [
       {
         id: 'rate-003a',
