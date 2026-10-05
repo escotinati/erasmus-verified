@@ -8,24 +8,26 @@ export function OrderBreakdown({ rates, selection, summary }: { rates: TicketRat
   const lines = rates.filter((rate) => selection[rate.id] > 0);
   return (
     <>
-      <section aria-label="Entradas elegidas">
-        <ul className={styles.lines}>
-          {lines.map((rate) => {
-            const qty = selection[rate.id];
-            return (
-              <li key={rate.id} className={styles.line}>
-                <div>
-                  <div className={styles.lineName}>{rate.name}</div>
-                  <div className={styles.note}>
-                    {qty} {qty === 1 ? 'entrada' : 'entradas'}
+      {lines.length > 0 && (
+        <section aria-label="Entradas elegidas">
+          <ul className={styles.lines}>
+            {lines.map((rate) => {
+              const qty = selection[rate.id];
+              return (
+                <li key={rate.id} className={styles.line}>
+                  <div>
+                    <div className={styles.lineName}>{rate.name}</div>
+                    <div className={styles.note}>
+                      {qty} {qty === 1 ? 'entrada' : 'entradas'}
+                    </div>
                   </div>
-                </div>
-                <div className={styles.lineTotal}>{formatEuros(lineTotalCents(rate, qty))}</div>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+                  <div className={styles.lineTotal}>{formatEuros(lineTotalCents(rate, qty))}</div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       <dl className={styles.totals}>
         <div className={styles.row}>

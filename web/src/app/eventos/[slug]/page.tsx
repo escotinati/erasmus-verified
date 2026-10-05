@@ -45,34 +45,34 @@ export default async function FichaPage({ params, searchParams }: Props) {
   const { selection } = parseSelection(typeof t === 'string' ? t : undefined, event.rates);
 
   return (
-    <>
-      <EventMedia event={event} className={styles.hero}>
-        <BackButton overlay label="Volver a las noches" />
-        {event.minAge !== null && (
-          <Badge variant="solid" className={styles.age}>
-            +{event.minAge}
-          </Badge>
-        )}
-      </EventMedia>
-
-      <main className={styles.main}>
+    <main data-layout="wide">
+      <div className={styles.top}>
+        <EventMedia event={event} className={styles.hero}>
+          <BackButton overlay label="Volver a las noches" />
+          {event.minAge !== null && (
+            <Badge variant="solid" className={styles.age}>
+              +{event.minAge}
+            </Badge>
+          )}
+        </EventMedia>
         <div className={styles.head}>
           <h1 className={styles.title}>{event.name}</h1>
           <p className={styles.sub}>
             {event.venueName} · {event.city}
           </p>
         </div>
+      </div>
 
-        <Fact icon="calendar" title={formatEventDay(event.startsAt)} detail={formatTimeRange(event.startsAt, event.endsAt)} />
-        <Fact icon="pin" title={event.venueName} detail={event.address ?? undefined} />
-        {event.minAge !== null && (
-          <Fact icon="id" title={`Solo mayores de ${event.minAge}`} detail="Lleva DNI o pasaporte" />
-        )}
-        {event.genres.length > 0 && <Fact icon="music" title={event.genres.join(' · ')} />}
-
-        <h2 className={styles.h2}>Entradas</h2>
-        <TicketSelector slug={event.slug} rates={event.rates} initialSelection={selection} />
-      </main>
-    </>
+      <TicketSelector slug={event.slug} rates={event.rates} initialSelection={selection}>
+        <section aria-label="Datos de la noche" className={styles.facts}>
+          <Fact icon="calendar" title={formatEventDay(event.startsAt)} detail={formatTimeRange(event.startsAt, event.endsAt)} />
+          <Fact icon="pin" title={event.venueName} detail={event.address ?? undefined} />
+          {event.minAge !== null && (
+            <Fact icon="id" title={`Solo mayores de ${event.minAge}`} detail="Lleva DNI o pasaporte" />
+          )}
+          {event.genres.length > 0 && <Fact icon="music" title={event.genres.join(' · ')} />}
+        </section>
+      </TicketSelector>
+    </main>
   );
 }

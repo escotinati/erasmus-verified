@@ -1,7 +1,11 @@
 @import '../styles/tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-bottom: calc(var(--nav-total) + var(--buybar-h)); }
+@media (min-width: 900px) {
+  /* escritorio: no hay barra inferior, pero sí cabecera sticky arriba */
+  html { scroll-padding-bottom: 0; scroll-padding-top: var(--header-h); }
+}
 body {
   margin: 0;
   background: var(--bg);

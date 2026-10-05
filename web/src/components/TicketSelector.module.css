@@ -1,2 +1,20 @@
-.list { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; }
-.empty { margin: 16px 16px 0; padding: 16px; text-align: center; color: var(--muted); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }
+/* Móvil: una columna. El hueco inferior deja sitio a la barra de compra fija (la barra inferior ya la reserva .shell). */
+.layout { display: grid; gap: var(--space-8); padding-bottom: var(--buybar-h); }
+.info { min-width: 0; }
+.h2 { margin: var(--space-8) 0 var(--space-4); font-size: var(--text-xl); font-weight: 800; letter-spacing: -0.015em; }
+.list { display: flex; flex-direction: column; gap: var(--space-5); }
+.empty { margin: var(--space-4) 0 0; padding: var(--space-4); text-align: center; color: var(--muted); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card); }
+
+/* Escritorio: tarifas a la izquierda y panel lateral a la derecha. El ancho del panel depende del nombre de tarifa más largo. */
+@media (min-width: 900px) {
+  .layout {
+    --panel-w: 360px;
+    grid-template-columns: minmax(0, 1fr) var(--panel-w);
+    gap: var(--space-12); align-items: start; padding-top: var(--space-12); padding-bottom: var(--gap-section);
+  }
+  .layout[data-panel='md'] { --panel-w: 400px; }
+  .layout[data-panel='lg'] { --panel-w: 440px; }
+  /* Sin entradas a la venta no hay panel: una sola columna */
+  .layout[data-panel='none'] { grid-template-columns: minmax(0, 1fr); }
+  .h2 { margin: var(--space-12) 0 var(--space-6); font-size: var(--text-2xl); }
+}

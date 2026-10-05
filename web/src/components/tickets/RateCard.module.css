@@ -1,5 +1,5 @@
 .rate {
-  display: flex; flex-direction: column; gap: 10px; padding: 16px;
+  display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5);
   background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-card);
 }
 .rateSelected { border-color: var(--primary); }
@@ -21,3 +21,8 @@
 }
 .stepBtn[aria-disabled='true'] { color: var(--muted); cursor: not-allowed; opacity: 0.6; }
 .qty { min-width: 36px; text-align: center; font-weight: 700; font-size: var(--text-lg); }
+
+@media (min-width: 900px) {
+  .rate { padding: var(--space-6); gap: var(--space-4); }
+  .rateName { font-size: var(--text-xl); }
+}
