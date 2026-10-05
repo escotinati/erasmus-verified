@@ -5,6 +5,16 @@
   height: 52px; padding: 0 14px; font: 400 1rem var(--font-body); color: var(--text);
   background: var(--surface); border: 1.5px solid var(--field); border-radius: var(--radius-field);
 }
+.inputWrap { position: relative; display: flex; }
+.inputWrap .input { flex: 1; min-width: 0; }
+.inputWithToggle { padding-right: calc(var(--tap-min) + 4px); }
+.reveal {
+  position: absolute; top: 0; right: 0; display: grid; place-items: center;
+  width: var(--tap-min); height: 52px; padding: 0;
+  background: none; border: 0; border-radius: var(--radius-field); color: var(--muted); cursor: pointer;
+}
+.reveal:focus-visible { outline-offset: -4px; }
+.reveal:hover, .reveal[aria-pressed='true'] { color: var(--text); }
 .input[aria-invalid='true'] { border-color: var(--danger); }
 .hint { margin: 0; font-size: var(--text-sm); color: var(--muted); }
 /* el error lleva icono de texto además del color: ningún estado depende solo del color */

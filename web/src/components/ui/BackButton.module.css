@@ -1,3 +1,4 @@
 .back { width: var(--tap-min); height: var(--tap-min); display: grid; place-items: center; border-radius: 50%; }
 .overlay { background: var(--scrim); color: var(--text); }
 .overlay:focus-visible { outline-color: var(--text); }
+.withText { width: auto; display: inline-flex; align-items: center; gap: var(--space-1); padding: 0 var(--space-4) 0 var(--space-2); border-radius: var(--radius-pill); font-size: var(--text-md); font-weight: 600; }
