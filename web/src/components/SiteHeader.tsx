@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { AccountMenu } from '@/components/AccountMenu';
 import { HeaderNav } from '@/components/HeaderNav';
+import { NAME_MAX } from '@/lib/auth/validation';
 import { getExperience } from '@/lib/get-experience';
 import { createClient } from '@/lib/supabase/server';
 import styles from './SiteHeader.module.css';
@@ -14,6 +15,12 @@ export async function SiteHeader() {
   const experience = await getExperience();
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  // Inicial del nombre con el que se registró (si no hay nombre, la del correo). Solo se pinta; no autoriza nada.
+  // Sale de los metadatos de la sesión (ya cargados con getUser): sin una consulta extra a `profiles` en cada navegación.
+  const user = data.user;
+  const metaName = user?.user_metadata?.first_name;
+  const displayName = user ? ((typeof metaName === 'string' ? metaName.slice(0, NAME_MAX) : '') || user.email || '') : '';
+  const initial = displayName.trim().charAt(0).toUpperCase();
 
   return (
     <header className={styles.header}>
@@ -24,7 +31,7 @@ export async function SiteHeader() {
         </Link>
         <div className={styles.right}>
           <HeaderNav />
-          <AccountMenu loggedIn={Boolean(data.user)} />
+          <AccountMenu loggedIn={Boolean(user)} initial={initial} />
         </div>
       </div>
     </header>

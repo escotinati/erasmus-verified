@@ -48,7 +48,7 @@ export default async function FichaPage({ params, searchParams }: Props) {
     <main>
       <div className={styles.top}>
         <EventMedia event={event} className={styles.hero}>
-          <BackButton overlay label="Volver a las noches" />
+          <BackButton overlay text="Noches" label="Volver a las noches" />
           {event.minAge !== null && (
             <Badge variant="solid" className={styles.age}>
               +{event.minAge}
