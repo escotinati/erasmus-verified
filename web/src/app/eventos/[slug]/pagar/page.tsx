@@ -62,7 +62,23 @@ export default async function PagarPage({ params, searchParams }: Props) {
   const saveError = error === 'config' ? 'config' : error === 'guardar' ? 'guardar' : null;
 
   return (
-    <CheckoutShell title="Pago" back={{ href: `${fichaHref}/comprar?t=${encoded}`, label: 'Volver al resumen' }}>
+    <CheckoutShell
+      title="Pago"
+      back={{ href: `${fichaHref}/comprar?t=${encoded}`, label: 'Volver al resumen' }}
+      aside={
+        <>
+          <div>
+            <OrderBreakdown rates={event.rates} selection={selection} summary={summary} />
+          </div>
+          <form action={payAction} className={styles.form}>
+            <input type="hidden" name="slug" value={event.slug} />
+            <input type="hidden" name="t" value={encoded} />
+            <input type="hidden" name="total" value={summary.totalCents} />
+            <PayButton label={`Pagar ${formatEuros(summary.totalCents)}`} />
+          </form>
+        </>
+      }
+    >
       <CheckoutNotice>Modo de prueba: no se cobrará nada ni se emitirá ninguna entrada, pero verás el pedido en «Mis entradas».</CheckoutNotice>
 
       {saveError && (
@@ -93,15 +109,6 @@ export default async function PagarPage({ params, searchParams }: Props) {
           </p>
         )}
       </section>
-
-      <OrderBreakdown rates={event.rates} selection={selection} summary={summary} />
-
-      <form action={payAction} className={styles.form}>
-        <input type="hidden" name="slug" value={event.slug} />
-        <input type="hidden" name="t" value={encoded} />
-        <input type="hidden" name="total" value={summary.totalCents} />
-        <PayButton label={`Pagar ${formatEuros(summary.totalCents)}`} />
-      </form>
     </CheckoutShell>
   );
 }

@@ -48,18 +48,27 @@ export default async function ComprarPage({ params, searchParams }: Props) {
   await requireUser(`${fichaHref}/comprar?t=${encoded}`);
 
   return (
-    <CheckoutShell title="Resumen" back={{ href: `${fichaHref}?t=${encoded}`, label: 'Volver a elegir entradas' }}>
+    <CheckoutShell
+      title="Resumen"
+      back={{ href: `${fichaHref}?t=${encoded}`, label: 'Volver a elegir entradas' }}
+      aside={
+        <>
+          <div>
+            <OrderBreakdown rates={event.rates} selection={selection} summary={summary} />
+          </div>
+          {(await isSimulatedCheckoutAllowed()) ? (
+            <ButtonLink href={`${fichaHref}/pagar?t=${encoded}`} fullWidth>
+              Continuar al pago
+            </ButtonLink>
+          ) : (
+            <CheckoutNotice>El pago estará disponible muy pronto.</CheckoutNotice>
+          )}
+        </>
+      }
+    >
       <EventSummary event={event} />
       {adjusted && (
         <CheckoutNotice live>Hemos ajustado tu selección a las entradas disponibles ahora mismo. Revisa el total antes de seguir.</CheckoutNotice>
-      )}
-      <OrderBreakdown rates={event.rates} selection={selection} summary={summary} />
-      {(await isSimulatedCheckoutAllowed()) ? (
-        <ButtonLink href={`${fichaHref}/pagar?t=${encoded}`} fullWidth>
-          Continuar al pago
-        </ButtonLink>
-      ) : (
-        <CheckoutNotice>El pago estará disponible muy pronto.</CheckoutNotice>
       )}
     </CheckoutShell>
   );
