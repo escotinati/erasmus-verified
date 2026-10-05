@@ -36,6 +36,12 @@ export interface NightEvent {
   minAge: number | null;
   genres: string[];
   imageUrl: string | null;
+  /**
+   * Prioridad editorial (más alto = más visible; 0 = sin destacar). NO viene de Fourvenues: es dato
+   * propio (se fijará en nuestra base de datos según criterio de negocio). El listado destaca la noche
+   * con mayor prioridad. El adapter real deberá rellenarlo cruzando con esa tabla; sin dato, 0.
+   */
+  priority: number;
   rates: TicketRate[];
 }
 

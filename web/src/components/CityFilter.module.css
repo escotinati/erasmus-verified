@@ -1,8 +1,15 @@
-.row { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 4px; scrollbar-width: none; }
+.row { display: flex; gap: var(--space-3); overflow-x: auto; padding: 2px 0 4px; scrollbar-width: none; }
 .row::-webkit-scrollbar { display: none; }
 .chip {
-  flex: none; display: inline-flex; align-items: center; min-height: var(--tap-min); padding: 0 16px;
-  border-radius: 22px; border: 1.5px solid var(--field); font-size: var(--text-md); font-weight: 600; color: var(--text);
+  flex: none; display: inline-flex; align-items: center; min-height: var(--tap-min); padding: 0 var(--space-5);
+  border-radius: var(--radius-pill); border: 1.5px solid var(--field); font-size: var(--text-md); font-weight: 600; color: var(--text);
 }
-/* El estado activo no depende solo del color: relleno + texto blanco (4,58:1) */
-.chip[aria-current='true'] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+/* Activo: relleno claro + texto oscuro (como el mockup). No usa el magenta: ese es del botón principal de la pantalla. */
+.chip[aria-current='true'] { background: var(--text); border-color: var(--text); color: var(--bg); }
+.chip:not([aria-current='true']):hover { background: var(--surface-2); }
+
+/* Escritorio: hay sitio de sobra, las ciudades saltan de línea en vez de desplazarse */
+@media (min-width: 900px) {
+  .row { flex-wrap: wrap; overflow: visible; }
+  .chip { padding: 0 22px; font-size: var(--text-base); }
+}

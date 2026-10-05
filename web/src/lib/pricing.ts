@@ -1,4 +1,4 @@
-import type { TicketRate } from './fourvenues/types';
+import type { NightEvent, TicketRate } from './fourvenues/types';
 
 /**
  * Cálculo del pedido. ÚNICA fuente de verdad del total que ve el usuario.
@@ -13,6 +13,12 @@ export type Selection = Record<string, number>;
 /** Agotada si la API la marca así O si el stock conocido es 0 (o negativo): nunca se puede comprar. */
 export function isSoldOut(rate: TicketRate): boolean {
   return rate.soldOut || (rate.available !== null && rate.available <= 0);
+}
+
+/** Precio «desde» del evento: la tarifa disponible más barata (sin gastos), o null si todo está agotado. Un solo criterio para todo el catálogo. */
+export function lowestAvailablePriceCents(event: NightEvent): number | null {
+  const prices = event.rates.filter((r) => !isSoldOut(r)).map((r) => r.priceCents);
+  return prices.length ? Math.min(...prices) : null;
 }
 
 /** Máximo seleccionable de una tarifa: 0 si agotada, si no el menor entre stock y tope por pedido. */

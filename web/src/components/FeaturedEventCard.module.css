@@ -1,0 +1,31 @@
+/* Móvil: foto arriba y datos debajo (columna). Escritorio: tarjeta de 2 columnas con los datos sobre la foto. */
+.card {
+  display: flex; flex-direction: column; overflow: hidden; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius-card);
+}
+.media { height: 220px; padding: var(--space-4); }
+.date { text-transform: capitalize; }
+.body { display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-5) var(--space-5) var(--space-6); }
+.title { font-family: var(--font-hero); font-size: var(--text-2xl); line-height: 1.1; letter-spacing: -0.02em; }
+.meta { margin: var(--space-2) 0 0; color: var(--muted); font-size: var(--text-md); }
+/* Botón visual (el único magenta del listado). Alto 56 px como el botón principal. */
+.cta {
+  display: flex; align-items: center; justify-content: center; min-height: 56px; padding: 0 var(--space-6);
+  background: var(--primary); color: var(--on-primary); border-radius: var(--radius-pill);
+  font-weight: 600; font-size: var(--text-md); text-align: center;
+}
+.card:hover { border-color: var(--accent-text); }
+.soldOut { color: var(--warning); font-weight: 700; }
+
+@media (min-width: 900px) {
+  .card { position: relative; min-height: 440px; justify-content: space-between; }
+  .card .media { position: absolute; inset: 0; height: auto; padding: var(--space-6) var(--space-8); --media-fade: 90%; }
+  /* Datos encima de la foto: título y botón en la misma línea, abajo */
+  .body {
+    position: relative; z-index: 1; margin-top: auto; flex-direction: row; align-items: flex-end;
+    justify-content: space-between; gap: var(--space-8); padding: var(--space-8);
+  }
+  .title { font-size: var(--text-hero); }
+  .meta { color: var(--text); font-size: var(--text-base); }
+  .cta { flex: none; font-size: var(--text-base); }
+}

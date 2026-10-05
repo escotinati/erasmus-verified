@@ -1,5 +1,7 @@
 import { CityFilter } from '@/components/CityFilter';
 import { EventCard } from '@/components/EventCard';
+import { FeaturedEventCard } from '@/components/FeaturedEventCard';
+import { pickFeatured } from '@/lib/featured';
 import { tickets } from '@/lib/fourvenues';
 import { getExperience } from '@/lib/get-experience';
 import styles from './noches.module.css';
@@ -14,9 +16,10 @@ export default async function NochesPage({ searchParams }: Props) {
   const requested = Array.isArray(sp.ciudad) ? sp.ciudad[0] : sp.ciudad;
   const city = requested && cities.includes(requested) ? requested : null;
   const events = city ? all.filter((e) => e.city === city) : all;
+  const { featured, rest } = pickFeatured(events);
 
   return (
-    <main className={`container ${styles.main}`}>
+    <main data-layout="wide" className={`wide ${styles.main}`}>
       <header>
         <p className={styles.brand}>{experience === 'parties' ? 'Erasmus Parties' : 'Erasmus Verified'}</p>
         <h1 className={styles.title}>
@@ -34,7 +37,16 @@ export default async function NochesPage({ searchParams }: Props) {
       {events.length === 0 ? (
         <p className={styles.empty}>Ahora mismo no hay noches disponibles. Vuelve pronto.</p>
       ) : (
-        events.map((event) => <EventCard key={event.id} event={event} />)
+        <div className={styles.grid}>
+          {featured && (
+            <div className={styles.featured}>
+              <FeaturedEventCard event={featured} />
+            </div>
+          )}
+          {rest.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
       )}
     </main>
   );
